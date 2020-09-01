@@ -13,3 +13,14 @@ Measuring degree of internationalization based on Google Trends data
     - batch_time -> set to "2010-01-01 2019-12-31"
     - dict_obj -> example based on batch_terms
 - all code refers to current working directory
+- functions to import data
+  - data_geo
+  - batch_terms
+  - batch_time
+  - dict_obj
+- access data through anti_joins and where functions
+- functions to delete data
+  - entire batch
+    - link to data_map, data_score, data_agg
+- export functions
+  - by batch
