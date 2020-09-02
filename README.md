@@ -26,6 +26,6 @@ Measuring degree of internationalization based on Google Trends data
 - functions to delete data
   - entire batch
   - link to data_map, data_score, data_agg
-  - dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_c=0")
+  - dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_c=0 AND batch_=0")
 - export functions
   - by batch
