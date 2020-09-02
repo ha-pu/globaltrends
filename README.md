@@ -5,11 +5,15 @@ Measuring degree of internationalization based on Google Trends data
   - create empty database
   - create empty tables
     - upload dummy dataframes with 1 row, correct column names, correct column types
+    - dbWriteTable(conn = gtrends_db, name = "data_wrld", value = data, append = TRUE)
     - delete data from columns
+    - dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_c=0")
     - set indizes for tables
+    - tmp <- dbSendQuery(gtrends_db, "CREATE INDEX id_con ON data_con (geo, batch);")
+    - dbClearResult(tmp)
   - enter example data
     - data_geo -> lst_wdi (with wdi package) and lst_us (from gtrends)
-    - batch_terms -> example data (from gtrends docu?)
+    - batch_terms -> example data (from gtrends doc?)
     - batch_time -> set to "2010-01-01 2019-12-31"
     - dict_obj -> example based on batch_terms
 - all code refers to current working directory
@@ -17,10 +21,11 @@ Measuring degree of internationalization based on Google Trends data
   - data_geo
   - batch_terms
   - batch_time
+  - data.frame(keyword = c(...), time = "2010-01-01 2019-12-31", type = "control|object")
   - dict_obj
-- access data through anti_joins and where functions
 - functions to delete data
   - entire batch
-    - link to data_map, data_score, data_agg
+  - link to data_map, data_score, data_agg
+  - dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_c=0")
 - export functions
   - by batch
