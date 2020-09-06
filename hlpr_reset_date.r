@@ -1,13 +1,14 @@
+# reset data to monthly observations
+
 .reset_date <- function(data) {
-  require(lubridate)
   out <- data %>%
-    mutate(day = 1,
-           month = month(date),
-           year = year(date)) %>%
-    group_by(geo, keyword, year, month, day) %>%
-    summarise(hits = mean(hits)) %>%
-    ungroup() %>%
-    mutate(date = ymd(str_c(year, month, day, sep = "-"))) %>%
-    select(-year, -month, -day)
+    dplyr::mutate(day = 1,
+           month = lubridate::month(date),
+           year = lubridate::year(date)) %>%
+    dplyr::group_by(geo, keyword, year, month, day) %>%
+    dplyr::summarise(hits = mean(hits)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(date = lubridate::ymd(stringr::str_c(year, month, day, sep = "-"))) %>%
+    dplyr::select(-year, -month, -day)
   return(out)
 }
