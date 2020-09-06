@@ -1,3 +1,5 @@
+# Download worldwide score
+
 run_wrld <- function(object) {
   terms <- terms_obj$keyword[terms_obj$batch == object]
   terms <- terms[!(terms %in% dict_obj$term2)]
