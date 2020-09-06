@@ -1,3 +1,5 @@
+# download trend data from google
+
 .get_trend <- function(geo, term, time = "all") {
   out <- try(gtrendsR::gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
   while (inherits(out, "try-error")) {
