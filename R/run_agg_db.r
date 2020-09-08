@@ -1,0 +1,79 @@
+#' @title
+#' Aggregate keyword-country data and compute DOI
+#'
+#' @description
+#' @details
+#'
+#' @param control Control batch for which the search score used. Object
+#' of class \code{numeric}.
+#' @param object Object batch for which the keyword-country data
+#' is aggregated and DOI is computed.  Object of class \code{numeric}.
+#'
+#' @seealso
+#' @return
+#' Message that data was aggregated successfully. Data is uploaded
+#' to data_agg.
+#'
+#' @example data_agg(control = 1, object = 1)
+#'
+#' @export
+#' @importFrom DBI dbWriteTable
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr collect
+#' @importFrom dplyr filter
+#' @importFrom dplyr group_by
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom dplyr summarise_if
+#' @importFrom dplyr ungroup
+#' @importFrom purrr map_dbl
+#' @importFrom purrr map_dfr
+#' @importFrom purrr set_names
+#' @importFrom stringr str_c
+#' @importFrom stringr str_replace_all
+#' @importFrom tidyr gather
+#' @importFrom tidyr nest
+
+run_agg <- function(control, object) {
+  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object)) {
+    data <- collect(filter(data_score, batch_c == control & batch_o == object))
+
+    # run dict replace
+    if (any(data$keyword %in% dict_obj$term1)) {
+      kw1 <- unique(data$keyword[data$keyword %in% dict_obj$term1])
+      out <- map_dfr(kw1, ~ {
+        kw2 <- dict_obj$term2[dict_obj$term1 == .x]
+        if (!any(kw2 %in% data$keyword)) {
+          out <- terms_obj$batch[terms_obj$keyword == kw2]
+          out <- filter(data_score, batch_c == control & batch_o == out)
+          out <- collect(out)
+          out <- out[out$keyword == kw2, ]
+          return(out)
+        }
+      })
+      data <- bind_rows(data, out)
+      data$keyword <- str_replace_all(data$keyword, set_names(dict_obj$term1[dict_obj$term1 %in% kw1], dict_obj$term2[dict_obj$term1 %in% kw1]))
+      data <- data %>%
+        group_by(geo, date, keyword, batch_c, batch_o) %>%
+        summarise_if(is.double, sum) %>%
+        ungroup()
+    }
+    data <- data[!(data$keyword %in% dict_obj$term2), ]
+
+    # compute doi measures
+    out <- data %>%
+      gather(key = "type", value = "score", contains("score")) %>%
+      nest(geo, score) %>%
+      mutate(
+        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
+        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
+        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
+      ) %>%
+      select(-data)
+
+    # write data
+    out <- mutate(out, batch_c = control, batch_o = object)
+    dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
+  }
+  message(str_c("run_agg | control: ", control, " | object: ", object, " complete [", object, "|", max(terms_obj$batch), "]"))
+}
