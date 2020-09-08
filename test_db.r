@@ -5,10 +5,7 @@ library(DBI)
 library(dbplyr)
 library(lubridate)
 library(tidyverse)
-options(dplyr.summarise.inform = FALSE) 
-
-# parameter ----
-setwd("..")
+options(dplyr.summarise.inform = FALSE)
 
 # connect to db ----
 gtrends_db_file <- "db/gtrends.sqlite"
@@ -16,21 +13,6 @@ gtrends_db_file_bu <- "db/gtrends_bu.sqlite"
 file.copy(gtrends_db_file, gtrends_db_file_bu)
 gtrends_db <- dbConnect(RSQLite::SQLite(), gtrends_db_file)
 src_dbi(gtrends_db)
-
-# source files ----
-source("code/hlpr_test_empty.r")
-source("code/hlpr_get_trend.r")
-
-
-source("code/add_batch_db.r")
-source("code/run_agg_db.r")
-source("code/run_control_db.r")
-# source("code/run_doi.r")
-source("code/run_map_db.r")
-source("code/run_object_db.r") 
-source("code/run_remove_db.r")
-source("code/run_score_db.r")
-source("code/run_wrld_db.r")
 
 # get tables ----
 data_geo <- tbl(gtrends_db, "data_geo")
@@ -59,7 +41,7 @@ time_con <- filter(batch_time, type == "con")
 time_con <- collect(time_con)
 terms_obj <- filter(batch_terms, type == "obj")
 terms_obj <- collect(terms_obj)
-time_obj  <- filter(batch_terms, type == "obj")
+time_obj  <- filter(batch_time, type == "obj")
 time_obj <- collect(time_obj)
 dict_obj <- collect(dict_obj)
 
