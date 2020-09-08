@@ -1,5 +1,4 @@
-#' @title
-#' Download data for object batch
+#' @title Download data for object batch
 #'
 #' @description
 #' @details
@@ -10,11 +9,15 @@
 #' Refers to lists generated in \code{gtrends_base}.
 #'
 #' @seealso
+#'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
 #' to data_object.
 #'
-#' @example data_obj(object = 1, lst_geo = lst_wdi)
+#' @examples
+#' \dontrun{
+#' data_obj(object = 1, lst_geo = lst_wdi)
+#' }
 #'
 #' @export
 #' @importFrom DBI dbWriteTable

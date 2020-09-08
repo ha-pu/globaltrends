@@ -1,5 +1,4 @@
-#' @title
-#' Aggregate keyword-country data and compute DOI
+#' @title Aggregate keyword-country data and compute DOI
 #'
 #' @description
 #' @details
@@ -10,11 +9,15 @@
 #' is aggregated and DOI is computed.  Object of class \code{numeric}.
 #'
 #' @seealso
+#' 
 #' @return
 #' Message that data was aggregated successfully. Data is uploaded
 #' to data_agg.
 #'
-#' @example data_agg(control = 1, object = 1)
+#' @examples
+#' \dontrun{
+#' data_agg(control = 1, object = 1)
+#' }
 #'
 #' @export
 #' @importFrom DBI dbWriteTable

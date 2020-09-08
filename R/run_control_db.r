@@ -1,5 +1,4 @@
-#' @title
-#' Download data for control batch
+#' @title Download data for control batch
 #'
 #' @description
 #' @details
@@ -10,11 +9,15 @@
 #' Refers to lists generated in \code{gtrends_base}.
 #'
 #' @seealso
+#' 
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
 #' to data_control.
 #'
-#' @example data_con(control = 1, lst_geo = lst_wdi)
+#' @examples
+#' \dontrun{
+#' data_con(control = 1, lst_geo = lst_wdi)
+#' }
 #'
 #' @export
 #' @importFrom DBI dbWriteTable

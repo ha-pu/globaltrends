@@ -1,10 +1,19 @@
-# adjust time series
+#' @title Adjust time series
+#' 
+#' @keywords internal
+#' 
+#' @importFrom forecast seasadj
+#' @importFrom lubridate month
+#' @importFrom lubridate year
+#' @importFrom stats stl
+#' @importFrom stats ts
+#' @importFrom tibble tibble
 
 .adjust_ts <- function(data) {
-  myts <- stats::ts(data$hits, start = c(lubridate::year(min(data$date)), lubridate::month(min(data$date))), end = c(lubridate::year(max(data$date)), lubridate::month(max(data$date))), frequency = 12)
-  fit <- stats::stl(myts, s.window = "period")
+  myts <- ts(data$hits, start = c(year(min(data$date)), month(min(data$date))), end = c(year(max(data$date)), month(max(data$date))), frequency = 12)
+  fit <- stl(myts, s.window = "period")
   trend <- fit$time.series[, "trend"]
-  seasad <- forecast::seasadj(fit)
-  out <- tibble::tibble(date = data$date, hits_obs = data$hits, hits_trd = as.double(trend), hits_sad = as.double(seasad))
+  seasad <- seasadj(fit)
+  out <- tibble(date = data$date, hits_obs = data$hits, hits_trd = as.double(trend), hits_sad = as.double(seasad))
   return(out)
 }

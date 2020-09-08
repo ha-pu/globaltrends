@@ -1,14 +1,18 @@
-# download trend data from google
+#' @title Download search trends from Google
+#' 
+#' @keywords internal
+#' 
+#' @importFrom gtrendsR gtrends
 
 .get_trend <- function(geo, term, time = "all") {
-  out <- try(gtrendsR::gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
+  out <- try(gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
   while (inherits(out, "try-error")) {
     if (attr(out, "condition")$message == "widget$status_code == 200 is not TRUE") {
       Sys.sleep(3600)
     } else {
       Sys.sleep(60)
     }
-    out <- try(gtrendsR::gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
+    out <- try(gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
   }
   if (is.null(out$interest_over_time)) {
     return(NULL)

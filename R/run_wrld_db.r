@@ -1,5 +1,4 @@
-#' @title
-#' Download worlwide score data for object batch
+#' @title Download worlwide score data for object batch
 #'
 #' @description
 #' @details
@@ -8,6 +7,7 @@
 #' of class \code{numeric}.
 #'
 #' @seealso
+#'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
 #' to data_wrld.
