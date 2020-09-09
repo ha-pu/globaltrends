@@ -46,12 +46,12 @@ time_obj <- collect(time_obj)
 dict_obj <- collect(dict_obj)
 
 # add new control batch ----
-add_batch(type = "control", keyword = c("gmail", "youtube"), time = "2016-01-01 2019-12-31")
+add_batch(type = "control", keyword = c("gmail", "wikipedia"), time = "2016-01-01 2019-12-31")
 new_batch_c <- max(terms_con$batch)
 filter(batch_terms, batch == new_batch_c & type == "con")
 
 # add new object batch ----
-add_batch(type = "object", keyword = c("facebook", "google"), time = "2016-01-01 2019-12-31")
+add_batch(type = "object", keyword = c("manchester united", "real madrid"), time = "2016-01-01 2019-12-31")
 new_batch_o <- max(terms_obj$batch)
 filter(batch_terms, batch == new_batch_o & type == "obj")
 
