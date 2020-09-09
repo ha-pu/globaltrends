@@ -12,7 +12,10 @@
 #' Message that data was downloaded successfully. Data is uploaded
 #' to data_wrld.
 #'
-#' @example data_wrld(object = 1)
+#' @examples
+#' \dontrun{
+#' data_wrld(object = 1)
+#' }
 #'
 #' @export
 #' @importFrom DBI dbWriteTable

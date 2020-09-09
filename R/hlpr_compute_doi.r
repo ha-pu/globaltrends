@@ -1,7 +1,7 @@
 #' @title Compute gini coefficient
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 #' @importFrom dplyr coalesce
 #' @importFrom ineq ineq
 
@@ -11,7 +11,7 @@
 }
 
 #' @title Compute herfindahl hirschman index
-#' 
+#'
 #' @keywords internal
 
 .compute_hhi <- function(series) {
@@ -20,7 +20,7 @@
 }
 
 #' @title Compute entropy
-#' 
+#'
 #' @keywords internal
 
 .compute_entropy <- function(series) {

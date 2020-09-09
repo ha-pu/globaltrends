@@ -1,9 +1,10 @@
 #' @title Test wheter table has entries for given criteria
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
+#' @importFrom utils head
 
 .test_empty <- function(table, batch_c = NULL, batch_o = NULL, geo = NULL) {
   if (is.character(table)) {

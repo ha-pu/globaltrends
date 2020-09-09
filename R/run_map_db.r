@@ -1,25 +1,25 @@
 #' @title Download data for mapping between control and object batch
-#' 
+#'
 #' @description
 #' @details
-#' 
+#'
 #' @param control Control batch for which the data is downloaded. Object
 #' of class \code{numeric}.
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric}.
 #' @param lst_geo List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{gtrends_base}.
-#' 
+#'
 #' @seealso
-#' 
+#'
 #' @return Message that data was downloaded successfully. Data is uploaded
 #' to data_map.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' data_map(control = 1, object = 1, lst_geo = lst_wdi)
 #' }
-#' 
+#'
 #' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect

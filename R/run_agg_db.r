@@ -9,7 +9,7 @@
 #' is aggregated and DOI is computed.  Object of class \code{numeric}.
 #'
 #' @seealso
-#' 
+#'
 #' @return
 #' Message that data was aggregated successfully. Data is uploaded
 #' to data_agg.
@@ -56,23 +56,21 @@ run_agg <- function(control, object) {
       })
       data <- bind_rows(data, out)
       data$keyword <- str_replace_all(data$keyword, set_names(dict_obj$term1[dict_obj$term1 %in% kw1], dict_obj$term2[dict_obj$term1 %in% kw1]))
-      data <- data %>%
-        group_by(geo, date, keyword, batch_c, batch_o) %>%
-        summarise_if(is.double, sum) %>%
-        ungroup()
+      data <- group_by(data, geo, date, keyword, batch_c, batch_o)
+	  data <- summarise_if(data, is.double, sum)
+	  data <- ungroup(data)
     }
     data <- data[!(data$keyword %in% dict_obj$term2), ]
 
     # compute doi measures
-    out <- data %>%
-      gather(key = "type", value = "score", contains("score")) %>%
-      nest(geo, score) %>%
-      mutate(
+    out <- gather(data, key = "type", value = "score", contains("score"))
+    out <- nest(out, geo, score)
+	out <- mutate(out,
         gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
         hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
         entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
-      ) %>%
-      select(-data)
+      )
+	out <- select(out, -data)
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object)

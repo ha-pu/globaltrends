@@ -6,21 +6,22 @@ Authors@R: person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr
 Author: Harald Puhr [aut, cre]
 Maintainer: Harald Puhr <harald.puhr@wu.ac.at>
 Description: The package downloads and computes the degree of internationalization for search terms from GoogleTrends.
-License:  MIT + file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-	DBI,
-	dbplyr,
-    dplyr,
-	forecast,
-	gtrendsR,
-	ineq,
-	lubridate,
-    purrr,
-	RSQlite
-	stats,
-	stringr,
-	tibble,
-    tidyr,
-	WDI
+  DBI,
+  dbplyr,
+  dplyr,
+  forecast,
+  gtrendsR,
+  ineq,
+  lubridate,
+  purrr,
+  RSQLite,
+  stats,
+  stringr,
+  tibble,
+  tidyr,
+  WDI
+RoxygenNote: 7.1.0

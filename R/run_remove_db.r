@@ -1,20 +1,20 @@
 #' @title Remove data from database tables
-#' 
+#'
 #' @description
 #' @details
-#' 
+#'
 #' @param table Database table from which the batch should be removed.  Object
 #' of class \code{character}.
 #' @param batch_c Control batch for which the data is removed Object
 #' of class \code{numeric}.
 #' @param batch_o Object batch for which the data is removed Object
 #' of class \code{numeric}.
-#' 
+#'
 #' @seealso
-#' 
+#'
 #' @return Message that data was removed successfully. Data is removed
 #' from database.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' run_remove(table = "batch_terms", batch_c = 1)

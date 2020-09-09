@@ -1,23 +1,22 @@
 #' @title Initialize database
-#' 
+#'
 #' @description
 #' @details
 #' @seealso
-#' 
+#'
 #' @return Database is created.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' run_init()
 #' }
-#' 
+#'
 #' @export
 #' @importFrom DBI dbConnect
 #' @importFrom DBI dbDisconnect
 #' @importFrom DBI dbExecute
-#' @importFrom dbplyr src_dbi
 #' @importFrom dplyr src_sqlite
-#' @importFrom RSQlite SQLite
+#' @importFrom RSQLite SQLite
 
 run_init <- function() {
 
@@ -130,9 +129,6 @@ run_init <- function() {
   batch INTEGER
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
-
-  # show database
-  src_dbi(gtrends_db)
 
   # disconnect from db ----
   dbDisconnect(gtrends_db)

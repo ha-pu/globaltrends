@@ -9,7 +9,7 @@
 #' Refers to lists generated in \code{gtrends_base}.
 #'
 #' @seealso
-#' 
+#'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
 #' to data_control.

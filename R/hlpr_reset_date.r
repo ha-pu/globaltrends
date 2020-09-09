@@ -1,15 +1,15 @@
 #' @title Reset date
-#' 
+#'
 #' @keywords internal
-#' 
-#' @importFrom dpylr group_by
-#' @importFrom dpylr mutate
-#' @importFrom dpylr select
-#' @importFrom dpylr summarise
-#' @importFrom dpylr ungroup
+#'
+#' @importFrom dplyr group_by
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom dplyr summarise
+#' @importFrom dplyr ungroup
 #' @importFrom lubridate month
 #' @importFrom lubridate year
-#' @importFrom dpylr lubridate ymd
+#' @importFrom lubridate ymd
 #' @importFrom stringr str_c
 
 .reset_date <- function(data) {

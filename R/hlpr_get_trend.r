@@ -1,8 +1,9 @@
 #' @title Download search trends from Google
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 #' @importFrom gtrendsR gtrends
+#' @importFrom stats runif
 
 .get_trend <- function(geo, term, time = "all") {
   out <- try(gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))

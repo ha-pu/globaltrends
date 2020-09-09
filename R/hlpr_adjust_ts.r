@@ -1,7 +1,7 @@
 #' @title Adjust time series
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 #' @importFrom forecast seasadj
 #' @importFrom lubridate month
 #' @importFrom lubridate year

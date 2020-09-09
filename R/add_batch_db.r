@@ -1,5 +1,4 @@
-#' @title
-#' Add keyword batches to data_con and data_obj
+#' @title Add keyword batches to data_con and data_obj
 #'
 #' @description
 #' @details
@@ -17,6 +16,7 @@
 #' uploaded to batch_terms and batch_time.
 #'
 #' @examples
+#' \dontrun{
 #' add_batch(
 #'   type = "control", keyword = c("gmail", "youtube"), time =
 #'     "2016-01-01 2019-12-31"
@@ -25,6 +25,7 @@
 #'   type = "object", keyword = c("facebook", "google"), time =
 #'     "2016-01-01 2019-12-31"
 #' )
+#' }
 #' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
