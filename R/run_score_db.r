@@ -37,9 +37,9 @@
 #' @importFrom purrr map
 #' @importFrom stringr str_c
 #' @importFrom stringr str_replace
-#' @importFrom tidyr gather
 #' @importFrom tidyr nest
-#' @importFrom tidyr spread
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
 run_score <- function(control, object, lst_geo = lst_wdi) {
@@ -68,58 +68,58 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
           qry_con <- mutate(qry_con, data = map(data, .adjust_ts))
           qry_con <- unnest(qry_con, data)
           qry_con <- mutate(qry_con,
-              hits_trd = case_when(
-                hits_trd < 0 & hits_sad < 0 ~ 0.1,
-                hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
-                TRUE ~ hits_trd
-              ),
-              hits_sad = case_when(
-                hits_sad < 0 & hits_trd < 0 ~ 0.1,
-                hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
-                TRUE ~ hits_sad
-              )
+            hits_trd = case_when(
+              hits_trd < 0 & hits_sad < 0 ~ 0.1,
+              hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
+              TRUE ~ hits_trd
+            ),
+            hits_sad = case_when(
+              hits_sad < 0 & hits_trd < 0 ~ 0.1,
+              hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
+              TRUE ~ hits_sad
             )
-	  qry_obj <- nest(qry_obj, data = c(date, hits))
+          )
+          qry_obj <- nest(qry_obj, data = c(date, hits))
           qry_obj <- mutate(qry_obj, data = map(data, .adjust_ts))
           qry_obj <- unnest(qry_obj, data)
           qry_obj <- mutate(qry_obj,
-              hits_trd = case_when(
-                hits_trd < 0 & hits_sad < 0 ~ 0.1,
-                hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
-                TRUE ~ hits_trd
-              ),
-              hits_sad = case_when(
-                hits_sad < 0 & hits_trd < 0 ~ 0.1,
-                hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
-                TRUE ~ hits_sad
-              )
+            hits_trd = case_when(
+              hits_trd < 0 & hits_sad < 0 ~ 0.1,
+              hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
+              TRUE ~ hits_trd
+            ),
+            hits_sad = case_when(
+              hits_sad < 0 & hits_trd < 0 ~ 0.1,
+              hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
+              TRUE ~ hits_sad
             )
+          )
           qry_map <- nest(qry_map, data = c(date, hits))
           qry_map <- mutate(qry_map, data = map(data, .adjust_ts))
           qry_map <- unnest(qry_map, data)
           qry_map <- mutate(qry_map,
-              hits_trd = case_when(
-                hits_trd < 0 & hits_sad < 0 ~ 0.1,
-                hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
-                TRUE ~ hits_trd
-              ),
-              hits_sad = case_when(
-                hits_sad < 0 & hits_trd < 0 ~ 0.1,
-                hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
-                TRUE ~ hits_sad
-              )
+            hits_trd = case_when(
+              hits_trd < 0 & hits_sad < 0 ~ 0.1,
+              hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
+              TRUE ~ hits_trd
+            ),
+            hits_sad = case_when(
+              hits_sad < 0 & hits_trd < 0 ~ 0.1,
+              hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
+              TRUE ~ hits_sad
             )
+          )
         }
-        qry_con <- gather(qry_con, "key", "value", contains("hits"))
-        qry_obj <- gather(qry_obj, "key", "value", contains("hits"))
-        qry_map <- gather(qry_map, "key", "value", contains("hits"))
+        qry_con <- pivot_longer(qry_con, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_obj <- pivot_longer(qry_qry, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_map <- pivot_longer(qry_map, cols = contains("hits"), names_to = "key", values_to = "value")
 
         # set to benchmark
         tmp_con <- inner_join(qry_map, qry_con, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_c"))
         tmp_con <- mutate(tmp_con,
-            value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
-            value_c = case_when(value_c == 0 ~ 1, TRUE ~ value_c)
-          )
+          value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
+          value_c = case_when(value_c == 0 ~ 1, TRUE ~ value_c)
+        )
         tmp_con <- mutate(tmp_con, benchmark = coalesce(value_m / value_c, 0))
         tmp_con <- select(tmp_con, geo, date, key, benchmark)
         tmp_con <- inner_join(tmp_con, qry_con, by = c("geo", "date", "key"))
@@ -128,9 +128,9 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
 
         tmp_obj <- inner_join(qry_map, qry_obj, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_o"))
         tmp_obj <- mutate(tmp_obj,
-            value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
-            value_o = case_when(value_o == 0 ~ 1, TRUE ~ value_o)
-          )
+          value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
+          value_o = case_when(value_o == 0 ~ 1, TRUE ~ value_o)
+        )
         tmp_obj <- mutate(tmp_obj, benchmark = coalesce(value_m / value_o, 0))
         tmp_obj <- select(tmp_obj, geo, date, key, benchmark)
         tmp_obj <- inner_join(tmp_obj, qry_obj, by = c("geo", "date", "key"))
@@ -143,11 +143,11 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         data_con_agg <- ungroup(data_con_agg)
         data_obj_agg <- left_join(tmp_obj, data_con_agg, by = c("geo", "date", "key"))
         data_obj_agg <- mutate(data_obj_agg,
-            score = coalesce(value / value_c, 0),
-            key = str_replace(key, "hits_", "score_")
-          )
+          score = coalesce(value / value_c, 0),
+          key = str_replace(key, "hits_", "score_")
+        )
         data_obj_agg <- select(data_obj_agg, geo, date, keyword, key, score)
-        data_score <- spread(data_obj_agg, key, score, fill = 0)
+        data_score <- pivot_wider(data_obj_agg, names_from = key, values_from = score, values_fill = 0)
         out <- mutate(data_score, batch_c = control, batch_o = object)
         dbWriteTable(conn = gtrends_db, name = "data_score", value = out, append = TRUE)
       }

@@ -6,7 +6,7 @@
 #' @param type Type batch that should be added. Object of class \code{character}
 #'  of value "control" or "object".
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} containing the keyword.
+#' \code{character} containing a maximum of five keywords.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
 #'
@@ -34,6 +34,7 @@
 #' @importFrom tibble tibble
 
 add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
+  if (length(keyword) > 5) error("'keyword' allows a maxium of five elements.\nYou supplied more than five elements.")
   if (type == "control") {
     if (nrows(terms_con) == 0) {
       new_batch <- 1
@@ -68,5 +69,7 @@ add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
     time_obj <- collect(time_obj)
     assign("time_obj", time_obj, envir = .GlobalEnv)
     message(str_c("New object batch", new_batch, "created.", sep = " "))
+  } else {
+    error("'type' allows only 'control' or 'object'.\nYuo supplied another value.")
   }
 }

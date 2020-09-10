@@ -48,14 +48,14 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Table 'batch_time' has been created.")
-  
+
   # dict_obj
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE dict_obj (
   term1 TEXT,
   term2 TEXT
           )")
   message("Table 'dict_obj' has been created.")
-  
+
   # data_geo
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_geo (
   name TEXT,
@@ -78,7 +78,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_con ON data_con (batch);")
   message("Table 'batch_terms' has been created.")
-  
+
   # data_obj
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_obj (
   geo TEXT,
@@ -89,7 +89,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_obj ON data_obj (batch);")
   message("Table 'data_con' has been created.")
-  
+
   # data_map
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_map (
   geo TEXT,
@@ -101,7 +101,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_map ON data_map (batch_c, batch_o);")
   message("Table 'data_map' has been created.")
-  
+
   # data_score
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_score (
   geo TEXT,
@@ -115,7 +115,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Table 'data_score' has been created.")
-  
+
   # data_agg
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_agg (
   keyword TEXT,
@@ -130,7 +130,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
   message("Table 'data_agg' has been created.")
-  
+
   # data_wrld
   dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_wrld (
   keyword TEXT,
@@ -140,7 +140,7 @@ run_init <- function() {
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
   message("Table 'data_wrld' has been created.")
-  
+
   # disconnect from db ----
   disconnect_db()
 }
