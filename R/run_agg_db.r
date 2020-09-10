@@ -3,10 +3,12 @@
 #' @description
 #' @details
 #'
-#' @param control Control batch for which the search score used. Object
+#' @param control Control batch for which the search score is used. Object
 #' of class \code{numeric}.
 #' @param object Object batch for which the keyword-country data
 #' is aggregated and DOI is computed.  Object of class \code{numeric}.
+#' @param lst_geo List of locations for which the search score is used.
+#' Object of class \code{character}.
 #'
 #' @seealso
 #'
@@ -16,7 +18,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_agg(control = 1, object = 1)
+#' data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
 #' }
 #'
 #' @export
@@ -37,9 +39,10 @@
 #' @importFrom tidyr gather
 #' @importFrom tidyr nest
 
-run_agg <- function(control, object) {
-  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object)) {
+run_agg <- function(control, object, lst_geo = "lst_wdi") {
+  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
+    data <- filter(data, geo %in% pull(collect(filter(data_geo, type == lst_geo)), geo))
 
     # run dict replace
     if (any(data$keyword %in% dict_obj$term1)) {
@@ -73,7 +76,7 @@ run_agg <- function(control, object) {
 	out <- select(out, -data)
 
     # write data
-    out <- mutate(out, batch_c = control, batch_o = object)
+    out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
     dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
   }
   message(str_c("run_agg | control: ", control, " | object: ", object, " complete [", object, "|", max(terms_obj$batch), "]"))

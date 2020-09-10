@@ -4,14 +4,17 @@
 \alias{run_agg}
 \title{Aggregate keyword-country data and compute DOI}
 \usage{
-run_agg(control, object)
+run_agg(control, object, lst_geo = "lst_wdi")
 }
 \arguments{
-\item{control}{Control batch for which the search score used. Object
+\item{control}{Control batch for which the search score is used. Object
 of class \code{numeric}.}
 
 \item{object}{Object batch for which the keyword-country data
 is aggregated and DOI is computed.  Object of class \code{numeric}.}
+
+\item{lst_geo}{List of locations for which the search score is used.
+Object of class \code{character}.}
 }
 \value{
 Message that data was aggregated successfully. Data is uploaded
@@ -25,7 +28,7 @@ Aggregate keyword-country data and compute DOI
 }
 \examples{
 \dontrun{
-data_agg(control = 1, object = 1)
+data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
 }
 
 }
