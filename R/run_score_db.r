@@ -123,7 +123,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         tmp_con <- mutate(tmp_con, benchmark = coalesce(value_m / value_c, 0))
         tmp_con <- select(tmp_con, geo, date, key, benchmark)
         tmp_con <- inner_join(tmp_con, qry_con, by = c("geo", "date", "key"))
-        tmp_con <- mutate(tmp_con, value = value * benchmark) %>%
+        tmp_con <- mutate(tmp_con, value = value * benchmark)
         tmp_con <- select(tmp_con, -benchmark)
 
         tmp_obj <- inner_join(qry_map, qry_obj, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_o"))
