@@ -39,4 +39,5 @@
 
   # upload data ----
   dbWriteTable(conn = gtrends_db, name = "data_geo", value = bind_rows(lst_wdi, lst_usa), append = TRUE)
+  message("Data entered into 'data_geo'.")
 }
