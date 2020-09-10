@@ -64,7 +64,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
 
         if (min(nrow(count(qry_con, date)), nrow(count(qry_obj, date)), nrow(count(qry_map, date))) >= 24) {
           # adjust to time series and impute negative values
-          qry_con <- nest(qry_con, date, hits)
+          qry_con <- nest(qry_con, data = c(date, hits))
           qry_con <- mutate(qry_con, data = map(data, .adjust_ts))
           qry_con <- unnest(qry_con, data)
           qry_con <- mutate(qry_con,
@@ -79,7 +79,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
                 TRUE ~ hits_sad
               )
             )
-		  qry_obj <- nest(qry_obj, date, hits)
+	  qry_obj <- nest(qry_obj, data = c(date, hits))
           qry_obj <- mutate(qry_obj, data = map(data, .adjust_ts))
           qry_obj <- unnest(qry_obj, data)
           qry_obj <- mutate(qry_obj,
@@ -94,7 +94,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
                 TRUE ~ hits_sad
               )
             )
-		  qry_map <- nest(qry_map, date, hits)
+          qry_map <- nest(qry_map, data = c(date, hits))
           qry_map <- mutate(qry_map, data = map(data, .adjust_ts))
           qry_map <- unnest(qry_map, data)
           qry_map <- mutate(qry_map,
@@ -124,7 +124,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         tmp_con <- select(tmp_con, geo, date, key, benchmark)
         tmp_con <- inner_join(tmp_con, qry_con, by = c("geo", "date", "key"))
         tmp_con <- mutate(tmp_con, value = value * benchmark)
-        tmp_con <- select(tmp_con, -benchmark)
+        tmp_con <- select(tmp_con, geo, date, key, keyword, value)
 
         tmp_obj <- inner_join(qry_map, qry_obj, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_o"))
         tmp_obj <- mutate(tmp_obj,
@@ -135,7 +135,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         tmp_obj <- select(tmp_obj, geo, date, key, benchmark)
         tmp_obj <- inner_join(tmp_obj, qry_obj, by = c("geo", "date", "key"))
         tmp_obj <- mutate(tmp_obj, value = value * benchmark)
-        tmp_obj <- select(tmp_obj, -benchmark)
+        tmp_obj <- select(tmp_obj, geo, date, key, keyword, value)
 
         # compute score
         data_con_agg <- group_by(tmp_con, geo, date, key)
