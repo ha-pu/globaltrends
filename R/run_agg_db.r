@@ -67,7 +67,7 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") {
 
     # compute doi measures
     out <- gather(data, key = "type", value = "score", contains("score"))
-    out <- nest(out, geo, score)
+    out <- nest(out, data = c(geo, score))
 	out <- mutate(out,
         gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
         hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
