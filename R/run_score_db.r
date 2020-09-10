@@ -111,7 +111,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
           )
         }
         qry_con <- pivot_longer(qry_con, cols = contains("hits"), names_to = "key", values_to = "value")
-        qry_obj <- pivot_longer(qry_qry, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_obj <- pivot_longer(qry_obj, cols = contains("hits"), names_to = "key", values_to = "value")
         qry_map <- pivot_longer(qry_map, cols = contains("hits"), names_to = "key", values_to = "value")
 
         # set to benchmark
