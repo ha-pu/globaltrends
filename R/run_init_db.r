@@ -117,7 +117,8 @@ run_init <- function() {
   hhi REAL,
   entropy REAL,
   batch_c INTEGER,
-  batch_o INTEGER
+  batch_o INTEGER,
+  lst_geo TEXT
           )")
   dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
 
