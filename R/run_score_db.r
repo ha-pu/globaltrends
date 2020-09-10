@@ -43,7 +43,7 @@
 #' @importFrom tidyr unnest
 
 run_score <- function(control, object, lst_geo = lst_wdi) {
-  map(lst_geo, ~ {
+  x <- map(lst_geo, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
