@@ -38,10 +38,9 @@
 #' @importFrom tidyr nest
 
 run_agg <- function(control, object, lst_geo = "lst_wdi") {
-  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, )) {
-    lst_geo <- collect(filter(data_geo, type == "lst_geo"))
-    lst_geo <- lst_geo$geo
-    data <- collect(filter(data_score, batch_c == control & batch_o == object & geo %in% lst_geo))
+  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
+    data <- collect(filter(data_score, batch_c == control & batch_o == object))
+    data <- filter(data, geo %in% pull(collect(filter(data_geo, type == lst_geo)), geo))
 
     # run dict replace
     if (any(data$keyword %in% dict_obj$term1)) {
