@@ -3,10 +3,12 @@
 #' @description
 #' @details
 #'
-#' @param control Control batch for which the search score used. Object
+#' @param control Control batch for which the search score is used. Object
 #' of class \code{numeric}.
 #' @param object Object batch for which the keyword-country data
 #' is aggregated and DOI is computed.  Object of class \code{numeric}.
+#' @param lst_geo List of locations for which the search score is used.
+#' Object of class \code{character}.
 #'
 #' @seealso
 #'
@@ -16,7 +18,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_agg(control = 1, object = 1)
+#' data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
 #' }
 #'
 #' @export

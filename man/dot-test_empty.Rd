@@ -4,7 +4,7 @@
 \alias{.test_empty}
 \title{Test wheter table has entries for given criteria}
 \usage{
-.test_empty(table, batch_c = NULL, batch_o = NULL, geo = NULL)
+.test_empty(table, batch_c = NULL, batch_o = NULL, geo = NULL, lst_geo = NULL)
 }
 \description{
 Test wheter table has entries for given criteria

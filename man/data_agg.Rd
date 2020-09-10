@@ -21,6 +21,8 @@ A tibble with 288 rows and 8 variables:
   search score from \code{data_score}}
   \item{batch_c}{\code{integer} number of control batch}
   \item{batch_o}{\code{integer} number of object batch}
+  \item{lst_geo}{\code{character} list of locations for which the search 
+  score is used}
 }
 }
 \usage{
