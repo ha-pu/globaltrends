@@ -142,5 +142,5 @@ run_init <- function() {
   message("Table 'data_wrld' has been created.")
 
   # disconnect from db ----
-  disconnect_db()
+  disconnect_db(db = gtrends_db)
 }
