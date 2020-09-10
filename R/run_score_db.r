@@ -135,7 +135,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         tmp_obj <- select(tmp_obj, geo, date, key, benchmark)
         tmp_obj <- inner_join(tmp_obj, qry_obj, by = c("geo", "date", "key"))
         tmp_obj <- mutate(tmp_obj, value = value * benchmark)
-        tmp_obj <- select(-benchmark)
+        tmp_obj <- select(tmp_obj, -benchmark)
 
         # compute score
         data_con_agg <- group_by(tmp_con, geo, date, key)
