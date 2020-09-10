@@ -11,7 +11,7 @@ add_batch(type, keyword, time = "2010-01-01 2020-07-31")
 of value "control" or "object".}
 
 \item{keyword}{Keywords that should be added as batch. Vector of class
-\code{character} containing the keyword.}
+\code{character} containing a maximum of five keywords.}
 
 \item{time}{Time frame for which the batch data should be loaded. Object of
 class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".}

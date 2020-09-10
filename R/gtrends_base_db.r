@@ -91,5 +91,5 @@ gtrends_base <- function() {
   # write objects to .GlobalEnv ----
   lst_object <- list(gtrends_db, data_geo, batch_terms, batch_time, data_agg, data_con, data_map, data_obj, data_score, data_wrld, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
   names(lst_object) <- list("gtrends_db", "data_geo", "batch_terms", "batch_time", "data_agg", "data_con", "data_map", "data_obj", "data_score", "data_wrld", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
-  list2env(lst_object, envir = .GlobalEnv)
+  invisible(list2env(lst_object, envir = .GlobalEnv))
 }

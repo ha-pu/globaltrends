@@ -36,8 +36,8 @@
 #' @importFrom purrr set_names
 #' @importFrom stringr str_c
 #' @importFrom stringr str_replace_all
-#' @importFrom tidyr gather
 #' @importFrom tidyr nest
+#' @importFrom tidyr pivot_longer
 
 run_agg <- function(control, object, lst_geo = "lst_wdi") {
   if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
@@ -60,20 +60,20 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") {
       data <- bind_rows(data, out)
       data$keyword <- str_replace_all(data$keyword, set_names(dict_obj$term1[dict_obj$term1 %in% kw1], dict_obj$term2[dict_obj$term1 %in% kw1]))
       data <- group_by(data, geo, date, keyword, batch_c, batch_o)
-	  data <- summarise_if(data, is.double, sum)
-	  data <- ungroup(data)
+      data <- summarise_if(data, is.double, sum)
+      data <- ungroup(data)
     }
     data <- data[!(data$keyword %in% dict_obj$term2), ]
 
     # compute doi measures
-    out <- gather(data, key = "type", value = "score", contains("score"))
-    out <- nest(out, geo, score)
-	out <- mutate(out,
-        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
-        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
-        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
-      )
-	out <- select(out, -data)
+    out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
+    out <- nest(out, data = c(geo, score))
+    out <- mutate(out,
+      gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
+      hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
+      entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
+    )
+    out <- select(out, -data)
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
