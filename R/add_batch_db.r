@@ -35,8 +35,11 @@
 
 add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
   if (type == "control") {
-    new_batch <- max(terms_con$batch) + 1
-    if (new_batch == -Inf) new_batch <- 1
+    if (nrows(terms_con) == 0) {
+      new_batch <- 1
+    } else {
+      new_batch <- max(terms_con$batch) + 1
+    }
     data <- tibble(batch = new_batch, keyword, type = "con")
     dbWriteTable(conn = gtrends_db, name = "batch_terms", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "con")
@@ -49,8 +52,11 @@ add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
     assign("time_con", time_con, envir = .GlobalEnv)
     message(str_c("New control batch", new_batch, "created.", sep = " "))
   } else if (type == "object") {
-    new_batch <- max(terms_obj$batch) + 1
-    if (new_batch == -Inf) new_batch <- 1
+    if (nrows(terms_obj) == 0) {
+      new_batch <- 1
+    } else {
+      new_batch <- max(terms_obj$batch) + 1
+    }
     data <- tibble(batch = new_batch, keyword, type = "obj")
     dbWriteTable(conn = gtrends_db, name = "batch_terms", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "obj")
