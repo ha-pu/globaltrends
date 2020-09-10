@@ -24,8 +24,8 @@
 #' @keywords internal
 
 .compute_entropy <- function(series) {
-  out <- coalesce(1 / ineq(series, parameter = 1, type = "entropy"), 0)
-  if (out == Inf) {
+  out <- coalesce(-1 * ineq(series, parameter = 1, type = "entropy"), 0)
+  if (out == -Inf) {
     out <- 0
   }
   return(out)
