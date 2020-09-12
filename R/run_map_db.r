@@ -27,11 +27,11 @@
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 #' @importFrom stats aggregate
-#' @importFrom purrr map
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 
 run_map <- function(control, object, lst_geo = lst_wdi) {
-  x <- map(lst_geo, ~ {
+  walk(lst_geo, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_con, batch == control & geo == .x)
       qry_con <- collect(qry_con)

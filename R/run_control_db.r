@@ -22,13 +22,13 @@
 #' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
-#' @importFrom purrr map
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 
 run_control <- function(control, lst_geo = lst_wdi) {
   terms <- terms_con$keyword[terms_con$batch == control]
   time <- time_con$time[time_con$batch == control]
-  x <- map(lst_geo, ~ {
+  walk(lst_geo, ~ {
     if (.test_empty(table = "data_con", batch_c = control, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)
       if (!is.null(out)) {

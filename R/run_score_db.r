@@ -34,7 +34,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom lubridate as_date
-#' @importFrom purrr map
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 #' @importFrom stringr str_replace
 #' @importFrom tidyr nest
@@ -43,7 +43,7 @@
 #' @importFrom tidyr unnest
 
 run_score <- function(control, object, lst_geo = lst_wdi) {
-  x <- map(lst_geo, ~ {
+  walk(lst_geo, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
