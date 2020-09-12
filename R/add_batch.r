@@ -11,7 +11,10 @@
 #' @param type Type batch that should be added. Object of class \code{character}
 #'  of value "control" or "object".
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} containing a maximum of five keywords.
+#' \code{character} or a \code{list} of \code{character} element. When a 
+#' \code{character} vector contains more than five keywords, the vector is 
+#' split into five-keyword batches. A \code{list} must contain 
+#' \code{character} elements of length five or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
 #'
