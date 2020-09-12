@@ -1,5 +1,10 @@
 #' @title Add keyword batches to data_con and data_obj
 #'
+#' @aliases
+#' add_batch
+#' add_batch.character
+#' add_batch.list
+#' 
 #' @description
 #' @details
 #'
@@ -33,8 +38,38 @@
 #' @importFrom stringr str_c
 #' @importFrom tibble tibble
 
-add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
-  if (length(keyword) > 5) stop("Error: 'keyword' allows a maxium of five elements.\nYou supplied more than five elements.")
+add_batch <- function(type, keyword, time) UseMethod("add_batch", keyword)
+
+#' @rdname add_batch
+#' @method add_batch character
+#' @export
+
+add_batch.character <- function(type, keyword, time = "2010-01-01 2020-07-31") {
+  if (length(keyword) > 5) {
+    keyword <- split(keyword, ceiling(seq_along(keyword)/5))
+  } else {
+    keyword <- list(keyword)
+  }
+  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time))
+  new_batches <- unname(new_batches)
+  return(new_batches)
+}
+
+#' @rdname add_batch
+#' @method add_batch list
+#' @export
+
+add_batch.list <- function(type, keyword, time = "2010-01-01 2020-07-31") {
+  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time))
+  new_batches <- unname(new_batches)
+  return(new_batches)
+}
+
+#' @title Add batch of keywords
+#' @keywords internal
+
+.add_keyword_batch <- function(type, keyword, time) {
+  if (length(keyword) > 5) stop("Error: Lenght of list elements must not exceed 5.\nYou provided a list elment with length > 5.")
   if (type == "control") {
     if (nrow(terms_con) == 0) {
       new_batch <- 1
@@ -52,6 +87,7 @@ add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
     time_con <- collect(time_con)
     assign("time_con", time_con, envir = .GlobalEnv)
     message(str_c("New control batch", new_batch, "created.", sep = " "))
+    return(new_batch)
   } else if (type == "object") {
     if (nrow(terms_obj) == 0) {
       new_batch <- 1
@@ -69,6 +105,7 @@ add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
     time_obj <- collect(time_obj)
     assign("time_obj", time_obj, envir = .GlobalEnv)
     message(str_c("New object batch", new_batch, "created.", sep = " "))
+    return(new_batch)
   } else {
     stop("Error: 'type' allows only 'control' or 'object'.\nYuo supplied another value.")
   }
