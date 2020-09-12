@@ -57,7 +57,7 @@ gtrends_base <- function() {
   gtrends_db_file <- "db/gtrends.sqlite"
   gtrends_db <- dbConnect(SQLite(), gtrends_db_file)
   message("Successfully connected to database.")
-  
+
   # get tables ----
   data_geo <- tbl(gtrends_db, "data_geo")
   batch_terms <- tbl(gtrends_db, "batch_terms")

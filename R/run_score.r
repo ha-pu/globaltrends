@@ -56,7 +56,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         qry_con <- mutate(qry_con, date = as_date(date))
         qry_obj <- mutate(qry_obj, date = as_date(date))
         qry_map <- mutate(qry_map, date = as_date(date))
-        
+
         # adapt time series frequency
         qry_con <- .reset_date(qry_con)
         qry_obj <- .reset_date(qry_obj)

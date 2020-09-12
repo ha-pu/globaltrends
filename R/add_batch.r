@@ -4,7 +4,7 @@
 #' add_batch
 #' add_batch.character
 #' add_batch.list
-#' 
+#'
 #' @description
 #' @details
 #'
@@ -46,7 +46,7 @@ add_batch <- function(type, keyword, time) UseMethod("add_batch", keyword)
 
 add_batch.character <- function(type, keyword, time = "2010-01-01 2020-07-31") {
   if (length(keyword) > 5) {
-    keyword <- split(keyword, ceiling(seq_along(keyword)/5))
+    keyword <- split(keyword, ceiling(seq_along(keyword) / 5))
   } else {
     keyword <- list(keyword)
   }
