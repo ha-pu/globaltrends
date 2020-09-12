@@ -59,6 +59,6 @@ run_map <- function(control, object, lst_geo = lst_wdi) {
         }
       }
     }
-    message(str_c("Successfully downloaded mapping data | control: ", control, " | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully downloaded mapping data | control: ", control, " | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }

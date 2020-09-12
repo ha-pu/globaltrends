@@ -79,5 +79,5 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") {
     out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
     dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
   }
-  message(str_c("Successfully computed DOI | control: ", control, " | object: ", object, " complete [", object, "|", max(terms_obj$batch), "]"))
+  message(str_c("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "|", max(terms_obj$batch), "]"))
 }

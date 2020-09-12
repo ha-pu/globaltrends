@@ -36,6 +36,6 @@ run_control <- function(control, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_con", value = out, append = TRUE)
       }
     }
-    message(str_c("Successfully downloaded control data | control: ", control, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully downloaded control data | control: ", control, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }

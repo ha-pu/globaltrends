@@ -32,7 +32,7 @@ run_wrld <- function(object) {
     out <- map_dfr(terms, ~ {
       out <- .get_trend(geo = "", term = .x, time = time)
       out <- select(out, -geo)
-      message(str_c("Successfully downloaded worldwide data | term: ", which(terms == .x), "/", length(terms), " complete [", object, "|", max(terms_obj$batch), "]"))
+      message(str_c("Successfully downloaded worldwide data | term: ", which(terms == .x), "/", length(terms), " [", object, "|", max(terms_obj$batch), "]"))
       return(out)
     })
     out <- mutate(out, batch = object)
