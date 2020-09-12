@@ -152,6 +152,6 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
-    message(str_c("run_score | control: ", control, " | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully computed search score | control: ", control, " | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }

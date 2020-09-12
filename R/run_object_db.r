@@ -36,6 +36,6 @@ run_object <- function(object, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
       }
     }
-    message(str_c("run_object | batch: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully downloaded object data | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }
