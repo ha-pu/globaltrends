@@ -4,7 +4,7 @@
 \alias{disconnect_db}
 \title{Disconnect from database}
 \usage{
-disconnect_db()
+disconnect_db(db = gtrends_db)
 }
 \value{
 Message that disconnection was successful.
