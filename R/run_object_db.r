@@ -34,6 +34,9 @@ run_object <- function(object, lst_geo = lst_wdi) {
       if (!is.null(out)) {
         out <- mutate(out, batch = object)
         dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
+      } else {
+        out <- tibble(geo = .x, keyword = terms, batch = object)
+        dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
       }
     }
     message(str_c("Successfully downloaded object data | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
