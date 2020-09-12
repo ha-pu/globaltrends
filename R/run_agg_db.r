@@ -73,11 +73,11 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") {
       hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
       entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
     )
-    out <- select(out, -data)
+    out <- select(out, date, keyword, type, gini, hhi, entropy)
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
     dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
   }
-  message(str_c("run_agg | control: ", control, " | object: ", object, " complete [", object, "|", max(terms_obj$batch), "]"))
+  message(str_c("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "|", max(terms_obj$batch), "]"))
 }

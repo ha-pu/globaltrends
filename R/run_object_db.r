@@ -22,20 +22,24 @@
 #' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
-#' @importFrom purrr map
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 
 run_object <- function(object, lst_geo = lst_wdi) {
   terms <- terms_obj$keyword[terms_obj$batch == object]
   time <- time_obj$time[time_obj$batch == object]
-  x <- map(lst_geo, ~ {
+  walk(lst_geo, ~ {
     if (.test_empty(table = "data_obj", batch_o = object, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)
-      if (!is.null(out)) {
-        out <- mutate(out, batch = object)
-        dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
+      if (is.null(out)) {
+        start <- as_date(str_split(time, pattern = " ")[[1]][[1]])
+        end <- as_date(str_split(time, pattern = " ")[[1]][[2]])
+        out <- tibble(geo = .x, keyword = terms, hits = 0)
+        out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
+      out <- mutate(out, batch = object)
+      dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
     }
-    message(str_c("run_object | batch: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully downloaded object data | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }

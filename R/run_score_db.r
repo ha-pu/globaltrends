@@ -34,7 +34,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom lubridate as_date
-#' @importFrom purrr map
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 #' @importFrom stringr str_replace
 #' @importFrom tidyr nest
@@ -43,7 +43,7 @@
 #' @importFrom tidyr unnest
 
 run_score <- function(control, object, lst_geo = lst_wdi) {
-  x <- map(lst_geo, ~ {
+  walk(lst_geo, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
@@ -56,8 +56,8 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         qry_con <- mutate(qry_con, date = as_date(date))
         qry_obj <- mutate(qry_obj, date = as_date(date))
         qry_map <- mutate(qry_map, date = as_date(date))
-
-        # test for time series
+        
+        # adapt time series frequency
         qry_con <- .reset_date(qry_con)
         qry_obj <- .reset_date(qry_obj)
         qry_map <- .reset_date(qry_map)
@@ -152,6 +152,6 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
-    message(str_c("run_score | control: ", control, " | object: ", object, " | geo: ", .x, " complete [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(str_c("Successfully computed search score | control: ", control, " | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
 }

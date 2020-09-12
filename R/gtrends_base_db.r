@@ -56,7 +56,8 @@ gtrends_base <- function() {
   # connect to db ----
   gtrends_db_file <- "db/gtrends.sqlite"
   gtrends_db <- dbConnect(SQLite(), gtrends_db_file)
-
+  message("Successfully connected to database.")
+  
   # get tables ----
   data_geo <- tbl(gtrends_db, "data_geo")
   batch_terms <- tbl(gtrends_db, "batch_terms")
@@ -92,4 +93,5 @@ gtrends_base <- function() {
   lst_object <- list(gtrends_db, data_geo, batch_terms, batch_time, data_agg, data_con, data_map, data_obj, data_score, data_wrld, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
   names(lst_object) <- list("gtrends_db", "data_geo", "batch_terms", "batch_time", "data_agg", "data_con", "data_map", "data_obj", "data_score", "data_wrld", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
   invisible(list2env(lst_object, envir = .GlobalEnv))
+  message("Successfully exported all objects to .GlobalEnv.")
 }
