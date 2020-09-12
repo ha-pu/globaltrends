@@ -30,5 +30,7 @@
     out <- nrow(out)
     out <- out == 0
     return(out)
+  } else {
+    error("'table' must be an object of type character.\nYou supplied an object of a different type.")
   }
 }

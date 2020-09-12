@@ -66,6 +66,8 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
         .remove_data_wrld(batch = batch_o)
       }
     }
+  } else {
+    error("'table' must be an object of type character.\nYou supplied an object of a different type.")
   }
 }
 
