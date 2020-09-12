@@ -56,12 +56,6 @@ run_score <- function(control, object, lst_geo = lst_wdi) {
         qry_con <- mutate(qry_con, date = as_date(date))
         qry_obj <- mutate(qry_obj, date = as_date(date))
         qry_map <- mutate(qry_map, date = as_date(date))
-
-        # replace NULL hits export
-        if (every(qry_obj$date, is.na)) {
-          qry_obj <- tibble(geo = .x, keyword = qry_obj$keyword, hits = 0, batch = object)
-          qry_obj <- expand_grid(qry_obj, unique(select(qry_con, date)))
-        }
         
         # adapt time series frequency
         qry_con <- .reset_date(qry_con)

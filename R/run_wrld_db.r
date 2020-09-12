@@ -31,7 +31,14 @@ run_wrld <- function(object) {
   if (.test_empty(table = "data_wrld", batch_o = object)) {
     out <- map_dfr(terms, ~ {
       out <- .get_trend(geo = "", term = .x, time = time)
-      out <- select(out, -geo)
+      if (!is.null(out)) {
+        out <- select(out, keyword, date, hits)
+      } else {
+        start <- as_date(str_split(time, pattern = " ")[[1]][[1]])
+        end <- as_date(str_split(time, pattern = " ")[[1]][[2]])
+        out <- tibble(keyword = .x, date = seq.Date(from = start, to = end, by = "month"), hits = 0)
+      }
+      out <- mutate(out, batch = object)
       message(str_c("Successfully downloaded worldwide data | term: ", which(terms == .x), "/", length(terms), " [", object, "|", max(terms_obj$batch), "]"))
       return(out)
     })
