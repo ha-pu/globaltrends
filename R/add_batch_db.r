@@ -34,7 +34,7 @@
 #' @importFrom tibble tibble
 
 add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
-  if (length(keyword) > 5) error("'keyword' allows a maxium of five elements.\nYou supplied more than five elements.")
+  if (length(keyword) > 5) stop("Error: 'keyword' allows a maxium of five elements.\nYou supplied more than five elements.")
   if (type == "control") {
     if (nrow(terms_con) == 0) {
       new_batch <- 1
@@ -70,6 +70,6 @@ add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") {
     assign("time_obj", time_obj, envir = .GlobalEnv)
     message(str_c("New object batch", new_batch, "created.", sep = " "))
   } else {
-    error("'type' allows only 'control' or 'object'.\nYuo supplied another value.")
+    stop("Error: 'type' allows only 'control' or 'object'.\nYuo supplied another value.")
   }
 }

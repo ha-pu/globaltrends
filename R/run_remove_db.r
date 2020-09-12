@@ -67,7 +67,7 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
       }
     }
   } else {
-    error("'table' must be an object of type character.\nYou supplied an object of a different type.")
+    stop("Error: 'table' must be an object of type character.\nYou supplied an object of a different type.")
   }
 }
 
