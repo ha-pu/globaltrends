@@ -38,9 +38,9 @@ run_map <- function(control, object, lst_geo = lst_wdi) {
       qry_obj <- filter(data_obj, batch == object & geo == .x)
       qry_obj <- collect(qry_obj)
       if (nrow(qry_con) > 0 & nrow(qry_obj) > 0) {
-        term_con <- aggregate(qry_con$hits, list(qry_con$keyword), mean)
-        term_con <- term_con$Group.1[order(term_con$x)]
-        term_obj <- aggregate(qry_obj$hits, list(qry_obj$keyword), mean)
+        term_con <- summarise(group_by(qry_con, keyword), hits = mean(hits))
+        term_con <- term_con$keyword[order(term_con$hits)]
+        term_obj <- summarise(group_by(qry_obj, keyword), hits = mean(hits))
         term_obj <- term_obj$Group.1[term_obj$x == max(term_obj$x)]
         date_min <- as_date(max(min(qry_con$date), min(qry_obj$date)))
         date_max <- as_date(min(max(qry_con$date), max(qry_obj$date)))
