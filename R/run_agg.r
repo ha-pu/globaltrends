@@ -41,6 +41,7 @@
 #' @importFrom purrr map_dbl
 #' @importFrom purrr map_dfr
 #' @importFrom purrr set_names
+#' @importFrom purrr walk
 #' @importFrom stringr str_c
 #' @importFrom stringr str_replace_all
 #' @importFrom tidyr nest
@@ -53,6 +54,7 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") UseMethod("run_agg", o
 #' @export
 
 run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
+  walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
     data <- filter(data, geo %in% pull(collect(filter(data_geo, type == lst_geo)), geo))

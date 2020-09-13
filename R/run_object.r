@@ -40,6 +40,7 @@ run_object <- function(object, lst_geo = lst_wdi) UseMethod("run_object", object
 #' @export
 
 run_object.numeric <- function(object, lst_geo = lst_wdi) {
+  .test_batch(object)
   terms <- terms_obj$keyword[terms_obj$batch == object]
   time <- time_obj$time[time_obj$batch == object]
   walk(lst_geo, ~ {

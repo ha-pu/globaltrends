@@ -57,6 +57,7 @@ run_score <- function(control, object, lst_geo = lst_wdi) UseMethod("run_score",
 #' @export
 
 run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
+  walk(c(control, object), .test_batch)
   walk(lst_geo, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
