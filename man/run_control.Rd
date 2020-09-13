@@ -2,13 +2,20 @@
 % Please edit documentation in R/run_control.r
 \name{run_control}
 \alias{run_control}
+\alias{run_control.numeric}
+\alias{run_control.list}
 \title{Download data for control batch}
 \usage{
 run_control(control, lst_geo = lst_wdi)
+
+\method{run_control}{numeric}(control, lst_geo = lst_wdi)
+
+\method{run_control}{list}(control, lst_geo = lst_wdi)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
-of class \code{numeric}.}
+of class \code{numeric} or object of class \code{list} containing single
+elements of class \code{numeric}.}
 
 \item{lst_geo}{List of countries or regions for which the data is downloaded.
 Refers to lists generated in \code{gtrends_base}.}
@@ -26,6 +33,7 @@ Download data for control batch
 \examples{
 \dontrun{
 data_con(control = 1, lst_geo = lst_wdi)
+data_con(control = as.list(1:5), lst_geo = lst_wdi)
 }
 
 }
