@@ -1,5 +1,5 @@
 #' @title Add batch of control keywords
-#' 
+#'
 #' @param keyword Keywords that should be added as batch. Vector of class
 #' \code{character} or a \code{list} of \code{character} element. When a
 #' \code{character} vector contains more than five keywords, the vector is
@@ -7,7 +7,7 @@
 #' \code{character} elements of length five or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
-#' 
+#'
 #' @return
 #' Message that the batch was created successfully. Batch data is
 #' uploaded to batch_terms and batch_time.
@@ -18,12 +18,16 @@
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
-#'   keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia",
-#'   "youtube"), time = "2016-01-01 2019-12-31"
+#'   keyword = c(
+#'     "gmail", "maps", "news", "translate", "weather", "wikipedia",
+#'     "youtube"
+#'   ), time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
-#'   keyword = list(c("gmail", "maps", "news"), c("translate", "weather",
-#'   "wikipedia", "youtube")), time = "2016-01-01 2019-12-31"
+#'   keyword = list(c("gmail", "maps", "news"), c(
+#'     "translate", "weather",
+#'     "wikipedia", "youtube"
+#'   )), time = "2016-01-01 2019-12-31"
 #' )
 #' }
 #' @rdname add_batch
@@ -33,9 +37,9 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
   out <- .add_batch(type = "control", keyword = keyword, time = time)
   return(out)
 }
-  
+
 #' @title Add batch of object keywords
-#' 
+#'
 #' @param keyword Keywords that should be added as batch. Vector of class
 #' \code{character} or a \code{list} of \code{character} element. When a
 #' \code{character} vector contains more than five keywords, the vector is
@@ -43,7 +47,7 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #' \code{character} elements of length five or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
-#' 
+#'
 #' @return
 #' Message that the batch was created successfully. Batch data is
 #' uploaded to batch_terms and batch_time.
@@ -55,12 +59,16 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
-#'   keyword = c("amazon", "apple", "facebook", "google", "microsoft",
-#'   "netflix", "twitter"), time = "2016-01-01 2019-12-31"
+#'   keyword = c(
+#'     "amazon", "apple", "facebook", "google", "microsoft",
+#'     "netflix", "twitter"
+#'   ), time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
-#'   keyword = list(c("amazon", "apple", "facebook", "google")), c("microsoft",
-#'   "netflix", "twitter")), time = "2016-01-01 2019-12-31"
+#'   keyword = list(c("amazon", "apple", "facebook", "google"), c(
+#'     "microsoft",
+#'     "netflix", "twitter"
+#'   )), time = "2016-01-01 2019-12-31"
 #' )
 #' }
 #' @rdname add_batch
@@ -72,9 +80,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 }
 
 #' @title Add keyword batches to batch_terms and batch_time
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 #' @aliases
 #' .add_batch
 #' .add_batch.character
