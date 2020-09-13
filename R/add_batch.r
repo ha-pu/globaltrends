@@ -41,7 +41,7 @@
 #' @importFrom stringr str_c
 #' @importFrom tibble tibble
 
-add_batch <- function(type, keyword, time) UseMethod("add_batch", keyword)
+add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") UseMethod("add_batch", keyword)
 
 #' @rdname add_batch
 #' @method add_batch character
