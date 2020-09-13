@@ -1,10 +1,16 @@
 #' @title Download data for control batch
 #'
+#' @aliases
+#' run_control
+#' run_control.numeric
+#' run_control.list
+#'
 #' @description
 #' @details
 #'
 #' @param control Control batch for which the data is downloaded. Object
-#' of class \code{numeric}.
+#' of class \code{numeric} or object of class \code{list} containing single
+#' elements of class \code{numeric}.
 #' @param lst_geo List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{gtrends_base}.
 #'
@@ -17,15 +23,23 @@
 #' @examples
 #' \dontrun{
 #' data_con(control = 1, lst_geo = lst_wdi)
+#' data_con(control = as.list(1:5), lst_geo = lst_wdi)
 #' }
 #'
 #' @export
+#' @rdname run_control
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom purrr walk
 #' @importFrom stringr str_c
 
-run_control <- function(control, lst_geo = lst_wdi) {
+run_control <- function(control, lst_geo = lst_wdi) UseMethod("run_control", control)
+
+#' @rdname run_control
+#' @method run_control numeric
+#' @export
+
+run_control.numeric <- function(control, lst_geo = lst_wdi) {
   terms <- terms_con$keyword[terms_con$batch == control]
   time <- time_con$time[time_con$batch == control]
   walk(lst_geo, ~ {
@@ -38,4 +52,12 @@ run_control <- function(control, lst_geo = lst_wdi) {
     }
     message(str_c("Successfully downloaded control data | control: ", control, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
+}
+
+#' @rdname run_control
+#' @method run_control list
+#' @export
+
+run_control.list <- function(control, lst_geo = lst_wdi) {
+  walk(control, run_control, lst_geo = lst_geo)
 }

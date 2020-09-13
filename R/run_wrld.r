@@ -1,5 +1,10 @@
 #' @title Download worlwide score data for object batch
 #'
+#' @aliases
+#' run_wrld
+#' run_wrld.numeric
+#' run_wrld.list
+#'
 #' @description
 #' @details
 #'
@@ -15,16 +20,24 @@
 #' @examples
 #' \dontrun{
 #' data_wrld(object = 1)
+#' data_wrld(object = as.list(1:5))
 #' }
 #'
 #' @export
+#' @rdname run_wrld
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom purrr map
 #' @importFrom stringr str_c
 
-run_wrld <- function(object) {
+run_wrld <- function(object) UseMethod("run_wrld", object)
+
+#' @rdname run_wrld
+#' @method run_wrld numeric
+#' @export
+
+run_wrld.numeric <- function(object) {
   terms <- terms_obj$keyword[terms_obj$batch == object]
   terms <- terms[!(terms %in% dict_obj$term2)]
   time <- time_obj$time[time_obj$batch == object]
@@ -45,4 +58,12 @@ run_wrld <- function(object) {
     out <- mutate(out, batch = object)
     dbWriteTable(conn = gtrends_db, name = "data_wrld", value = out, append = TRUE)
   }
+}
+
+#' @rdname run_wrld
+#' @method run_wrld list
+#' @export
+
+run_wrld.list <- function(object) {
+  walk(object, run_wrld)
 }

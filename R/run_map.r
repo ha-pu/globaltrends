@@ -1,12 +1,18 @@
 #' @title Download data for mapping between control and object batch
 #'
+#' @aliases
+#' run_map
+#' run_map.numeric
+#' run_map.list
+#'
 #' @description
 #' @details
 #'
 #' @param control Control batch for which the data is downloaded. Object
 #' of class \code{numeric}.
 #' @param object Object batch for which the data is downloaded. Object
-#' of class \code{numeric}.
+#' of class \code{numeric} or object of class \code{list} containing single
+#' elements of class \code{numeric}.
 #' @param lst_geo List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{gtrends_base}.
 #'
@@ -18,9 +24,11 @@
 #' @examples
 #' \dontrun{
 #' data_map(control = 1, object = 1, lst_geo = lst_wdi)
+#' data_map(control = 1, object = as.list(1:5), lst_geo = lst_wdi)
 #' }
 #'
 #' @export
+#' @rdname run_map
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -30,7 +38,13 @@
 #' @importFrom purrr walk
 #' @importFrom stringr str_c
 
-run_map <- function(control, object, lst_geo = lst_wdi) {
+run_map <- function(control, object, lst_geo = lst_wdi) UseMethod("run_map", object)
+
+#' @rdname run_map
+#' @method run_map numeric
+#' @export
+
+run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
   walk(lst_geo, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_con, batch == control & geo == .x)
@@ -60,4 +74,12 @@ run_map <- function(control, object, lst_geo = lst_wdi) {
     }
     message(str_c("Successfully downloaded mapping data | control: ", control, " | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
   })
+}
+
+#' @rdname run_map
+#' @method run_map list
+#' @export
+
+run_map.list <- function(control, object, lst_geo = lst_wdi) {
+  walk(object, run_map, control = control, lst_geo = lst_geo)
 }

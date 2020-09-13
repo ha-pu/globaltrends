@@ -11,9 +11,9 @@
 #' @param type Type batch that should be added. Object of class \code{character}
 #'  of value "control" or "object".
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. When a 
-#' \code{character} vector contains more than five keywords, the vector is 
-#' split into five-keyword batches. A \code{list} must contain 
+#' \code{character} or a \code{list} of \code{character} element. When a
+#' \code{character} vector contains more than five keywords, the vector is
+#' split into five-keyword batches. A \code{list} must contain
 #' \code{character} elements of length five or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
@@ -33,6 +33,18 @@
 #'   type = "object", keyword = c("facebook", "google"), time =
 #'     "2016-01-01 2019-12-31"
 #' )
+#' add_batch(
+#'   type = "object", keyword = c(
+#'     "amazon", "apple", "facebook", "google",
+#'     "microsoft", "netflix", "twitter"
+#'   ), time = "2016-01-01 2019-12-31"
+#' )
+#' add_batch(
+#'   type = "object", keyword = list(
+#'     c("amazon", "apple", "facebook", "google"),
+#'     c("microsoft", "netflix", "twitter")
+#'   ), time = "2016-01-01 2019-12-31"
+#' )
 #' }
 #' @export
 #' @importFrom DBI dbWriteTable
@@ -41,7 +53,7 @@
 #' @importFrom stringr str_c
 #' @importFrom tibble tibble
 
-add_batch <- function(type, keyword, time) UseMethod("add_batch", keyword)
+add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") UseMethod("add_batch", keyword)
 
 #' @rdname add_batch
 #' @method add_batch character

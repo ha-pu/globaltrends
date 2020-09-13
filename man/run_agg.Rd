@@ -2,9 +2,15 @@
 % Please edit documentation in R/run_agg.r
 \name{run_agg}
 \alias{run_agg}
+\alias{run_agg.numeric}
+\alias{run_agg.list}
 \title{Aggregate keyword-country data and compute DOI}
 \usage{
 run_agg(control, object, lst_geo = "lst_wdi")
+
+\method{run_agg}{numeric}(control, object, lst_geo = "lst_wdi")
+
+\method{run_agg}{list}(control, object, lst_geo = "lst_wdi")
 }
 \arguments{
 \item{control}{Control batch for which the search score is used. Object
@@ -29,6 +35,7 @@ Aggregate keyword-country data and compute DOI
 \examples{
 \dontrun{
 data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
+data_agg(control = 1, object = as.list(1:5), lst_geo = "lst_wdi")
 }
 
 }

@@ -2,13 +2,20 @@
 % Please edit documentation in R/run_object.r
 \name{run_object}
 \alias{run_object}
+\alias{run_object.numeric}
+\alias{run_object.list}
 \title{Download data for object batch}
 \usage{
 run_object(object, lst_geo = lst_wdi)
+
+\method{run_object}{numeric}(object, lst_geo = lst_wdi)
+
+\method{run_object}{list}(object, lst_geo = lst_wdi)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
-of class \code{numeric}.}
+of class \code{numeric} or object of class \code{list} containing single
+elements of class \code{numeric}.}
 
 \item{lst_geo}{List of countries or regions for which the data is downloaded.
 Refers to lists generated in \code{gtrends_base}.}
@@ -26,6 +33,7 @@ Download data for object batch
 \examples{
 \dontrun{
 data_obj(object = 1, lst_geo = lst_wdi)
+data_obj(object = as.list(1:5), lst_geo = lst_wdi)
 }
 
 }

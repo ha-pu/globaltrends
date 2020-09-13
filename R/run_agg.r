@@ -1,5 +1,10 @@
 #' @title Aggregate keyword-country data and compute DOI
 #'
+#' @aliases
+#' run_agg
+#' run_agg.numeric
+#' run_agg.list
+#'
 #' @description
 #' @details
 #'
@@ -19,9 +24,11 @@
 #' @examples
 #' \dontrun{
 #' data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
+#' data_agg(control = 1, object = as.list(1:5), lst_geo = "lst_wdi")
 #' }
 #'
 #' @export
+#' @rdname run_agg
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr collect
@@ -39,7 +46,13 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-run_agg <- function(control, object, lst_geo = "lst_wdi") {
+run_agg <- function(control, object, lst_geo = "lst_wdi") UseMethod("run_agg", object)
+
+#' @rdname run_agg
+#' @method run_agg numeric
+#' @export
+
+run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
   if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
     data <- filter(data, geo %in% pull(collect(filter(data_geo, type == lst_geo)), geo))
@@ -80,4 +93,12 @@ run_agg <- function(control, object, lst_geo = "lst_wdi") {
     dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
   }
   message(str_c("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "|", max(terms_obj$batch), "]"))
+}
+
+#' @rdname run_agg
+#' @method run_agg list
+#' @export
+
+run_agg.list <- function(control, object, lst_geo = "lst_wdi") {
+  walk(object, run_agg, control = control, lst_geo = lst_geo)
 }

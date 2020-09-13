@@ -2,9 +2,15 @@
 % Please edit documentation in R/run_wrld.r
 \name{run_wrld}
 \alias{run_wrld}
+\alias{run_wrld.numeric}
+\alias{run_wrld.list}
 \title{Download worlwide score data for object batch}
 \usage{
 run_wrld(object)
+
+\method{run_wrld}{numeric}(object)
+
+\method{run_wrld}{list}(object)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
@@ -23,6 +29,7 @@ Download worlwide score data for object batch
 \examples{
 \dontrun{
 data_wrld(object = 1)
+data_wrld(object = as.list(1:5))
 }
 
 }

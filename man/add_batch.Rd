@@ -6,7 +6,7 @@
 \alias{add_batch.list}
 \title{Add keyword batches to data_con and data_obj}
 \usage{
-add_batch(type, keyword, time)
+add_batch(type, keyword, time = "2010-01-01 2020-07-31")
 
 \method{add_batch}{character}(type, keyword, time = "2010-01-01 2020-07-31")
 
@@ -17,9 +17,9 @@ add_batch(type, keyword, time)
 of value "control" or "object".}
 
 \item{keyword}{Keywords that should be added as batch. Vector of class
-\code{character} or a \code{list} of \code{character} element. When a 
-\code{character} vector contains more than five keywords, the vector is 
-split into five-keyword batches. A \code{list} must contain 
+\code{character} or a \code{list} of \code{character} element. When a
+\code{character} vector contains more than five keywords, the vector is
+split into five-keyword batches. A \code{list} must contain
 \code{character} elements of length five or less.}
 
 \item{time}{Time frame for which the batch data should be loaded. Object of
@@ -44,6 +44,18 @@ add_batch(
 add_batch(
   type = "object", keyword = c("facebook", "google"), time =
     "2016-01-01 2019-12-31"
+)
+add_batch(
+  type = "object", keyword = c(
+    "amazon", "apple", "facebook", "google",
+    "microsoft", "netflix", "twitter"
+  ), time = "2016-01-01 2019-12-31"
+)
+add_batch(
+  type = "object", keyword = list(
+    c("amazon", "apple", "facebook", "google"),
+    c("microsoft", "netflix", "twitter")
+  ), time = "2016-01-01 2019-12-31"
 )
 }
 }

@@ -6,6 +6,8 @@ library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
 
 # connect to db ----
+dir_wd <- tempdir()
+setwd(dir_wd)
 run_init()
 gtrends_base()
 

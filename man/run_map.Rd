@@ -2,16 +2,23 @@
 % Please edit documentation in R/run_map.r
 \name{run_map}
 \alias{run_map}
+\alias{run_map.numeric}
+\alias{run_map.list}
 \title{Download data for mapping between control and object batch}
 \usage{
 run_map(control, object, lst_geo = lst_wdi)
+
+\method{run_map}{numeric}(control, object, lst_geo = lst_wdi)
+
+\method{run_map}{list}(control, object, lst_geo = lst_wdi)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
 of class \code{numeric}.}
 
 \item{object}{Object batch for which the data is downloaded. Object
-of class \code{numeric}.}
+of class \code{numeric} or object of class \code{list} containing single
+elements of class \code{numeric}.}
 
 \item{lst_geo}{List of countries or regions for which the data is downloaded.
 Refers to lists generated in \code{gtrends_base}.}
@@ -29,6 +36,7 @@ Download data for mapping between control and object batch
 \examples{
 \dontrun{
 data_map(control = 1, object = 1, lst_geo = lst_wdi)
+data_map(control = 1, object = as.list(1:5), lst_geo = lst_wdi)
 }
 
 }
