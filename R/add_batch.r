@@ -11,9 +11,9 @@
 #' @param type Type batch that should be added. Object of class \code{character}
 #'  of value "control" or "object".
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. When a 
-#' \code{character} vector contains more than five keywords, the vector is 
-#' split into five-keyword batches. A \code{list} must contain 
+#' \code{character} or a \code{list} of \code{character} element. When a
+#' \code{character} vector contains more than five keywords, the vector is
+#' split into five-keyword batches. A \code{list} must contain
 #' \code{character} elements of length five or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
@@ -34,12 +34,16 @@
 #'     "2016-01-01 2019-12-31"
 #' )
 #' add_batch(
-#'   type = "object", keyword = c("amazon", "apple", "facebook", "google",
-#'   "microsoft", "netflix", "twitter"), time = "2016-01-01 2019-12-31"
+#'   type = "object", keyword = c(
+#'     "amazon", "apple", "facebook", "google",
+#'     "microsoft", "netflix", "twitter"
+#'   ), time = "2016-01-01 2019-12-31"
 #' )
 #' add_batch(
-#'   type = "object", keyword = list(c("amazon", "apple", "facebook", "google"),
-#'   c("microsoft", "netflix", "twitter")), time = "2016-01-01 2019-12-31"
+#'   type = "object", keyword = list(
+#'     c("amazon", "apple", "facebook", "google"),
+#'     c("microsoft", "netflix", "twitter")
+#'   ), time = "2016-01-01 2019-12-31"
 #' )
 #' }
 #' @export

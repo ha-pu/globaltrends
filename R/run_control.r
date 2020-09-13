@@ -4,7 +4,7 @@
 #' run_control
 #' run_control.numeric
 #' run_control.list
-#' 
+#'
 #' @description
 #' @details
 #'

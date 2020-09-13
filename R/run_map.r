@@ -4,7 +4,7 @@
 #' run_map
 #' run_map.numeric
 #' run_map.list
-#' 
+#'
 #' @description
 #' @details
 #'

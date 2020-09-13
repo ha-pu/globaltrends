@@ -4,7 +4,7 @@
 #' run_object
 #' run_object.numeric
 #' run_object.list
-#' 
+#'
 #' @description
 #' @details
 #'
