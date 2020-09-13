@@ -10,7 +10,8 @@
       return(TRUE)
     } else {
       stop("Error: Batch number must be an integer value.\nYou supplied a non-integer numeric value.")
-    } else {
-      stop("Error: Batch number must be an integer value.\nYou supplied a non-integer value.")
     }
+  } else {
+      stop("Error: Batch number must be an integer value.\nYou supplied a non-integer value.")
+  }
 }
