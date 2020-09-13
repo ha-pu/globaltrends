@@ -33,6 +33,14 @@
 #'   type = "object", keyword = c("facebook", "google"), time =
 #'     "2016-01-01 2019-12-31"
 #' )
+#' add_batch(
+#'   type = "object", keyword = c("amazon", "apple", "facebook", "google",
+#'   "microsoft", "netflix", "twitter"), time = "2016-01-01 2019-12-31"
+#' )
+#' add_batch(
+#'   type = "object", keyword = list(c("amazon", "apple", "facebook", "google"),
+#'   c("microsoft", "netflix", "twitter")), time = "2016-01-01 2019-12-31"
+#' )
 #' }
 #' @export
 #' @importFrom DBI dbWriteTable
