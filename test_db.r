@@ -12,13 +12,11 @@ run_init()
 gtrends_base()
 
 # add new control batch ----
-add_batch(type = "control", keyword = c("gmail", "wikipedia"), time = "2016-01-01 2019-12-31")
-new_batch_c <- max(terms_con$batch)
+new_batch_c <- add_control_keyword(keyword = c("gmail", "wikipedia"), time = "2016-01-01 2019-12-31")
 filter(batch_terms, batch == new_batch_c & type == "con")
 
 # add new object batch ----
-add_batch(type = "object", keyword = c("manchester united", "real madrid"), time = "2016-01-01 2019-12-31")
-new_batch_o <- max(terms_obj$batch)
+new_batch_o <- add_object_keyword(keyword = c("manchester united", "real madrid"), time = "2016-01-01 2019-12-31")
 filter(batch_terms, batch == new_batch_o & type == "obj")
 
 # run control download ----

@@ -38,6 +38,7 @@ run_wrld <- function(object) UseMethod("run_wrld", object)
 #' @export
 
 run_wrld.numeric <- function(object) {
+  .test_batch(object)
   terms <- terms_obj$keyword[terms_obj$batch == object]
   terms <- terms[!(terms %in% dict_obj$term2)]
   time <- time_obj$time[time_obj$batch == object]

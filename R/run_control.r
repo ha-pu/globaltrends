@@ -40,6 +40,7 @@ run_control <- function(control, lst_geo = lst_wdi) UseMethod("run_control", con
 #' @export
 
 run_control.numeric <- function(control, lst_geo = lst_wdi) {
+  .test_batch(control)
   terms <- terms_con$keyword[terms_con$batch == control]
   time <- time_con$time[time_con$batch == control]
   walk(lst_geo, ~ {

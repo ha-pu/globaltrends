@@ -45,6 +45,7 @@ run_map <- function(control, object, lst_geo = lst_wdi) UseMethod("run_map", obj
 #' @export
 
 run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
+  walk(c(control, object), .test_batch)
   walk(lst_geo, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_con, batch == control & geo == .x)
