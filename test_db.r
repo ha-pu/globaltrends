@@ -45,7 +45,7 @@ run_agg(control = new_batch_c, object = new_batch_o, lst_geo = "lst_usa")
 filter(data_agg, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run world download ----
-run_wrld(object = new_batch_o)
+download_global(object = new_batch_o)
 filter(data_wrld, batch == new_batch_o)
 
 # remove data ----

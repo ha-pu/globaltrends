@@ -9,7 +9,7 @@ library(RSQLite)
 library(tidyverse)
 library(WDI)
 
-source("R/run_wrld.r")
+source("R/download_global.r")
 source("R/run_score.r")
 source("R/run_remove.r")
 source("R/run_object.r")
