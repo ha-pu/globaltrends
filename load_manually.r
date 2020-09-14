@@ -10,7 +10,7 @@ library(tidyverse)
 library(WDI)
 
 source("R/download_global.r")
-source("R/run_score.r")
+source("R/compute_score.r")
 source("R/run_remove.r")
 source("R/download_object.r")
 source("R/download_mapping.r")

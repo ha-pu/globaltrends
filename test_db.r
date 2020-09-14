@@ -35,8 +35,8 @@ download_mapping(control = new_batch_c, object = new_batch_o, locations = lst_us
 filter(data_map, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run scoring ----
-run_score(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
-run_score(control = new_batch_c, object = new_batch_o, locations = lst_usa)
+compute_score(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
+compute_score(control = new_batch_c, object = new_batch_o, locations = lst_usa)
 filter(data_score, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run aggregation ----

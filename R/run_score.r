@@ -1,9 +1,9 @@
 #' @title Compute keyword-country search score
 #'
 #' @aliases
-#' run_score
-#' run_score.numeric
-#' run_score.list
+#' compute_score
+#' compute_score.numeric
+#' compute_score.list
 #'
 #' @description
 #' @details
@@ -28,7 +28,7 @@
 #' }
 #'
 #' @export
-#' @rdname run_score
+#' @rdname compute_score
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr case_when
 #' @importFrom dplyr coalesce
@@ -50,13 +50,13 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-run_score <- function(control, object, locations = lst_wdi) UseMethod("run_score", object)
+compute_score <- function(control, object, locations = lst_wdi) UseMethod("compute_score", object)
 
-#' @rdname run_score
-#' @method run_score numeric
+#' @rdname compute_score
+#' @method compute_score numeric
 #' @export
 
-run_score.numeric <- function(control, object, locations = lst_wdi) {
+compute_score.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
@@ -171,10 +171,10 @@ run_score.numeric <- function(control, object, locations = lst_wdi) {
   })
 }
 
-#' @rdname run_score
-#' @method run_score list
+#' @rdname compute_score
+#' @method compute_score list
 #' @export
 
-run_score.list <- function(control, object, locations = lst_wdi) {
-  walk(object, run_score, control = control, locations = locations)
+compute_score.list <- function(control, object, locations = lst_wdi) {
+  walk(object, compute_score, control = control, locations = locations)
 }
