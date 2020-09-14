@@ -28,8 +28,8 @@
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
+#' @importFrom glue glue
 #' @importFrom purrr map
-#' @importFrom stringr str_c
 #' @importFrom stringr str_split
 
 run_wrld <- function(object) UseMethod("run_wrld", object)
@@ -54,7 +54,7 @@ run_wrld.numeric <- function(object) {
         out <- tibble(keyword = .x, date = seq.Date(from = start, to = end, by = "month"), hits = 0)
       }
       out <- mutate(out, batch = object)
-      message(str_c("Successfully downloaded worldwide data | term: ", which(terms == .x), "/", length(terms), " [", object, "|", max(terms_obj$batch), "]"))
+      message(glue("Successfully downloaded worldwide data | term: {current}/{total_terms} [{object}/{total_batches}]", current = which(terms == .x), total_terms = length(terms), total_batches = max(terms_obj$batch)))
       return(out)
     })
     out <- mutate(out, batch = object)

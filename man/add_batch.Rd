@@ -70,7 +70,6 @@ add_control_keyword(
     "netflix", "twitter"
   )), time = "2016-01-01 2019-12-31"
 )
-
 }
 }
 \keyword{internal}

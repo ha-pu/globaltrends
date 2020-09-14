@@ -38,11 +38,11 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise_if
 #' @importFrom dplyr ungroup
+#' @importFrom glue glue
 #' @importFrom purrr map_dbl
 #' @importFrom purrr map_dfr
 #' @importFrom purrr set_names
 #' @importFrom purrr walk
-#' @importFrom stringr str_c
 #' @importFrom stringr str_replace_all
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
@@ -94,7 +94,7 @@ run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
     out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
     dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
   }
-  message(str_c("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "|", max(terms_obj$batch), "]"))
+  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
 }
 
 #' @rdname run_agg

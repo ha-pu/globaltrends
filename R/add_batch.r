@@ -47,7 +47,6 @@
 #'     "netflix", "twitter"
 #'   )), time = "2016-01-01 2019-12-31"
 #' )
-#'
 #' }
 #' @rdname add_batch
 #' @export
@@ -80,7 +79,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom stringr str_c
+#' @importFrom glue glue
 #' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, time = "2010-01-01 2020-07-31") UseMethod(".add_batch", keyword)
@@ -133,7 +132,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     time_con <- filter(batch_time, type == "con")
     time_con <- collect(time_con)
     assign("time_con", time_con, envir = .GlobalEnv)
-    message(str_c("New control batch", new_batch, "created.", sep = " "))
+    message(glue("New control batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else if (type == "object") {
     if (nrow(terms_obj) == 0) {
@@ -151,9 +150,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     time_obj <- filter(batch_time, type == "obj")
     time_obj <- collect(time_obj)
     assign("time_obj", time_obj, envir = .GlobalEnv)
-    message(str_c("New object batch", new_batch, "created.", sep = " "))
+    message(glue("New object batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
-    stop("Error: 'type' allows only 'control' or 'object'.\nYuo supplied another value.")
+    stop("Error: 'type' allows only 'control' or 'object'.\nYou supplied another value.")
   }
 }
