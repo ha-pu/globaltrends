@@ -1,9 +1,9 @@
 #' @title Aggregate keyword-country data and compute DOI
 #'
 #' @aliases
-#' run_agg
-#' run_agg.numeric
-#' run_agg.list
+#' compute_doi
+#' compute_doi.numeric
+#' compute_doi.list
 #'
 #' @description
 #' @details
@@ -28,7 +28,7 @@
 #' }
 #'
 #' @export
-#' @rdname run_agg
+#' @rdname compute_doi
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr collect
@@ -47,13 +47,13 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-run_agg <- function(control, object, locations = "lst_wdi") UseMethod("run_agg", object)
+compute_doi <- function(control, object, locations = "lst_wdi") UseMethod("compute_doi", object)
 
-#' @rdname run_agg
-#' @method run_agg numeric
+#' @rdname compute_doi
+#' @method compute_doi numeric
 #' @export
 
-run_agg.numeric <- function(control, object, locations = "lst_wdi") {
+compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
@@ -97,10 +97,10 @@ run_agg.numeric <- function(control, object, locations = "lst_wdi") {
   message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
 }
 
-#' @rdname run_agg
-#' @method run_agg list
+#' @rdname compute_doi
+#' @method compute_doi list
 #' @export
 
-run_agg.list <- function(control, object, locations = "lst_wdi") {
-  walk(object, run_agg, control = control, locations = locations)
+compute_doi.list <- function(control, object, locations = "lst_wdi") {
+  walk(object, compute_doi, control = control, locations = locations)
 }

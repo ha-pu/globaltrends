@@ -40,8 +40,8 @@ compute_score(control = new_batch_c, object = new_batch_o, locations = lst_usa)
 filter(data_score, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run aggregation ----
-run_agg(control = new_batch_c, object = new_batch_o, locations = "lst_wdi")
-run_agg(control = new_batch_c, object = new_batch_o, locations = "lst_usa")
+compute_doi(control = new_batch_c, object = new_batch_o, locations = "lst_wdi")
+compute_doi(control = new_batch_c, object = new_batch_o, locations = "lst_usa")
 filter(data_agg, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run world download ----
