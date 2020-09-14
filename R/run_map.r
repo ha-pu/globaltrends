@@ -1,9 +1,9 @@
 #' @title Download data for mapping between control and object batch
 #'
 #' @aliases
-#' run_map
-#' run_map.numeric
-#' run_map.list
+#' download_mapping
+#' download_mapping.numeric
+#' download_mapping.list
 #'
 #' @description
 #' @details
@@ -28,7 +28,7 @@
 #' }
 #'
 #' @export
-#' @rdname run_map
+#' @rdname download_mapping
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -39,13 +39,13 @@
 #' @importFrom purrr walk
 
 
-run_map <- function(control, object, locations = lst_wdi) UseMethod("run_map", object)
+download_mapping <- function(control, object, locations = lst_wdi) UseMethod("download_mapping", object)
 
-#' @rdname run_map
-#' @method run_map numeric
+#' @rdname download_mapping
+#' @method download_mapping numeric
 #' @export
 
-run_map.numeric <- function(control, object, locations = lst_wdi) {
+download_mapping.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
@@ -78,10 +78,10 @@ run_map.numeric <- function(control, object, locations = lst_wdi) {
   })
 }
 
-#' @rdname run_map
-#' @method run_map list
+#' @rdname download_mapping
+#' @method download_mapping list
 #' @export
 
-run_map.list <- function(control, object, locations = lst_wdi) {
-  walk(object, run_map, control = control, locations = locations)
+download_mapping.list <- function(control, object, locations = lst_wdi) {
+  walk(object, download_mapping, control = control, locations = locations)
 }

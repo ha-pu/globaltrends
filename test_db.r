@@ -30,8 +30,8 @@ download_object(object = new_batch_o, locations = lst_usa[1:5])
 filter(data_obj, batch == new_batch_o)
 
 # run map download ----
-run_map(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
-run_map(control = new_batch_c, object = new_batch_o, locations = lst_usa)
+download_mapping(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
+download_mapping(control = new_batch_c, object = new_batch_o, locations = lst_usa)
 filter(data_map, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run scoring ----
