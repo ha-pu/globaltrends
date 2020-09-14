@@ -9,7 +9,7 @@ options(dplyr.summarise.inform = FALSE)
 dir_wd <- tempdir()
 setwd(dir_wd)
 initialize_db()
-gtrends_base()
+start_db()
 
 # add new control batch ----
 new_batch_c <- add_control_keyword(keyword = c("gmail", "wikipedia"), time = "2016-01-01 2019-12-31")

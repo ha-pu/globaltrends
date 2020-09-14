@@ -12,7 +12,7 @@
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
 #' @param lst_geo List of countries or regions for which the data is downloaded.
-#' Refers to lists generated in \code{gtrends_base}.
+#' Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
 #'

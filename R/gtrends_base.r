@@ -41,7 +41,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' gtrends_base()
+#' start_db()
 #' }
 #'
 #' @export
@@ -52,7 +52,7 @@
 #' @importFrom dplyr tbl
 #' @importFrom RSQLite SQLite
 
-gtrends_base <- function() {
+start_db <- function() {
   # connect to db ----
   doiGT_DB <- dbConnect(SQLite(), "db/doiGT_DB.sqlite")
   message("Successfully connected to database.")
