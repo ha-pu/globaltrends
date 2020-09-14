@@ -24,9 +24,8 @@ run_init <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ----
-  gtrends_db_file <- file.path("db/gtrends.sqlite")
-  gtrends_db <- suppressWarnings(src_sqlite(gtrends_db_file, create = TRUE))
-  gtrends_db <- dbConnect(SQLite(), gtrends_db_file)
+  gtrends_db <- suppressWarnings(src_sqlite("db/gtrends.sqlite", create = TRUE))
+  gtrends_db <- dbConnect(SQLite(), "db/gtrends.sqlite")
   message("Database has been created.")
 
   # create tables ----

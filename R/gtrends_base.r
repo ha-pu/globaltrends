@@ -54,8 +54,7 @@
 
 gtrends_base <- function() {
   # connect to db ----
-  gtrends_db_file <- "db/gtrends.sqlite"
-  gtrends_db <- dbConnect(SQLite(), gtrends_db_file)
+  gtrends_db <- dbConnect(SQLite(), "db/gtrends.sqlite")
   message("Successfully connected to database.")
 
   # get tables ----
