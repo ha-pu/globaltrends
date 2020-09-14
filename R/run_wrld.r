@@ -30,6 +30,7 @@
 #' @importFrom dplyr select
 #' @importFrom purrr map
 #' @importFrom stringr str_c
+#' @importFrom stringr str_split
 
 run_wrld <- function(object) UseMethod("run_wrld", object)
 
