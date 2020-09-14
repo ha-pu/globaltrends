@@ -25,8 +25,8 @@ download_control(control = new_batch_c, locations = lst_usa[1:5])
 filter(data_con, batch == new_batch_c)
 
 # run object download ----
-run_object(object = new_batch_o, locations = lst_wdi[1:5])
-run_object(object = new_batch_o, locations = lst_usa[1:5])
+download_object(object = new_batch_o, locations = lst_wdi[1:5])
+download_object(object = new_batch_o, locations = lst_usa[1:5])
 filter(data_obj, batch == new_batch_o)
 
 # run map download ----

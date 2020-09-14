@@ -1,9 +1,9 @@
 #' @title Download data for object batch
 #'
 #' @aliases
-#' run_object
-#' run_object.numeric
-#' run_object.list
+#' download_object
+#' download_object.numeric
+#' download_object.list
 #'
 #' @description
 #' @details
@@ -27,20 +27,20 @@
 #' }
 #'
 #' @export
-#' @rdname run_object
+#' @rdname download_object
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
 #' @importFrom stringr str_split
 
-run_object <- function(object, locations = lst_wdi) UseMethod("run_object", object)
+download_object <- function(object, locations = lst_wdi) UseMethod("download_object", object)
 
-#' @rdname run_object
-#' @method run_object numeric
+#' @rdname download_object
+#' @method download_object numeric
 #' @export
 
-run_object.numeric <- function(object, locations = lst_wdi) {
+download_object.numeric <- function(object, locations = lst_wdi) {
   .test_batch(object)
   terms <- terms_obj$keyword[terms_obj$batch == object]
   time <- time_obj$time[time_obj$batch == object]
@@ -60,10 +60,10 @@ run_object.numeric <- function(object, locations = lst_wdi) {
   })
 }
 
-#' @rdname run_object
-#' @method run_object list
+#' @rdname download_object
+#' @method download_object list
 #' @export
 
-run_object.list <- function(object, locations = lst_wdi) {
-  walk(object, run_object, locations = locations)
+download_object.list <- function(object, locations = lst_wdi) {
+  walk(object, download_object, locations = locations)
 }
