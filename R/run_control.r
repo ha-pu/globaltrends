@@ -48,7 +48,7 @@ run_control.numeric <- function(control, lst_geo = lst_wdi) {
       out <- .get_trend(geo = .x, term = terms, time = time)
       if (!is.null(out)) {
         out <- mutate(out, batch = control)
-        dbWriteTable(conn = gtrends_db, name = "data_con", value = out, append = TRUE)
+        dbWriteTable(conn = doiGT_DB, name = "data_con", value = out, append = TRUE)
       }
     }
     message(glue("Successfully downloaded control data | control: {control} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))

@@ -4,7 +4,7 @@
 \alias{.enter_geo}
 \title{Enter geo data into database}
 \usage{
-.enter_geo(gtrends_db)
+.enter_geo(doiGT_DB)
 }
 \description{
 Enter geo data into database

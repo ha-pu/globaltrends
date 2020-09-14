@@ -14,7 +14,7 @@
 #' @importFrom tibble tibble
 #' @importFrom WDI WDI
 
-.enter_geo <- function(gtrends_db) {
+.enter_geo <- function(doiGT_DB) {
   # create lst_wdi ----
   lst_wdi <- WDI::WDI_data$country
   lst_wdi <- as_tibble(lst_wdi)
@@ -38,6 +38,6 @@
   lst_usa <- mutate(lst_usa, type = "lst_usa")
 
   # upload data ----
-  dbWriteTable(conn = gtrends_db, name = "data_geo", value = bind_rows(lst_wdi, lst_usa), append = TRUE)
+  dbWriteTable(conn = doiGT_DB, name = "data_geo", value = bind_rows(lst_wdi, lst_usa), append = TRUE)
   message("Data entered into 'data_geo'.")
 }

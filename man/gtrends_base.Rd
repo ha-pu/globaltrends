@@ -9,7 +9,7 @@ gtrends_base()
 \value{
 The function exports the following objects to .GlobalEnv:
 \itemize{
-  \item gtrends_db A DBIConnection object, as returned by
+  \item doiGT_DB A DBIConnection object, as returned by
   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
   directory
   \item data_geo A remote data source pointing to the table "data_geo" in

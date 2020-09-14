@@ -58,7 +58,7 @@ run_wrld.numeric <- function(object) {
       return(out)
     })
     out <- mutate(out, batch = object)
-    dbWriteTable(conn = gtrends_db, name = "data_wrld", value = out, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "data_wrld", value = out, append = TRUE)
   }
 }
 
