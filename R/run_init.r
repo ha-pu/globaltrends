@@ -24,8 +24,8 @@ run_init <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ----
-  doiGT_DB <- suppressWarnings(src_sqlite("db/gtrends.sqlite", create = TRUE))
-  doiGT_DB <- dbConnect(SQLite(), "db/gtrends.sqlite")
+  doiGT_DB <- suppressWarnings(src_sqlite("db/doiGT_DB.sqlite", create = TRUE))
+  doiGT_DB <- dbConnect(SQLite(), "db/doiGT_DB.sqlite")
   message("Database has been created.")
 
   # create tables ----
