@@ -47,7 +47,6 @@
 #'     "netflix", "twitter"
 #'   )), time = "2016-01-01 2019-12-31"
 #' )
-#'
 #' }
 #' @rdname add_batch
 #' @export
