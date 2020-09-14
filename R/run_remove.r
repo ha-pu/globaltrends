@@ -5,9 +5,9 @@
 #'
 #' @param table Database table from which the batch should be removed.  Object
 #' of class \code{character}.
-#' @param batch_c Control batch for which the data is removed Object
+#' @param control Control batch for which the data is removed Object
 #' of class \code{numeric}.
-#' @param batch_o Object batch for which the data is removed Object
+#' @param object Object batch for which the data is removed Object
 #' of class \code{numeric}.
 #'
 #' @seealso
@@ -17,8 +17,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' run_remove(table = "batch_terms", batch_c = 1)
-#' run_remove(table = "data_map", batch_c = 1, batch_o = 1)
+#' remove_data(table = "batch_terms", control = 1)
+#' remove_data(table = "data_map", control = 1, object = 1)
 #' }
 #'
 #' @export
@@ -27,43 +27,43 @@
 #' @importFrom dplyr filter
 #' @importFrom glue glue
 
-run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
+remove_data <- function(table, control = NULL, object = NULL) {
   if (is.character(table)) {
     if (table == "batch_terms") {
-      if (!is.null(batch_c) & is.null(batch_o)) {
-        .remove_batch_terms(type = "con", batch = batch_c)
-      } else if (!is.null(batch_o) & is.null(batch_c)) {
-        .remove_batch_terms(type = "obj", batch = batch_o)
+      if (!is.null(control) & is.null(object)) {
+        .remove_batch_terms(type = "con", batch = control)
+      } else if (!is.null(object) & is.null(control)) {
+        .remove_batch_terms(type = "obj", batch = object)
       }
     } else if (table == "batch_time") {
-      if (!is.null(batch_c) & is.null(batch_o)) {
-        .remove_batch_time(type = "con", batch = batch_c)
-      } else if (!is.null(batch_o) & is.null(batch_c)) {
-        .remove_batch_time(type = "obj", batch = batch_o)
+      if (!is.null(control) & is.null(object)) {
+        .remove_batch_time(type = "con", batch = control)
+      } else if (!is.null(object) & is.null(control)) {
+        .remove_batch_time(type = "obj", batch = object)
       }
     } else if (table == "data_con") {
-      if (!is.null(batch_c) & is.null(batch_o)) {
-        .remove_data_con(batch = batch_c)
+      if (!is.null(control) & is.null(object)) {
+        .remove_data_con(batch = control)
       }
     } else if (table == "data_obj") {
-      if (!is.null(batch_o) & is.null(batch_c)) {
-        .remove_data_obj(batch = batch_o)
+      if (!is.null(object) & is.null(control)) {
+        .remove_data_obj(batch = object)
       }
     } else if (table == "data_map") {
-      if (!is.null(batch_c) | !is.null(batch_o)) {
-        .remove_data_map(batch_c = batch_c, batch_o = batch_o)
+      if (!is.null(control) | !is.null(object)) {
+        .remove_data_map(batch_c = control, batch_o = object)
       }
     } else if (table == "data_score") {
-      if (!is.null(batch_c) | !is.null(batch_o)) {
-        .remove_data_score(batch_c = batch_c, batch_o = batch_o)
+      if (!is.null(control) | !is.null(object)) {
+        .remove_data_score(batch_c = control, batch_o = object)
       }
     } else if (table == "data_agg") {
-      if (!is.null(batch_c) | !is.null(batch_o)) {
-        .remove_data_agg(batch_c = batch_c, batch_o = batch_o)
+      if (!is.null(control) | !is.null(object)) {
+        .remove_data_agg(batch_c = control, batch_o = object)
       }
     } else if (table == "data_wrld") {
-      if (!is.null(batch_o) & is.null(batch_c)) {
-        .remove_data_wrld(batch = batch_o)
+      if (!is.null(object) & is.null(control)) {
+        .remove_data_wrld(batch = object)
       }
     }
   } else {
