@@ -125,7 +125,7 @@ initialize_db <- function() {
   entropy REAL,
   batch_c INTEGER,
   batch_o INTEGER,
-  lst_geo TEXT
+  locations TEXT
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
   message("Table 'data_agg' has been created.")

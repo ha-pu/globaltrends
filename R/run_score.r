@@ -13,7 +13,7 @@
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
-#' @param lst_geo List of countries or regions for which the data is downloaded.
+#' @param locations List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_score(control = 1, object = 1, lst_geo = lst_wdi)
-#' data_score(control = 1, object = as.list(1:5), lst_geo = lst_wdi)
+#' data_score(control = 1, object = 1, locations = lst_wdi)
+#' data_score(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
@@ -50,15 +50,15 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-run_score <- function(control, object, lst_geo = lst_wdi) UseMethod("run_score", object)
+run_score <- function(control, object, locations = lst_wdi) UseMethod("run_score", object)
 
 #' @rdname run_score
 #' @method run_score numeric
 #' @export
 
-run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
+run_score.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
-  walk(lst_geo, ~ {
+  walk(locations, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
@@ -167,7 +167,7 @@ run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
         dbWriteTable(conn = doiGT_DB, name = "data_score", value = out, append = TRUE)
       }
     }
-    message(glue("Successfully computed search score | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
+    message(glue("Successfully computed search score | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
@@ -175,6 +175,6 @@ run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
 #' @method run_score list
 #' @export
 
-run_score.list <- function(control, object, lst_geo = lst_wdi) {
-  walk(object, run_score, control = control, lst_geo = lst_geo)
+run_score.list <- function(control, object, locations = lst_wdi) {
+  walk(object, run_score, control = control, locations = locations)
 }

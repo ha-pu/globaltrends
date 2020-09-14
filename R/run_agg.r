@@ -12,7 +12,7 @@
 #' of class \code{numeric}.
 #' @param object Object batch for which the keyword-country data
 #' is aggregated and DOI is computed.  Object of class \code{numeric}.
-#' @param lst_geo List of locations for which the search score is used.
+#' @param locations List of locations for which the search score is used.
 #' Object of class \code{character}.
 #'
 #' @seealso
@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_agg(control = 1, object = 1, lst_geo = "lst_wdi")
-#' data_agg(control = 1, object = as.list(1:5), lst_geo = "lst_wdi")
+#' data_agg(control = 1, object = 1, locations = "lst_wdi")
+#' data_agg(control = 1, object = as.list(1:5), locations = "lst_wdi")
 #' }
 #'
 #' @export
@@ -47,17 +47,17 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-run_agg <- function(control, object, lst_geo = "lst_wdi") UseMethod("run_agg", object)
+run_agg <- function(control, object, locations = "lst_wdi") UseMethod("run_agg", object)
 
 #' @rdname run_agg
 #' @method run_agg numeric
 #' @export
 
-run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
+run_agg.numeric <- function(control, object, locations = "lst_wdi") {
   walk(c(control, object), .test_batch)
-  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, lst_geo = lst_geo)) {
+  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
-    data <- filter(data, geo %in% pull(collect(filter(data_geo, type == lst_geo)), geo))
+    data <- filter(data, geo %in% pull(collect(filter(data_geo, type == locations)), geo))
 
     # run dict replace
     if (any(data$keyword %in% dict_obj$term1)) {
@@ -91,7 +91,7 @@ run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
     out <- select(out, date, keyword, type, gini, hhi, entropy)
 
     # write data
-    out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
+    out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
     dbWriteTable(conn = doiGT_DB, name = "data_agg", value = out, append = TRUE)
   }
   message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
@@ -101,6 +101,6 @@ run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
 #' @method run_agg list
 #' @export
 
-run_agg.list <- function(control, object, lst_geo = "lst_wdi") {
-  walk(object, run_agg, control = control, lst_geo = lst_geo)
+run_agg.list <- function(control, object, locations = "lst_wdi") {
+  walk(object, run_agg, control = control, locations = locations)
 }

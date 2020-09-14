@@ -20,28 +20,28 @@ new_batch_o <- add_object_keyword(keyword = c("manchester united", "real madrid"
 filter(batch_terms, batch == new_batch_o & type == "obj")
 
 # run control download ----
-run_control(control = new_batch_c, lst_geo = lst_wdi[1:5])
-run_control(control = new_batch_c, lst_geo = lst_usa[1:5])
+run_control(control = new_batch_c, locations = lst_wdi[1:5])
+run_control(control = new_batch_c, locations = lst_usa[1:5])
 filter(data_con, batch == new_batch_c)
 
 # run object download ----
-run_object(object = new_batch_o, lst_geo = lst_wdi[1:5])
-run_object(object = new_batch_o, lst_geo = lst_usa[1:5])
+run_object(object = new_batch_o, locations = lst_wdi[1:5])
+run_object(object = new_batch_o, locations = lst_usa[1:5])
 filter(data_obj, batch == new_batch_o)
 
 # run map download ----
-run_map(control = new_batch_c, object = new_batch_o, lst_geo = lst_wdi)
-run_map(control = new_batch_c, object = new_batch_o, lst_geo = lst_usa)
+run_map(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
+run_map(control = new_batch_c, object = new_batch_o, locations = lst_usa)
 filter(data_map, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run scoring ----
-run_score(control = new_batch_c, object = new_batch_o, lst_geo = lst_wdi)
-run_score(control = new_batch_c, object = new_batch_o, lst_geo = lst_usa)
+run_score(control = new_batch_c, object = new_batch_o, locations = lst_wdi)
+run_score(control = new_batch_c, object = new_batch_o, locations = lst_usa)
 filter(data_score, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run aggregation ----
-run_agg(control = new_batch_c, object = new_batch_o, lst_geo = "lst_wdi")
-run_agg(control = new_batch_c, object = new_batch_o, lst_geo = "lst_usa")
+run_agg(control = new_batch_c, object = new_batch_o, locations = "lst_wdi")
+run_agg(control = new_batch_c, object = new_batch_o, locations = "lst_usa")
 filter(data_agg, batch_c == new_batch_c & batch_o == new_batch_o)
 
 # run world download ----

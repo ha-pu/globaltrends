@@ -13,7 +13,7 @@
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
-#' @param lst_geo List of countries or regions for which the data is downloaded.
+#' @param locations List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_map(control = 1, object = 1, lst_geo = lst_wdi)
-#' data_map(control = 1, object = as.list(1:5), lst_geo = lst_wdi)
+#' data_map(control = 1, object = 1, locations = lst_wdi)
+#' data_map(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
@@ -39,15 +39,15 @@
 #' @importFrom purrr walk
 
 
-run_map <- function(control, object, lst_geo = lst_wdi) UseMethod("run_map", object)
+run_map <- function(control, object, locations = lst_wdi) UseMethod("run_map", object)
 
 #' @rdname run_map
 #' @method run_map numeric
 #' @export
 
-run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
+run_map.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
-  walk(lst_geo, ~ {
+  walk(locations, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_con, batch == control & geo == .x)
       qry_con <- collect(qry_con)
@@ -74,7 +74,7 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
         }
       }
     }
-    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
+    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
@@ -82,6 +82,6 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
 #' @method run_map list
 #' @export
 
-run_map.list <- function(control, object, lst_geo = lst_wdi) {
-  walk(object, run_map, control = control, lst_geo = lst_geo)
+run_map.list <- function(control, object, locations = lst_wdi) {
+  walk(object, run_map, control = control, locations = locations)
 }
