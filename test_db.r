@@ -8,7 +8,7 @@ options(dplyr.summarise.inform = FALSE)
 # connect to db ----
 dir_wd <- tempdir()
 setwd(dir_wd)
-run_init()
+initialize_db()
 gtrends_base()
 
 # add new control batch ----

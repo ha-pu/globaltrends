@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' run_init()
+#' initialize_db()
 #' }
 #'
 #' @export
@@ -18,7 +18,7 @@
 #' @importFrom dplyr src_sqlite
 #' @importFrom RSQLite SQLite
 
-run_init <- function() {
+initialize_db <- function() {
 
   # create db folder ----
   if (!dir.exists("db")) dir.create("db")
