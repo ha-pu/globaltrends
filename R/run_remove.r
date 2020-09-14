@@ -25,7 +25,7 @@
 #' @importFrom DBI dbExecute
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom stringr str_c
+#' @importFrom glue glue
 
 run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
   if (is.character(table)) {
@@ -81,14 +81,14 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
     terms_con <- filter(batch_terms, type == "con")
     terms_con <- collect(terms_con)
     assign("terms_con", terms_con, envir = .GlobalEnv)
-    message(str_c("Successfully deleted control batch", batch, "from 'batch_terms'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch} from 'batch_terms'."))
 
     .remove_data_con(batch = batch)
   } else if (type == "obj") {
     terms_obj <- filter(batch_terms, type == "obj")
     terms_obj <- collect(terms_obj)
     assign("terms_obj", terms_obj, envir = .GlobalEnv)
-    message(str_c("Successfully deleted object batch", batch, "from 'batch_terms'.", sep = " "))
+    message(glue("Successfully deleted object batch {batch} from 'batch_terms'."))
 
     .remove_data_obj(batch = batch)
   }
@@ -106,12 +106,12 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
     time_con <- filter(batch_time, type == "con")
     time_con <- collect(time_con)
     assign("time_con", time_con, envir = .GlobalEnv)
-    message(str_c("Successfully deleted control batch", batch, "from 'batch_time'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
   } else if (type == "obj") {
     time_obj <- filter(batch_time, type == "obj")
     time_obj <- collect(time_obj)
     assign("time_obj", time_obj, envir = .GlobalEnv)
-    message(str_c("Successfully deleted object batch", batch, "from 'batch_time'.", sep = " "))
+    message(glue("Successfully deleted object batch {batch} from 'batch_time'."))
   }
 }
 
@@ -121,7 +121,7 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
 .remove_data_con <- function(batch) {
   .test_batch(batch)
   dbExecute(conn = gtrends_db, statement = "DELETE FROM data_con WHERE batch=?", params = list(batch))
-  message(str_c("Successfully deleted control batch", batch, "from 'data_con'.", sep = " "))
+  message(glue("Successfully deleted control batch {batch} from 'data_con'."))
 
   .remove_data_map(batch_c = batch)
 }
@@ -132,7 +132,7 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
 .remove_data_obj <- function(batch) {
   .test_batch(batch)
   dbExecute(conn = gtrends_db, statement = "DELETE FROM data_obj WHERE batch=?", params = list(batch))
-  message(str_c("Successfully deleted object batch", batch, "from 'data_obj'.", sep = " "))
+  message(glue("Successfully deleted object batch {batch} from 'data_obj'."))
 
   .remove_data_map(batch_o = batch)
   .remove_data_wrld(batch = batch)
@@ -145,15 +145,15 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_c=?", params = list(batch_c))
-    message(str_c("Successfully deleted control batch", batch_c, "from 'data_map'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_map'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_o=?", params = list(batch_o))
-    message(str_c("Successfully deleted object batch", batch_o, "from 'data_map'.", sep = " "))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_map'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_map WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(str_c("Successfully delted control batch", batch_c, "and object batch", batch_o, "from 'data_map'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_map'."))
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
@@ -166,15 +166,15 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
-    message(str_c("Control batch", batch_c, "deleted from 'data_score'.", sep = " "))
+    message(glue("Control batch {batch_c} deleted from 'data_score'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
-    message(str_c("object batch", batch_o, "deleted from 'data_score'.", sep = " "))
+    message(glue("object batch {batch_o} deleted from 'data_score'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(str_c("Successfully deleted control batch", batch_c, "and object batch", batch_o, "from 'data_score'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_score'."))
   }
 
   .remove_data_agg(batch_c = batch_c, batch_o = batch_o)
@@ -187,15 +187,15 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_agg WHERE batch_c=?", params = list(batch_c))
-    message(str_c("Control batch", batch_c, "deleted from 'data_agg'.", sep = " "))
+    message(glue("Control batch {batch_c} deleted from 'data_agg'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_agg WHERE batch_o=?", params = list(batch_o))
-    message(str_c("object batch", batch_o, "deleted from 'data_agg'.", sep = " "))
+    message(glue("object batch {batch_o} deleted from 'data_agg'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
     dbExecute(conn = gtrends_db, statement = "DELETE FROM data_agg WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(str_c("Successfully deleted control batch", batch_c, "and object batch", batch_o, "from 'data_agg'.", sep = " "))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_agg'."))
   }
 }
 
@@ -205,5 +205,5 @@ run_remove <- function(table, batch_c = NULL, batch_o = NULL) {
 .remove_data_wrld <- function(batch) {
   .test_batch(batch)
   dbExecute(conn = gtrends_db, statement = "DELETE FROM data_wrld WHERE batch=?", params = list(batch))
-  message(str_c("Successfully deleted object batch", batch, "from 'data_wrld'.", sep = " "))
+  message(glue("Successfully deleted object batch {batch} from 'data_wrld'."))
 }

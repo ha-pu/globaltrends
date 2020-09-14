@@ -1,6 +1,7 @@
 library(DBI)
 library(dbplyr)
 library(forecast)
+library(glue)
 library(gtrendsR)
 library(ineq)
 library(lubridate)

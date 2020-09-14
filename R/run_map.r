@@ -33,10 +33,11 @@
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
+#' @importFrom dplyr summarise
+#' @importFrom glue glue
 #' @importFrom lubridate as_date
-#' @importFrom stats aggregate
 #' @importFrom purrr walk
-#' @importFrom stringr str_c
+
 
 run_map <- function(control, object, lst_geo = lst_wdi) UseMethod("run_map", object)
 
@@ -62,7 +63,7 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
         if (date_min < date_max) {
           i <- 1
           while (i <= length(term_con)) {
-            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = str_c(date_min, date_max, sep = " "))
+            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = glue("{date_min} {date_max}"))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
               dbWriteTable(conn = gtrends_db, name = "data_map", value = out, append = TRUE)
@@ -73,7 +74,7 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
         }
       }
     }
-    message(str_c("Successfully downloaded mapping data | control: ", control, " | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
   })
 }
 

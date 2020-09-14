@@ -41,9 +41,9 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
+#' @importFrom glue glue
 #' @importFrom lubridate as_date
 #' @importFrom purrr walk
-#' @importFrom stringr str_c
 #' @importFrom stringr str_replace
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
@@ -167,7 +167,7 @@ run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
-    message(str_c("Successfully computed search score | control: ", control, " | object: ", object, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(glue("Successfully computed search score | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
   })
 }
 

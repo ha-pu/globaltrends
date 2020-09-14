@@ -30,8 +30,8 @@
 #' @rdname run_control
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
+#' @importFrom glue glue
 #' @importFrom purrr walk
-#' @importFrom stringr str_c
 
 run_control <- function(control, lst_geo = lst_wdi) UseMethod("run_control", control)
 
@@ -51,7 +51,7 @@ run_control.numeric <- function(control, lst_geo = lst_wdi) {
         dbWriteTable(conn = gtrends_db, name = "data_con", value = out, append = TRUE)
       }
     }
-    message(str_c("Successfully downloaded control data | control: ", control, " | geo: ", .x, " [", which(lst_geo == .x), "|", length(lst_geo), "]"))
+    message(glue("Successfully downloaded control data | control: {control} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
   })
 }
 
