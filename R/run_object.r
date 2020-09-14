@@ -32,6 +32,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom purrr walk
 #' @importFrom stringr str_c
+#' @importFrom stringr str_split
 
 run_object <- function(object, lst_geo = lst_wdi) UseMethod("run_object", object)
 
