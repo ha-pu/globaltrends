@@ -66,7 +66,7 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
             out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = glue("{date_min} {date_max}"))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
-              dbWriteTable(conn = gtrends_db, name = "data_map", value = out, append = TRUE)
+              dbWriteTable(conn = doiGT_DB, name = "data_map", value = out, append = TRUE)
               break()
             }
             i <- i + 1

@@ -123,9 +123,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
       new_batch <- max(terms_con$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "con")
-    dbWriteTable(conn = gtrends_db, name = "batch_terms", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "con")
-    dbWriteTable(conn = gtrends_db, name = "batch_time", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
     terms_con <- filter(batch_terms, type == "con")
     terms_con <- collect(terms_con)
     assign("terms_con", terms_con, envir = .GlobalEnv)
@@ -141,9 +141,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
       new_batch <- max(terms_obj$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "obj")
-    dbWriteTable(conn = gtrends_db, name = "batch_terms", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "obj")
-    dbWriteTable(conn = gtrends_db, name = "batch_time", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
     terms_obj <- filter(batch_terms, type == "obj")
     terms_obj <- collect(terms_obj)
     assign("terms_obj", terms_obj, envir = .GlobalEnv)

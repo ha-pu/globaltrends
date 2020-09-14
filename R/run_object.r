@@ -54,7 +54,7 @@ run_object.numeric <- function(object, lst_geo = lst_wdi) {
         out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
       out <- mutate(out, batch = object)
-      dbWriteTable(conn = gtrends_db, name = "data_obj", value = out, append = TRUE)
+      dbWriteTable(conn = doiGT_DB, name = "data_obj", value = out, append = TRUE)
     }
     message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
   })

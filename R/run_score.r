@@ -164,7 +164,7 @@ run_score.numeric <- function(control, object, lst_geo = lst_wdi) {
         data_obj_agg <- select(data_obj_agg, geo, date, keyword, key, score)
         data_score <- pivot_wider(data_obj_agg, names_from = key, values_from = score, values_fill = 0)
         out <- mutate(data_score, batch_c = control, batch_o = object)
-        dbWriteTable(conn = gtrends_db, name = "data_score", value = out, append = TRUE)
+        dbWriteTable(conn = doiGT_DB, name = "data_score", value = out, append = TRUE)
       }
     }
     message(glue("Successfully computed search score | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))

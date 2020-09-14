@@ -24,73 +24,73 @@ run_init <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ----
-  gtrends_db <- suppressWarnings(src_sqlite("db/gtrends.sqlite", create = TRUE))
-  gtrends_db <- dbConnect(SQLite(), "db/gtrends.sqlite")
+  doiGT_DB <- suppressWarnings(src_sqlite("db/gtrends.sqlite", create = TRUE))
+  doiGT_DB <- dbConnect(SQLite(), "db/gtrends.sqlite")
   message("Database has been created.")
 
   # create tables ----
 
   # batch_terms
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE batch_terms (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_terms (
   type TEXT,
   batch INTEGER,
   keyword TEXT
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_terms ON batch_terms (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_terms ON batch_terms (batch);")
   message("Table 'batch_terms' has been created.")
 
   # batch_time
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE batch_time (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_time (
   type TEXT,
   batch INTEGER,
   time TEXT
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Table 'batch_time' has been created.")
 
   # dict_obj
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE dict_obj (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE dict_obj (
   term1 TEXT,
   term2 TEXT
           )")
   message("Table 'dict_obj' has been created.")
 
   # data_geo
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_geo (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_geo (
   name TEXT,
   geo TEXT,
   share REAL,
   cum_share REAL,
   type TEXT
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_geo ON data_geo (geo);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_geo ON data_geo (geo);")
   message("Table 'data_geo' has been created.")
-  .enter_geo(gtrends_db = gtrends_db)
+  .enter_geo(doiGT_DB = doiGT_DB)
 
   # data_con
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_con (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_con (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_con ON data_con (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_con ON data_con (batch);")
   message("Table 'batch_terms' has been created.")
 
   # data_obj
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_obj (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_obj (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_obj ON data_obj (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_obj ON data_obj (batch);")
   message("Table 'data_con' has been created.")
 
   # data_map
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_map (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_map (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
@@ -98,11 +98,11 @@ run_init <- function() {
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_map ON data_map (batch_c, batch_o);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_map ON data_map (batch_c, batch_o);")
   message("Table 'data_map' has been created.")
 
   # data_score
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_score (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_score (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
@@ -112,11 +112,11 @@ run_init <- function() {
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Table 'data_score' has been created.")
 
   # data_agg
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_agg (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_agg (
   keyword TEXT,
   date INTEGER,
   type TEXT,
@@ -127,19 +127,19 @@ run_init <- function() {
   batch_o INTEGER,
   lst_geo TEXT
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
   message("Table 'data_agg' has been created.")
 
   # data_wrld
-  dbExecute(conn = gtrends_db, statement = "CREATE TABLE data_wrld (
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_wrld (
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = gtrends_db, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
   message("Table 'data_wrld' has been created.")
 
   # disconnect from db ----
-  disconnect_db(db = gtrends_db)
+  disconnect_db(db = doiGT_DB)
 }

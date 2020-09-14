@@ -92,7 +92,7 @@ run_agg.numeric <- function(control, object, lst_geo = "lst_wdi") {
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object, lst_geo = lst_geo)
-    dbWriteTable(conn = gtrends_db, name = "data_agg", value = out, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "data_agg", value = out, append = TRUE)
   }
   message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
 }
