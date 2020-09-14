@@ -63,7 +63,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
         if (date_min < date_max) {
           i <- 1
           while (i <= length(term_con)) {
-            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = glue("{date_min} {date_max}"))
+            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
               dbWriteTable(conn = doiGT_DB, name = "data_map", value = out, append = TRUE)
@@ -83,5 +83,5 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
 #' @export
 
 download_mapping.list <- function(control, object, locations = lst_wdi) {
-  walk(object, download_mapping, control = control, locations = locations)
+  walk(object, download_mapping, control = control[[1]], locations = locations)
 }

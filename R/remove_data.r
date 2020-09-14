@@ -28,6 +28,8 @@
 #' @importFrom glue glue
 
 remove_data <- function(table, control = NULL, object = NULL) {
+  control <- control[[1]]
+  object <- object[[1]]
   if (is.character(table)) {
     if (table == "batch_terms") {
       if (!is.null(control) & is.null(object)) {
@@ -166,11 +168,11 @@ remove_data <- function(table, control = NULL, object = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
-    message(glue("Control batch {batch_c} deleted from 'data_score'."))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_score'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
-    message(glue("object batch {batch_o} deleted from 'data_score'."))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_score'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
@@ -187,11 +189,11 @@ remove_data <- function(table, control = NULL, object = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_c=?", params = list(batch_c))
-    message(glue("Control batch {batch_c} deleted from 'data_agg'."))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_agg'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_o=?", params = list(batch_o))
-    message(glue("object batch {batch_o} deleted from 'data_agg'."))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_agg'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
     dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))

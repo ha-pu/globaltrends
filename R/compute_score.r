@@ -57,6 +57,7 @@ compute_score <- function(control, object, locations = lst_wdi) UseMethod("compu
 #' @export
 
 compute_score.numeric <- function(control, object, locations = lst_wdi) {
+  control <- control[[1]]
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {

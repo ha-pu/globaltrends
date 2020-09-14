@@ -54,6 +54,7 @@ compute_doi <- function(control, object, locations = "lst_wdi") UseMethod("compu
 #' @export
 
 compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
+  control <- control[[1]]
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))

@@ -49,8 +49,8 @@ download_global(object = new_object)
 filter(data_wrld, batch == new_object)
 
 # remove data ----
-remove_data(table = "batch_terms", batch_c = new_control)
-remove_data(table = "batch_terms", batch_o = new_object)
+remove_data(table = "batch_terms", control = new_control)
+remove_data(table = "batch_terms", object = new_object)
 
 filter(batch_terms, batch == new_control & type == "con")
 filter(batch_terms, batch == new_object & type == "obj")
