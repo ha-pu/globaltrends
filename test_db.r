@@ -20,8 +20,8 @@ new_batch_o <- add_object_keyword(keyword = c("manchester united", "real madrid"
 filter(batch_terms, batch == new_batch_o & type == "obj")
 
 # run control download ----
-run_control(control = new_batch_c, locations = lst_wdi[1:5])
-run_control(control = new_batch_c, locations = lst_usa[1:5])
+download_control(control = new_batch_c, locations = lst_wdi[1:5])
+download_control(control = new_batch_c, locations = lst_usa[1:5])
 filter(data_con, batch == new_batch_c)
 
 # run object download ----

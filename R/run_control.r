@@ -1,9 +1,9 @@
 #' @title Download data for control batch
 #'
 #' @aliases
-#' run_control
-#' run_control.numeric
-#' run_control.list
+#' download_control
+#' download_control.numeric
+#' download_control.list
 #'
 #' @description
 #' @details
@@ -27,19 +27,19 @@
 #' }
 #'
 #' @export
-#' @rdname run_control
+#' @rdname download_control
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
 
-run_control <- function(control, locations = lst_wdi) UseMethod("run_control", control)
+download_control <- function(control, locations = lst_wdi) UseMethod("download_control", control)
 
-#' @rdname run_control
-#' @method run_control numeric
+#' @rdname download_control
+#' @method download_control numeric
 #' @export
 
-run_control.numeric <- function(control, locations = lst_wdi) {
+download_control.numeric <- function(control, locations = lst_wdi) {
   .test_batch(control)
   terms <- terms_con$keyword[terms_con$batch == control]
   time <- time_con$time[time_con$batch == control]
@@ -55,10 +55,10 @@ run_control.numeric <- function(control, locations = lst_wdi) {
   })
 }
 
-#' @rdname run_control
-#' @method run_control list
+#' @rdname download_control
+#' @method download_control list
 #' @export
 
-run_control.list <- function(control, locations = lst_wdi) {
-  walk(control, run_control, locations = locations)
+download_control.list <- function(control, locations = lst_wdi) {
+  walk(control, download_control, locations = locations)
 }
