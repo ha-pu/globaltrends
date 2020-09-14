@@ -18,17 +18,36 @@
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
+#'   keyword = c("amazon", "apple", "facebook", "google", "microsoft"),
+#'   time = "2016-01-01 2019-12-31"
+#' )
+#'
+#' add_control_keyword(
 #'   keyword = c(
 #'     "gmail", "maps", "news", "translate", "weather", "wikipedia",
 #'     "youtube"
 #'   ), time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
+#'   keyword = c(
+#'     "amazon", "apple", "facebook", "google", "microsoft",
+#'     "netflix", "twitter"
+#'   ), time = "2016-01-01 2019-12-31"
+#' )
+#'
+#' add_control_keyword(
 #'   keyword = list(c("gmail", "maps", "news"), c(
 #'     "translate", "weather",
 #'     "wikipedia", "youtube"
 #'   )), time = "2016-01-01 2019-12-31"
 #' )
+#' add_control_keyword(
+#'   keyword = list(c("amazon", "apple", "facebook", "google"), c(
+#'     "microsoft",
+#'     "netflix", "twitter"
+#'   )), time = "2016-01-01 2019-12-31"
+#' )
+#'
 #' }
 #' @rdname add_batch
 #' @export
@@ -40,37 +59,6 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 
 #' @title Add batch of object keywords
 #'
-#' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. When a
-#' \code{character} vector contains more than five keywords, the vector is
-#' split into five-keyword batches. A \code{list} must contain
-#' \code{character} elements of length five or less.
-#' @param time Time frame for which the batch data should be loaded. Object of
-#' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
-#'
-#' @return
-#' Message that the batch was created successfully. Batch data is
-#' uploaded to batch_terms and batch_time.
-#'
-#' @examples
-#' \dontrun{
-#' add_control_keyword(
-#'   keyword = c("amazon", "apple", "facebook", "google", "microsoft"),
-#'   time = "2016-01-01 2019-12-31"
-#' )
-#' add_control_keyword(
-#'   keyword = c(
-#'     "amazon", "apple", "facebook", "google", "microsoft",
-#'     "netflix", "twitter"
-#'   ), time = "2016-01-01 2019-12-31"
-#' )
-#' add_control_keyword(
-#'   keyword = list(c("amazon", "apple", "facebook", "google"), c(
-#'     "microsoft",
-#'     "netflix", "twitter"
-#'   )), time = "2016-01-01 2019-12-31"
-#' )
-#' }
 #' @rdname add_batch
 #' @export
 
@@ -99,7 +87,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 
 #' @keywords internal
 #' @rdname add_batch
-#' @method add_batch character
+#' @method .add_batch character
 #' @export
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2020-07-31") {
@@ -115,7 +103,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 
 #' @keywords internal
 #' @rdname add_batch
-#' @method add_batch list
+#' @method .add_batch list
 #' @export
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2020-07-31") {
