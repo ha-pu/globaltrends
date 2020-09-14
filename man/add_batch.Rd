@@ -11,9 +11,9 @@ add_control_keyword(keyword, time = "2010-01-01 2020-07-31")
 
 add_object_keyword(keyword, time = "2010-01-01 2020-07-31")
 
-\method{add_batch}{character}(type, keyword, time = "2010-01-01 2020-07-31")
+\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2020-07-31")
 
-\method{add_batch}{list}(type, keyword, time = "2010-01-01 2020-07-31")
+\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2020-07-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of class
@@ -26,9 +26,6 @@ split into five-keyword batches. A \code{list} must contain
 class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".}
 }
 \value{
-Message that the batch was created successfully. Batch data is
-uploaded to batch_terms and batch_time.
-
 Message that the batch was created successfully. Batch data is
 uploaded to batch_terms and batch_time.
 }
@@ -44,22 +41,15 @@ add_control_keyword(
   time = "2016-01-01 2019-12-31"
 )
 add_control_keyword(
+  keyword = c("amazon", "apple", "facebook", "google", "microsoft"),
+  time = "2016-01-01 2019-12-31"
+)
+
+add_control_keyword(
   keyword = c(
     "gmail", "maps", "news", "translate", "weather", "wikipedia",
     "youtube"
   ), time = "2016-01-01 2019-12-31"
-)
-add_control_keyword(
-  keyword = list(c("gmail", "maps", "news"), c(
-    "translate", "weather",
-    "wikipedia", "youtube"
-  )), time = "2016-01-01 2019-12-31"
-)
-}
-\dontrun{
-add_control_keyword(
-  keyword = c("amazon", "apple", "facebook", "google", "microsoft"),
-  time = "2016-01-01 2019-12-31"
 )
 add_control_keyword(
   keyword = c(
@@ -67,12 +57,20 @@ add_control_keyword(
     "netflix", "twitter"
   ), time = "2016-01-01 2019-12-31"
 )
+
+add_control_keyword(
+  keyword = list(c("gmail", "maps", "news"), c(
+    "translate", "weather",
+    "wikipedia", "youtube"
+  )), time = "2016-01-01 2019-12-31"
+)
 add_control_keyword(
   keyword = list(c("amazon", "apple", "facebook", "google"), c(
     "microsoft",
     "netflix", "twitter"
   )), time = "2016-01-01 2019-12-31"
 )
+
 }
 }
 \keyword{internal}
