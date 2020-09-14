@@ -1,9 +1,9 @@
 #' @title Download data for object batch
 #'
 #' @aliases
-#' run_object
-#' run_object.numeric
-#' run_object.list
+#' download_object
+#' download_object.numeric
+#' download_object.list
 #'
 #' @description
 #' @details
@@ -11,8 +11,8 @@
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
-#' @param lst_geo List of countries or regions for which the data is downloaded.
-#' Refers to lists generated in \code{gtrends_base}.
+#' @param locations List of countries or regions for which the data is downloaded.
+#' Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
 #'
@@ -22,29 +22,29 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_obj(object = 1, lst_geo = lst_wdi)
-#' data_obj(object = as.list(1:5), lst_geo = lst_wdi)
+#' data_obj(object = 1, locations = lst_wdi)
+#' data_obj(object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
-#' @rdname run_object
+#' @rdname download_object
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
 #' @importFrom stringr str_split
 
-run_object <- function(object, lst_geo = lst_wdi) UseMethod("run_object", object)
+download_object <- function(object, locations = lst_wdi) UseMethod("download_object", object)
 
-#' @rdname run_object
-#' @method run_object numeric
+#' @rdname download_object
+#' @method download_object numeric
 #' @export
 
-run_object.numeric <- function(object, lst_geo = lst_wdi) {
+download_object.numeric <- function(object, locations = lst_wdi) {
   .test_batch(object)
   terms <- terms_obj$keyword[terms_obj$batch == object]
   time <- time_obj$time[time_obj$batch == object]
-  walk(lst_geo, ~ {
+  walk(locations, ~ {
     if (.test_empty(table = "data_obj", batch_o = object, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)
       if (is.null(out)) {
@@ -56,14 +56,14 @@ run_object.numeric <- function(object, lst_geo = lst_wdi) {
       out <- mutate(out, batch = object)
       dbWriteTable(conn = doiGT_DB, name = "data_obj", value = out, append = TRUE)
     }
-    message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
+    message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
-#' @rdname run_object
-#' @method run_object list
+#' @rdname download_object
+#' @method download_object list
 #' @export
 
-run_object.list <- function(object, lst_geo = lst_wdi) {
-  walk(object, run_object, lst_geo = lst_geo)
+download_object.list <- function(object, locations = lst_wdi) {
+  walk(object, download_object, locations = locations)
 }

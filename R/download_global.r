@@ -1,9 +1,9 @@
-#' @title Download worlwide score data for object batch
+#' @title Download global score data for object batch
 #'
 #' @aliases
-#' run_wrld
-#' run_wrld.numeric
-#' run_wrld.list
+#' download_global
+#' download_global.numeric
+#' download_global.list
 #'
 #' @description
 #' @details
@@ -24,7 +24,7 @@
 #' }
 #'
 #' @export
-#' @rdname run_wrld
+#' @rdname download_global
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -32,13 +32,13 @@
 #' @importFrom purrr map
 #' @importFrom stringr str_split
 
-run_wrld <- function(object) UseMethod("run_wrld", object)
+download_global <- function(object) UseMethod("download_global", object)
 
-#' @rdname run_wrld
-#' @method run_wrld numeric
+#' @rdname download_global
+#' @method download_global numeric
 #' @export
 
-run_wrld.numeric <- function(object) {
+download_global.numeric <- function(object) {
   .test_batch(object)
   terms <- terms_obj$keyword[terms_obj$batch == object]
   terms <- terms[!(terms %in% dict_obj$term2)]
@@ -62,10 +62,10 @@ run_wrld.numeric <- function(object) {
   }
 }
 
-#' @rdname run_wrld
-#' @method run_wrld list
+#' @rdname download_global
+#' @method download_global list
 #' @export
 
-run_wrld.list <- function(object) {
-  walk(object, run_wrld)
+download_global.list <- function(object) {
+  walk(object, download_global)
 }

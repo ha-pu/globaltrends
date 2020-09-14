@@ -1,9 +1,9 @@
 #' @title Download data for mapping between control and object batch
 #'
 #' @aliases
-#' run_map
-#' run_map.numeric
-#' run_map.list
+#' download_mapping
+#' download_mapping.numeric
+#' download_mapping.list
 #'
 #' @description
 #' @details
@@ -13,8 +13,8 @@
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
-#' @param lst_geo List of countries or regions for which the data is downloaded.
-#' Refers to lists generated in \code{gtrends_base}.
+#' @param locations List of countries or regions for which the data is downloaded.
+#' Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
 #'
@@ -23,12 +23,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_map(control = 1, object = 1, lst_geo = lst_wdi)
-#' data_map(control = 1, object = as.list(1:5), lst_geo = lst_wdi)
+#' data_map(control = 1, object = 1, locations = lst_wdi)
+#' data_map(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
-#' @rdname run_map
+#' @rdname download_mapping
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -39,15 +39,15 @@
 #' @importFrom purrr walk
 
 
-run_map <- function(control, object, lst_geo = lst_wdi) UseMethod("run_map", object)
+download_mapping <- function(control, object, locations = lst_wdi) UseMethod("download_mapping", object)
 
-#' @rdname run_map
-#' @method run_map numeric
+#' @rdname download_mapping
+#' @method download_mapping numeric
 #' @export
 
-run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
+download_mapping.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
-  walk(lst_geo, ~ {
+  walk(locations, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_con, batch == control & geo == .x)
       qry_con <- collect(qry_con)
@@ -63,7 +63,7 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
         if (date_min < date_max) {
           i <- 1
           while (i <= length(term_con)) {
-            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = glue("{date_min} {date_max}"))
+            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
               dbWriteTable(conn = doiGT_DB, name = "data_map", value = out, append = TRUE)
@@ -74,14 +74,14 @@ run_map.numeric <- function(control, object, lst_geo = lst_wdi) {
         }
       }
     }
-    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(lst_geo == .x), total = length(lst_geo)))
+    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
-#' @rdname run_map
-#' @method run_map list
+#' @rdname download_mapping
+#' @method download_mapping list
 #' @export
 
-run_map.list <- function(control, object, lst_geo = lst_wdi) {
-  walk(object, run_map, control = control, lst_geo = lst_geo)
+download_mapping.list <- function(control, object, locations = lst_wdi) {
+  walk(object, download_mapping, control = control[[1]], locations = locations)
 }

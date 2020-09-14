@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' run_init()
+#' initialize_db()
 #' }
 #'
 #' @export
@@ -18,7 +18,7 @@
 #' @importFrom dplyr src_sqlite
 #' @importFrom RSQLite SQLite
 
-run_init <- function() {
+initialize_db <- function() {
 
   # create db folder ----
   if (!dir.exists("db")) dir.create("db")
@@ -125,7 +125,7 @@ run_init <- function() {
   entropy REAL,
   batch_c INTEGER,
   batch_o INTEGER,
-  lst_geo TEXT
+  locations TEXT
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
   message("Table 'data_agg' has been created.")
