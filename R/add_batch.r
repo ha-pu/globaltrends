@@ -75,7 +75,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #' .add_batch.character
 #' .add_batch.list
 #'
-#' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -87,7 +86,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #' @keywords internal
 #' @rdname add_batch
 #' @method .add_batch character
-#' @export
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2020-07-31") {
   if (length(keyword) > 5) {
@@ -103,7 +101,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 #' @keywords internal
 #' @rdname add_batch
 #' @method .add_batch list
-#' @export
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2020-07-31") {
   new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time))
