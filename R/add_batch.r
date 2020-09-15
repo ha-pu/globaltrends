@@ -10,7 +10,7 @@
 #'
 #' @return
 #' Message that the batch was created successfully. Batch data is
-#' uploaded to batch_terms and batch_time.
+#' uploaded to batch_keywords and batch_time.
 #' @examples
 #' \dontrun{
 #' add_control_keyword(
@@ -66,7 +66,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
   return(out)
 }
 
-#' @title Add keyword batches to batch_terms and batch_time
+#' @title Add keyword batches to batch_keywords and batch_time
 #'
 #' @keywords internal
 #'
@@ -117,40 +117,44 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 .add_keyword_batch <- function(type, keyword, time) {
   if (length(keyword) > 5) stop("Error: Lenght of list elements must not exceed 5.\nYou provided a list elment with length > 5.")
   if (type == "control") {
-    if (nrow(terms_con) == 0) {
+    if (nrow(keywords_control) == 0) {
       new_batch <- 1
     } else {
-      new_batch <- max(terms_con$batch) + 1
+      new_batch <- max(keywords_control$batch) + 1
     }
-    data <- tibble(batch = new_batch, keyword, type = "con")
-    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
-    data <- tibble(batch = new_batch, time = time, type = "con")
+    data <- tibble(batch = new_batch, keyword, type = "control")
+    dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
+    data <- tibble(batch = new_batch, time = time, type = "control")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    terms_con <- filter(batch_terms, type == "con")
-    terms_con <- collect(terms_con)
-    assign("terms_con", terms_con, envir = .GlobalEnv)
-    time_con <- filter(batch_time, type == "con")
-    time_con <- collect(time_con)
-    assign("time_con", time_con, envir = .GlobalEnv)
-    message(glue("New control batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
+    keywords_control <- filter(batch_keywords, type == "control")
+    keywords_control <- select(keywords_control, -type)
+    keywords_control <- collect(keywords_control)
+    assign("keywords_control", keywords_control, envir = .GlobalEnv)
+    time_control <- filter(batch_time, type == "control")
+    time_control <- select(time_control, -type)
+    time_control <- collect(time_control)
+    assign("time_control", time_control, envir = .GlobalEnv)
+    message(glue("Successfully crated new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else if (type == "object") {
-    if (nrow(terms_obj) == 0) {
+    if (nrow(keywords_object) == 0) {
       new_batch <- 1
     } else {
-      new_batch <- max(terms_obj$batch) + 1
+      new_batch <- max(keywords_object$batch) + 1
     }
-    data <- tibble(batch = new_batch, keyword, type = "obj")
-    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
-    data <- tibble(batch = new_batch, time = time, type = "obj")
+    data <- tibble(batch = new_batch, keyword, type = "object")
+    dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
+    data <- tibble(batch = new_batch, time = time, type = "object")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    terms_obj <- filter(batch_terms, type == "obj")
-    terms_obj <- collect(terms_obj)
-    assign("terms_obj", terms_obj, envir = .GlobalEnv)
-    time_obj <- filter(batch_time, type == "obj")
-    time_obj <- collect(time_obj)
-    assign("time_obj", time_obj, envir = .GlobalEnv)
-    message(glue("New object batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
+    keywords_object <- filter(batch_keywords, type == "object")
+    keywords_object <- select(keywords_object, -type)
+    keywords_object <- collect(keywords_object)
+    assign("keywords_object", keywords_object, envir = .GlobalEnv)
+    time_object <- filter(batch_time, type == "object")
+    time_object <- select(time_object, -type)
+    time_object <- collect(time_object)
+    assign("time_object", time_object, envir = .GlobalEnv)
+    message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
     stop("Error: 'type' allows only 'control' or 'object'.\nYou supplied another value.")

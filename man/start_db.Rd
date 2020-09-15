@@ -12,33 +12,33 @@ The function exports the following objects to .GlobalEnv:
   \item doiGT_DB A DBIConnection object, as returned by
   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
   directory
-  \item data_geo A remote data source pointing to the table "data_geo" in
+  \item data_locations A remote data source pointing to the table "data_locations" in
   the connected SQLite database
-  \item batch_terms A remote data source pointing to the table "batch_terms"
+  \item batch_keywords A remote data source pointing to the table "batch_keywords"
   in the connected SQLite database
   \item batch_time A remote data source pointing to the table "batch_times"
   in the connected SQLite database
-  \item data_agg A remote data source pointing to the table "data_agg" in
+  \item data_doi A remote data source pointing to the table "data_doi" in
   the connected SQLite database
-  \item data_con A remote data source pointing to the table "data_con" in
+  \item data_control A remote data source pointing to the table "data_control" in
   the connected SQLite database
-  \item data_map A remote data source pointing to the table "data_map" in
+  \item data_mapping A remote data source pointing to the table "data_mapping" in
   the connected SQLite database
-  \item data_obj A remote data source pointing to the table "data_obj" in
+  \item data_object A remote data source pointing to the table "data_object" in
   the connected SQLite database
   \item data_score A remote data source pointing to the table "data_score" in
   the connected SQLite database
-  \item data_wrld A remote data source pointing to the table "data_wrld" in
+  \item data_global A remote data source pointing to the table "data_global" in
   the connected SQLite database
-  \item lst_wdi A \code{character} vector containing ISO2 country codes of
+  \item countries A \code{character} vector containing ISO2 country codes of
   countries that add at leas 0.1% to global GDP
-  \item lst_usa A \code{character} vector containing ISO2 regional codes of
+  \item us_states A \code{character} vector containing ISO2 regional codes of
   US states
-  \item terms_con A \code{tibble} containing keywords of control batches
-  \item time_con A \code{tibble} containing times of control batches
-  \item terms_obj A \code{tibble} containing keywords of object batches
-  \item time_obj A \code{tibble} containing times of control batches
-  \item dict_obj A \code{tibble} containing synonymous keywords
+  \item keywords_control A \code{tibble} containing keywords of control batches
+  \item time_control A \code{tibble} containing times of control batches
+  \item keywords_object A \code{tibble} containing keywords of object batches
+  \item time_object A \code{tibble} containing times of control batches
+  \item keyword_synonyms A \code{tibble} containing synonymous keywords
 }
 }
 \description{

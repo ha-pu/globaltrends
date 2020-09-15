@@ -4,7 +4,7 @@
 \alias{.get_trend}
 \title{Download search trends from Google}
 \usage{
-.get_trend(geo, term, time = "all")
+.get_trend(location, term, time = "all")
 }
 \description{
 Download search trends from Google
