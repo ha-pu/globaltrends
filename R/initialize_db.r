@@ -59,8 +59,8 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_locations (
   name TEXT,
   location TEXT,
-  share REAL,
-  cum_share REAL,
+  gdp_share REAL,
+  gdp_cum_share REAL,
   type TEXT
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_location ON data_locations (location);")

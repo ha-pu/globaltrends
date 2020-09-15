@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_doi(control = 1, object = 1, locations = "lst_wdi")
-#' compute_doi(control = 1, object = as.list(1:5), locations = "lst_wdi")
+#' compute_doi(control = 1, object = 1, locations = "countries")
+#' compute_doi(control = 1, object = as.list(1:5), locations = "countries")
 #' }
 #'
 #' @export
@@ -47,13 +47,13 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-compute_doi <- function(control, object, locations = "lst_wdi") UseMethod("compute_doi", object)
+compute_doi <- function(control, object, locations = "countries") UseMethod("compute_doi", object)
 
 #' @rdname compute_doi
 #' @method compute_doi numeric
 #' @export
 
-compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
+compute_doi.numeric <- function(control, object, locations = "countries") {
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
@@ -102,6 +102,6 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
 #' @method compute_doi list
 #' @export
 
-compute_doi.list <- function(control, object, locations = "lst_wdi") {
+compute_doi.list <- function(control, object, locations = "countries") {
   walk(object, compute_doi, control = control, locations = locations)
 }

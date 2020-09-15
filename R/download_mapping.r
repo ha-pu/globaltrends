@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' download_mapping(control = 1, object = 1, locations = lst_wdi)
-#' download_mapping(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' download_mapping(control = 1, object = 1, locations = countries)
+#' download_mapping(control = 1, object = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -39,13 +39,13 @@
 #' @importFrom purrr walk
 
 
-download_mapping <- function(control, object, locations = lst_wdi) UseMethod("download_mapping", object)
+download_mapping <- function(control, object, locations = countries) UseMethod("download_mapping", object)
 
 #' @rdname download_mapping
 #' @method download_mapping numeric
 #' @export
 
-download_mapping.numeric <- function(control, object, locations = lst_wdi) {
+download_mapping.numeric <- function(control, object, locations = countries) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_mapping", batch_c = control, batch_o = object, location = .x)) {
@@ -82,6 +82,6 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
 #' @method download_mapping list
 #' @export
 
-download_mapping.list <- function(control, object, locations = lst_wdi) {
+download_mapping.list <- function(control, object, locations = countries) {
   walk(object, download_mapping, control = control[[1]], locations = locations)
 }

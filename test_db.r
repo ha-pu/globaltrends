@@ -20,28 +20,28 @@ new_object <- add_object_keyword(keyword = c("manchester united", "real madrid")
 filter(batch_keywords, batch == new_object & type == "obj")
 
 # run control download ----
-download_control(control = new_control, locations = lst_wdi[1:5])
-download_control(control = new_control, locations = lst_usa[1:5])
+download_control(control = new_control, locations = countries[1:5])
+download_control(control = new_control, locations = us_states[1:5])
 filter(data_control, batch == new_control)
 
 # run object download ----
-download_object(object = new_object, locations = lst_wdi[1:5])
-download_object(object = new_object, locations = lst_usa[1:5])
+download_object(object = new_object, locations = countries[1:5])
+download_object(object = new_object, locations = us_states[1:5])
 filter(data_object, batch == new_object)
 
 # run map download ----
-download_mapping(control = new_control, object = new_object, locations = lst_wdi)
-download_mapping(control = new_control, object = new_object, locations = lst_usa)
+download_mapping(control = new_control, object = new_object, locations = countries)
+download_mapping(control = new_control, object = new_object, locations = us_states)
 filter(data_mapping, batch_c == new_control & batch_o == new_object)
 
 # run scoring ----
-compute_score(control = new_control, object = new_object, locations = lst_wdi)
-compute_score(control = new_control, object = new_object, locations = lst_usa)
+compute_score(control = new_control, object = new_object, locations = countries)
+compute_score(control = new_control, object = new_object, locations = us_states)
 filter(data_score, batch_c == new_control & batch_o == new_object)
 
 # run aggregation ----
-compute_doi(control = new_control, object = new_object, locations = "lst_wdi")
-compute_doi(control = new_control, object = new_object, locations = "lst_usa")
+compute_doi(control = new_control, object = new_object, locations = "countries")
+compute_doi(control = new_control, object = new_object, locations = "us_states")
 filter(data_doi, batch_c == new_control & batch_o == new_object)
 
 # run world download ----

@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_score(control = 1, object = 1, locations = lst_wdi)
-#' compute_score(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' compute_score(control = 1, object = 1, locations = countries)
+#' compute_score(control = 1, object = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -50,13 +50,13 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-compute_score <- function(control, object, locations = lst_wdi) UseMethod("compute_score", object)
+compute_score <- function(control, object, locations = countries) UseMethod("compute_score", object)
 
 #' @rdname compute_score
 #' @method compute_score numeric
 #' @export
 
-compute_score.numeric <- function(control, object, locations = lst_wdi) {
+compute_score.numeric <- function(control, object, locations = countries) {
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
@@ -176,6 +176,6 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
 #' @method compute_score list
 #' @export
 
-compute_score.list <- function(control, object, locations = lst_wdi) {
+compute_score.list <- function(control, object, locations = countries) {
   walk(object, compute_score, control = control, locations = locations)
 }

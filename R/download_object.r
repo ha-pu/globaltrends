@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' download_object(object = 1, locations = lst_wdi)
-#' download_object(object = as.list(1:5), locations = lst_wdi)
+#' download_object(object = 1, locations = countries)
+#' download_object(object = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -34,13 +34,13 @@
 #' @importFrom purrr walk
 #' @importFrom stringr str_split
 
-download_object <- function(object, locations = lst_wdi) UseMethod("download_object", object)
+download_object <- function(object, locations = countries) UseMethod("download_object", object)
 
 #' @rdname download_object
 #' @method download_object numeric
 #' @export
 
-download_object.numeric <- function(object, locations = lst_wdi) {
+download_object.numeric <- function(object, locations = countries) {
   .test_batch(object)
   terms <- keywords_object$keyword[keywords_object$batch == object]
   time <- time_object$time[time_object$batch == object]
@@ -64,6 +64,6 @@ download_object.numeric <- function(object, locations = lst_wdi) {
 #' @method download_object list
 #' @export
 
-download_object.list <- function(object, locations = lst_wdi) {
+download_object.list <- function(object, locations = countries) {
   walk(object, download_object, locations = locations)
 }

@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' download_control(control = 1, locations = lst_wdi)
-#' download_control(control = as.list(1:5), locations = lst_wdi)
+#' download_control(control = 1, locations = countries)
+#' download_control(control = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -33,13 +33,13 @@
 #' @importFrom glue glue
 #' @importFrom purrr walk
 
-download_control <- function(control, locations = lst_wdi) UseMethod("download_control", control)
+download_control <- function(control, locations = countries) UseMethod("download_control", control)
 
 #' @rdname download_control
 #' @method download_control numeric
 #' @export
 
-download_control.numeric <- function(control, locations = lst_wdi) {
+download_control.numeric <- function(control, locations = countries) {
   .test_batch(control)
   terms <- keywords_control$keyword[keywords_control$batch == control]
   time <- time_control$time[time_control$batch == control]
@@ -59,6 +59,6 @@ download_control.numeric <- function(control, locations = lst_wdi) {
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = lst_wdi) {
+download_control.list <- function(control, locations = countries) {
   walk(control, download_control, locations = locations)
 }

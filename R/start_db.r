@@ -28,9 +28,9 @@
 #'   the connected SQLite database
 #'   \item data_global A remote data source pointing to the table "data_global" in
 #'   the connected SQLite database
-#'   \item lst_wdi A \code{character} vector containing ISO2 country codes of
+#'   \item countries A \code{character} vector containing ISO2 country codes of
 #'   countries that add at leas 0.1% to global GDP
-#'   \item lst_usa A \code{character} vector containing ISO2 regional codes of
+#'   \item us_states A \code{character} vector containing ISO2 regional codes of
 #'   US states
 #'   \item keywords_control A \code{tibble} containing keywords of control batches
 #'   \item time_control A \code{tibble} containing times of control batches
@@ -71,12 +71,12 @@ start_db <- function() {
   data_global <- tbl(doiGT_DB, "data_global")
 
   # load files ----
-  lst_wdi <- filter(data_locations, type == "lst_wdi" & share >= 0.001)
-  lst_wdi <- collect(lst_wdi)
-  lst_wdi <- pull(lst_wdi, location)
-  lst_usa <- filter(data_locations, type == "lst_usa")
-  lst_usa <- collect(lst_usa)
-  lst_usa <- pull(lst_usa, location)
+  countries <- filter(data_locations, type == "countries")
+  countries <- collect(countries)
+  countries <- pull(countries, location)
+  us_states <- filter(data_locations, type == "us_states")
+  us_states <- collect(us_states)
+  us_states <- pull(us_states, location)
 
   keywords_control <- filter(batch_keywords, type == "con")
   keywords_control <- select(keywords_control, -type)
@@ -93,8 +93,8 @@ start_db <- function() {
   keyword_synonyms <- collect(keyword_synonyms)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
-  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
+  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, countries, us_states, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
+  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "countries", "us_states", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }
