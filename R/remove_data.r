@@ -81,7 +81,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "control") {
     keywords_control <- filter(batch_keywords, type == "control")
-	keywords_control <- select(keywords_control, -type)
+    keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
     assign("keywords_control", keywords_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
@@ -89,7 +89,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     .remove_data_control(batch = batch)
   } else if (type == "object") {
     keywords_object <- filter(batch_keywords, type == "object")
-	  keywords_object <- select(keywords_object, -type)
+    keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
@@ -108,13 +108,13 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "control") {
     time_control <- filter(batch_time, type == "control")
-	time_control <- select(time_control, -type)
+    time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
   } else if (type == "object") {
     time_object <- filter(batch_time, type == "object")
-	time_object <- select(time_object, -type)
+    time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_time'."))
