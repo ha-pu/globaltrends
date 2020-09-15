@@ -45,18 +45,18 @@ download_object.numeric <- function(object, locations = lst_wdi) {
   terms <- keywords_object$keyword[keywords_object$batch == object]
   time <- time_object$time[time_object$batch == object]
   walk(locations, ~ {
-    if (.test_empty(table = "data_object", batch_o = object, geo = .x)) {
-      out <- .get_trend(geo = .x, term = terms, time = time)
+    if (.test_empty(table = "data_object", batch_o = object, location = .x)) {
+      out <- .get_trend(location = .x, term = terms, time = time)
       if (is.null(out)) {
         start <- as_date(str_split(time, pattern = " ")[[1]][[1]])
         end <- as_date(str_split(time, pattern = " ")[[1]][[2]])
-        out <- tibble(geo = .x, keyword = terms, hits = 0)
+        out <- tibble(location = .x, keyword = terms, hits = 0)
         out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
       out <- mutate(out, batch = object)
       dbWriteTable(conn = doiGT_DB, name = "data_object", value = out, append = TRUE)
     }
-    message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    message(glue("Successfully downloaded object data | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 

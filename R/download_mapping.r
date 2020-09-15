@@ -48,10 +48,10 @@ download_mapping <- function(control, object, locations = lst_wdi) UseMethod("do
 download_mapping.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
-    if (.test_empty(table = "data_mapping", batch_c = control, batch_o = object, geo = .x)) {
-      qry_control <- filter(data_control, batch == control & geo == .x)
+    if (.test_empty(table = "data_mapping", batch_c = control, batch_o = object, location = .x)) {
+      qry_control <- filter(data_control, batch == control & location == .x)
       qry_control <- collect(qry_control)
-      qry_object <- filter(data_object, batch == object & geo == .x)
+      qry_object <- filter(data_object, batch == object & location == .x)
       qry_object <- collect(qry_object)
       if (nrow(qry_control) > 0 & nrow(qry_object) > 0) {
         term_con <- summarise(group_by(qry_control, keyword), hits = mean(hits))
@@ -63,7 +63,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
         if (date_min < date_max) {
           i <- 1
           while (i <= length(term_con)) {
-            out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
+            out <- .get_trend(location = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
               dbWriteTable(conn = doiGT_DB, name = "data_mapping", value = out, append = TRUE)
@@ -74,7 +74,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
         }
       }
     }
-    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    message(glue("Successfully downloaded mapping data | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 

@@ -73,10 +73,10 @@ start_db <- function() {
   # load files ----
   lst_wdi <- filter(data_locations, type == "lst_wdi" & share >= 0.001)
   lst_wdi <- collect(lst_wdi)
-  lst_wdi <- pull(lst_wdi, geo)
+  lst_wdi <- pull(lst_wdi, location)
   lst_usa <- filter(data_locations, type == "lst_usa")
   lst_usa <- collect(lst_usa)
-  lst_usa <- pull(lst_usa, geo)
+  lst_usa <- pull(lst_usa, location)
 
   keywords_control <- filter(batch_keywords, type == "con")
   keywords_control <- select(keywords_control, -type)

@@ -58,7 +58,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
-    data <- filter(data, geo %in% pull(collect(filter(data_locations, type == locations)), geo))
+    data <- filter(data, location %in% pull(collect(filter(data_locations, type == locations)), location))
 
     # run dict replace
     if (any(data$keyword %in% keyword_synonyms$keyword)) {
@@ -75,7 +75,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
       })
       data <- bind_rows(data, out)
       data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$keyword[keyword_synonyms$keyword %in% kw1], keyword_synonyms$synonym[keyword_synonyms$keyword %in% kw1]))
-      data <- group_by(data, geo, date, keyword, batch_c, batch_o)
+      data <- group_by(data, location, date, keyword, batch_c, batch_o)
       data <- summarise_if(data, is.double, sum)
       data <- ungroup(data)
     }
@@ -83,7 +83,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
 
     # compute doi measures
     out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
-    out <- nest(out, data = c(geo, score))
+    out <- nest(out, data = c(location, score))
     out <- mutate(out,
       gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
       hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),

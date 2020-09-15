@@ -45,7 +45,7 @@ download_global.numeric <- function(object) {
   time <- time_object$time[time_object$batch == object]
   if (.test_empty(table = "data_global", batch_o = object)) {
     out <- map_dfr(terms, ~ {
-      out <- .get_trend(geo = "", term = .x, time = time)
+      out <- .get_trend(location = "", term = .x, time = time)
       if (!is.null(out)) {
         out <- select(out, keyword, date, hits)
       } else {

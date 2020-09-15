@@ -31,12 +31,12 @@
 #'
 #' @format A tibble with 2090 rows and 5 variables:
 #' \describe{
-#'   \item{geo}{\code{character} ISO2 code of country or region for which the
+#'   \item{location}{\code{character} ISO2 code of country or region for which the
 #'   data was downloaded}
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{hits}{\code{integer} search hits for the respective geo-keyword-date
+#'   \item{hits}{\code{integer} search hits for the respective location-keyword-date
 #'   combination}
 #'   \item{batch}{\code{integer} number of batch}
 #' }
@@ -49,12 +49,12 @@
 #'
 #' @format A tibble with 2090 rows and 5 variables:
 #' \describe{
-#'   \item{geo}{\code{character} ISO2 code of country or region for which the
+#'   \item{location}{\code{character} ISO2 code of country or region for which the
 #'   data was downloaded}
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{hits}{\code{integer} search hits for the respective geo-keyword-date
+#'   \item{hits}{\code{integer} search hits for the respective location-keyword-date
 #'   combination}
 #'   \item{batch}{\code{integer} number of batch}
 #' }
@@ -67,12 +67,12 @@
 #'
 #' @format A tibble with 2090 rows and 6 variables:
 #' \describe{
-#'   \item{geo}{\code{character} ISO2 code of country or region for which the
+#'   \item{location}{\code{character} ISO2 code of country or region for which the
 #'   data was downloaded}
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{hits}{\code{integer} search hits for the respective geo-keyword-date
+#'   \item{hits}{\code{integer} search hits for the respective location-keyword-date
 #'   combination}
 #'   \item{batch_c}{\code{integer} number of control batch}
 #'   \item{batch_o}{\code{integer} number of object batch}
@@ -86,16 +86,16 @@
 #'
 #' @format A tibble with 480 rows and 8 variables:
 #' \describe{
-#'   \item{geo}{\code{character} ISO2 code of country or region for which the
+#'   \item{location}{\code{character} ISO2 code of country or region for which the
 #'   data was downloaded}
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{score_obs}{\code{double} search search for the respective geo-keyword-date
+#'   \item{score_obs}{\code{double} search search for the respective location-keyword-date
 #'   combination - no time series adjustment}
-#'   \item{score_sad}{\code{double} search search for the respective geo-keyword-date
+#'   \item{score_sad}{\code{double} search search for the respective location-keyword-date
 #'   combination - seasonally adjusted time series}
-#'   \item{score_trd}{\code{double} search search for the respective geo-keyword-date
+#'   \item{score_trd}{\code{double} search search for the respective location-keyword-date
 #'   combination - trend-only time series}
 #'   \item{batch_c}{\code{integer} number of control batch}
 #'   \item{batch_o}{\code{integer} number of object batch}

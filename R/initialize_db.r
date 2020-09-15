@@ -58,18 +58,18 @@ initialize_db <- function() {
   # data_locations
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_locations (
   name TEXT,
-  geo TEXT,
+  location TEXT,
   share REAL,
   cum_share REAL,
   type TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_geo ON data_locations (geo);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_location ON data_locations (location);")
   message("Table 'data_locations' has been created.")
-  .enter_geo(doiGT_DB = doiGT_DB)
+  .enter_location(doiGT_DB = doiGT_DB)
 
   # data_control
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_control (
-  geo TEXT,
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
@@ -80,7 +80,7 @@ initialize_db <- function() {
 
   # data_object
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_object (
-  geo TEXT,
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
@@ -91,7 +91,7 @@ initialize_db <- function() {
 
   # data_mapping
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_mapping (
-  geo TEXT,
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
@@ -103,7 +103,7 @@ initialize_db <- function() {
 
   # data_score
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_score (
-  geo TEXT,
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   score_obs REAL,
