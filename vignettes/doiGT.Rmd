@@ -1,0 +1,71 @@
+---
+title: "doiGT"
+subtitle: "Analyze distributions, internationalization, and time series of Google Trends"
+author: "Harald Puhr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{doiGT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+# library(doiGT)
+```
+
+# Google Trends
+
+## Brief introduction
+* Short introduction to Google Trends
+
+## Overcoming trend normalization
+* Explain issue of trend normalization in Google Trends
+* Explain how we circumvent this issue
+
+# Analyze internationalization of firms
+
+## Setup the database
+* Explain how the package uses a database to store data
+* Run "initialize_db()"
+* Run "start_db()"
+* Run "disconnect_db()"
+
+## Download data
+* Explain batch structure of downloads and computations
+* Explain control and object batches
+
+### Control data
+* Use "add_control_keyword()" to create control batch
+* Run "download_control()"
+
+### Object data
+* Use "add_object_keyword()" to create object batch -> list of keywords
+* Run "download_object()"
+
+### Mapping data
+* Explain formula for data mapping -> references
+* Run "download_mapping()"
+
+## Compute search scores
+* Run "compute_score()"
+
+## Compute degree of internationalization
+* Explain inverted gini coefficient -> references
+* Run "compute_doi()"
+
+## Additonal options
+* Explain time series adjustments in "compute_score()"
+* Explain HHI and entropy measures in "compute_doi()"
+* Explain locations settings for all functions
+
+# Further applications
+* Explain difference between DOI and DOI-penetration -> run "download_global()"
+* DOI of persons, organizations, and trends
+* DOI on within-country level

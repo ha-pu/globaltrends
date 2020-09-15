@@ -25,3 +25,7 @@ Imports:
   tidyr (>= 1.0.0),
   WDI
 RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
