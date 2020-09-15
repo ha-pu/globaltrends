@@ -7,8 +7,8 @@
 \format{
 A tibble with 2 rows and 3 variables:
 \describe{
-  \item{type}{\code{character} indicating the type of batch, takes "con" for
-  control batches and "obj" for object batches}
+  \item{type}{\code{character} indicating the type of batch, takes "control" for
+  control batches and "object" for object batches}
   \item{batch}{\code{integer} number of the batch}
   \item{time}{\code{character} timeframe for the respective batch as
   "YYYY-MM-DD YYYY-MM-DD"}

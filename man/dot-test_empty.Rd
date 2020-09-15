@@ -8,7 +8,7 @@
   table,
   batch_c = NULL,
   batch_o = NULL,
-  geo = NULL,
+  location = NULL,
   locations = NULL
 )
 }

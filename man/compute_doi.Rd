@@ -6,11 +6,11 @@
 \alias{compute_doi.list}
 \title{Aggregate keyword-country data and compute DOI}
 \usage{
-compute_doi(control, object, locations = "lst_wdi")
+compute_doi(control, object, locations = "countries")
 
-\method{compute_doi}{numeric}(control, object, locations = "lst_wdi")
+\method{compute_doi}{numeric}(control, object, locations = "countries")
 
-\method{compute_doi}{list}(control, object, locations = "lst_wdi")
+\method{compute_doi}{list}(control, object, locations = "countries")
 }
 \arguments{
 \item{control}{Control batch for which the search score is used. Object
@@ -24,7 +24,7 @@ Object of class \code{character}.}
 }
 \value{
 Message that data was aggregated successfully. Data is uploaded
-to data_agg.
+to data_doi.
 }
 \description{
 Aggregate keyword-country data and compute DOI
@@ -34,8 +34,8 @@ Aggregate keyword-country data and compute DOI
 }
 \examples{
 \dontrun{
-data_agg(control = 1, object = 1, locations = "lst_wdi")
-data_agg(control = 1, object = as.list(1:5), locations = "lst_wdi")
+compute_doi(control = 1, object = 1, locations = "countries")
+compute_doi(control = 1, object = as.list(1:5), locations = "countries")
 }
 
 }

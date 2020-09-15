@@ -6,11 +6,11 @@
 \alias{compute_score.list}
 \title{Compute keyword-country search score}
 \usage{
-compute_score(control, object, locations = lst_wdi)
+compute_score(control, object, locations = countries)
 
-\method{compute_score}{numeric}(control, object, locations = lst_wdi)
+\method{compute_score}{numeric}(control, object, locations = countries)
 
-\method{compute_score}{list}(control, object, locations = lst_wdi)
+\method{compute_score}{list}(control, object, locations = countries)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
@@ -35,8 +35,8 @@ Compute keyword-country search score
 }
 \examples{
 \dontrun{
-data_score(control = 1, object = 1, locations = lst_wdi)
-data_score(control = 1, object = as.list(1:5), locations = lst_wdi)
+compute_score(control = 1, object = 1, locations = countries)
+compute_score(control = 1, object = as.list(1:5), locations = countries)
 }
 
 }

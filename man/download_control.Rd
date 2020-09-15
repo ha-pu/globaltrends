@@ -6,11 +6,11 @@
 \alias{download_control.list}
 \title{Download data for control batch}
 \usage{
-download_control(control, locations = lst_wdi)
+download_control(control, locations = countries)
 
-\method{download_control}{numeric}(control, locations = lst_wdi)
+\method{download_control}{numeric}(control, locations = countries)
 
-\method{download_control}{list}(control, locations = lst_wdi)
+\method{download_control}{list}(control, locations = countries)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
@@ -32,8 +32,8 @@ Download data for control batch
 }
 \examples{
 \dontrun{
-data_con(control = 1, locations = lst_wdi)
-data_con(control = as.list(1:5), locations = lst_wdi)
+download_control(control = 1, locations = countries)
+download_control(control = as.list(1:5), locations = countries)
 }
 
 }

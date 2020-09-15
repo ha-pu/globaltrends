@@ -18,7 +18,7 @@ of class \code{numeric}.}
 }
 \value{
 Message that data was downloaded successfully. Data is uploaded
-to data_wrld.
+to data_global.
 }
 \description{
 Download global score data for object batch
@@ -28,8 +28,8 @@ Download global score data for object batch
 }
 \examples{
 \dontrun{
-data_wrld(object = 1)
-data_wrld(object = as.list(1:5))
+download_global(object = 1)
+download_global(object = as.list(1:5))
 }
 
 }

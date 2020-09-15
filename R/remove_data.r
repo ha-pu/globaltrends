@@ -73,6 +73,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from batch_keywords
 #' @keywords internal
 
@@ -100,6 +101,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_batch_time(type = type, batch = batch)
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from batch_time
 #' @keywords internal
 
@@ -121,6 +123,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_control
 #' @keywords internal
 
@@ -132,6 +135,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_mapping(batch_c = batch)
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_object
 #' @keywords internal
 
@@ -144,6 +148,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_global(batch = batch)
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_mapping
 #' @keywords internal
 
@@ -165,6 +170,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_score
 #' @keywords internal
 
@@ -186,6 +192,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_doi(batch_c = batch_c, batch_o = batch_o)
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_doi
 #' @keywords internal
 
@@ -205,6 +212,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
+#' @rdname dot-remove_data
 #' @title Remove from data_global
 #' @keywords internal
 
