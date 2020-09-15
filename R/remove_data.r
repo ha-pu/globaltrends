@@ -81,6 +81,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "con") {
     keywords_control <- filter(batch_keywords, type == "con")
+	keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
     assign("keywords_control", keywords_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
@@ -88,6 +89,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     .remove_data_control(batch = batch)
   } else if (type == "obj") {
     keywords_object <- filter(batch_keywords, type == "obj")
+	keywords_object <- select(keywords_control, -type)
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))

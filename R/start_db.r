@@ -79,11 +79,13 @@ start_db <- function() {
   lst_usa <- pull(lst_usa, geo)
 
   keywords_control <- filter(batch_keywords, type == "con")
+  keywords_control <- select(keywords_control, -type)
   keywords_control <- collect(keywords_control)
   time_control <- filter(batch_time, type == "con")
   time_control <- select(time_control, -type)
   time_control <- collect(time_control)
   keywords_object <- filter(batch_keywords, type == "obj")
+  keywords_object <- select(keywords_object, -type)
   keywords_object <- collect(keywords_object)
   time_object <- filter(batch_time, type == "obj")
   time_object <- select(time_object, -type)
