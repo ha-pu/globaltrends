@@ -12,8 +12,8 @@
     in_batch_o <- batch_o
     in_geo <- geo
     in_locations <- locations
-    if (table == "data_con") {
-      out <- filter(data_con, batch == in_batch_c & geo == in_geo)
+    if (table == "data_control") {
+      out <- filter(data_control, batch == in_batch_c & geo == in_geo)
     } else if (table == "data_obj") {
       out <- filter(data_obj, batch == in_batch_o & geo == in_geo)
     } else if (table == "data_map") {

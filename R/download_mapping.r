@@ -49,7 +49,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
-      qry_con <- filter(data_con, batch == control & geo == .x)
+      qry_con <- filter(data_control, batch == control & geo == .x)
       qry_con <- collect(qry_con)
       qry_obj <- filter(data_obj, batch == object & geo == .x)
       qry_obj <- collect(qry_obj)

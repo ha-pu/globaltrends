@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_con(control = 1, locations = lst_wdi)
-#' data_con(control = as.list(1:5), locations = lst_wdi)
+#' data_control(control = 1, locations = lst_wdi)
+#' data_control(control = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
@@ -44,11 +44,11 @@ download_control.numeric <- function(control, locations = lst_wdi) {
   terms <- terms_con$keyword[terms_con$batch == control]
   time <- time_con$time[time_con$batch == control]
   walk(locations, ~ {
-    if (.test_empty(table = "data_con", batch_c = control, geo = .x)) {
+    if (.test_empty(table = "data_control", batch_c = control, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)
       if (!is.null(out)) {
         out <- mutate(out, batch = control)
-        dbWriteTable(conn = doiGT_DB, name = "data_con", value = out, append = TRUE)
+        dbWriteTable(conn = doiGT_DB, name = "data_control", value = out, append = TRUE)
       }
     }
     message(glue("Successfully downloaded control data | control: {control} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))

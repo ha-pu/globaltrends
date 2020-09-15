@@ -67,15 +67,15 @@ initialize_db <- function() {
   message("Table 'data_geo' has been created.")
   .enter_geo(doiGT_DB = doiGT_DB)
 
-  # data_con
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_con (
+  # data_control
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_control (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_con ON data_con (batch);")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_con ON data_control (batch);")
   message("Table 'batch_keywords' has been created.")
 
   # data_obj
@@ -87,7 +87,7 @@ initialize_db <- function() {
   batch INTEGER
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_obj ON data_obj (batch);")
-  message("Table 'data_con' has been created.")
+  message("Table 'data_control' has been created.")
 
   # data_map
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_map (

@@ -22,7 +22,7 @@ filter(batch_keywords, batch == new_object & type == "obj")
 # run control download ----
 download_control(control = new_control, locations = lst_wdi[1:5])
 download_control(control = new_control, locations = lst_usa[1:5])
-filter(data_con, batch == new_control)
+filter(data_control, batch == new_control)
 
 # run object download ----
 download_object(object = new_object, locations = lst_wdi[1:5])
@@ -54,7 +54,7 @@ remove_data(table = "batch_keywords", object = new_object)
 
 filter(batch_keywords, batch == new_control & type == "con")
 filter(batch_keywords, batch == new_object & type == "obj")
-filter(data_con, batch == new_control)
+filter(data_control, batch == new_control)
 filter(data_obj, batch == new_object)
 filter(data_map, batch_c == new_control & batch_o == new_object)
 filter(data_score, batch_c == new_control & batch_o == new_object)

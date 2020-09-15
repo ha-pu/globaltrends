@@ -25,7 +25,7 @@
 #' }
 "batch_time"
 
-#' data_con
+#' data_control
 #'
 #' xxx.
 #'
@@ -41,7 +41,7 @@
 #'   \item{batch}{\code{integer} number of batch}
 #' }
 #' @source \url{https://trends.google.com/trends/}
-"data_con"
+"data_control"
 
 #' data_obj
 #'

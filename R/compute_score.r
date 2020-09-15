@@ -64,7 +64,7 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
       qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
       if (nrow(qry_map) != 0) {
-        qry_con <- filter(data_con, batch == control & geo == .x)
+        qry_con <- filter(data_control, batch == control & geo == .x)
         qry_con <- collect(qry_con)
         qry_obj <- filter(data_obj, batch == object & geo == .x)
         qry_obj <- collect(qry_obj)
@@ -154,10 +154,10 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
         tmp_obj <- select(tmp_obj, geo, date, key, keyword, value)
 
         # compute score
-        data_con_agg <- group_by(tmp_con, geo, date, key)
-        data_con_agg <- summarise(data_con_agg, value_c = sum(value))
-        data_con_agg <- ungroup(data_con_agg)
-        data_obj_agg <- left_join(tmp_obj, data_con_agg, by = c("geo", "date", "key"))
+        control_agg <- group_by(tmp_con, geo, date, key)
+        control_agg <- summarise(control_agg, value_c = sum(value))
+        control_agg <- ungroup(control_agg)
+        data_obj_agg <- left_join(tmp_obj, control_agg, by = c("geo", "date", "key"))
         data_obj_agg <- mutate(data_obj_agg,
           score = coalesce(value / value_c, 0),
           key = str_replace(key, "hits_", "score_")
