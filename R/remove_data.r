@@ -106,6 +106,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "con") {
     time_control <- filter(batch_time, type == "con")
+	time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))

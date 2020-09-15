@@ -81,6 +81,7 @@ start_db <- function() {
   keywords_control <- filter(batch_keywords, type == "con")
   keywords_control <- collect(keywords_control)
   time_control <- filter(batch_time, type == "con")
+  time_control <- select(time_control, -type)
   time_control <- collect(time_control)
   keywords_object <- filter(batch_keywords, type == "obj")
   keywords_object <- collect(keywords_object)

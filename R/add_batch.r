@@ -130,6 +130,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     keywords_control <- collect(keywords_control)
     assign("keywords_control", keywords_control, envir = .GlobalEnv)
     time_control <- filter(batch_time, type == "con")
+	time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("New control batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
