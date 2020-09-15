@@ -10,7 +10,7 @@
 #'
 #' @return
 #' Message that the batch was created successfully. Batch data is
-#' uploaded to batch_terms and batch_time.
+#' uploaded to batch_keywords and batch_time.
 #' @examples
 #' \dontrun{
 #' add_control_keyword(
@@ -66,7 +66,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
   return(out)
 }
 
-#' @title Add keyword batches to batch_terms and batch_time
+#' @title Add keyword batches to batch_keywords and batch_time
 #'
 #' @keywords internal
 #'
@@ -123,10 +123,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
       new_batch <- max(terms_con$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "con")
-    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "con")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    terms_con <- filter(batch_terms, type == "con")
+    terms_con <- filter(batch_keywords, type == "con")
     terms_con <- collect(terms_con)
     assign("terms_con", terms_con, envir = .GlobalEnv)
     time_con <- filter(batch_time, type == "con")
@@ -141,10 +141,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
       new_batch <- max(terms_obj$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "obj")
-    dbWriteTable(conn = doiGT_DB, name = "batch_terms", value = data, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "obj")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    terms_obj <- filter(batch_terms, type == "obj")
+    terms_obj <- filter(batch_keywords, type == "obj")
     terms_obj <- collect(terms_obj)
     assign("terms_obj", terms_obj, envir = .GlobalEnv)
     time_obj <- filter(batch_time, type == "obj")

@@ -12,7 +12,7 @@
 #'   directory
 #'   \item data_geo A remote data source pointing to the table "data_geo" in
 #'   the connected SQLite database
-#'   \item batch_terms A remote data source pointing to the table "batch_terms"
+#'   \item batch_keywords A remote data source pointing to the table "batch_keywords"
 #'   in the connected SQLite database
 #'   \item batch_time A remote data source pointing to the table "batch_times"
 #'   in the connected SQLite database
@@ -59,7 +59,7 @@ start_db <- function() {
 
   # get tables ----
   data_geo <- tbl(doiGT_DB, "data_geo")
-  batch_terms <- tbl(doiGT_DB, "batch_terms")
+  batch_keywords <- tbl(doiGT_DB, "batch_keywords")
   batch_time <- tbl(doiGT_DB, "batch_time")
   dict_obj <- tbl(doiGT_DB, "dict_obj")
 
@@ -78,19 +78,19 @@ start_db <- function() {
   lst_usa <- collect(lst_usa)
   lst_usa <- pull(lst_usa, geo)
 
-  terms_con <- filter(batch_terms, type == "con")
+  terms_con <- filter(batch_keywords, type == "con")
   terms_con <- collect(terms_con)
   time_con <- filter(batch_time, type == "con")
   time_con <- collect(time_con)
-  terms_obj <- filter(batch_terms, type == "obj")
+  terms_obj <- filter(batch_keywords, type == "obj")
   terms_obj <- collect(terms_obj)
   time_obj <- filter(batch_time, type == "obj")
   time_obj <- collect(time_obj)
   dict_obj <- collect(dict_obj)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_geo, batch_terms, batch_time, data_agg, data_con, data_map, data_obj, data_score, data_wrld, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
-  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_terms", "batch_time", "data_agg", "data_con", "data_map", "data_obj", "data_score", "data_wrld", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
+  lst_object <- list(doiGT_DB, data_geo, batch_keywords, batch_time, data_agg, data_con, data_map, data_obj, data_score, data_wrld, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
+  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_keywords", "batch_time", "data_agg", "data_con", "data_map", "data_obj", "data_score", "data_wrld", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

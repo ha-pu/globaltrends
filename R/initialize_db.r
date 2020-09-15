@@ -30,14 +30,14 @@ initialize_db <- function() {
 
   # create tables ----
 
-  # batch_terms
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_terms (
+  # batch_keywords
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_keywords (
   type TEXT,
   batch INTEGER,
   keyword TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_terms ON batch_terms (batch);")
-  message("Table 'batch_terms' has been created.")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
+  message("Table 'batch_keywords' has been created.")
 
   # batch_time
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_time (
@@ -76,7 +76,7 @@ initialize_db <- function() {
   batch INTEGER
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_con ON data_con (batch);")
-  message("Table 'batch_terms' has been created.")
+  message("Table 'batch_keywords' has been created.")
 
   # data_obj
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_obj (

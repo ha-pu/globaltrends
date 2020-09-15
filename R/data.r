@@ -1,4 +1,4 @@
-#' batch_terms
+#' batch_keywords
 #'
 #' xxx.
 #'
@@ -9,7 +9,7 @@
 #'   \item{batch}{\code{integer} number of the batch}
 #'   \item{keyword}{\code{character} keywords included in the respective batch}
 #' }
-"batch_terms"
+"batch_keywords"
 
 #' batch_time
 #'

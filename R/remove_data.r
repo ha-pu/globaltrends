@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' remove_data(table = "batch_terms", control = 1)
+#' remove_data(table = "batch_keywords", control = 1)
 #' remove_data(table = "data_map", control = 1, object = 1)
 #' }
 #'
@@ -31,11 +31,11 @@ remove_data <- function(table, control = NULL, object = NULL) {
   control <- control[[1]]
   object <- object[[1]]
   if (is.character(table)) {
-    if (table == "batch_terms") {
+    if (table == "batch_keywords") {
       if (!is.null(control) & is.null(object)) {
-        .remove_batch_terms(type = "con", batch = control)
+        .remove_batch_keywords(type = "con", batch = control)
       } else if (!is.null(object) & is.null(control)) {
-        .remove_batch_terms(type = "obj", batch = object)
+        .remove_batch_keywords(type = "obj", batch = object)
       }
     } else if (table == "batch_time") {
       if (!is.null(control) & is.null(object)) {
@@ -73,24 +73,24 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
-#' @title Remove from batch_terms
+#' @title Remove from batch_keywords
 #' @keywords internal
 
-.remove_batch_terms <- function(type, batch) {
+.remove_batch_keywords <- function(type, batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_terms WHERE type=? AND batch=?", params = list(type, batch))
+  dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "con") {
-    terms_con <- filter(batch_terms, type == "con")
+    terms_con <- filter(batch_keywords, type == "con")
     terms_con <- collect(terms_con)
     assign("terms_con", terms_con, envir = .GlobalEnv)
-    message(glue("Successfully deleted control batch {batch} from 'batch_terms'."))
+    message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
 
     .remove_data_con(batch = batch)
   } else if (type == "obj") {
-    terms_obj <- filter(batch_terms, type == "obj")
+    terms_obj <- filter(batch_keywords, type == "obj")
     terms_obj <- collect(terms_obj)
     assign("terms_obj", terms_obj, envir = .GlobalEnv)
-    message(glue("Successfully deleted object batch {batch} from 'batch_terms'."))
+    message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
 
     .remove_data_obj(batch = batch)
   }

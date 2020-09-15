@@ -13,11 +13,11 @@ start_db()
 
 # add new control batch ----
 new_control <- add_control_keyword(keyword = c("gmail", "wikipedia"), time = "2016-01-01 2019-12-31")
-filter(batch_terms, batch == new_control & type == "con")
+filter(batch_keywords, batch == new_control & type == "con")
 
 # add new object batch ----
 new_object <- add_object_keyword(keyword = c("manchester united", "real madrid"), time = "2016-01-01 2019-12-31")
-filter(batch_terms, batch == new_object & type == "obj")
+filter(batch_keywords, batch == new_object & type == "obj")
 
 # run control download ----
 download_control(control = new_control, locations = lst_wdi[1:5])
@@ -49,11 +49,11 @@ download_global(object = new_object)
 filter(data_wrld, batch == new_object)
 
 # remove data ----
-remove_data(table = "batch_terms", control = new_control)
-remove_data(table = "batch_terms", object = new_object)
+remove_data(table = "batch_keywords", control = new_control)
+remove_data(table = "batch_keywords", object = new_object)
 
-filter(batch_terms, batch == new_control & type == "con")
-filter(batch_terms, batch == new_object & type == "obj")
+filter(batch_keywords, batch == new_control & type == "con")
+filter(batch_keywords, batch == new_object & type == "obj")
 filter(data_con, batch == new_control)
 filter(data_obj, batch == new_object)
 filter(data_map, batch_c == new_control & batch_o == new_object)
