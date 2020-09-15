@@ -80,16 +80,16 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .test_batch(batch)
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "con") {
-    terms_con <- filter(batch_keywords, type == "con")
-    terms_con <- collect(terms_con)
-    assign("terms_con", terms_con, envir = .GlobalEnv)
+    keywords_control <- filter(batch_keywords, type == "con")
+    keywords_control <- collect(keywords_control)
+    assign("keywords_control", keywords_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
 
     .remove_data_control(batch = batch)
   } else if (type == "obj") {
-    terms_obj <- filter(batch_keywords, type == "obj")
-    terms_obj <- collect(terms_obj)
-    assign("terms_obj", terms_obj, envir = .GlobalEnv)
+    keywords_object <- filter(batch_keywords, type == "obj")
+    keywords_object <- collect(keywords_object)
+    assign("keywords_object", keywords_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
 
     .remove_data_object(batch = batch)
@@ -105,14 +105,14 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .test_batch(batch)
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "con") {
-    time_con <- filter(batch_time, type == "con")
-    time_con <- collect(time_con)
-    assign("time_con", time_con, envir = .GlobalEnv)
+    time_control <- filter(batch_time, type == "con")
+    time_control <- collect(time_control)
+    assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
   } else if (type == "obj") {
-    time_obj <- filter(batch_time, type == "obj")
-    time_obj <- collect(time_obj)
-    assign("time_obj", time_obj, envir = .GlobalEnv)
+    time_object <- filter(batch_time, type == "obj")
+    time_object <- collect(time_object)
+    assign("time_object", time_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_time'."))
   }
 }

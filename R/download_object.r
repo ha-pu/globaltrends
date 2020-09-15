@@ -42,8 +42,8 @@ download_object <- function(object, locations = lst_wdi) UseMethod("download_obj
 
 download_object.numeric <- function(object, locations = lst_wdi) {
   .test_batch(object)
-  terms <- terms_obj$keyword[terms_obj$batch == object]
-  time <- time_obj$time[time_obj$batch == object]
+  terms <- keywords_object$keyword[keywords_object$batch == object]
+  time <- time_object$time[time_object$batch == object]
   walk(locations, ~ {
     if (.test_empty(table = "data_object", batch_o = object, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)

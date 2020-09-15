@@ -32,10 +32,10 @@
 #'   countries that add at leas 0.1% to global GDP
 #'   \item lst_usa A \code{character} vector containing ISO2 regional codes of
 #'   US states
-#'   \item terms_con A \code{tibble} containing keywords of control batches
-#'   \item time_con A \code{tibble} containing times of control batches
-#'   \item terms_obj A \code{tibble} containing keywords of object batches
-#'   \item time_obj A \code{tibble} containing times of control batches
+#'   \item keywords_control A \code{tibble} containing keywords of control batches
+#'   \item time_control A \code{tibble} containing times of control batches
+#'   \item keywords_object A \code{tibble} containing keywords of object batches
+#'   \item time_object A \code{tibble} containing times of control batches
 #'   \item dict_obj A \code{tibble} containing synonymous keywords
 #' }
 #'
@@ -78,19 +78,19 @@ start_db <- function() {
   lst_usa <- collect(lst_usa)
   lst_usa <- pull(lst_usa, geo)
 
-  terms_con <- filter(batch_keywords, type == "con")
-  terms_con <- collect(terms_con)
-  time_con <- filter(batch_time, type == "con")
-  time_con <- collect(time_con)
-  terms_obj <- filter(batch_keywords, type == "obj")
-  terms_obj <- collect(terms_obj)
-  time_obj <- filter(batch_time, type == "obj")
-  time_obj <- collect(time_obj)
+  keywords_control <- filter(batch_keywords, type == "con")
+  keywords_control <- collect(keywords_control)
+  time_control <- filter(batch_time, type == "con")
+  time_control <- collect(time_control)
+  keywords_object <- filter(batch_keywords, type == "obj")
+  keywords_object <- collect(keywords_object)
+  time_object <- filter(batch_time, type == "obj")
+  time_object <- collect(time_object)
   dict_obj <- collect(dict_obj)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
-  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
+  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, keywords_control, time_control, keywords_object, time_object, dict_obj)
+  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "keywords_control", "time_control", "keywords_object", "time_object", "dict_obj")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

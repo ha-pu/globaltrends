@@ -66,7 +66,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
       out <- map_dfr(kw1, ~ {
         kw2 <- dict_obj$term2[dict_obj$term1 == .x]
         if (!any(kw2 %in% data$keyword)) {
-          out <- terms_obj$batch[terms_obj$keyword == kw2]
+          out <- keywords_object$batch[keywords_object$keyword == kw2]
           out <- filter(data_score, batch_c == control & batch_o == out)
           out <- collect(out)
           out <- out[out$keyword == kw2, ]
@@ -95,7 +95,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
     out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
     dbWriteTable(conn = doiGT_DB, name = "data_doi", value = out, append = TRUE)
   }
-  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
+  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(keywords_object$batch)))
 }
 
 #' @rdname compute_doi
