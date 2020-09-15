@@ -38,6 +38,6 @@
   lst_usa <- mutate(lst_usa, type = "lst_usa")
 
   # upload data ----
-  dbWriteTable(conn = doiGT_DB, name = "data_geo", value = bind_rows(lst_wdi, lst_usa), append = TRUE)
-  message("Data entered into 'data_geo'.")
+  dbWriteTable(conn = doiGT_DB, name = "data_locations", value = bind_rows(lst_wdi, lst_usa), append = TRUE)
+  message("Data entered into 'data_locations'.")
 }

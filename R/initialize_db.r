@@ -55,16 +55,16 @@ initialize_db <- function() {
           )")
   message("Table 'dict_obj' has been created.")
 
-  # data_geo
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_geo (
+  # data_locations
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_locations (
   name TEXT,
   geo TEXT,
   share REAL,
   cum_share REAL,
   type TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_geo ON data_geo (geo);")
-  message("Table 'data_geo' has been created.")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_geo ON data_locations (geo);")
+  message("Table 'data_locations' has been created.")
   .enter_geo(doiGT_DB = doiGT_DB)
 
   # data_control

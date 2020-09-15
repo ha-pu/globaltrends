@@ -58,7 +58,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
-    data <- filter(data, geo %in% pull(collect(filter(data_geo, type == locations)), geo))
+    data <- filter(data, geo %in% pull(collect(filter(data_locations, type == locations)), geo))
 
     # run dict replace
     if (any(data$keyword %in% dict_obj$term1)) {
