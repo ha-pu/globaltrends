@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' remove_data(table = "batch_keywords", control = 1)
-#' remove_data(table = "data_map", control = 1, object = 1)
+#' remove_data(table = "data_mapping", control = 1, object = 1)
 #' }
 #'
 #' @export
@@ -51,9 +51,9 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(object) & is.null(control)) {
         .remove_data_object(batch = object)
       }
-    } else if (table == "data_map") {
+    } else if (table == "data_mapping") {
       if (!is.null(control) | !is.null(object)) {
-        .remove_data_map(batch_c = control, batch_o = object)
+        .remove_data_mapping(batch_c = control, batch_o = object)
       }
     } else if (table == "data_score") {
       if (!is.null(control) | !is.null(object)) {
@@ -125,7 +125,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted control batch {batch} from 'data_control'."))
 
-  .remove_data_map(batch_c = batch)
+  .remove_data_mapping(batch_c = batch)
 }
 
 #' @title Remove from data_object
@@ -136,26 +136,26 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_object WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted object batch {batch} from 'data_object'."))
 
-  .remove_data_map(batch_o = batch)
+  .remove_data_mapping(batch_o = batch)
   .remove_data_global(batch = batch)
 }
 
-#' @title Remove from data_map
+#' @title Remove from data_mapping
 #' @keywords internal
 
-.remove_data_map <- function(batch_c = NULL, batch_o = NULL) {
+.remove_data_mapping <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_map WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_map'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_c=?", params = list(batch_c))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_mapping'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_map WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_map'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_o=?", params = list(batch_o))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_mapping'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_map WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_map'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_mapping'."))
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)

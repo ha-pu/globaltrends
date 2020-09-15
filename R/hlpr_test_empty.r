@@ -16,8 +16,8 @@
       out <- filter(data_control, batch == in_batch_c & geo == in_geo)
     } else if (table == "data_object") {
       out <- filter(data_object, batch == in_batch_o & geo == in_geo)
-    } else if (table == "data_map") {
-      out <- filter(data_map, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
+    } else if (table == "data_mapping") {
+      out <- filter(data_mapping, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
     } else if (table == "data_score") {
       out <- filter(data_score, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
     } else if (table == "data_agg") {

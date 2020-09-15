@@ -61,7 +61,7 @@
 #' @source \url{https://trends.google.com/trends/}
 "data_object"
 
-#' data_map
+#' data_mapping
 #'
 #' xxx.
 #'
@@ -78,7 +78,7 @@
 #'   \item{batch_o}{\code{integer} number of object batch}
 #' }
 #' @source \url{https://trends.google.com/trends/}
-"data_map"
+"data_mapping"
 
 #' data_score
 #'

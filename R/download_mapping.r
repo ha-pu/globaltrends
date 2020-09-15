@@ -19,12 +19,12 @@
 #' @seealso
 #'
 #' @return Message that data was downloaded successfully. Data is uploaded
-#' to data_map.
+#' to data_mapping.
 #'
 #' @examples
 #' \dontrun{
-#' data_map(control = 1, object = 1, locations = lst_wdi)
-#' data_map(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' data_mapping(control = 1, object = 1, locations = lst_wdi)
+#' data_mapping(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
@@ -48,7 +48,7 @@ download_mapping <- function(control, object, locations = lst_wdi) UseMethod("do
 download_mapping.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
-    if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
+    if (.test_empty(table = "data_mapping", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_control, batch == control & geo == .x)
       qry_con <- collect(qry_con)
       qry_obj <- filter(data_object, batch == object & geo == .x)
@@ -66,7 +66,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
             out <- .get_trend(geo = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
-              dbWriteTable(conn = doiGT_DB, name = "data_map", value = out, append = TRUE)
+              dbWriteTable(conn = doiGT_DB, name = "data_mapping", value = out, append = TRUE)
               break()
             }
             i <- i + 1

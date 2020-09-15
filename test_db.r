@@ -32,7 +32,7 @@ filter(data_object, batch == new_object)
 # run map download ----
 download_mapping(control = new_control, object = new_object, locations = lst_wdi)
 download_mapping(control = new_control, object = new_object, locations = lst_usa)
-filter(data_map, batch_c == new_control & batch_o == new_object)
+filter(data_mapping, batch_c == new_control & batch_o == new_object)
 
 # run scoring ----
 compute_score(control = new_control, object = new_object, locations = lst_wdi)
@@ -56,7 +56,7 @@ filter(batch_keywords, batch == new_control & type == "con")
 filter(batch_keywords, batch == new_object & type == "obj")
 filter(data_control, batch == new_control)
 filter(data_object, batch == new_object)
-filter(data_map, batch_c == new_control & batch_o == new_object)
+filter(data_mapping, batch_c == new_control & batch_o == new_object)
 filter(data_score, batch_c == new_control & batch_o == new_object)
 filter(data_global, batch == new_object)
 

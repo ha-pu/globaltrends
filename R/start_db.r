@@ -20,7 +20,7 @@
 #'   the connected SQLite database
 #'   \item data_control A remote data source pointing to the table "data_control" in
 #'   the connected SQLite database
-#'   \item data_map A remote data source pointing to the table "data_map" in
+#'   \item data_mapping A remote data source pointing to the table "data_mapping" in
 #'   the connected SQLite database
 #'   \item data_object A remote data source pointing to the table "data_object" in
 #'   the connected SQLite database
@@ -65,7 +65,7 @@ start_db <- function() {
 
   data_agg <- tbl(doiGT_DB, "data_agg")
   data_control <- tbl(doiGT_DB, "data_control")
-  data_map <- tbl(doiGT_DB, "data_map")
+  data_mapping <- tbl(doiGT_DB, "data_mapping")
   data_object <- tbl(doiGT_DB, "data_object")
   data_score <- tbl(doiGT_DB, "data_score")
   data_global <- tbl(doiGT_DB, "data_global")
@@ -89,8 +89,8 @@ start_db <- function() {
   dict_obj <- collect(dict_obj)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_geo, batch_keywords, batch_time, data_agg, data_control, data_map, data_object, data_score, data_global, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
-  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_keywords", "batch_time", "data_agg", "data_control", "data_map", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
+  lst_object <- list(doiGT_DB, data_geo, batch_keywords, batch_time, data_agg, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
+  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_keywords", "batch_time", "data_agg", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

@@ -89,8 +89,8 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_obj ON data_object (batch);")
   message("Table 'data_control' has been created.")
 
-  # data_map
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_map (
+  # data_mapping
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_mapping (
   geo TEXT,
   keyword TEXT,
   date INTEGER,
@@ -98,8 +98,8 @@ initialize_db <- function() {
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_map ON data_map (batch_c, batch_o);")
-  message("Table 'data_map' has been created.")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_map ON data_mapping (batch_c, batch_o);")
+  message("Table 'data_mapping' has been created.")
 
   # data_score
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_score (

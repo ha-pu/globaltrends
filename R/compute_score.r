@@ -61,7 +61,7 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
-      qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
+      qry_map <- filter(data_mapping, batch_c == control & batch_o == object & geo == .x)
       qry_map <- collect(qry_map)
       if (nrow(qry_map) != 0) {
         qry_con <- filter(data_control, batch == control & geo == .x)
