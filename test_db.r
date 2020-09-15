@@ -42,7 +42,7 @@ filter(data_score, batch_c == new_control & batch_o == new_object)
 # run aggregation ----
 compute_doi(control = new_control, object = new_object, locations = "lst_wdi")
 compute_doi(control = new_control, object = new_object, locations = "lst_usa")
-filter(data_agg, batch_c == new_control & batch_o == new_object)
+filter(data_doi, batch_c == new_control & batch_o == new_object)
 
 # run world download ----
 download_global(object = new_object)

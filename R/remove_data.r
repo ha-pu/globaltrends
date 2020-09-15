@@ -59,9 +59,9 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(control) | !is.null(object)) {
         .remove_data_score(batch_c = control, batch_o = object)
       }
-    } else if (table == "data_agg") {
+    } else if (table == "data_doi") {
       if (!is.null(control) | !is.null(object)) {
-        .remove_data_agg(batch_c = control, batch_o = object)
+        .remove_data_doi(batch_c = control, batch_o = object)
       }
     } else if (table == "data_global") {
       if (!is.null(object) & is.null(control)) {
@@ -179,25 +179,25 @@ remove_data <- function(table, control = NULL, object = NULL) {
     message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_score'."))
   }
 
-  .remove_data_agg(batch_c = batch_c, batch_o = batch_o)
+  .remove_data_doi(batch_c = batch_c, batch_o = batch_o)
 }
 
-#' @title Remove from data_agg
+#' @title Remove from data_doi
 #' @keywords internal
 
-.remove_data_agg <- function(batch_c = NULL, batch_o = NULL) {
+.remove_data_doi <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_agg'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_doi'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_agg'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_o=?", params = list(batch_o))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_doi'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_agg WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_agg'."))
+    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_doi'."))
   }
 }
 

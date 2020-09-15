@@ -19,12 +19,12 @@
 #'
 #' @return
 #' Message that data was aggregated successfully. Data is uploaded
-#' to data_agg.
+#' to data_doi.
 #'
 #' @examples
 #' \dontrun{
-#' data_agg(control = 1, object = 1, locations = "lst_wdi")
-#' data_agg(control = 1, object = as.list(1:5), locations = "lst_wdi")
+#' data_doi(control = 1, object = 1, locations = "lst_wdi")
+#' data_doi(control = 1, object = as.list(1:5), locations = "lst_wdi")
 #' }
 #'
 #' @export
@@ -56,7 +56,7 @@ compute_doi <- function(control, object, locations = "lst_wdi") UseMethod("compu
 compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
   control <- control[[1]]
   walk(c(control, object), .test_batch)
-  if (.test_empty(table = "data_agg", batch_c = control, batch_o = object, locations = locations)) {
+  if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
     data <- collect(filter(data_score, batch_c == control & batch_o == object))
     data <- filter(data, geo %in% pull(collect(filter(data_geo, type == locations)), geo))
 
@@ -93,7 +93,7 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
-    dbWriteTable(conn = doiGT_DB, name = "data_agg", value = out, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "data_doi", value = out, append = TRUE)
   }
   message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(terms_obj$batch)))
 }

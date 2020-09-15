@@ -102,7 +102,7 @@
 #' }
 "data_score"
 
-#' data_agg
+#' data_doi
 #'
 #' xxx.
 #'
@@ -125,7 +125,7 @@
 #'   \item{locations}{\code{character} list of locations for which the search
 #'   score is used}
 #' }
-"data_agg"
+"data_doi"
 
 #' data_global
 #'

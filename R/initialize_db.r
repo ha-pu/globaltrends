@@ -115,8 +115,8 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Table 'data_score' has been created.")
 
-  # data_agg
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_agg (
+  # data_doi
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_doi (
   keyword TEXT,
   date INTEGER,
   type TEXT,
@@ -127,8 +127,8 @@ initialize_db <- function() {
   batch_o INTEGER,
   locations TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
-  message("Table 'data_agg' has been created.")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
+  message("Table 'data_doi' has been created.")
 
   # data_global
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_global (
