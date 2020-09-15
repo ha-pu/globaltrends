@@ -66,7 +66,7 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
       if (nrow(qry_map) != 0) {
         qry_con <- filter(data_control, batch == control & geo == .x)
         qry_con <- collect(qry_con)
-        qry_obj <- filter(data_obj, batch == object & geo == .x)
+        qry_obj <- filter(data_object, batch == object & geo == .x)
         qry_obj <- collect(qry_obj)
 
         qry_con <- mutate(qry_con, date = as_date(date))
@@ -157,13 +157,13 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
         control_agg <- group_by(tmp_con, geo, date, key)
         control_agg <- summarise(control_agg, value_c = sum(value))
         control_agg <- ungroup(control_agg)
-        data_obj_agg <- left_join(tmp_obj, control_agg, by = c("geo", "date", "key"))
-        data_obj_agg <- mutate(data_obj_agg,
+        object_agg <- left_join(tmp_obj, control_agg, by = c("geo", "date", "key"))
+        object_agg <- mutate(object_agg,
           score = coalesce(value / value_c, 0),
           key = str_replace(key, "hits_", "score_")
         )
-        data_obj_agg <- select(data_obj_agg, geo, date, keyword, key, score)
-        data_score <- pivot_wider(data_obj_agg, names_from = key, values_from = score, values_fill = 0)
+        object_agg <- select(object_agg, geo, date, keyword, key, score)
+        data_score <- pivot_wider(object_agg, names_from = key, values_from = score, values_fill = 0)
         out <- mutate(data_score, batch_c = control, batch_o = object)
         dbWriteTable(conn = doiGT_DB, name = "data_score", value = out, append = TRUE)
       }

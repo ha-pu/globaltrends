@@ -43,7 +43,7 @@
 #' @source \url{https://trends.google.com/trends/}
 "data_control"
 
-#' data_obj
+#' data_object
 #'
 #' xxx.
 #'
@@ -59,7 +59,7 @@
 #'   \item{batch}{\code{integer} number of batch}
 #' }
 #' @source \url{https://trends.google.com/trends/}
-"data_obj"
+"data_object"
 
 #' data_map
 #'

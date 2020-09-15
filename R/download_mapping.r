@@ -51,7 +51,7 @@ download_mapping.numeric <- function(control, object, locations = lst_wdi) {
     if (.test_empty(table = "data_map", batch_c = control, batch_o = object, geo = .x)) {
       qry_con <- filter(data_control, batch == control & geo == .x)
       qry_con <- collect(qry_con)
-      qry_obj <- filter(data_obj, batch == object & geo == .x)
+      qry_obj <- filter(data_object, batch == object & geo == .x)
       qry_obj <- collect(qry_obj)
       if (nrow(qry_con) > 0 & nrow(qry_obj) > 0) {
         term_con <- summarise(group_by(qry_con, keyword), hits = mean(hits))

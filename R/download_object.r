@@ -18,12 +18,12 @@
 #'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
-#' to data_object.
+#' to data_objectect.
 #'
 #' @examples
 #' \dontrun{
-#' data_obj(object = 1, locations = lst_wdi)
-#' data_obj(object = as.list(1:5), locations = lst_wdi)
+#' data_object(object = 1, locations = lst_wdi)
+#' data_object(object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export
@@ -45,7 +45,7 @@ download_object.numeric <- function(object, locations = lst_wdi) {
   terms <- terms_obj$keyword[terms_obj$batch == object]
   time <- time_obj$time[time_obj$batch == object]
   walk(locations, ~ {
-    if (.test_empty(table = "data_obj", batch_o = object, geo = .x)) {
+    if (.test_empty(table = "data_object", batch_o = object, geo = .x)) {
       out <- .get_trend(geo = .x, term = terms, time = time)
       if (is.null(out)) {
         start <- as_date(str_split(time, pattern = " ")[[1]][[1]])
@@ -54,7 +54,7 @@ download_object.numeric <- function(object, locations = lst_wdi) {
         out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
       out <- mutate(out, batch = object)
-      dbWriteTable(conn = doiGT_DB, name = "data_obj", value = out, append = TRUE)
+      dbWriteTable(conn = doiGT_DB, name = "data_object", value = out, append = TRUE)
     }
     message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })

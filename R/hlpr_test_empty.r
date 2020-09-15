@@ -14,8 +14,8 @@
     in_locations <- locations
     if (table == "data_control") {
       out <- filter(data_control, batch == in_batch_c & geo == in_geo)
-    } else if (table == "data_obj") {
-      out <- filter(data_obj, batch == in_batch_o & geo == in_geo)
+    } else if (table == "data_object") {
+      out <- filter(data_object, batch == in_batch_o & geo == in_geo)
     } else if (table == "data_map") {
       out <- filter(data_map, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
     } else if (table == "data_score") {
