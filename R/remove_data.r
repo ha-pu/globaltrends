@@ -89,7 +89,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     .remove_data_control(batch = batch)
   } else if (type == "object") {
     keywords_object <- filter(batch_keywords, type == "object")
-	keywords_object <- select(keywords_control, -type)
+	  keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
