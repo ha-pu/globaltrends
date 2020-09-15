@@ -134,7 +134,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 	time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
-    message(glue("New control batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
+    message(glue("Successfully crated new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else if (type == "object") {
     if (nrow(keywords_object) == 0) {
@@ -154,7 +154,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
 	time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)
-    message(glue("New object batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))
+    message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
     stop("Error: 'type' allows only 'control' or 'object'.\nYou supplied another value.")
