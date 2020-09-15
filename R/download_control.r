@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_control(control = 1, locations = lst_wdi)
-#' data_control(control = as.list(1:5), locations = lst_wdi)
+#' download_control(control = 1, locations = lst_wdi)
+#' download_control(control = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export

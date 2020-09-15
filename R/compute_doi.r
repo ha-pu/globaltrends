@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_doi(control = 1, object = 1, locations = "lst_wdi")
-#' data_doi(control = 1, object = as.list(1:5), locations = "lst_wdi")
+#' compute_doi(control = 1, object = 1, locations = "lst_wdi")
+#' compute_doi(control = 1, object = as.list(1:5), locations = "lst_wdi")
 #' }
 #'
 #' @export

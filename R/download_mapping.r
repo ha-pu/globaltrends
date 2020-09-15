@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_mapping(control = 1, object = 1, locations = lst_wdi)
-#' data_mapping(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' download_mapping(control = 1, object = 1, locations = lst_wdi)
+#' download_mapping(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export

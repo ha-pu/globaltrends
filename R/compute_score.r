@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_score(control = 1, object = 1, locations = lst_wdi)
-#' data_score(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' compute_score(control = 1, object = 1, locations = lst_wdi)
+#' compute_score(control = 1, object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export

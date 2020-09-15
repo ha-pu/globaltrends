@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_object(object = 1, locations = lst_wdi)
-#' data_object(object = as.list(1:5), locations = lst_wdi)
+#' download_object(object = 1, locations = lst_wdi)
+#' download_object(object = as.list(1:5), locations = lst_wdi)
 #' }
 #'
 #' @export

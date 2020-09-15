@@ -19,8 +19,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_global(object = 1)
-#' data_global(object = as.list(1:5))
+#' download_global(object = 1)
+#' download_global(object = as.list(1:5))
 #' }
 #'
 #' @export
