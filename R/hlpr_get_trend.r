@@ -6,14 +6,14 @@
 #' @importFrom stats runif
 
 .get_trend <- function(location, term, time = "all") {
-  out <- try(gtrends(keyword = term, location = location, time = time, onlyInterest = TRUE))
+  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   while (inherits(out, "try-error")) {
     if (attr(out, "condition")$message == "widget$status_code == 200 is not TRUE") {
       Sys.sleep(3600)
     } else {
       Sys.sleep(60)
     }
-    out <- try(gtrends(keyword = term, location = location, time = time, onlyInterest = TRUE))
+    out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   }
   if (is.null(out$interest_over_time)) {
     return(NULL)
