@@ -62,19 +62,19 @@ compute_doi.numeric <- function(control, object, locations = "countries") {
 
     # run dict replace
     if (any(data$keyword %in% keyword_synonyms$keyword)) {
-      kw1 <- unique(data$keyword[data$keyword %in% keyword_synonyms$keyword])
-      out <- map_dfr(kw1, ~ {
-        kw2 <- keyword_synonyms$synonym[keyword_synonyms$keyword == .x]
-        if (!any(kw2 %in% data$keyword)) {
-          out <- keywords_object$batch[keywords_object$keyword == kw2]
+      keyword1 <- unique(data$keyword[data$keyword %in% keyword_synonyms$keyword])
+      out <- map_dfr(keyword1, ~ {
+        keyword2 <- keyword_synonyms$synonym[keyword_synonyms$keyword == .x]
+        if (!any(keyword2 %in% data$keyword)) {
+          out <- keywords_object$batch[keywords_object$keyword == keyword2]
           out <- filter(data_score, batch_c == control & batch_o == out)
           out <- collect(out)
-          out <- out[out$keyword == kw2, ]
+          out <- out[out$keyword == keyword2, ]
           return(out)
         }
       })
       data <- bind_rows(data, out)
-      data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$keyword[keyword_synonyms$keyword %in% kw1], keyword_synonyms$synonym[keyword_synonyms$keyword %in% kw1]))
+      data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$keyword[keyword_synonyms$keyword %in% keyword1], keyword_synonyms$synonym[keyword_synonyms$keyword %in% keyword1]))
       data <- group_by(data, location, date, keyword, batch_c, batch_o)
       data <- summarise_if(data, is.double, sum)
       data <- ungroup(data)
