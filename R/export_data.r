@@ -21,7 +21,20 @@
 #' of the following values: "score_obs", "score_sad", "score_trd".
 #' 
 #' @seealso
+#'
+#' @examples
+#' \dontrun{
+#' export_control(control = 2)
 #' 
+#' export_object(keyword = "manchester united")
+#' 
+#' export_score(object = 3, control = 1, locations = "countries") %>%
+#' readr::write_csv("data_score.csv")
+#' 
+#' export_doi(keyword = "manchester united", control = 2, type = "score_sad", locations = "us_states") %>%
+#' write_xl::write_xlsx("data_doi.xlsx")
+#' }
+#'
 #' @rdname export_data
 #' @export
 
