@@ -36,7 +36,7 @@
 #'   \item time_control A \code{tibble} containing times of control batches
 #'   \item keywords_object A \code{tibble} containing keywords of object batches
 #'   \item time_object A \code{tibble} containing times of control batches
-#'   \item dict_obj A \code{tibble} containing synonymous keywords
+#'   \item keyword_synonyms A \code{tibble} containing synonymous keywords
 #' }
 #'
 #' @examples
@@ -61,7 +61,7 @@ start_db <- function() {
   data_locations <- tbl(doiGT_DB, "data_locations")
   batch_keywords <- tbl(doiGT_DB, "batch_keywords")
   batch_time <- tbl(doiGT_DB, "batch_time")
-  dict_obj <- tbl(doiGT_DB, "dict_obj")
+  keyword_synonyms <- tbl(doiGT_DB, "keyword_synonyms")
 
   data_doi <- tbl(doiGT_DB, "data_doi")
   data_control <- tbl(doiGT_DB, "data_control")
@@ -86,11 +86,11 @@ start_db <- function() {
   keywords_object <- collect(keywords_object)
   time_object <- filter(batch_time, type == "obj")
   time_object <- collect(time_object)
-  dict_obj <- collect(dict_obj)
+  keyword_synonyms <- collect(keyword_synonyms)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, keywords_control, time_control, keywords_object, time_object, dict_obj)
-  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "keywords_control", "time_control", "keywords_object", "time_object", "dict_obj")
+  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, lst_wdi, lst_usa, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
+  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

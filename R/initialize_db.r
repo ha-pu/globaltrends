@@ -48,12 +48,12 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Table 'batch_time' has been created.")
 
-  # dict_obj
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE dict_obj (
+  # keyword_synonyms
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE keyword_synonyms (
   term1 TEXT,
   term2 TEXT
           )")
-  message("Table 'dict_obj' has been created.")
+  message("Table 'keyword_synonyms' has been created.")
 
   # data_locations
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_locations (
