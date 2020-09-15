@@ -122,15 +122,15 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     } else {
       new_batch <- max(keywords_control$batch) + 1
     }
-    data <- tibble(batch = new_batch, keyword, type = "con")
+    data <- tibble(batch = new_batch, keyword, type = "control")
     dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
-    data <- tibble(batch = new_batch, time = time, type = "con")
+    data <- tibble(batch = new_batch, time = time, type = "control")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    keywords_control <- filter(batch_keywords, type == "con")
+    keywords_control <- filter(batch_keywords, type == "control")
 	keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
     assign("keywords_control", keywords_control, envir = .GlobalEnv)
-    time_control <- filter(batch_time, type == "con")
+    time_control <- filter(batch_time, type == "control")
 	time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
@@ -142,15 +142,15 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     } else {
       new_batch <- max(keywords_object$batch) + 1
     }
-    data <- tibble(batch = new_batch, keyword, type = "obj")
+    data <- tibble(batch = new_batch, keyword, type = "object")
     dbWriteTable(conn = doiGT_DB, name = "batch_keywords", value = data, append = TRUE)
-    data <- tibble(batch = new_batch, time = time, type = "obj")
+    data <- tibble(batch = new_batch, time = time, type = "object")
     dbWriteTable(conn = doiGT_DB, name = "batch_time", value = data, append = TRUE)
-    keywords_object <- filter(batch_keywords, type == "obj")
+    keywords_object <- filter(batch_keywords, type == "object")
 	keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
-    time_object <- filter(batch_time, type == "obj")
+    time_object <- filter(batch_time, type == "object")
 	time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)

@@ -33,15 +33,15 @@ remove_data <- function(table, control = NULL, object = NULL) {
   if (is.character(table)) {
     if (table == "batch_keywords") {
       if (!is.null(control) & is.null(object)) {
-        .remove_batch_keywords(type = "con", batch = control)
+        .remove_batch_keywords(type = "control", batch = control)
       } else if (!is.null(object) & is.null(control)) {
-        .remove_batch_keywords(type = "obj", batch = object)
+        .remove_batch_keywords(type = "object", batch = object)
       }
     } else if (table == "batch_time") {
       if (!is.null(control) & is.null(object)) {
-        .remove_batch_time(type = "con", batch = control)
+        .remove_batch_time(type = "control", batch = control)
       } else if (!is.null(object) & is.null(control)) {
-        .remove_batch_time(type = "obj", batch = object)
+        .remove_batch_time(type = "object", batch = object)
       }
     } else if (table == "data_control") {
       if (!is.null(control) & is.null(object)) {
@@ -79,16 +79,16 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_batch_keywords <- function(type, batch) {
   .test_batch(batch)
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
-  if (type == "con") {
-    keywords_control <- filter(batch_keywords, type == "con")
+  if (type == "control") {
+    keywords_control <- filter(batch_keywords, type == "control")
 	keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
     assign("keywords_control", keywords_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
 
     .remove_data_control(batch = batch)
-  } else if (type == "obj") {
-    keywords_object <- filter(batch_keywords, type == "obj")
+  } else if (type == "object") {
+    keywords_object <- filter(batch_keywords, type == "object")
 	keywords_object <- select(keywords_control, -type)
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
@@ -106,14 +106,14 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_batch_time <- function(type, batch) {
   .test_batch(batch)
   dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
-  if (type == "con") {
-    time_control <- filter(batch_time, type == "con")
+  if (type == "control") {
+    time_control <- filter(batch_time, type == "control")
 	time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
-  } else if (type == "obj") {
-    time_object <- filter(batch_time, type == "obj")
+  } else if (type == "object") {
+    time_object <- filter(batch_time, type == "object")
 	time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)
