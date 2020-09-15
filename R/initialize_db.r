@@ -50,8 +50,8 @@ initialize_db <- function() {
 
   # keyword_synonyms
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE keyword_synonyms (
-  term1 TEXT,
-  term2 TEXT
+  keyword TEXT,
+  synonym TEXT
           )")
   message("Table 'keyword_synonyms' has been created.")
 

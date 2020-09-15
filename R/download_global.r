@@ -41,7 +41,7 @@ download_global <- function(object) UseMethod("download_global", object)
 download_global.numeric <- function(object) {
   .test_batch(object)
   terms <- keywords_object$keyword[keywords_object$batch == object]
-  terms <- terms[!(terms %in% keyword_synonyms$term2)]
+  terms <- terms[!(terms %in% keyword_synonyms$synonym)]
   time <- time_object$time[time_object$batch == object]
   if (.test_empty(table = "data_global", batch_o = object)) {
     out <- map_dfr(terms, ~ {

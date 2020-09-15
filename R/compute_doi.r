@@ -61,10 +61,10 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
     data <- filter(data, geo %in% pull(collect(filter(data_locations, type == locations)), geo))
 
     # run dict replace
-    if (any(data$keyword %in% keyword_synonyms$term1)) {
-      kw1 <- unique(data$keyword[data$keyword %in% keyword_synonyms$term1])
+    if (any(data$keyword %in% keyword_synonyms$keyword)) {
+      kw1 <- unique(data$keyword[data$keyword %in% keyword_synonyms$keyword])
       out <- map_dfr(kw1, ~ {
-        kw2 <- keyword_synonyms$term2[keyword_synonyms$term1 == .x]
+        kw2 <- keyword_synonyms$synonym[keyword_synonyms$keyword == .x]
         if (!any(kw2 %in% data$keyword)) {
           out <- keywords_object$batch[keywords_object$keyword == kw2]
           out <- filter(data_score, batch_c == control & batch_o == out)
@@ -74,12 +74,12 @@ compute_doi.numeric <- function(control, object, locations = "lst_wdi") {
         }
       })
       data <- bind_rows(data, out)
-      data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$term1[keyword_synonyms$term1 %in% kw1], keyword_synonyms$term2[keyword_synonyms$term1 %in% kw1]))
+      data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$keyword[keyword_synonyms$keyword %in% kw1], keyword_synonyms$synonym[keyword_synonyms$keyword %in% kw1]))
       data <- group_by(data, geo, date, keyword, batch_c, batch_o)
       data <- summarise_if(data, is.double, sum)
       data <- ungroup(data)
     }
-    data <- data[!(data$keyword %in% keyword_synonyms$term2), ]
+    data <- data[!(data$keyword %in% keyword_synonyms$synonym), ]
 
     # compute doi measures
     out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
