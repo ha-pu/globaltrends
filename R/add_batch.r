@@ -148,6 +148,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-07-31") {
     keywords_object <- collect(keywords_object)
     assign("keywords_object", keywords_object, envir = .GlobalEnv)
     time_object <- filter(batch_time, type == "obj")
+	time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)
     message(glue("New object batch {new_batch} ({keyword_collapse}, {time}) created.", keyword_collapse = paste(keyword, collapse = ", ")))

@@ -111,6 +111,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
   } else if (type == "obj") {
     time_object <- filter(batch_time, type == "obj")
+	time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     assign("time_object", time_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_time'."))

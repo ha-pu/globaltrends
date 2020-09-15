@@ -85,6 +85,7 @@ start_db <- function() {
   keywords_object <- filter(batch_keywords, type == "obj")
   keywords_object <- collect(keywords_object)
   time_object <- filter(batch_time, type == "obj")
+  time_object <- select(time_object, -type)
   time_object <- collect(time_object)
   keyword_synonyms <- collect(keyword_synonyms)
 
