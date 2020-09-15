@@ -22,8 +22,8 @@
       out <- filter(data_score, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
     } else if (table == "data_agg") {
       out <- filter(data_agg, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
-    } else if (table == "data_wrld") {
-      out <- filter(data_wrld, batch == in_batch_o)
+    } else if (table == "data_global") {
+      out <- filter(data_global, batch == in_batch_o)
     }
     out <- head(out)
     out <- collect(out)

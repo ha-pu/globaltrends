@@ -130,15 +130,15 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
   message("Table 'data_agg' has been created.")
 
-  # data_wrld
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_wrld (
+  # data_global
+  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_global (
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
-  message("Table 'data_wrld' has been created.")
+  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_wrld ON data_global (batch);")
+  message("Table 'data_global' has been created.")
 
   # disconnect from db ----
   disconnect_db(db = doiGT_DB)

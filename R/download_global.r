@@ -15,12 +15,12 @@
 #'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
-#' to data_wrld.
+#' to data_global.
 #'
 #' @examples
 #' \dontrun{
-#' data_wrld(object = 1)
-#' data_wrld(object = as.list(1:5))
+#' data_global(object = 1)
+#' data_global(object = as.list(1:5))
 #' }
 #'
 #' @export
@@ -43,7 +43,7 @@ download_global.numeric <- function(object) {
   terms <- terms_obj$keyword[terms_obj$batch == object]
   terms <- terms[!(terms %in% dict_obj$term2)]
   time <- time_obj$time[time_obj$batch == object]
-  if (.test_empty(table = "data_wrld", batch_o = object)) {
+  if (.test_empty(table = "data_global", batch_o = object)) {
     out <- map_dfr(terms, ~ {
       out <- .get_trend(geo = "", term = .x, time = time)
       if (!is.null(out)) {
@@ -58,7 +58,7 @@ download_global.numeric <- function(object) {
       return(out)
     })
     out <- mutate(out, batch = object)
-    dbWriteTable(conn = doiGT_DB, name = "data_wrld", value = out, append = TRUE)
+    dbWriteTable(conn = doiGT_DB, name = "data_global", value = out, append = TRUE)
   }
 }
 

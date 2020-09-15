@@ -46,7 +46,7 @@ filter(data_agg, batch_c == new_control & batch_o == new_object)
 
 # run world download ----
 download_global(object = new_object)
-filter(data_wrld, batch == new_object)
+filter(data_global, batch == new_object)
 
 # remove data ----
 remove_data(table = "batch_keywords", control = new_control)
@@ -58,7 +58,7 @@ filter(data_control, batch == new_control)
 filter(data_object, batch == new_object)
 filter(data_map, batch_c == new_control & batch_o == new_object)
 filter(data_score, batch_c == new_control & batch_o == new_object)
-filter(data_wrld, batch == new_object)
+filter(data_global, batch == new_object)
 
 # disconnect from db ----
 disconnect_db()

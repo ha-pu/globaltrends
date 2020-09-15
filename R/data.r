@@ -127,7 +127,7 @@
 #' }
 "data_agg"
 
-#' data_wrld
+#' data_global
 #'
 #' xxx.
 #'
@@ -141,4 +141,4 @@
 #'   \item{batch}{\code{integer} number of batch}
 #' }
 #' @source \url{https://trends.google.com/trends/}
-"data_wrld"
+"data_global"

@@ -26,7 +26,7 @@
 #'   the connected SQLite database
 #'   \item data_score A remote data source pointing to the table "data_score" in
 #'   the connected SQLite database
-#'   \item data_wrld A remote data source pointing to the table "data_wrld" in
+#'   \item data_global A remote data source pointing to the table "data_global" in
 #'   the connected SQLite database
 #'   \item lst_wdi A \code{character} vector containing ISO2 country codes of
 #'   countries that add at leas 0.1% to global GDP
@@ -68,7 +68,7 @@ start_db <- function() {
   data_map <- tbl(doiGT_DB, "data_map")
   data_object <- tbl(doiGT_DB, "data_object")
   data_score <- tbl(doiGT_DB, "data_score")
-  data_wrld <- tbl(doiGT_DB, "data_wrld")
+  data_global <- tbl(doiGT_DB, "data_global")
 
   # load files ----
   lst_wdi <- filter(data_geo, type == "lst_wdi" & share >= 0.001)
@@ -89,8 +89,8 @@ start_db <- function() {
   dict_obj <- collect(dict_obj)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_geo, batch_keywords, batch_time, data_agg, data_control, data_map, data_object, data_score, data_wrld, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
-  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_keywords", "batch_time", "data_agg", "data_control", "data_map", "data_object", "data_score", "data_wrld", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
+  lst_object <- list(doiGT_DB, data_geo, batch_keywords, batch_time, data_agg, data_control, data_map, data_object, data_score, data_global, lst_wdi, lst_usa, terms_con, time_con, terms_obj, time_obj, dict_obj)
+  names(lst_object) <- list("doiGT_DB", "data_geo", "batch_keywords", "batch_time", "data_agg", "data_control", "data_map", "data_object", "data_score", "data_global", "lst_wdi", "lst_usa", "terms_con", "time_con", "terms_obj", "time_obj", "dict_obj")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

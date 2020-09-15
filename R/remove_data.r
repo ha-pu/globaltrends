@@ -63,9 +63,9 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(control) | !is.null(object)) {
         .remove_data_agg(batch_c = control, batch_o = object)
       }
-    } else if (table == "data_wrld") {
+    } else if (table == "data_global") {
       if (!is.null(object) & is.null(control)) {
-        .remove_data_wrld(batch = object)
+        .remove_data_global(batch = object)
       }
     }
   } else {
@@ -137,7 +137,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   message(glue("Successfully deleted object batch {batch} from 'data_object'."))
 
   .remove_data_map(batch_o = batch)
-  .remove_data_wrld(batch = batch)
+  .remove_data_global(batch = batch)
 }
 
 #' @title Remove from data_map
@@ -201,11 +201,11 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
-#' @title Remove from data_wrld
+#' @title Remove from data_global
 #' @keywords internal
 
-.remove_data_wrld <- function(batch) {
+.remove_data_global <- function(batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_wrld WHERE batch=?", params = list(batch))
-  message(glue("Successfully deleted object batch {batch} from 'data_wrld'."))
+  dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch))
+  message(glue("Successfully deleted object batch {batch} from 'data_global'."))
 }
