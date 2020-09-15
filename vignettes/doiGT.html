@@ -317,7 +317,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">doiGT</h1>
-<h3 class="subtitle">Analyze distributions, internationalization, and time series based on Google Trends</h3>
+<h3 class="subtitle">Analyze distributions, internationalization, and time series of Google Trends</h3>
 <h4 class="author">Harald Puhr</h4>
 
 
@@ -341,30 +341,72 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="analyze-internationalization-of-firms" class="section level1">
 <h1>Analyze internationalization of firms</h1>
+<div id="setup-the-database" class="section level2">
+<h2>Setup the database</h2>
+<ul>
+<li>Explain how the package uses a database to store data</li>
+<li>Run “initialize_db()”</li>
+<li>Run “start_db()”</li>
+<li>Run “disconnect_db()”</li>
+</ul>
+</div>
 <div id="download-data" class="section level2">
 <h2>Download data</h2>
+<ul>
+<li>Explain batch structure of downloads and computations</li>
+<li>Explain control and object batches</li>
+</ul>
 <div id="control-data" class="section level3">
 <h3>Control data</h3>
+<ul>
+<li>Use “add_control_keyword()” to create control batch</li>
+<li>Run “download_control()”</li>
+</ul>
 </div>
 <div id="object-data" class="section level3">
 <h3>Object data</h3>
+<ul>
+<li>Use “add_object_keyword()” to create object batch -&gt; list of keywords</li>
+<li>Run “download_object()”</li>
+</ul>
 </div>
 <div id="mapping-data" class="section level3">
 <h3>Mapping data</h3>
+<ul>
+<li>Explain formula for data mapping -&gt; references</li>
+<li>Run “download_mapping()”</li>
+</ul>
 </div>
 </div>
 <div id="compute-search-scores" class="section level2">
 <h2>Compute search scores</h2>
+<ul>
+<li>Run “compute_score()”</li>
+</ul>
 </div>
 <div id="compute-degree-of-internationalization" class="section level2">
 <h2>Compute degree of internationalization</h2>
+<ul>
+<li>Explain inverted gini coefficient -&gt; references</li>
+<li>Run “compute_doi()”</li>
+</ul>
 </div>
 <div id="additonal-options" class="section level2">
 <h2>Additonal options</h2>
+<ul>
+<li>Explain time series adjustments in “compute_score()”</li>
+<li>Explain HHI and entropy measures in “compute_doi()”</li>
+<li>Explain locations settings for all functions</li>
+</ul>
 </div>
 </div>
 <div id="further-applications" class="section level1">
 <h1>Further applications</h1>
+<ul>
+<li>Explain difference between DOI and DOI-penetration -&gt; run “download_global()”</li>
+<li>DOI of persons, organizations, and trends</li>
+<li>DOI on within-country level</li>
+</ul>
 </div>
 
 
