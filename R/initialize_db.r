@@ -132,7 +132,8 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_global (
   keyword TEXT,
   date INTEGER,
-  hits INTEGER,
+  type TEXT,
+  hits REAL,
   batch INTEGER
           )")
   dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_wrld ON data_global (batch);")

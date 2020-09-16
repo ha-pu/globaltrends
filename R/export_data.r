@@ -1,4 +1,4 @@
-#' @title Export data from data_control table
+#' @title Export data from database table
 #'
 #' @description
 #' @details
@@ -67,8 +67,6 @@ export_control <- function(control = NULL) {
   return(out)
 }
 
-#' @title Export data from data_object table
-#'
 #' @rdname export_data
 #' @export
 
@@ -79,20 +77,16 @@ export_object <- function(keyword = NULL, object = NULL) {
   return(out)
 }
 
-#' @title Export data from data_global table
-#'
 #' @rdname export_data
 #' @export
 
-export_global <- function(keyword = NULL, object = NULL) {
-  out <- .export_data_single(table = data_global, in_keyword = keyword, in_object = object)
+export_global <- function(keyword = NULL, object = NULL, type = NULL) {
+  out <- .export_data_single(table = data_global, in_keyword = keyword, in_object = object, in_type = type)
   out <- rename(out, object = batch)
   class(out) <- c("doiGT_global", class(out))
   return(out)
 }
 
-#' @title Export data from data_mapping table
-#'
 #' @rdname export_data
 #' @export
 
@@ -103,8 +97,6 @@ export_mapping <- function(keyword = NULL, object = NULL, control = NULL, locati
   return(out)
 }
 
-#' @title Export data from data_score table
-#'
 #' @rdname export_data
 #' @export
 
@@ -115,8 +107,6 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   return(out)
 }
 
-#' @title Export data from data_doi table
-#'
 #' @rdname export_data
 #' @export
 
@@ -127,7 +117,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   return(out)
 }
 
-#' @title Export data from database tables with single batch
+#' @title Run export data from database tables
 #'
 #' @rdname dot-export_data
 #'
@@ -138,29 +128,30 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 
-.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL) {
+.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL, in_type = NULL) {
   in_keyword <- in_keyword[[1]]
   in_object <- in_object[[1]]
   in_control <- in_control[[1]]
   in_locations <- in_locations[[1]]
+  in_type <- in_type[[1]]
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of a different type.")
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
   if (!is.null(in_locations) & !is.character(in_locations)) stop("Error: 'locations' must be NULL or object of type character.\nYou supplied an object of a different type.")
+  if (!is.null(in_type) & !is.character(in_type)) stop("Error: 'type' must be NULL or object of type character.\nYou supplied an object of a different type.")
 
   if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch == in_object)
   if (!is.null(in_control)) table <- filter(table, batch == in_control)
   if (!is.null(in_locations)) table <- filter(table, locations == in_locations)
+  if (!is.null(in_type)) table <- filter(table, type == in_type)
 
   table <- collect(table)
   table <- mutate(table, date = as_date(date))
   return(table)
 }
 
-#' @title Export data from database tables with double batches
-#'
 #' @rdname dot-export_data
 #'
 #' @keywords internal
