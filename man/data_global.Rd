@@ -5,11 +5,14 @@
 \alias{data_global}
 \title{data_global}
 \format{
-A tibble with 418 rows and 4 variables:
+A tibble with 288 rows and 5 variables:
 \describe{
   \item{keyword}{\code{character} keyword for which the data was downloaded}
   \item{date}{date as \code{integer} variable, can be transformed into date
   format with \code{lubridate::as_date}}
+  \item{type}{\code{character} indicating the type of timeseries-adjustment
+  applied to data in column "hits", takes either "socre_obs", "score_sad",
+  or "score_trd"}
   \item{hits}{\code{integer} worldwide search hits for the respective
   keyword-date combination}
   \item{batch}{\code{integer} number of batch}
