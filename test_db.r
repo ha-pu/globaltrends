@@ -49,12 +49,28 @@ download_global(object = new_object)
 filter(data_global, batch == new_object)
 
 # export data ----
-export_control()
-export_object()
-export_global()
-export_mapping()
-export_score()
-export_doi()
+export_control(control = 1)
+export_object(keyword = "manchester united")
+export_global(type = "sad")
+export_mapping(control = 1, object = 1)
+export_score(keyword = "manchester united")
+export_doi(control = 1, object = 1, type = "trd", locations = "us_states")
+
+# plot data ----
+export_doi(type = "obs", locations = "countries") %>%
+  plot_ts(grid = TRUE, smooth = TRUE)
+
+export_doi() %>%
+  plot_ts(type = "obs", locations = "countries", grid = TRUE, smooth = TRUE)
+
+export_doi(type = "obs", locations = "countries") %>%
+  plot_ts(grid = FALSE, smooth = FALSE)
+
+export_doi(type = "sad", locations = "us_states") %>%
+  plot_box()
+
+export_doi() %>%
+  plot_box(type = "sad", locations = "us_states")
 
 # remove data ----
 remove_data(table = "batch_keywords", control = new_control)
