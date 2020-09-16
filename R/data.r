@@ -91,12 +91,12 @@
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{score_obs}{\code{double} search search for the respective location-keyword-date
-#'   combination - no time series adjustment}
-#'   \item{score_sad}{\code{double} search search for the respective location-keyword-date
-#'   combination - seasonally adjusted time series}
-#'   \item{score_trd}{\code{double} search search for the respective location-keyword-date
-#'   combination - trend-only time series}
+#'   \item{score_obs}{\code{double} search score for the respective location-keyword-date
+#'   combination - no timeseries adjustment}
+#'   \item{score_sad}{\code{double} search score for the respective location-keyword-date
+#'   combination - seasonally adjusted timeseries}
+#'   \item{score_trd}{\code{double} search score for the respective location-keyword-date
+#'   combination - trend-only timeseries}
 #'   \item{batch_c}{\code{integer} number of control batch}
 #'   \item{batch_o}{\code{integer} number of object batch}
 #' }
@@ -111,7 +111,7 @@
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{type}{\code{character} indicating the type of time series-column from
+#'   \item{type}{\code{character} indicating the type of timeseries-column from
 #'   \code{data_score} that is used for DOI computation, takes either
 #'   "socre_obs", "score_sad", or "score_trd"}
 #'   \item{gini}{\code{double} DOI computed as inverted Gini coefficient of
@@ -131,11 +131,14 @@
 #'
 #' xxx.
 #'
-#' @format A tibble with 418 rows and 4 variables:
+#' @format A tibble with 288 rows and 5 variables:
 #' \describe{
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
+#'   \item{type}{\code{character} indicating the type of timeseries-adjustment
+#'   applied to data in column "hits", takes either "socre_obs", "score_sad",
+#'   or "score_trd"}
 #'   \item{hits}{\code{integer} worldwide search hits for the respective
 #'   keyword-date combination}
 #'   \item{batch}{\code{integer} number of batch}

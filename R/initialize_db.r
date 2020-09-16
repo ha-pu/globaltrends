@@ -132,6 +132,7 @@ initialize_db <- function() {
   dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_global (
   keyword TEXT,
   date INTEGER,
+  type TEXT,
   hits INTEGER,
   batch INTEGER
           )")

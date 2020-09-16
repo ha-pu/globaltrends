@@ -48,6 +48,14 @@ filter(data_doi, batch_c == new_control & batch_o == new_object)
 download_global(object = new_object)
 filter(data_global, batch == new_object)
 
+# export data ----
+export_control()
+export_object()
+export_global()
+export_mapping()
+export_score()
+export_doi()
+
 # remove data ----
 remove_data(table = "batch_keywords", control = new_control)
 remove_data(table = "batch_keywords", object = new_object)
