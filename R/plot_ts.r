@@ -6,9 +6,15 @@
 #' @param data Data exported from \code{export_doi} function.
 #' @param type Object of class \code{character} indicating the type of time
 #' series-column from data_score that is used for DOI computation, takes
-#' either "socre_obs", "score_sad", or "score_trd".
+#' either "socre_obs", "score_sad", or "score_trd". By default takes \code{NULL}
+#' and assumes that only one single type of timeseries is included in the
+#' data.
 #' @param measure Object of class \code{character} indicating the measure
 #' used for DOI computation, takes either "gini", "hhi", or "entropy".
+#' Defaults to "gini".
+#' @param locations Object of class \code{character} indicating for which
+#' set of locations should be filtered. By default takes \code{NULL} and
+#' assumes that only one single set of locations is included in the data.
 #' @param grid Object of class \code{logical} indicating whether the
 #' \code{facet_wrap} function of \code{ggplot2} should be used. Otherwise,
 #' keywords are separated by color.
@@ -37,10 +43,13 @@
 #' @importFrom ggplot2 theme
 #' @importFrom glue glue
 
-plot_ts <- function(data, type = "score_obs", measure = "gini", grid = TRUE, smooth = TRUE) {
+plot_ts <- function(data, type = NULL, measure = "gini", locations = NULL, grid = TRUE, smooth = TRUE) {
+  in_type <- type
+  in_locations <- locations
   len_keywords <- length(unique(data$keyword))
   data$measure <- data[measure][[1]]
-  data <- filter(data, type == in_type)
+  if (!is.null(in_type)) data <- filter(data, type == in_type)
+  if (!is.null(in_locations)) data <- filter(data, locations == in_locations)
   plot <- ggplot(data, aes(x = date))
 
   if (grid) {
