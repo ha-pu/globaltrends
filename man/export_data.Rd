@@ -7,13 +7,13 @@
 \alias{export_mapping}
 \alias{export_score}
 \alias{export_doi}
-\title{Export data from data_control table}
+\title{Export data from database table}
 \usage{
 export_control(control = NULL)
 
 export_object(keyword = NULL, object = NULL)
 
-export_global(keyword = NULL, object = NULL)
+export_global(keyword = NULL, object = NULL, type = NULL)
 
 export_mapping(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
@@ -40,14 +40,14 @@ is used for exporting.}
 of class \code{numeric}. When element length exceeds 1, only the first element
 is used for exporting.}
 
-\item{locations}{Set of locations for which data should be exported. Element
-of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting.}
-
 \item{type}{Type of timeseries for which data should be exported. Element
 of class \code{character}. When element length exceeds 1, only the first
 element is used for exporting. Relevant only for "export_doi". Takes one
 of the following values: "score_obs", "score_sad", "score_trd".}
+
+\item{locations}{Set of locations for which data should be exported. Element
+of class \code{character}. When element length exceeds 1, only the first
+element is used for exporting.}
 }
 \value{
 The functions export and filter the respective database tables and return
@@ -71,17 +71,7 @@ locations
 }
 }
 \description{
-Export data from data_control table
-
-Export data from data_object table
-
-Export data from data_global table
-
-Export data from data_mapping table
-
-Export data from data_score table
-
-Export data from data_doi table
+Export data from database table
 }
 \details{
 

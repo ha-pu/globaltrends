@@ -3,14 +3,15 @@
 \name{.export_data_single}
 \alias{.export_data_single}
 \alias{.export_data_double}
-\title{Export data from database tables with single batch}
+\title{Run export data from database tables}
 \usage{
 .export_data_single(
   table,
   in_keyword = NULL,
   in_object = NULL,
   in_control = NULL,
-  in_locations = NULL
+  in_locations = NULL,
+  in_type = NULL
 )
 
 .export_data_double(
@@ -23,8 +24,6 @@
 )
 }
 \description{
-Export data from database tables with single batch
-
-Export data from database tables with double batches
+Run export data from database tables
 }
 \keyword{internal}
