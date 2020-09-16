@@ -90,8 +90,8 @@ export_global <- function(keyword = NULL, object = NULL, type = NULL) {
 #' @rdname export_data
 #' @export
 
-export_mapping <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
-  out <- .export_data_double(table = data_mapping, in_keyword = keyword, in_object = object, in_control = control, in_locations = locations)
+export_mapping <- function(keyword = NULL, object = NULL, control = NULL) {
+  out <- .export_data_double(table = data_mapping, in_keyword = keyword, in_object = object, in_control = control)
   out <- rename(out, control = batch_c, object = batch_o)
   class(out) <- c("doiGT_mapping", class(out))
   return(out)
@@ -100,8 +100,8 @@ export_mapping <- function(keyword = NULL, object = NULL, control = NULL, locati
 #' @rdname export_data
 #' @export
 
-export_score <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
-  out <- .export_data_double(table = data_score, in_keyword = keyword, in_object = object, in_control = control, in_locations = locations)
+export_score <- function(keyword = NULL, object = NULL, control = NULL) {
+  out <- .export_data_double(table = data_score, in_keyword = keyword, in_object = object, in_control = control)
   out <- rename(out, control = batch_c, object = batch_o)
   class(out) <- c("doiGT_score", class(out))
   return(out)
@@ -128,7 +128,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 
-.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL, in_type = NULL) {
+.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_type = NULL) {
   in_keyword <- in_keyword[[1]]
   in_object <- in_object[[1]]
   in_control <- in_control[[1]]
@@ -138,13 +138,11 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of a different type.")
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
-  if (!is.null(in_locations) & !is.character(in_locations)) stop("Error: 'locations' must be NULL or object of type character.\nYou supplied an object of a different type.")
   if (!is.null(in_type) & !is.character(in_type)) stop("Error: 'type' must be NULL or object of type character.\nYou supplied an object of a different type.")
 
   if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch == in_object)
   if (!is.null(in_control)) table <- filter(table, batch == in_control)
-  if (!is.null(in_locations)) table <- filter(table, locations == in_locations)
   if (!is.null(in_type)) table <- filter(table, type == in_type)
 
   table <- collect(table)
