@@ -6,11 +6,11 @@
 \alias{download_mapping.list}
 \title{Download data for mapping between control and object batch}
 \usage{
-download_mapping(control, object, locations = lst_wdi)
+download_mapping(control, object, locations = countries)
 
-\method{download_mapping}{numeric}(control, object, locations = lst_wdi)
+\method{download_mapping}{numeric}(control, object, locations = countries)
 
-\method{download_mapping}{list}(control, object, locations = lst_wdi)
+\method{download_mapping}{list}(control, object, locations = countries)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
@@ -25,7 +25,7 @@ Refers to lists generated in \code{start_db}.}
 }
 \value{
 Message that data was downloaded successfully. Data is uploaded
-to data_map.
+to data_mapping.
 }
 \description{
 Download data for mapping between control and object batch
@@ -35,8 +35,8 @@ Download data for mapping between control and object batch
 }
 \examples{
 \dontrun{
-data_map(control = 1, object = 1, locations = lst_wdi)
-data_map(control = 1, object = as.list(1:5), locations = lst_wdi)
+download_mapping(control = 1, object = 1, locations = countries)
+download_mapping(control = 1, object = as.list(1:5), locations = countries)
 }
 
 }

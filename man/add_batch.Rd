@@ -27,7 +27,7 @@ class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".}
 }
 \value{
 Message that the batch was created successfully. Batch data is
-uploaded to batch_terms and batch_time.
+uploaded to batch_keywords and batch_time.
 }
 \description{
 Add batch of control keywords

@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_con(control = 1, locations = lst_wdi)
-#' data_con(control = as.list(1:5), locations = lst_wdi)
+#' download_control(control = 1, locations = countries)
+#' download_control(control = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -33,25 +33,25 @@
 #' @importFrom glue glue
 #' @importFrom purrr walk
 
-download_control <- function(control, locations = lst_wdi) UseMethod("download_control", control)
+download_control <- function(control, locations = countries) UseMethod("download_control", control)
 
 #' @rdname download_control
 #' @method download_control numeric
 #' @export
 
-download_control.numeric <- function(control, locations = lst_wdi) {
+download_control.numeric <- function(control, locations = countries) {
   .test_batch(control)
-  terms <- terms_con$keyword[terms_con$batch == control]
-  time <- time_con$time[time_con$batch == control]
+  terms <- keywords_control$keyword[keywords_control$batch == control]
+  time <- time_control$time[time_control$batch == control]
   walk(locations, ~ {
-    if (.test_empty(table = "data_con", batch_c = control, geo = .x)) {
-      out <- .get_trend(geo = .x, term = terms, time = time)
+    if (.test_empty(table = "data_control", batch_c = control, location = .x)) {
+      out <- .get_trend(location = .x, term = terms, time = time)
       if (!is.null(out)) {
         out <- mutate(out, batch = control)
-        dbWriteTable(conn = doiGT_DB, name = "data_con", value = out, append = TRUE)
+        dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
       }
     }
-    message(glue("Successfully downloaded control data | control: {control} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    message(glue("Successfully downloaded control data | control: {control} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
@@ -59,6 +59,6 @@ download_control.numeric <- function(control, locations = lst_wdi) {
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = lst_wdi) {
+download_control.list <- function(control, locations = countries) {
   walk(control, download_control, locations = locations)
 }

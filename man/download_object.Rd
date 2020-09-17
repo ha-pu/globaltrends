@@ -6,11 +6,11 @@
 \alias{download_object.list}
 \title{Download data for object batch}
 \usage{
-download_object(object, locations = lst_wdi)
+download_object(object, locations = countries)
 
-\method{download_object}{numeric}(object, locations = lst_wdi)
+\method{download_object}{numeric}(object, locations = countries)
 
-\method{download_object}{list}(object, locations = lst_wdi)
+\method{download_object}{list}(object, locations = countries)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
@@ -22,7 +22,7 @@ Refers to lists generated in \code{start_db}.}
 }
 \value{
 Message that data was downloaded successfully. Data is uploaded
-to data_object.
+to data_objectect.
 }
 \description{
 Download data for object batch
@@ -32,8 +32,8 @@ Download data for object batch
 }
 \examples{
 \dontrun{
-data_obj(object = 1, locations = lst_wdi)
-data_obj(object = as.list(1:5), locations = lst_wdi)
+download_object(object = 1, locations = countries)
+download_object(object = as.list(1:5), locations = countries)
 }
 
 }

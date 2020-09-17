@@ -18,12 +18,12 @@
 #'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded
-#' to data_object.
+#' to data_objectect.
 #'
 #' @examples
 #' \dontrun{
-#' data_obj(object = 1, locations = lst_wdi)
-#' data_obj(object = as.list(1:5), locations = lst_wdi)
+#' download_object(object = 1, locations = countries)
+#' download_object(object = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -34,29 +34,29 @@
 #' @importFrom purrr walk
 #' @importFrom stringr str_split
 
-download_object <- function(object, locations = lst_wdi) UseMethod("download_object", object)
+download_object <- function(object, locations = countries) UseMethod("download_object", object)
 
 #' @rdname download_object
 #' @method download_object numeric
 #' @export
 
-download_object.numeric <- function(object, locations = lst_wdi) {
+download_object.numeric <- function(object, locations = countries) {
   .test_batch(object)
-  terms <- terms_obj$keyword[terms_obj$batch == object]
-  time <- time_obj$time[time_obj$batch == object]
+  terms <- keywords_object$keyword[keywords_object$batch == object]
+  time <- time_object$time[time_object$batch == object]
   walk(locations, ~ {
-    if (.test_empty(table = "data_obj", batch_o = object, geo = .x)) {
-      out <- .get_trend(geo = .x, term = terms, time = time)
+    if (.test_empty(table = "data_object", batch_o = object, location = .x)) {
+      out <- .get_trend(location = .x, term = terms, time = time)
       if (is.null(out)) {
         start <- as_date(str_split(time, pattern = " ")[[1]][[1]])
         end <- as_date(str_split(time, pattern = " ")[[1]][[2]])
-        out <- tibble(geo = .x, keyword = terms, hits = 0)
+        out <- tibble(location = .x, keyword = terms, hits = 0)
         out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
       out <- mutate(out, batch = object)
-      dbWriteTable(conn = doiGT_DB, name = "data_obj", value = out, append = TRUE)
+      dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
     }
-    message(glue("Successfully downloaded object data | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    message(glue("Successfully downloaded object data | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
@@ -64,6 +64,6 @@ download_object.numeric <- function(object, locations = lst_wdi) {
 #' @method download_object list
 #' @export
 
-download_object.list <- function(object, locations = lst_wdi) {
+download_object.list <- function(object, locations = countries) {
   walk(object, download_object, locations = locations)
 }

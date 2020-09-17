@@ -24,86 +24,84 @@ initialize_db <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ----
-  doiGT_DB <- suppressWarnings(src_sqlite("db/doiGT_DB.sqlite", create = TRUE))
-  doiGT_DB <- dbConnect(SQLite(), "db/doiGT_DB.sqlite")
+  globaltrends_db <- suppressWarnings(src_sqlite("db/globaltrends_db.sqlite", create = TRUE))
+  globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Database has been created.")
 
   # create tables ----
 
-  # batch_terms
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_terms (
+  # batch_keywords
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_keywords (
   type TEXT,
   batch INTEGER,
   keyword TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_terms ON batch_terms (batch);")
-  message("Table 'batch_terms' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
+  message("Table 'batch_keywords' has been created.")
 
   # batch_time
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE batch_time (
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_time (
   type TEXT,
   batch INTEGER,
   time TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_time ON batch_time (batch);")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Table 'batch_time' has been created.")
 
-  # dict_obj
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE dict_obj (
-  term1 TEXT,
-  term2 TEXT
+  # keyword_synonyms
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE keyword_synonyms (
+  keyword TEXT,
+  synonym TEXT
           )")
-  message("Table 'dict_obj' has been created.")
+  message("Table 'keyword_synonyms' has been created.")
 
-  # data_geo
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_geo (
+  # data_locations
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
   name TEXT,
-  geo TEXT,
-  share REAL,
-  cum_share REAL,
+  location TEXT,
   type TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_geo ON data_geo (geo);")
-  message("Table 'data_geo' has been created.")
-  .enter_geo(doiGT_DB = doiGT_DB)
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_location ON data_locations (location);")
+  message("Table 'data_locations' has been created.")
+  .enter_location(globaltrends_db = globaltrends_db)
 
-  # data_con
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_con (
-  geo TEXT,
+  # data_control
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_control (
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_con ON data_con (batch);")
-  message("Table 'batch_terms' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
+  message("Table 'batch_keywords' has been created.")
 
-  # data_obj
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_obj (
-  geo TEXT,
+  # data_object
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_object (
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_obj ON data_obj (batch);")
-  message("Table 'data_con' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch);")
+  message("Table 'data_control' has been created.")
 
-  # data_map
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_map (
-  geo TEXT,
+  # data_mapping
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_mapping (
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_map ON data_map (batch_c, batch_o);")
-  message("Table 'data_map' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_map ON data_mapping (batch_c, batch_o);")
+  message("Table 'data_mapping' has been created.")
 
   # data_score
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_score (
-  geo TEXT,
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_score (
+  location TEXT,
   keyword TEXT,
   date INTEGER,
   score_obs REAL,
@@ -112,11 +110,11 @@ initialize_db <- function() {
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Table 'data_score' has been created.")
 
-  # data_agg
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_agg (
+  # data_doi
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_doi (
   keyword TEXT,
   date INTEGER,
   type TEXT,
@@ -127,19 +125,20 @@ initialize_db <- function() {
   batch_o INTEGER,
   locations TEXT
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_agg ON data_agg (batch_c, batch_o);")
-  message("Table 'data_agg' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
+  message("Table 'data_doi' has been created.")
 
-  # data_wrld
-  dbExecute(conn = doiGT_DB, statement = "CREATE TABLE data_wrld (
+  # data_global
+  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_global (
   keyword TEXT,
   date INTEGER,
-  hits INTEGER,
+  type TEXT,
+  hits REAL,
   batch INTEGER
           )")
-  dbExecute(conn = doiGT_DB, statement = "CREATE INDEX idx_wrld ON data_wrld (batch);")
-  message("Table 'data_wrld' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_wrld ON data_global (batch);")
+  message("Table 'data_global' has been created.")
 
   # disconnect from db ----
-  disconnect_db(db = doiGT_DB)
+  disconnect_db(db = globaltrends_db)
 }

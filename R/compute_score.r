@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data_score(control = 1, object = 1, locations = lst_wdi)
-#' data_score(control = 1, object = as.list(1:5), locations = lst_wdi)
+#' compute_score(control = 1, object = 1, locations = countries)
+#' compute_score(control = 1, object = as.list(1:5), locations = countries)
 #' }
 #'
 #' @export
@@ -50,40 +50,40 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-compute_score <- function(control, object, locations = lst_wdi) UseMethod("compute_score", object)
+compute_score <- function(control, object, locations = countries) UseMethod("compute_score", object)
 
 #' @rdname compute_score
 #' @method compute_score numeric
 #' @export
 
-compute_score.numeric <- function(control, object, locations = lst_wdi) {
+compute_score.numeric <- function(control, object, locations = countries) {
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
-    if (.test_empty(table = "data_score", batch_c = control, batch_o = object, geo = .x)) {
-      qry_map <- filter(data_map, batch_c == control & batch_o == object & geo == .x)
-      qry_map <- collect(qry_map)
-      if (nrow(qry_map) != 0) {
-        qry_con <- filter(data_con, batch == control & geo == .x)
-        qry_con <- collect(qry_con)
-        qry_obj <- filter(data_obj, batch == object & geo == .x)
-        qry_obj <- collect(qry_obj)
+    if (.test_empty(table = "data_score", batch_c = control, batch_o = object, location = .x)) {
+      qry_mapping <- filter(data_mapping, batch_c == control & batch_o == object & location == .x)
+      qry_mapping <- collect(qry_mapping)
+      if (nrow(qry_mapping) != 0) {
+        qry_control <- filter(data_control, batch == control & location == .x)
+        qry_control <- collect(qry_control)
+        qry_object <- filter(data_object, batch == object & location == .x)
+        qry_object <- collect(qry_object)
 
-        qry_con <- mutate(qry_con, date = as_date(date))
-        qry_obj <- mutate(qry_obj, date = as_date(date))
-        qry_map <- mutate(qry_map, date = as_date(date))
+        qry_control <- mutate(qry_control, date = as_date(date))
+        qry_object <- mutate(qry_object, date = as_date(date))
+        qry_mapping <- mutate(qry_mapping, date = as_date(date))
 
         # adapt time series frequency
-        qry_con <- .reset_date(qry_con)
-        qry_obj <- .reset_date(qry_obj)
-        qry_map <- .reset_date(qry_map)
+        qry_control <- .reset_date(qry_control)
+        qry_object <- .reset_date(qry_object)
+        qry_mapping <- .reset_date(qry_mapping)
 
-        if (min(nrow(count(qry_con, date)), nrow(count(qry_obj, date)), nrow(count(qry_map, date))) >= 24) {
+        if (min(nrow(count(qry_control, date)), nrow(count(qry_object, date)), nrow(count(qry_mapping, date))) >= 24) {
           # adjust to time series and impute negative values
-          qry_con <- nest(qry_con, data = c(date, hits))
-          qry_con <- mutate(qry_con, data = map(data, .adjust_ts))
-          qry_con <- unnest(qry_con, data)
-          qry_con <- mutate(qry_con,
+          qry_control <- nest(qry_control, data = c(date, hits))
+          qry_control <- mutate(qry_control, data = map(data, .adjust_ts))
+          qry_control <- unnest(qry_control, data)
+          qry_control <- mutate(qry_control,
             hits_trd = case_when(
               hits_trd < 0 & hits_sad < 0 ~ 0.1,
               hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
@@ -95,10 +95,10 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
               TRUE ~ hits_sad
             )
           )
-          qry_obj <- nest(qry_obj, data = c(date, hits))
-          qry_obj <- mutate(qry_obj, data = map(data, .adjust_ts))
-          qry_obj <- unnest(qry_obj, data)
-          qry_obj <- mutate(qry_obj,
+          qry_object <- nest(qry_object, data = c(date, hits))
+          qry_object <- mutate(qry_object, data = map(data, .adjust_ts))
+          qry_object <- unnest(qry_object, data)
+          qry_object <- mutate(qry_object,
             hits_trd = case_when(
               hits_trd < 0 & hits_sad < 0 ~ 0.1,
               hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
@@ -110,10 +110,10 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
               TRUE ~ hits_sad
             )
           )
-          qry_map <- nest(qry_map, data = c(date, hits))
-          qry_map <- mutate(qry_map, data = map(data, .adjust_ts))
-          qry_map <- unnest(qry_map, data)
-          qry_map <- mutate(qry_map,
+          qry_mapping <- nest(qry_mapping, data = c(date, hits))
+          qry_mapping <- mutate(qry_mapping, data = map(data, .adjust_ts))
+          qry_mapping <- unnest(qry_mapping, data)
+          qry_mapping <- mutate(qry_mapping,
             hits_trd = case_when(
               hits_trd < 0 & hits_sad < 0 ~ 0.1,
               hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
@@ -126,49 +126,49 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
             )
           )
         }
-        qry_con <- pivot_longer(qry_con, cols = contains("hits"), names_to = "key", values_to = "value")
-        qry_obj <- pivot_longer(qry_obj, cols = contains("hits"), names_to = "key", values_to = "value")
-        qry_map <- pivot_longer(qry_map, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_control <- pivot_longer(qry_control, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_object <- pivot_longer(qry_object, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_mapping <- pivot_longer(qry_mapping, cols = contains("hits"), names_to = "key", values_to = "value")
 
         # set to benchmark
-        tmp_con <- inner_join(qry_map, qry_con, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_c"))
+        tmp_con <- inner_join(qry_mapping, qry_control, by = c("location", "keyword", "date", "key"), suffix = c("_m", "_c"))
         tmp_con <- mutate(tmp_con,
           value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
           value_c = case_when(value_c == 0 ~ 1, TRUE ~ value_c)
         )
         tmp_con <- mutate(tmp_con, benchmark = coalesce(value_m / value_c, 0))
-        tmp_con <- select(tmp_con, geo, date, key, benchmark)
-        tmp_con <- inner_join(tmp_con, qry_con, by = c("geo", "date", "key"))
+        tmp_con <- select(tmp_con, location, date, key, benchmark)
+        tmp_con <- inner_join(tmp_con, qry_control, by = c("location", "date", "key"))
         tmp_con <- mutate(tmp_con, value = value * benchmark)
-        tmp_con <- select(tmp_con, geo, date, key, keyword, value)
+        tmp_con <- select(tmp_con, location, date, key, keyword, value)
 
-        tmp_obj <- inner_join(qry_map, qry_obj, by = c("geo", "keyword", "date", "key"), suffix = c("_m", "_o"))
+        tmp_obj <- inner_join(qry_mapping, qry_object, by = c("location", "keyword", "date", "key"), suffix = c("_m", "_o"))
         tmp_obj <- mutate(tmp_obj,
           value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
           value_o = case_when(value_o == 0 ~ 1, TRUE ~ value_o)
         )
         tmp_obj <- mutate(tmp_obj, benchmark = coalesce(value_m / value_o, 0))
-        tmp_obj <- select(tmp_obj, geo, date, key, benchmark)
-        tmp_obj <- inner_join(tmp_obj, qry_obj, by = c("geo", "date", "key"))
+        tmp_obj <- select(tmp_obj, location, date, key, benchmark)
+        tmp_obj <- inner_join(tmp_obj, qry_object, by = c("location", "date", "key"))
         tmp_obj <- mutate(tmp_obj, value = value * benchmark)
-        tmp_obj <- select(tmp_obj, geo, date, key, keyword, value)
+        tmp_obj <- select(tmp_obj, location, date, key, keyword, value)
 
         # compute score
-        data_con_agg <- group_by(tmp_con, geo, date, key)
-        data_con_agg <- summarise(data_con_agg, value_c = sum(value))
-        data_con_agg <- ungroup(data_con_agg)
-        data_obj_agg <- left_join(tmp_obj, data_con_agg, by = c("geo", "date", "key"))
-        data_obj_agg <- mutate(data_obj_agg,
+        control_agg <- group_by(tmp_con, location, date, key)
+        control_agg <- summarise(control_agg, value_c = sum(value))
+        control_agg <- ungroup(control_agg)
+        object_agg <- left_join(tmp_obj, control_agg, by = c("location", "date", "key"))
+        object_agg <- mutate(object_agg,
           score = coalesce(value / value_c, 0),
           key = str_replace(key, "hits_", "score_")
         )
-        data_obj_agg <- select(data_obj_agg, geo, date, keyword, key, score)
-        data_score <- pivot_wider(data_obj_agg, names_from = key, values_from = score, values_fill = 0)
+        object_agg <- select(object_agg, location, date, keyword, key, score)
+        data_score <- pivot_wider(object_agg, names_from = key, values_from = score, values_fill = 0)
         out <- mutate(data_score, batch_c = control, batch_o = object)
-        dbWriteTable(conn = doiGT_DB, name = "data_score", value = out, append = TRUE)
+        dbWriteTable(conn = globaltrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
-    message(glue("Successfully computed search score | control: {control} | object: {object} | geo: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
 }
 
@@ -176,6 +176,6 @@ compute_score.numeric <- function(control, object, locations = lst_wdi) {
 #' @method compute_score list
 #' @export
 
-compute_score.list <- function(control, object, locations = lst_wdi) {
+compute_score.list <- function(control, object, locations = countries) {
   walk(object, compute_score, control = control, locations = locations)
 }

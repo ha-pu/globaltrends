@@ -7,16 +7,16 @@
 \format{
 A tibble with 480 rows and 8 variables:
 \describe{
-  \item{geo}{\code{character} ISO2 code of country or region for which the
+  \item{location}{\code{character} ISO2 code of country or region for which the
   data was downloaded}
   \item{keyword}{\code{character} keyword for which the data was downloaded}
   \item{date}{date as \code{integer} variable, can be transformed into date
   format with \code{lubridate::as_date}}
-  \item{score_obs}{\code{double} search search for the respective geo-keyword-date
+  \item{score_obs}{\code{double} search score for the respective location-keyword-date
   combination - no timeseries adjustment}
-  \item{score_sad}{\code{double} search search for the respective geo-keyword-date
+  \item{score_sad}{\code{double} search score for the respective location-keyword-date
   combination - seasonally adjusted timeseries}
-  \item{score_trd}{\code{double} search search for the respective geo-keyword-date
+  \item{score_trd}{\code{double} search score for the respective location-keyword-date
   combination - trend-only timeseries}
   \item{batch_c}{\code{integer} number of control batch}
   \item{batch_o}{\code{integer} number of object batch}

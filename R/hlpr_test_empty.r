@@ -6,24 +6,24 @@
 #' @importFrom dplyr filter
 #' @importFrom utils head
 
-.test_empty <- function(table, batch_c = NULL, batch_o = NULL, geo = NULL, locations = NULL) {
+.test_empty <- function(table, batch_c = NULL, batch_o = NULL, location = NULL, locations = NULL) {
   if (is.character(table)) {
     in_batch_c <- batch_c
     in_batch_o <- batch_o
-    in_geo <- geo
+    in_location <- location
     in_locations <- locations
-    if (table == "data_con") {
-      out <- filter(data_con, batch == in_batch_c & geo == in_geo)
-    } else if (table == "data_obj") {
-      out <- filter(data_obj, batch == in_batch_o & geo == in_geo)
-    } else if (table == "data_map") {
-      out <- filter(data_map, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
+    if (table == "data_control") {
+      out <- filter(data_control, batch == in_batch_c & location == in_location)
+    } else if (table == "data_object") {
+      out <- filter(data_object, batch == in_batch_o & location == in_location)
+    } else if (table == "data_mapping") {
+      out <- filter(data_mapping, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
     } else if (table == "data_score") {
-      out <- filter(data_score, batch_c == in_batch_c & batch_o == in_batch_o & geo == in_geo)
-    } else if (table == "data_agg") {
-      out <- filter(data_agg, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
-    } else if (table == "data_wrld") {
-      out <- filter(data_wrld, batch == in_batch_o)
+      out <- filter(data_score, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
+    } else if (table == "data_doi") {
+      out <- filter(data_doi, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
+    } else if (table == "data_global") {
+      out <- filter(data_global, batch == in_batch_o)
     }
     out <- head(out)
     out <- collect(out)

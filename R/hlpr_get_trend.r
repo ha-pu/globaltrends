@@ -2,26 +2,32 @@
 #'
 #' @keywords internal
 #'
+#' @importFrom dplyr mutate
+#' @importFrom dplyr select
 #' @importFrom gtrendsR gtrends
+#' @importFrom lubridate as_date
 #' @importFrom stats runif
+#' @importFrom stringr str_replace
 
-.get_trend <- function(geo, term, time = "all") {
-  out <- try(gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
+.get_trend <- function(location, term, time = "all") {
+  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   while (inherits(out, "try-error")) {
     if (attr(out, "condition")$message == "widget$status_code == 200 is not TRUE") {
       Sys.sleep(3600)
     } else {
       Sys.sleep(60)
     }
-    out <- try(gtrends(keyword = term, geo = geo, time = time, onlyInterest = TRUE))
+    out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   }
   if (is.null(out$interest_over_time)) {
     return(NULL)
   } else {
     out <- out$interest_over_time
-    out$hits <- as.numeric(str_replace(out$hits, "<1", "0.1"))
-    out$date <- as.Date(out$date)
-    out <- out[, c("geo", "keyword", "date", "hits")]
+    out <- mutate(out,
+      hits = as.numeric(str_replace(hits, "<1", "0.1")),
+      date = as_date(date)
+    )
+    out <- select(out, location = geo, keyword, date, hits)
     Sys.sleep(runif(1, min = 20, max = 30))
     return(out)
   }
