@@ -6,6 +6,7 @@ library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
 
 # connect to db ----
+dir_current <- getwd()
 dir_wd <- tempdir()
 setwd(dir_wd)
 initialize_db()
@@ -71,6 +72,17 @@ export_doi(type = "sad", locations = "us_states") %>%
 
 export_doi() %>%
   plot_box(type = "sad", locations = "us_states")
+
+data1 <- export_doi(keyword = "manchester united", locations = "countries")
+data2 <- export_global(keyword = "manchester united")
+
+plot_trend(data_doi = data1, data_global = data2, type = "obs", measure = "gini", smooth = TRUE)
+plot_trend(data_doi = data1, data_global = data2, type = "sad", measure = "hhi", smooth = FALSE)
+plot_trend(data_doi = data1, data_global = data2, type = "trd", measure = "entropy", smooth = TRUE)
+
+export_score(keyword = "manchester united") %>%
+  filter(location %in% countries) %>%
+  plot_score(type = "sad")
 
 # remove data ----
 remove_data(table = "batch_keywords", control = new_control)
