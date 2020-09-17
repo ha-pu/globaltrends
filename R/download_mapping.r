@@ -66,7 +66,7 @@ download_mapping.numeric <- function(control, object, locations = countries) {
             out <- .get_trend(location = .x, term = c(term_con[[i]], term_obj[[1]]), time = paste(date_min, date_max))
             if (!is.null(out) & median(out$hits[out$keyword == term_con[[i]]]) > 1) {
               out <- mutate(out, batch_c = control, batch_o = object)
-              dbWriteTable(conn = doiGT_DB, name = "data_mapping", value = out, append = TRUE)
+              dbWriteTable(conn = globaltrends_db, name = "data_mapping", value = out, append = TRUE)
               break()
             }
             i <- i + 1

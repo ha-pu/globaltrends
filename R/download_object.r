@@ -54,7 +54,7 @@ download_object.numeric <- function(object, locations = countries) {
         out <- expand_grid(out, tibble(date = seq.Date(from = start, to = end, by = "month")))
       }
       out <- mutate(out, batch = object)
-      dbWriteTable(conn = doiGT_DB, name = "data_object", value = out, append = TRUE)
+      dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
     }
     message(glue("Successfully downloaded object data | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })

@@ -4,7 +4,7 @@
 \alias{.enter_location}
 \title{Enter location data into database}
 \usage{
-.enter_location(doiGT_DB)
+.enter_location(globaltrends_db)
 }
 \description{
 Enter location data into database

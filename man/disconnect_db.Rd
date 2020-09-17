@@ -4,7 +4,7 @@
 \alias{disconnect_db}
 \title{Disconnect from database}
 \usage{
-disconnect_db(db = doiGT_DB)
+disconnect_db(db = globaltrends_db)
 }
 \value{
 Message that disconnection was successful.

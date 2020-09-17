@@ -14,7 +14,7 @@
 #' @importFrom tibble tibble
 #' @importFrom WDI WDI
 
-.enter_location <- function(doiGT_DB) {
+.enter_location <- function(globaltrends_db) {
   # create countries ----
   countries <- WDI::WDI_data$country
   countries <- as_tibble(countries)
@@ -38,6 +38,6 @@
   us_states <- mutate(us_states, type = "us_states")
 
   # upload data ----
-  dbWriteTable(conn = doiGT_DB, name = "data_locations", value = bind_rows(countries, us_states), append = TRUE)
+  dbWriteTable(conn = globaltrends_db, name = "data_locations", value = bind_rows(countries, us_states), append = TRUE)
   message("Data entered into 'data_locations'.")
 }

@@ -48,7 +48,7 @@ download_control.numeric <- function(control, locations = countries) {
       out <- .get_trend(location = .x, term = terms, time = time)
       if (!is.null(out)) {
         out <- mutate(out, batch = control)
-        dbWriteTable(conn = doiGT_DB, name = "data_control", value = out, append = TRUE)
+        dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
       }
     }
     message(glue("Successfully downloaded control data | control: {control} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))

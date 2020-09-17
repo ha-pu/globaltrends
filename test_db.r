@@ -1,7 +1,7 @@
 # run data base test
 
 # packages ----
-library(doiGT)
+library(globaltrends)
 library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
 

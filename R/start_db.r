@@ -1,4 +1,4 @@
-#' @title Load doiGT database and tables
+#' @title Load globaltrends database and tables
 #'
 #' @description
 #' @details
@@ -7,7 +7,7 @@
 #' @return
 #' The function exports the following objects to .GlobalEnv:
 #' \itemize{
-#'   \item doiGT_DB A DBIConnection object, as returned by
+#'   \item globaltrends_db A DBIConnection object, as returned by
 #'   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
 #'   directory
 #'   \item data_locations A remote data source pointing to the table "data_locations" in
@@ -54,21 +54,21 @@
 
 start_db <- function() {
   # connect to db ----
-  doiGT_DB <- dbConnect(SQLite(), "db/doiGT_DB.sqlite")
+  globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Successfully connected to database.")
 
   # get tables ----
-  data_locations <- tbl(doiGT_DB, "data_locations")
-  batch_keywords <- tbl(doiGT_DB, "batch_keywords")
-  batch_time <- tbl(doiGT_DB, "batch_time")
-  keyword_synonyms <- tbl(doiGT_DB, "keyword_synonyms")
+  data_locations <- tbl(globaltrends_db, "data_locations")
+  batch_keywords <- tbl(globaltrends_db, "batch_keywords")
+  batch_time <- tbl(globaltrends_db, "batch_time")
+  keyword_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
 
-  data_doi <- tbl(doiGT_DB, "data_doi")
-  data_control <- tbl(doiGT_DB, "data_control")
-  data_mapping <- tbl(doiGT_DB, "data_mapping")
-  data_object <- tbl(doiGT_DB, "data_object")
-  data_score <- tbl(doiGT_DB, "data_score")
-  data_global <- tbl(doiGT_DB, "data_global")
+  data_doi <- tbl(globaltrends_db, "data_doi")
+  data_control <- tbl(globaltrends_db, "data_control")
+  data_mapping <- tbl(globaltrends_db, "data_mapping")
+  data_object <- tbl(globaltrends_db, "data_object")
+  data_score <- tbl(globaltrends_db, "data_score")
+  data_global <- tbl(globaltrends_db, "data_global")
 
   # load files ----
   countries <- filter(data_locations, type == "countries")
@@ -93,8 +93,8 @@ start_db <- function() {
   keyword_synonyms <- collect(keyword_synonyms)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(doiGT_DB, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, countries, us_states, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
-  names(lst_object) <- list("doiGT_DB", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "countries", "us_states", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
+  lst_object <- list(globaltrends_db, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, countries, us_states, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
+  names(lst_object) <- list("globaltrends_db", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "countries", "us_states", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }

@@ -79,7 +79,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 
 .remove_batch_keywords <- function(type, batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
+  dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "control") {
     keywords_control <- filter(batch_keywords, type == "control")
     keywords_control <- select(keywords_control, -type)
@@ -107,7 +107,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 
 .remove_batch_time <- function(type, batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
+  dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch))
   if (type == "control") {
     time_control <- filter(batch_time, type == "control")
     time_control <- select(time_control, -type)
@@ -129,7 +129,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 
 .remove_data_control <- function(batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch))
+  dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted control batch {batch} from 'data_control'."))
 
   .remove_data_mapping(batch_c = batch)
@@ -141,7 +141,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 
 .remove_data_object <- function(batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_object WHERE batch=?", params = list(batch))
+  dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted object batch {batch} from 'data_object'."))
 
   .remove_data_mapping(batch_o = batch)
@@ -155,15 +155,15 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_data_mapping <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_c=?", params = list(batch_c))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_mapping'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_o=?", params = list(batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_o=?", params = list(batch_o))
     message(glue("Successfully deleted object batch {batch_o} from 'data_mapping'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_mapping WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
     message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_mapping'."))
   }
 
@@ -177,15 +177,15 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_data_score <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_score'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
     message(glue("Successfully deleted object batch {batch_o} from 'data_score'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
     message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_score'."))
   }
 
@@ -199,15 +199,15 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_data_doi <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_doi'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_o=?", params = list(batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=?", params = list(batch_o))
     message(glue("Successfully deleted object batch {batch_o} from 'data_doi'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_doi WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
     message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_doi'."))
   }
 }
@@ -218,6 +218,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
 
 .remove_data_global <- function(batch) {
   .test_batch(batch)
-  dbExecute(conn = doiGT_DB, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch))
+  dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted object batch {batch} from 'data_global'."))
 }

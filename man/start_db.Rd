@@ -2,14 +2,14 @@
 % Please edit documentation in R/start_db.r
 \name{start_db}
 \alias{start_db}
-\title{Load doiGT database and tables}
+\title{Load globaltrends database and tables}
 \usage{
 start_db()
 }
 \value{
 The function exports the following objects to .GlobalEnv:
 \itemize{
-  \item doiGT_DB A DBIConnection object, as returned by
+  \item globaltrends_db A DBIConnection object, as returned by
   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
   directory
   \item data_locations A remote data source pointing to the table "data_locations" in
@@ -42,7 +42,7 @@ The function exports the following objects to .GlobalEnv:
 }
 }
 \description{
-Load doiGT database and tables
+Load globaltrends database and tables
 }
 \examples{
 \dontrun{

@@ -93,7 +93,7 @@ compute_doi.numeric <- function(control, object, locations = "countries") {
 
     # write data
     out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
-    dbWriteTable(conn = doiGT_DB, name = "data_doi", value = out, append = TRUE)
+    dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
   }
   message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(keywords_object$batch)))
 }

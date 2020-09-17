@@ -15,7 +15,7 @@
 #' @importFrom DBI dbDisconnect
 
 
-disconnect_db <- function(db = doiGT_DB) {
+disconnect_db <- function(db = globaltrends_db) {
   dbDisconnect(conn = db)
   message("Successfully disconnected.")
 }

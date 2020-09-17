@@ -1,11 +1,11 @@
-Package: doiGT
+Package: globaltrends
 Type: Package
-Title: Degree of Internationalization from GoogleTrends
+Title: Measure global trends with Google Trends
 Version: 0.0.2
 Authors@R: person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at")
 Author: Harald Puhr [aut, cre]
 Maintainer: Harald Puhr <harald.puhr@wu.ac.at>
-Description: The package downloads and computes the degree of internationalization for search terms from GoogleTrends.
+Description: The package downloads and measures global trends based on search data obtained from Google Trends.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,6 +14,8 @@ Imports:
   dbplyr,
   dplyr,
   forecast,
+  ggplot2,
+  glue,
   gtrendsR,
   ineq,
   lubridate,
@@ -23,5 +25,6 @@ Imports:
   stringr,
   tibble,
   tidyr (>= 1.0.0),
+  utils,
   WDI
 RoxygenNote: 7.1.1

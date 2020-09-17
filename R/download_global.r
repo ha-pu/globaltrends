@@ -78,7 +78,7 @@ download_global.numeric <- function(object) {
       return(out)
     })
     out <- mutate(out, batch = object)
-    dbWriteTable(conn = doiGT_DB, name = "data_global", value = out, append = TRUE)
+    dbWriteTable(conn = globaltrends_db, name = "data_global", value = out, append = TRUE)
   }
 }
 

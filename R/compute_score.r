@@ -165,7 +165,7 @@ compute_score.numeric <- function(control, object, locations = countries) {
         object_agg <- select(object_agg, location, date, keyword, key, score)
         data_score <- pivot_wider(object_agg, names_from = key, values_from = score, values_fill = 0)
         out <- mutate(data_score, batch_c = control, batch_o = object)
-        dbWriteTable(conn = doiGT_DB, name = "data_score", value = out, append = TRUE)
+        dbWriteTable(conn = globaltrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
     message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
