@@ -10,7 +10,6 @@
   in_keyword = NULL,
   in_object = NULL,
   in_control = NULL,
-  in_locations = NULL,
   in_type = NULL
 )
 

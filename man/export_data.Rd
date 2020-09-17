@@ -15,9 +15,9 @@ export_object(keyword = NULL, object = NULL)
 
 export_global(keyword = NULL, object = NULL, type = NULL)
 
-export_mapping(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_mapping(keyword = NULL, object = NULL, control = NULL)
 
-export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_score(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
   keyword = NULL,
@@ -42,8 +42,8 @@ is used for exporting.}
 
 \item{type}{Type of timeseries for which data should be exported. Element
 of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting. Relevant only for "export_doi". Takes one
-of the following values: "score_obs", "score_sad", "score_trd".}
+element is used for exporting. Relevant only for "export_global" and
+"export_doi". Takes one of the following values: "obs", "sad", "trd".}
 
 \item{locations}{Set of locations for which data should be exported. Element
 of class \code{character}. When element length exceeds 1, only the first
@@ -51,23 +51,20 @@ element is used for exporting.}
 }
 \value{
 The functions export and filter the respective database tables and return
-objects of class \code{"tbl_df", "tbl", "data.frame"}. In addition, the
-each function adds a specific class that can be used for further methods.
+objects of class \code{"tbl_df", "tbl", "data.frame"}.
 \itemize{
-\item \code{export_control} exports table of class \code{doiGT_control}
-with columns location, keyword, date, hits, control
-\item \code{export_object} exports table of class \code{doiGT_object}
-with columns location, keyword, date, hits, object
-\item \code{export_global} exports table of class \code{doiGT_global}
-with columns keyword, date, hits, control
-\item \code{export_mapping} exports table of class \code{doiGT_mapping}
-with columns location, keyword, date, hits, control, object
-\item \code{export_score} exports table of class \code{doiGT_score}
-with columns location, keyword, date, score_obs, score_sad, score_trd,
-control, object
-\item \code{export_doi} exports table of class \code{doiGT_doi}
-with columns keyword, date, type, gini, hhi, entropy, control, object,
-locations
+\item \code{export_control} exports table with columns location, keyword,
+date, hits, control
+\item \code{export_object} exports table  with columns location, keyword,
+date, hits, object
+\item \code{export_global} exports table  with columns keyword, date, hits,
+control
+\item \code{export_mapping} exports table  with columns location, keyword,
+date, hits, control, object
+\item \code{export_score} exports table  with columns location, keyword,
+date, score_obs, score_sad, score_trd, control, object
+\item \code{export_doi} exports table with columns keyword, date, type, gini,
+hhi, entropy, control, object, locations
 }
 }
 \description{
@@ -82,10 +79,13 @@ export_control(control = 2)
 
 export_object(keyword = "manchester united")
 
-export_score(object = 3, control = 1, locations = "countries") \%>\%
+export_score(object = 3, control = 1) \%>\%
   readr::write_csv("data_score.csv")
 
-export_doi(keyword = "manchester united", control = 2, type = "score_sad", locations = "us_states") \%>\%
+export_doi(
+  keyword = "manchester united", control = 2, type = "sad",
+  locations = "us_states"
+) \%>\%
   write_xl::write_xlsx("data_doi.xlsx")
 }
 

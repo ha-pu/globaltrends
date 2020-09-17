@@ -49,8 +49,10 @@
 #' export_score(object = 3, control = 1) %>%
 #'   readr::write_csv("data_score.csv")
 #'
-#' export_doi(keyword = "manchester united", control = 2, type = "sad",
-#' locations = "us_states") %>%
+#' export_doi(
+#'   keyword = "manchester united", control = 2, type = "sad",
+#'   locations = "us_states"
+#' ) %>%
 #'   write_xl::write_xlsx("data_doi.xlsx")
 #' }
 #'
