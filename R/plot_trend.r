@@ -1,4 +1,4 @@
-#' @title Line plot of data_doi and data global timeseries
+#' @title Line plot of data_doi and data global time series
 #'
 #' @description
 #' @details
@@ -12,7 +12,7 @@
 #' overcrowded plot. When \code{data_doi} or \code{data_score} includes
 #' more than 1 unique keyword, only the first keyword is used.
 #'
-#' @return Line plot of timeseries as \code{ggplot2} object
+#' @return Line plot of time series as \code{ggplot2} object
 #'
 #' @examples
 #' \dontrun{
