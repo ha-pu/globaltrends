@@ -81,7 +81,7 @@ Google offers public access to global search volumes through its search engine t
 Google Trends normalizes the SVI for any given keyword-period-location combination to a value between 0 and 100, where 100 corresponds to the greatest SVI for the time series. Due to this normalization, users cannot compare SVIs for two keyword-period-location combinations. The `globaltrends` package uses a group of baseline keywords that correspond to “standard” search traffic on Google and computes search scores for each keyword for a given date for a given location. These search scores allow direct interpretability and comparison of Google Trends data across keyword-period-location combinations.
 
 # Analyze internationalization of firms
-We demonstrate the functionality of the `globaltrends` package based on a sample of six large U.S. firms. In this brief case study, we analyze the degree of internationalization of *Alaska Air Group Inc.*, *Coca-Cola Company*, *Facebook Inc.*, *Illinois Tools Works Inc.*, *J.M. Smucker Company*, and *Microsoft Corporation*. The workflow consists of four major steps:
+We demonstrate the functionality of the `globaltrends` package based on a sample of six large U.S. firms. In this brief case study, we analyze the degree of internationalization of *Alaska Air Group Inc.*, *Coca-Cola Company*, *Facebook Inc.*, *Illinois Tool Works Inc.*, *J.M. Smucker Company*, and *Microsoft Corporation*. The workflow consists of four major steps:
 
 1. Setup and start database
 2. Download data from Google Trends
@@ -98,15 +98,7 @@ setwd("your/globaltrends/folder")
 initialize_db()
 # > Database has been created.
 # > Table 'batch_keywords' has been created.
-# > Table 'batch_time' has been created.
-# > Table 'keyword_synonyms' has been created.
-# > Table 'data_locations' has been created.
-# > Data entered into 'data_locations'.
-# > Table 'batch_keywords' has been created.
-# > Table 'data_control' has been created.
-# > Table 'data_mapping' has been created.
-# > Table 'data_score' has been created.
-# > Table 'data_doi' has been created.
+# > ...
 # > Table 'data_global' has been created.
 # > Successfully disconnected.
 ```
@@ -171,13 +163,13 @@ download_control(control = new_control, locations = countries)
 A message indicates each successful download and the data is written directly to the database.
 
 ### Download object data
-Also for object data, the first step is to add the keywords for the analysis. While we use one control batch for the entire analysis, there are more than one object batch (since the analysis covers more than five keywords). Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *Illinois tools works*, *jm smucker*, and *microsoft*. Since these transformation affects search results, they require substantial consideration and depend on the respective research setting.
+Also for object data, the first step is to add the keywords for the analysis. While we use one control batch for the entire analysis, there are more than one object batch (since the analysis covers more than five keywords). Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *Illinois tool works*, *jm smucker*, and *microsoft*. Since these transformation affects search results, they require substantial consideration and depend on the respective research setting.
 
 ```{r, eval = FALSE}
 new_object <- add_object_keyword(
   keyword = list(
     c("coca cola", "facebook", "microsoft"),
-    c("alaska air group", "illinois tools works", "jm smucker")
+    c("alaska air group", "illinois tool works", "jm smucker")
   ),
   time = "2010-01-01 2019-12-31"
 )
@@ -266,7 +258,113 @@ compute_doi(control = new_control[[1]], object = new_object, locations = "countr
 
 A message indicates each successful computation. The data is written directly to the database.
 
+## Exports and plots
+`globaltrends` writes all data directly to the database. With the help of functions from the `dplyr` package and connections exported from `start_db`, users can access database tables.
+
+```{r, eval = FALSE}
+library(dplyr)
+data_score %>%
+  filter(keyword == "coca cola") %>%
+  collect()
+
+#> # A tibble: 7,128 x 8
+#>    location keyword    date score_obs score_sad score_trd batch_c batch_o
+#>    <chr>    <chr>     <int>     <dbl>     <dbl>     <dbl>   <int>   <int>
+#>  1 US       coca cola 14610   0.00362   0.00381   0.00548       1      1
+#>  ...
+#> 10 US       coca cola 14883   0.00347   0.00365   0.00389       1      1
+#> # ... with 7,118 more rows
+```
+
+To enhance usability, the `globaltrends` package includes a set of export functions that offer some filters and return data as `tibble`. Currently the functions do not include `list` inputs – users are advised to `purrr::map_dfr` instead.
+
+```{r, eval = FALSE}
+export_control(control = 1)
+
+#> # A tibble: 35,640 x 5
+#>    location keyword date        hits control
+#>    <chr>    <chr>   <date>     <dbl>   <int>
+#>  1 US       gmail   2010-01-01    22       1
+#>  ...
+#> 10 US       gmail   2010-10-01    27       1
+#> # ... with 35,630 more rows
+
+export_score(object = 1, control = 1)
+
+#> # A tibble: 21,384 x 8
+#>    location keyword   date       score_obs score_sad score_trd control object
+#>    <chr>    <chr>     <date>         <dbl>     <dbl>     <dbl>   <int>  <int>
+#>  1 US       coca cola 2010-01-01   0.00362   0.00381   0.00548       1     1
+#>  ...
+#> 10 US       coca cola 2010-10-01   0.00347   0.00365   0.00389       1     1
+#> # ... with 21,374 more rows
+
+purrr::map_dfr(c("coca cola", "microsoft"), export_doi, control = 1, type = "obs")
+
+#> # A tibble: 216 x 9
+#>    keyword   date       type       gini   hhi entropy control object locations
+#>    <chr>     <date>     <chr>     <dbl> <dbl>   <dbl>   <int>  <int> <chr>    
+#>  1 coca cola 2010-01-01 score_obs 0.397 0.874  -0.938       1     1 countries
+#>  ...
+#> 10 coca cola 2010-10-01 score_obs 0.574 0.968  -0.303       1     1 countries
+#> # ... with 206 more rows
+```
+
+The export functions from `globaltrends` also allow direct interaction with `dplyr` or other packages for further analysis.
+
+```{r, eval = FALSE}
+library(dplyr)
+
+export_doi(object = 1, control = 1, type = "obs") %>%
+  filter(lubridate::year(date) == 2019) %>%
+  group_by(keyword) %>%
+  summarise(gini = mean(gini), .groups = "drop")
+
+#> # A tibble: 3 x 2
+#>   keyword    gini
+#>   <chr>     <dbl>
+#> 1 coca cola 0.615
+#> 2 facebook  0.707
+#> 3 microsoft 0.682
+```
+
+Exports from `globaltrends` also serve as input for the four plot functions implemented in the package. `plot_score` uses the output from `export_score` as input and shows the locations with the highest search scores. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
+
+```{r, eval = FALSE}
+library(dplyr)
+
+export_score(keyword = "coca cola", control = 1) %>%
+  filter(lubridate::year(date) == 2019) %>%
+  plot_score()
+```
+
+![](plot_score.png){width=100%}
+
+The functions `plot_ts` and `plot_box` use output from `export_doi`. `plot_ts` shows how the degree of internationalization for a set of keywords develops over time. `plot_box` generates boxplots of the degree of internationalization distribution. The two plots below compare the degree of internationalization for the six companies in our sample. At first glance, we see that Coca-Cola, Facebook, and Microsoft have a higher degree of internationalization than Alaska Air Group, Illinois Tool Works, and J.M. Smucker. It seems as if the degree of internationalization of Facebook and Microsoft increased slightly from 2010 to 2015. Although the overall trend remains stable, Coca-Cola shows greater within-time series variation than the other companies.
+
+```{r, eval = FALSE}
+data <- purrr::map_dfr(1:2, export_doi, keyword = NULL, control = 1, type = "obs")
+plot_ts(data_doi = data, grid = TRUE, smooth = TRUE)
+
+plot_box(data_doi = data)
+```
+
+![](plot_ts.png){width=100%}
+
+![](plot_box.png){width=100%}
+
+With the function `plot_trend`, users have the opportunity to compare the degree of internationalization for a keyword to its volume of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s degree of internationalization to its volume of internationalization. While degree of internationalization relates to the global distribution of search scores, volume of internationalization indicates the level of global search scores. We see that Facebook’s degree of internationalization grew from 2010 before peaking in 2013. At the same time, we observe a constant decrease in volume of internationalization after its peak in 2013.
+
+```{r, eval = FALSE}
+out_doi <- export_doi(keyword = "coca cola", object = 1, type = "obs")
+out_global <- export_global(keyword = "coca cola", type = "obs")
+plot_trend(data_doi = out_doi, data_global = out_global)
+```
+
+![](plot_trend.png){width=100%}
+
 ## Additional options
+The `globaltrends` package offers several options that allow robustness checks and adjustments to the computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, change the type of locations.
 
 ### Time series adjustments
 
