@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Harald Puhr" />
+
+
+<title>globaltrends</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">globaltrends</h1>
+<h3 class="subtitle">Download and measures global trends based on Google Trends</h3>
+<h4 class="author">Harald Puhr</h4>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(globaltrends)</span></code></pre></div>
+<div id="google-trends" class="section level1">
+<h1>Google Trends</h1>
+<p>Google offers public access to global search volumes through its search engine through the <a href="http://www.google.com/trends">Google Trends portal</a>. Users select up to five keywords for which they want to obtain search trend data and specific the timeframe and location (global, country, state, community) of interest. For these combinations of five keywords, period, and location Google Trends computes a Search Volume Index (SVI) that indicates the number of search queries submitted to the Google search engine. The <code>globaltrends</code> package downloads these SVIs provided by Google Trends and uses them to measure and analyze the distribution of search trends across countries or within countries. The output from <code>globaltrends</code> allows researchers and analysts to investigate patterns within these trends, such as degree of internationalization of firms and organizations or dissemination of political, social, or technological trends across the globe or within single countries.</p>
+<p>Google Trends normalizes the SVI for any given keyword-period-location combination to a value between 0 and 100, where 100 corresponds to the greatest SVI for the time series. Due to this normalization, users cannot compare SVIs for two keyword-period-location combinations. The <code>globaltrends</code> package uses a group of baseline keywords that correspond to “standard” search traffic on Google and computes search scores for each keyword for a given date for a given location. These search scores allow direct interpretability and comparison of Google Trends data across keyword-period-location combinations.</p>
+</div>
+<div id="analyze-internationalization-of-firms" class="section level1">
+<h1>Analyze internationalization of firms</h1>
+<p>We demonstrate the functionality of the <code>globaltrends</code> package based on a sample of six large U.S. firms. In this brief case study, we analyze the degree of internationalization of <em>Alaska Air Group Inc.</em>, <em>Coca-Cola Company</em>, <em>Facebook Inc.</em>, <em>Illinois Tools Works Inc.</em>, <em>J.M. Smucker Company</em>, and <em>Microsoft Corporation</em>. The workflow consists of four major steps:</p>
+<ol style="list-style-type: decimal">
+<li>Setup and start database</li>
+<li>Download data from Google Trends</li>
+<li>Compute search score and internationalization</li>
+<li>Exports and plots</li>
+</ol>
+<div id="setup-and-start-database" class="section level2">
+<h2>Setup and start database</h2>
+<p>Research projects that use Google Trends data to analyze global trends amass a substantial amount of data. To optimally handle this amount of data, the <code>globaltrends</code> package uses a <a href="https://www.sqlite.org/index.html">SQLite database</a> to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with the functions implemented in the <code>DBI</code> and <code>dplyr</code> packages on the other hand.</p>
+<p>Users create the underlying database through the <code>initialize_db</code> command. The command creates a folder named <em>db</em> within the current working directory and creates a SQLite database file named <em>globaltrends_db.sqlite</em> within this folder. The command also creates all necessary tables within the database. To get more information on these tables refer to the built-in documentation, e.g. <code>?globaltrends::data_score</code>. The database initialization is necessary only for the first usage of the <code>globaltrends</code> package.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">setwd</span>(<span class="st">&quot;your/globaltrends/folder&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">initialize_db</span>()</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># &gt; Database has been created.</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># &gt; Table &#39;batch_keywords&#39; has been created.</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># &gt; Table &#39;batch_time&#39; has been created.</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># &gt; Table &#39;keyword_synonyms&#39; has been created.</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># &gt; Table &#39;data_locations&#39; has been created.</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co"># &gt; Data entered into &#39;data_locations&#39;.</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># &gt; Table &#39;batch_keywords&#39; has been created.</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># &gt; Table &#39;data_control&#39; has been created.</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co"># &gt; Table &#39;data_mapping&#39; has been created.</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># &gt; Table &#39;data_score&#39; has been created.</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co"># &gt; Table &#39;data_doi&#39; has been created.</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># &gt; Table &#39;data_global&#39; has been created.</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># &gt; Successfully disconnected.</span></span></code></pre></div>
+<p>Once the user has initialized the database or to resume work on an existing database it is sufficient to call <code>start_db</code> from the respective working directory. This command connects to the <em>globaltrends.sqlite</em> database in the folder <em>db</em> and creates connections to all tables in the database.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">setwd</span>(<span class="st">&quot;your/globaltrends/folder&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">start_db</span>()</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># &gt; Successfully connected to database.</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># &gt; Successfully exported all objects to .GlobalEnv.</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">print</span>(<span class="kw">ls</span>())</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># &gt;  [1] &quot;batch_keywords&quot;   &quot;batch_time&quot;       &quot;countries&quot;        &quot;data_control&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># &gt;  [5] &quot;data_doi&quot;         &quot;data_global&quot;      &quot;data_locations&quot;   &quot;data_mapping&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># &gt;  [9] &quot;data_object&quot;      &quot;data_score&quot;       &quot;dir_current&quot;      &quot;dir_wd&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># &gt; [13] &quot;globaltrends_db&quot;  &quot;keyword_synonyms&quot; &quot;keywords_control&quot; &quot;keywords_object&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># &gt; [17] &quot;time_control&quot;     &quot;time_object&quot;      &quot;us_states&quot;</span></span></code></pre></div>
+<p>After all work with the <code>globaltrends</code> package is complete, the user disconnects from the database with the command <code>disconnect_db</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">disconnect_db</span>()</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># &gt; Successfully disconnected.</span></span></code></pre></div>
+</div>
+<div id="download-data-from-google-trends" class="section level2">
+<h2>Download data from Google Trends</h2>
+<p>The next step in the <code>globaltrends</code> workflow is the data download from Google Trends. The <code>globaltrends</code> package includes four types of download functions that we explain in detail below. Each of these functions uses the <code>gtrendsR::gtrends</code> function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the <code>globaltrends</code> package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as <code>list</code> or as single <code>integer</code> objects. In the package, we distinguish two types of batches: <strong>control</strong> batches that include baseline keywords and <strong>object</strong> batches that include keywords relating to the objects of interest (e.g. firms, persons, trends…). Currently, <code>globaltrends</code> only includes two sets of locations. The <em>countries</em> set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the <em>us_states</em> set, covering all US states and Washington DC.</p>
+<p>The download for a single keyword batch for a single location takes about 30 seconds. This includes a randomized waiting period of 20-30 seconds between downloads. Depending on the frequency of downloads, Google Trends might block users for some time. In this case, <code>globaltrends</code> waits 60 minutes before it retries the download.</p>
+<div id="download-control-data" class="section level3">
+<h3>Download control data</h3>
+<p>First, we add a batch of control keywords to the database using <code>add_control_keyword</code>. We suggest <em>gmail</em>, <em>maps</em>, <em>translate</em>, <em>wikipedia</em>, and <em>youtube</em> as control keywords for global trend analysis. These keywords indicate the baseline search traffic on Google and should be adapted to the respective research setting at hand. The output of <code>add_control_keyword</code> is a <code>list</code> object that can serve as input for other functions.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>new_control &lt;-<span class="st"> </span><span class="kw">add_control_keyword</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">keyword =</span> <span class="kw">c</span>(<span class="st">&quot;gmail&quot;</span>, <span class="st">&quot;maps&quot;</span>, <span class="st">&quot;translate&quot;</span>, <span class="st">&quot;wikipedia&quot;</span>, <span class="st">&quot;youtube&quot;</span>),</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">time =</span> <span class="st">&quot;2010-01-01 2019-12-31&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># &gt; Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).</span></span></code></pre></div>
+<p>The function <code>add_control_keyword</code> also updates the <code>tibble</code> <code>keywords_control</code> in the global environment. This <code>tibble</code> can be used for batch lookup.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>dplyr<span class="op">::</span><span class="kw">filter</span>(keywords_control, keyword <span class="op">==</span><span class="st"> &quot;gmail&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># &gt; # A tibble: 1 x 2</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># &gt;   batch keyword</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># &gt;   &lt;int&gt; &lt;chr&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># &gt; 1     1 gmail</span></span></code></pre></div>
+<p>As a second step, we download the control data with <code>download_control</code>, using the output from <code>add_control_keyword</code> as <code>control</code> input. The input <code>locations</code> takes a vector of ISO2 country codes, please refer to <code>gtrendsR::countries</code> for possible inputs. The function defaults to <code>countries</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">download_control</span>(<span class="dt">control =</span> new_control, <span class="dt">locations =</span> countries)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># &gt; Successfully downloaded control data | control: 1 | location: US [1/66]</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co"># &gt; ...</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># &gt; Successfully downloaded control data | control: 1 | location: DO [66/66]</span></span></code></pre></div>
+<p>A message indicates each successful download and the data is written directly to the database.</p>
+</div>
+<div id="download-object-data" class="section level3">
+<h3>Download object data</h3>
+<p>Also for object data, the first step is to add the keywords for the analysis. While we use one control batch for the entire analysis, there are more than one object batch (since the analysis covers more than five keywords). Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: <em>alaska air group</em>, <em>coca cola</em>, <em>facebook</em>, <em>Illinois tools works</em>, <em>jm smucker</em>, and <em>microsoft</em>. Since these transformation affects search results, they require substantial consideration and depend on the respective research setting.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>new_object &lt;-<span class="st"> </span><span class="kw">add_object_keyword</span>(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">keyword =</span> <span class="kw">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="kw">c</span>(<span class="st">&quot;coca cola&quot;</span>, <span class="st">&quot;facebook&quot;</span>, <span class="st">&quot;microsoft&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="kw">c</span>(<span class="st">&quot;alaska air group&quot;</span>, <span class="st">&quot;illinois tools works&quot;</span>, <span class="st">&quot;jm smucker&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  ),</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="dt">time =</span> <span class="st">&quot;2010-01-01 2019-12-31&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co"># &gt; Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co"># &gt; Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).</span></span></code></pre></div>
+<p>As for control keywords, the function <code>add_object_keyword</code> also updates the <code>tibble</code> <code>keywords_object</code> in the global environment. This <code>tibble</code> can be used for batch lookup.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>dplyr<span class="op">::</span><span class="kw">filter</span>(keywords_object, keyword <span class="op">==</span><span class="st"> &quot;coca cola&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co"># &gt; # A tibble: 1 x 2</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co"># &gt;   batch keyword</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># &gt;   &lt;int&gt; &lt;chr&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co"># &gt; 1     1 coca cola</span></span></code></pre></div>
+<p>Again, the second step is to download the object data with <code>download_object</code>, using the output from <code>add_object_keyword</code> as <code>object</code> input. As above, the input <code>locations</code> defaults to <code>countries</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">download_object</span>(<span class="dt">object =</span> new_object, <span class="dt">locations =</span> countries)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># &gt; Successfully downloaded object data | object: 1 | location: US [1/66]</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># &gt; ...</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co"># &gt; Successfully downloaded object data | object: 2 | location: DO [66/66]</span></span></code></pre></div>
+<p>A message indicates each successful download. The data is written directly to the database.</p>
+</div>
+<div id="download-mapping-data" class="section level3">
+<h3>Download mapping data</h3>
+<p>The control and object data downloaded with the steps outline above, is normalized for each batch. Therefore, we cannot directly compare these data. To compute search scores for the object keywords (<a href="#compute-search-scores">see below</a>), <code>globaltrends</code> downloads a mapping between control and object batches. The <code>download_mapping</code> function downloads a two-keyword batch combining one keyword from the control batch and one keyword from the object batch. While the input for <em>object</em> can either be an <code>integer</code> or a <code>list</code>, <em>control</em> requires an <code>integer</code>. As above, the input <code>locations</code> defaults to <code>countries</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">download_mapping</span>(<span class="dt">control =</span> new_control[[<span class="dv">1</span>]], <span class="dt">object =</span> new_object, <span class="dt">locations =</span> countries)</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#&gt; Successfully downloaded mapping data | control: 1 | object: 1 | location: US [1/66]</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt; ...</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#&gt; Successfully downloaded mapping data | control: 1 | object: 2 | location: DO [66/66]</span></span></code></pre></div>
+<p>A message indicates each successful download. The data is written directly to the database.</p>
+</div>
+<div id="download-global-search-data" class="section level3">
+<h3>Download global search data</h3>
+<p>The <code>globaltrends</code> package offers the opportunity to download global search data for object keywords. To avoid within batch normalization, <code>download_global</code> runs separately for each keyword within an object batch.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">download_global</span>(<span class="dt">object =</span> new_object)</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; Successfully downloaded worldwide data | term: 1/3 [1/2]</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt; ...</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt; Successfully downloaded worldwide data | term: 3/3 [2/2]</span></span></code></pre></div>
+<p>A message indicates each successful download. The data is written directly to the database.</p>
+</div>
+</div>
+<div id="compute-search-scores-and-internationalization" class="section level2">
+<h2>Compute search scores and internationalization</h2>
+<p>Once the user has completed all control and object downloads, <code>globaltrends</code> computes search scores for each keyword-date-location combination. Next, the package uses the across-country distribution of these search scores to measure the degree of internationalization of an object keyword.</p>
+<div id="compute-search-scores" class="section level3">
+<h3>Compute search scores</h3>
+<p>The function <code>compute_score</code> divides the SVI for an object keyword by the sum of SVIs of the keywords in the respective control batch. The search score is interpretable as the ratio of interest in a given keyword compared to the interest in a set of baseline keyword. The search score therefore allows comparison across keywords, dates, and locations.</p>
+<p>The search score computation proceeds in four steps. First, the function aggregates all SVIs as monthly data. Then, it applies some optional time series adjustments that we outline in greater detail <a href="#time-series-adjustments">below</a>. Next, it follows the procedure outlined by Castelnuovo and Tran <span class="citation">(2017, A1–A2)</span> to map control and object data. After the mapping, each object search score is divided by the sum of SVIs of the keywords in the respective control batch. We use the sum of SVIs for a set of keywords, rather than the SVI for a single control keyword, to smooth-out variation in the underlying control data. While the input for <em>object</em> can either be an <code>integer</code> or a <code>list</code>, <em>control</em> requires an <code>integer</code>. As above, the input <code>locations</code> defaults to <code>countries</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">compute_score</span>(<span class="dt">control =</span> new_control[[<span class="dv">1</span>]], <span class="dt">object =</span> new_object, <span class="dt">locations =</span> countries)</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="co">#&gt; Successfully computed search score | control: 1 | object: 1 | location: US [1/66]</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="co">#&gt; ...</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="co">#&gt; Successfully computed search score | control: 1 | object: 2 | location: DO [66/66]</span></span></code></pre></div>
+<p>Using the same approach, <code>compute_score_global</code> computes global search scores for object keywords.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">compute_score_global</span>(<span class="dt">control =</span> new_control[[<span class="dv">1</span>]], <span class="dt">object =</span> new_object)</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co">#&gt; Successfully computed search score | control: 1 | object: 1</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt; Successfully computed search score | control: 1 | object: 2</span></span></code></pre></div>
+<p>A message indicates each successful computation. The data is written directly to the database.</p>
+</div>
+<div id="compute-degree-of-internationalization" class="section level3">
+<h3>Compute degree of internationalization</h3>
+<p>The <code>globaltrends</code> package uses the distribution of search scores across countries to compute the degree of internationalization for object keywords. Following international business literature <span class="citation">(Fisch 2012)</span>, <code>compute_doi</code> uses an inverted Gini-coefficient as measure for the degree of internationalization. The more uniform the distribution of search scores across all countries, the higher the inverted Gini-coefficient and the greater the degree of internationalization. In addition to the Gini-coefficient, the package uses inverted Herfindahl–Hirschman index <span class="citation">(Bühner 1987)</span> and inverted entropy <span class="citation">(Hitt, Hoskisson, and Kim 1997)</span> as measures for internationalization (<a href="#alternative-dispersion-measures">details below</a>). While the input for <em>object</em> can either be an <code>integer</code> or a <code>list</code>, <em>control</em> requires an <code>integer</code>. The input <code>locations</code> requires the name of a location set as <code>character</code> and defaults to <code>”countries”</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">compute_doi</span>(<span class="dt">control =</span> new_control[[<span class="dv">1</span>]], <span class="dt">object =</span> new_object, <span class="dt">locations =</span> <span class="st">&quot;countries&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="co">#&gt; Successfully computed DOI | control: 1 | object: 1 [1/2]</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="co">#&gt; Successfully computed DOI | control: 1 | object: 2 [2/2]</span></span></code></pre></div>
+<p>A message indicates each successful computation. The data is written directly to the database.</p>
+</div>
+</div>
+<div id="additional-options" class="section level2">
+<h2>Additional options</h2>
+<div id="time-series-adjustments" class="section level3">
+<h3>Time series adjustments</h3>
+</div>
+<div id="alternative-dispersion-measures" class="section level3">
+<h3>Alternative dispersion measures</h3>
+</div>
+<div id="changing-locations" class="section level3">
+<h3>Changing locations</h3>
+</div>
+</div>
+</div>
+<div id="further-applications" class="section level1">
+<h1>Further applications</h1>
+<ul>
+<li>Explain difference between DOI and DOI-penetration -&gt; run “download_global()”</li>
+<li>DOI of persons, organizations, and trends</li>
+<li>DOI on within-country level</li>
+</ul>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-buhner87">
+<p>Bühner, Rolf. 1987. “Assessing International Diversification of West German Corporations.” <em>Strategic Management Journal</em> 8 (1): 25–37.</p>
+</div>
+<div id="ref-castel17">
+<p>Castelnuovo, Efrem, and Trung Duc Tran. 2017. “Google It up! A Google Trends-Based Uncertainty Index for the United States and Australia.” <em>Economics Letters</em> 161: 149–53.</p>
+</div>
+<div id="ref-fisch12">
+<p>Fisch, Jan Hendrik. 2012. “Information Costs and Internationalization Performance.” <em>Global Strategy Journal</em> 2 (4): 296–312.</p>
+</div>
+<div id="ref-hitt97">
+<p>Hitt, Michael A., Robert E. Hoskisson, and Hicheon Kim. 1997. “International Diversification. Effects on Innovation and Firm Performance in Product-Diversified Firms.” <em>Academy of Management Journal</em> 40 (4): 767–98.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
