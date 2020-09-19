@@ -353,11 +353,11 @@ plot_box(data_doi = data)
 
 ![](plot_box.png){width=100%}
 
-With the function `plot_trend`, users have the opportunity to compare the degree of internationalization for a keyword to its volume of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s degree of internationalization to its volume of internationalization. While degree of internationalization relates to the global distribution of search scores, volume of internationalization indicates the level of global search scores. We see that Facebook’s degree of internationalization grew from 2010 before peaking in 2013. At the same time, we observe a constant decrease in volume of internationalization after its peak in 2013.
+With the function `plot_trend`, users can compare the degree of internationalization for a keyword to its volume of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s degree of internationalization to its volume of internationalization. While degree of internationalization relates to the global distribution of search scores, volume of internationalization indicates the level of global search scores. We see that Facebook’s degree of internationalization grew from 2010 before peaking in 2013. At the same time, we observe a constant decrease in volume of internationalization after its peak in 2013.
 
 ```{r, eval = FALSE}
-out_doi <- export_doi(keyword = "coca cola", object = 1, type = "obs")
-out_global <- export_global(keyword = "coca cola", type = "obs")
+out_doi <- export_doi(keyword = "facebook", object = 1, type = "obs")
+out_global <- export_global(keyword = "facebook", type = "obs")
 plot_trend(data_doi = out_doi, data_global = out_global)
 ```
 
@@ -367,8 +367,46 @@ plot_trend(data_doi = out_doi, data_global = out_global)
 The `globaltrends` package offers several options that allow robustness checks and adjustments to the computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, change the type of locations.
 
 ### Time series adjustments
+The computation of search scores in the `globaltrends` package basically compares a time series of SVIs for an object keyword to the time series of base line SVIs. Noise and seasonality in these time series could affect the resulting search scores. The `globaltrends` package offers two time series adjustments as robustness checks. In the `data_score`table, column `score_obs` refers to values without adjustment. Column `score_trd` uses the underlying time series’ trend for computation.
+
+```{r, eval = FALSE}
+search_score <- ts(data$hits, frequency = 12)
+fit <- stl(search_score, s.window = "period")
+trend <- fit$time.series[, "trend"]
+```
+
+Column `score_sad` corrects the time series for seasonal patterns. In general, outcomes for all three types of time series are similar. `score_trd` applies the greatest smoothing, while `score_sad` reduces some noise.
+
+```{r, eval = FALSE}
+search_score <- ts(data$hits, frequency = 12)
+fit <- stl(search_score, s.window = "period")
+seasad <- forecast::seasadj(fit)
+```
+
+![](plot_compare_ts.png){width=100%}
+
+The `export_doi`, `plot_ts`, `plot_box`, and `plot_trend` functions allow filtering for the type of time series through the `type` input.
+
+```{r, eval = FALSE}
+export_doi(keyword, type = "obs")
+plot_ts(data_doi, type = "sad")
+plot_box(data_doi, type = "trd")
+plot_trend(data_doi, data_global, type = "obs")
+```
 
 ### Alternative dispersion measures
+The `globaltrends` package computes degree of internationalization based on the uniformity of search score distributions across countries. By default, the package uses an inverted Gini-coefficient. As alternatives, the package uses inverted [Herfindahl–Hirschman index](https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_Index) and inverted [entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)) as robustness checks. In general, all the three dispersion measures come to similar results.
+
+![](plot_compare_measure.png){width=100%}
+
+The `export_doi`, `plot_ts`, `plot_box`, and `plot_trend` functions allow filtering for the type of dispersion measures through the `measure` input.
+
+```{r, eval = FALSE}
+export_doi(keyword, measure = "gini")
+plot_ts(data_doi, measure = "hhi")
+plot_box(data_doi, measure = "entropy")
+plot_trend(data_doi, data_global, measure = "gini")
+```
 
 ### Changing locations
 
