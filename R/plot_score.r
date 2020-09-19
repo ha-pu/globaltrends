@@ -48,6 +48,7 @@ plot_score <- function(data_score, type = "obs") {
     data_score <- filter(data_score, keyword %in% unique(data_score$keyword)[[1]])
   }
 
+  keyword <- unique(data_score$keyword)[[1]]
   data_score <- group_by(data_score, location)
   data_score <- summarise(data_score, measure = mean(measure), .groups = "drop")
   data_score <- mutate(data_score, measure = 100 * measure / max(measure))
@@ -60,7 +61,7 @@ plot_score <- function(data_score, type = "obs") {
 
 
   plot <- plot +
-    labs(x = NULL, y = "Search trend", title = unique(data$keyword)[[1]], caption = glue("Search trend as {str_to_upper(type)} timeseries."))
+    labs(x = NULL, y = "Search trend", title = keyword, caption = glue("Search trend as {str_to_upper(type)} time series."))
 
   return(plot)
 }
