@@ -96,11 +96,11 @@ Users create the underlying database through the `initialize_db` command. The co
 ```{r, eval = FALSE}
 setwd("your/globaltrends/folder")
 initialize_db()
-# > Database has been created.
-# > Table 'batch_keywords' has been created.
-# > ...
-# > Table 'data_global' has been created.
-# > Successfully disconnected.
+#> Database has been created.
+#> Table 'batch_keywords' has been created.
+#> ...
+#> Table 'data_global' has been created.
+#> Successfully disconnected.
 ```
 
 Once the user has initialized the database or to resume work on an existing database it is sufficient to call `start_db` from the respective working directory. This command connects to the *globaltrends.sqlite* database in the folder *db* and creates connections to all tables in the database.
@@ -108,25 +108,25 @@ Once the user has initialized the database or to resume work on an existing data
 ```{r, eval = FALSE}
 setwd("your/globaltrends/folder")
 start_db()
-# > Successfully connected to database.
-# > Successfully exported all objects to .GlobalEnv.
+#> Successfully connected to database.
+#> Successfully exported all objects to .GlobalEnv.
 print(ls())
-# >  [1] "batch_keywords"   "batch_time"       "countries"        "data_control"
-# >  [5] "data_doi"         "data_global"      "data_locations"   "data_mapping"
-# >  [9] "data_object"      "data_score"       "dir_current"      "dir_wd"
-# > [13] "globaltrends_db"  "keyword_synonyms" "keywords_control" "keywords_object"
-# > [17] "time_control"     "time_object"      "us_states"
+#>  [1] "batch_keywords"   "batch_time"       "countries"        "data_control"
+#>  [5] "data_doi"         "data_global"      "data_locations"   "data_mapping"
+#>  [9] "data_object"      "data_score"       "dir_current"      "dir_wd"
+#> [13] "globaltrends_db"  "keyword_synonyms" "keywords_control" "keywords_object"
+#> [17] "time_control"     "time_object"      "us_states"
 ```
 
 After all work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`.
 
 ```{r, eval = FALSE}
 disconnect_db()
-# > Successfully disconnected.
+#> Successfully disconnected.
 ```
 
 ## Download data from Google Trends
-The next step in the `globaltrends` workflow is the data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include baseline keywords and **object** batches that include keywords relating to the objects of interest (e.g. firms, persons, trends…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC.  
+The next step in the `globaltrends` workflow is the data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include baseline keywords and **object** batches that include keywords relating to the objects of interest (e.g. firms, persons, trends…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC, see [below](#changing-locations) for further details.  
 
 The download for a single keyword batch for a single location takes about 30 seconds. This includes a randomized waiting period of 20-30 seconds between downloads. Depending on the frequency of downloads, Google Trends might block users for some time. In this case, `globaltrends` waits 60 minutes before it retries the download.
 
@@ -138,26 +138,26 @@ new_control <- add_control_keyword(
   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
   time = "2010-01-01 2019-12-31"
 )
-# > Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).
+#> Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).
 ```
 
 The function `add_control_keyword` also updates the `tibble` `keywords_control` in the global environment. This `tibble` can be used for batch lookup.
 
 ```{r, eval = FALSE}
 dplyr::filter(keywords_control, keyword == "gmail")
-# > # A tibble: 1 x 2
-# >   batch keyword
-# >   <int> <chr>
-# > 1     1 gmail
+#> # A tibble: 1 x 2
+#>   batch keyword
+#>   <int> <chr>
+#> 1     1 gmail
 ```
 
-As a second step, we download the control data with `download_control`, using the output from `add_control_keyword` as `control` input. The input `locations` takes a vector of ISO2 country codes, please refer to `gtrendsR::countries` for possible inputs. The function defaults to `countries`.
+As a second step, we download the control data with `download_control`, using the output from `add_control_keyword` as `control` input. The input `locations` defaults to `countries`, see [below](#changing-locations) for further details.    
 
 ```{r, eval = FALSE}
 download_control(control = new_control, locations = countries)
-# > Successfully downloaded control data | control: 1 | location: US [1/66]
-# > ...
-# > Successfully downloaded control data | control: 1 | location: DO [66/66]
+#> Successfully downloaded control data | control: 1 | location: US [1/66]
+#> ...
+#> Successfully downloaded control data | control: 1 | location: DO [66/66]
 ```
 
 A message indicates each successful download and the data is written directly to the database.
@@ -173,27 +173,27 @@ new_object <- add_object_keyword(
   ),
   time = "2010-01-01 2019-12-31"
 )
-# > Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).
-# > Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).
+#> Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).
+#> Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).
 ```
 
 As for control keywords, the function `add_object_keyword` also updates the `tibble` `keywords_object` in the global environment. This `tibble` can be used for batch lookup.
 
 ```{r, eval = FALSE}
 dplyr::filter(keywords_object, keyword == "coca cola")
-# > # A tibble: 1 x 2
-# >   batch keyword
-# >   <int> <chr>
-# > 1     1 coca cola
+#> # A tibble: 1 x 2
+#>   batch keyword
+#>   <int> <chr>
+#> 1     1 coca cola
 ```
 
 Again, the second step is to download the object data with `download_object`, using the output from `add_object_keyword` as `object` input. As above, the input `locations` defaults to `countries`.
 
 ```{r, eval = FALSE}
 download_object(object = new_object, locations = countries)
-# > Successfully downloaded object data | object: 1 | location: US [1/66]
-# > ...
-# > Successfully downloaded object data | object: 2 | location: DO [66/66]
+#> Successfully downloaded object data | object: 1 | location: US [1/66]
+#> ...
+#> Successfully downloaded object data | object: 2 | location: DO [66/66]
 ```
 
 A message indicates each successful download. The data is written directly to the database.
@@ -349,9 +349,9 @@ plot_ts(data_doi = data, grid = TRUE, smooth = TRUE)
 plot_box(data_doi = data)
 ```
 
-![](plot_ts.png){width=100%}
+![](plot_ts1.png){width=100%}
 
-![](plot_box.png){width=100%}
+![](plot_box1.png){width=100%}
 
 With the function `plot_trend`, users can compare the degree of internationalization for a keyword to its volume of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s degree of internationalization to its volume of internationalization. While degree of internationalization relates to the global distribution of search scores, volume of internationalization indicates the level of global search scores. We see that Facebook’s degree of internationalization grew from 2010 before peaking in 2013. At the same time, we observe a constant decrease in volume of internationalization after its peak in 2013.
 
@@ -361,7 +361,7 @@ out_global <- export_global(keyword = "facebook", type = "obs")
 plot_trend(data_doi = out_doi, data_global = out_global)
 ```
 
-![](plot_trend.png){width=100%}
+![](plot_trend1.png){width=100%}
 
 ## Additional options
 The `globaltrends` package offers several options that allow robustness checks and adjustments to the computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, change the type of locations.
@@ -409,10 +409,23 @@ plot_trend(data_doi, data_global, measure = "gini")
 ```
 
 ### Changing locations
+By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input *locations* to *us_states*, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from `compute_doi`, all functions use either *countries* or *us_states* as inputs for *locations*. `start_db` exports these vectors of ISO2 codes to the global environment. `compute_doi`, however does not directly refer to these objects, but to their names: `locations = “countries”` or `locations = “us_states”`. We will implement the functionality to add additional sets of locations (e.g. all EU countries, regions within France) soon.
+
+```{r, eval = FALSE}
+download_control(control = 1, locations = us_states)
+download_object(object = list(1,2), locations = us_states)
+download_mapping(control = 1, object = 2, locations = us_states)
+compute_score(control = 1, object = 2, locations = us_states)
+compute_doi(control = 1, object = list(1,2), locations = "us_states")
+```
 
 # Further applications
-* Explain difference between DOI and DOI-penetration -> run "download_global()"
-* DOI of persons, organizations, and trends
-* DOI on within-country level
+As a means to measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g. *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
+
+![](plot_box2.png){width=100%}
+
+The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, fads or scandals, even academic authors and papers. A product-level analysis of the internationalization of a hyped kids gadget, the fidget spinner, for example, shows its rapid internationalization from Brooklyn to the most sold toy worldwide.
+
+![](plot_trend2.png){width=100%}
 
 # References

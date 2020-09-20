@@ -355,29 +355,29 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Users create the underlying database through the <code>initialize_db</code> command. The command creates a folder named <em>db</em> within the current working directory and creates a SQLite database file named <em>globaltrends_db.sqlite</em> within this folder. The command also creates all necessary tables within the database. To get more information on these tables refer to the built-in documentation, e.g. <code>?globaltrends::data_score</code>. The database initialization is necessary only for the first usage of the <code>globaltrends</code> package.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">setwd</span>(<span class="st">&quot;your/globaltrends/folder&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="kw">initialize_db</span>()</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># &gt; Database has been created.</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># &gt; Table &#39;batch_keywords&#39; has been created.</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># &gt; ...</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># &gt; Table &#39;data_global&#39; has been created.</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># &gt; Successfully disconnected.</span></span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; Database has been created.</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; Table &#39;batch_keywords&#39; has been created.</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; ...</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; Table &#39;data_global&#39; has been created.</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; Successfully disconnected.</span></span></code></pre></div>
 <p>Once the user has initialized the database or to resume work on an existing database it is sufficient to call <code>start_db</code> from the respective working directory. This command connects to the <em>globaltrends.sqlite</em> database in the folder <em>db</em> and creates connections to all tables in the database.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">setwd</span>(<span class="st">&quot;your/globaltrends/folder&quot;</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="kw">start_db</span>()</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># &gt; Successfully connected to database.</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># &gt; Successfully exported all objects to .GlobalEnv.</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt; Successfully connected to database.</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Successfully exported all objects to .GlobalEnv.</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="kw">print</span>(<span class="kw">ls</span>())</span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># &gt;  [1] &quot;batch_keywords&quot;   &quot;batch_time&quot;       &quot;countries&quot;        &quot;data_control&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># &gt;  [5] &quot;data_doi&quot;         &quot;data_global&quot;      &quot;data_locations&quot;   &quot;data_mapping&quot;</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># &gt;  [9] &quot;data_object&quot;      &quot;data_score&quot;       &quot;dir_current&quot;      &quot;dir_wd&quot;</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># &gt; [13] &quot;globaltrends_db&quot;  &quot;keyword_synonyms&quot; &quot;keywords_control&quot; &quot;keywords_object&quot;</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># &gt; [17] &quot;time_control&quot;     &quot;time_object&quot;      &quot;us_states&quot;</span></span></code></pre></div>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt;  [1] &quot;batch_keywords&quot;   &quot;batch_time&quot;       &quot;countries&quot;        &quot;data_control&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;  [5] &quot;data_doi&quot;         &quot;data_global&quot;      &quot;data_locations&quot;   &quot;data_mapping&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt;  [9] &quot;data_object&quot;      &quot;data_score&quot;       &quot;dir_current&quot;      &quot;dir_wd&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; [13] &quot;globaltrends_db&quot;  &quot;keyword_synonyms&quot; &quot;keywords_control&quot; &quot;keywords_object&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; [17] &quot;time_control&quot;     &quot;time_object&quot;      &quot;us_states&quot;</span></span></code></pre></div>
 <p>After all work with the <code>globaltrends</code> package is complete, the user disconnects from the database with the command <code>disconnect_db</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">disconnect_db</span>()</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># &gt; Successfully disconnected.</span></span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; Successfully disconnected.</span></span></code></pre></div>
 </div>
 <div id="download-data-from-google-trends" class="section level2">
 <h2>Download data from Google Trends</h2>
-<p>The next step in the <code>globaltrends</code> workflow is the data download from Google Trends. The <code>globaltrends</code> package includes four types of download functions that we explain in detail below. Each of these functions uses the <code>gtrendsR::gtrends</code> function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the <code>globaltrends</code> package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as <code>list</code> or as single <code>integer</code> objects. In the package, we distinguish two types of batches: <strong>control</strong> batches that include baseline keywords and <strong>object</strong> batches that include keywords relating to the objects of interest (e.g. firms, persons, trends…). Currently, <code>globaltrends</code> only includes two sets of locations. The <em>countries</em> set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the <em>us_states</em> set, covering all US states and Washington DC.</p>
+<p>The next step in the <code>globaltrends</code> workflow is the data download from Google Trends. The <code>globaltrends</code> package includes four types of download functions that we explain in detail below. Each of these functions uses the <code>gtrendsR::gtrends</code> function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the <code>globaltrends</code> package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as <code>list</code> or as single <code>integer</code> objects. In the package, we distinguish two types of batches: <strong>control</strong> batches that include baseline keywords and <strong>object</strong> batches that include keywords relating to the objects of interest (e.g. firms, persons, trends…). Currently, <code>globaltrends</code> only includes two sets of locations. The <em>countries</em> set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the <em>us_states</em> set, covering all US states and Washington DC, see <a href="#changing-locations">below</a> for further details.</p>
 <p>The download for a single keyword batch for a single location takes about 30 seconds. This includes a randomized waiting period of 20-30 seconds between downloads. Depending on the frequency of downloads, Google Trends might block users for some time. In this case, <code>globaltrends</code> waits 60 minutes before it retries the download.</p>
 <div id="download-control-data" class="section level3">
 <h3>Download control data</h3>
@@ -386,18 +386,18 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">keyword =</span> <span class="kw">c</span>(<span class="st">&quot;gmail&quot;</span>, <span class="st">&quot;maps&quot;</span>, <span class="st">&quot;translate&quot;</span>, <span class="st">&quot;wikipedia&quot;</span>, <span class="st">&quot;youtube&quot;</span>),</span>
 <span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">time =</span> <span class="st">&quot;2010-01-01 2019-12-31&quot;</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a>)</span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># &gt; Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).</span></span></code></pre></div>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).</span></span></code></pre></div>
 <p>The function <code>add_control_keyword</code> also updates the <code>tibble</code> <code>keywords_control</code> in the global environment. This <code>tibble</code> can be used for batch lookup.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>dplyr<span class="op">::</span><span class="kw">filter</span>(keywords_control, keyword <span class="op">==</span><span class="st"> &quot;gmail&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># &gt; # A tibble: 1 x 2</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># &gt;   batch keyword</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># &gt;   &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># &gt; 1     1 gmail</span></span></code></pre></div>
-<p>As a second step, we download the control data with <code>download_control</code>, using the output from <code>add_control_keyword</code> as <code>control</code> input. The input <code>locations</code> takes a vector of ISO2 country codes, please refer to <code>gtrendsR::countries</code> for possible inputs. The function defaults to <code>countries</code>.</p>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt;   batch keyword</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 1     1 gmail</span></span></code></pre></div>
+<p>As a second step, we download the control data with <code>download_control</code>, using the output from <code>add_control_keyword</code> as <code>control</code> input. The input <code>locations</code> defaults to <code>countries</code>, see <a href="#changing-locations">below</a> for further details.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">download_control</span>(<span class="dt">control =</span> new_control, <span class="dt">locations =</span> countries)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># &gt; Successfully downloaded control data | control: 1 | location: US [1/66]</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co"># &gt; ...</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># &gt; Successfully downloaded control data | control: 1 | location: DO [66/66]</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; Successfully downloaded control data | control: 1 | location: US [1/66]</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; ...</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; Successfully downloaded control data | control: 1 | location: DO [66/66]</span></span></code></pre></div>
 <p>A message indicates each successful download and the data is written directly to the database.</p>
 </div>
 <div id="download-object-data" class="section level3">
@@ -410,19 +410,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb8-5"><a href="#cb8-5"></a>  ),</span>
 <span id="cb8-6"><a href="#cb8-6"></a>  <span class="dt">time =</span> <span class="st">&quot;2010-01-01 2019-12-31&quot;</span></span>
 <span id="cb8-7"><a href="#cb8-7"></a>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co"># &gt; Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co"># &gt; Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).</span></span></code></pre></div>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).</span></span></code></pre></div>
 <p>As for control keywords, the function <code>add_object_keyword</code> also updates the <code>tibble</code> <code>keywords_object</code> in the global environment. This <code>tibble</code> can be used for batch lookup.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>dplyr<span class="op">::</span><span class="kw">filter</span>(keywords_object, keyword <span class="op">==</span><span class="st"> &quot;coca cola&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="co"># &gt; # A tibble: 1 x 2</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="co"># &gt;   batch keyword</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># &gt;   &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co"># &gt; 1     1 coca cola</span></span></code></pre></div>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt; # A tibble: 1 x 2</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt;   batch keyword</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; 1     1 coca cola</span></span></code></pre></div>
 <p>Again, the second step is to download the object data with <code>download_object</code>, using the output from <code>add_object_keyword</code> as <code>object</code> input. As above, the input <code>locations</code> defaults to <code>countries</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">download_object</span>(<span class="dt">object =</span> new_object, <span class="dt">locations =</span> countries)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># &gt; Successfully downloaded object data | object: 1 | location: US [1/66]</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># &gt; ...</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co"># &gt; Successfully downloaded object data | object: 2 | location: DO [66/66]</span></span></code></pre></div>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt; Successfully downloaded object data | object: 1 | location: US [1/66]</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; ...</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; Successfully downloaded object data | object: 2 | location: DO [66/66]</span></span></code></pre></div>
 <p>A message indicates each successful download. The data is written directly to the database.</p>
 </div>
 <div id="download-mapping-data" class="section level3">
@@ -581,6 +581,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="changing-locations" class="section level3">
 <h3>Changing locations</h3>
+<p>By default, <code>globaltrends</code> makes all downloads and computations for the <em>countries</em> set of locations. The <em>countries</em> set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input <em>locations</em> to <em>us_states</em>, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from <code>compute_doi</code>, all functions use either <em>countries</em> or <em>us_states</em> as inputs for <em>locations</em>. <code>start_db</code> exports these vectors of ISO2 codes to the global environment. <code>compute_doi</code>, however does not directly refer to these objects, but to their names: <code>locations = “countries”</code> or <code>locations = “us_states”</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">download_control</span>(<span class="dt">control =</span> <span class="dv">1</span>, <span class="dt">locations =</span> us_states)</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="kw">download_object</span>(<span class="dt">object =</span> <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">locations =</span> us_states)</span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="kw">download_mapping</span>(<span class="dt">control =</span> <span class="dv">1</span>, <span class="dt">object =</span> <span class="dv">2</span>, <span class="dt">locations =</span> us_states)</span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="kw">compute_score</span>(<span class="dt">control =</span> <span class="dv">1</span>, <span class="dt">object =</span> <span class="dv">2</span>, <span class="dt">locations =</span> us_states)</span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="kw">compute_doi</span>(<span class="dt">control =</span> <span class="dv">1</span>, <span class="dt">object =</span> <span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">locations =</span> <span class="st">&quot;us_states&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 </div>
