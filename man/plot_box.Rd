@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_box.r
 \name{plot_box}
 \alias{plot_box}
-\title{Boxplot of data_doi timeseries}
+\title{Boxplot of data_doi time series}
 \usage{
 plot_box(data_doi, type = NULL, measure = "gini", locations = NULL)
 }
@@ -12,7 +12,7 @@ plot_box(data_doi, type = NULL, measure = "gini", locations = NULL)
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
 either "obs", "sad", or "trd". By default takes \code{NULL}
-and assumes that only one single type of timeseries is included in the
+and assumes that only one single type of time series is included in the
 data.}
 
 \item{measure}{Object of class \code{character} indicating the measure
@@ -24,10 +24,10 @@ set of locations should be filtered. By default takes \code{NULL} and
 assumes that only one single set of locations is included in the data.}
 }
 \value{
-Boxplot of timeseries as \code{ggplot2} object
+Boxplot of time series as \code{ggplot2} object
 }
 \description{
-Boxplot of data_doi timeseries
+Boxplot of data_doi time series
 }
 \details{
 

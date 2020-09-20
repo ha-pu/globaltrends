@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_trend.r
 \name{plot_trend}
 \alias{plot_trend}
-\title{Line plot of data_doi and data global timeseries}
+\title{Line plot of data_doi and data global time series}
 \usage{
 plot_trend(
   data_doi,
@@ -19,7 +19,7 @@ plot_trend(
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
 either "obs", "sad", or "trd". By default takes \code{NULL}
-and assumes that only one single type of timeseries is included in the
+and assumes that only one single type of time series is included in the
 data.}
 
 \item{measure}{Object of class \code{character} indicating the measure
@@ -34,10 +34,10 @@ assumes that only one single set of locations is included in the data.}
 \code{geom_smooth} function of \code{ggplot2} should be used.}
 }
 \value{
-Line plot of timeseries as \code{ggplot2} object
+Line plot of time series as \code{ggplot2} object
 }
 \description{
-Line plot of data_doi and data global timeseries
+Line plot of data_doi and data global time series
 }
 \details{
 

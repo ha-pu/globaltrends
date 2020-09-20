@@ -13,6 +13,7 @@ Imports:
   DBI,
   dbplyr,
   dplyr,
+  forcats,
   forecast,
   ggplot2,
   glue,
@@ -28,3 +29,7 @@ Imports:
   utils,
   WDI
 RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

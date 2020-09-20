@@ -3,17 +3,11 @@
 \name{add_control_keyword}
 \alias{add_control_keyword}
 \alias{add_object_keyword}
-\alias{.add_batch.character}
-\alias{.add_batch.list}
 \title{Add batch of control keywords}
 \usage{
 add_control_keyword(keyword, time = "2010-01-01 2020-07-31")
 
 add_object_keyword(keyword, time = "2010-01-01 2020-07-31")
-
-\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2020-07-31")
-
-\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2020-07-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of class
@@ -72,4 +66,3 @@ add_control_keyword(
 )
 }
 }
-\keyword{internal}

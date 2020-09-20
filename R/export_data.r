@@ -15,7 +15,7 @@
 #' @param locations Set of locations for which data should be exported. Element
 #' of class \code{character}. When element length exceeds 1, only the first
 #' element is used for exporting.
-#' @param type Type of timeseries for which data should be exported. Element
+#' @param type Type of time series for which data should be exported. Element
 #' of class \code{character}. When element length exceeds 1, only the first
 #' element is used for exporting. Relevant only for "export_global" and
 #' "export_doi". Takes one of the following values: "obs", "sad", "trd".

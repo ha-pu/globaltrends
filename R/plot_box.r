@@ -1,4 +1,4 @@
-#' @title Boxplot of data_doi timeseries
+#' @title Boxplot of data_doi time series
 #'
 #' @description
 #' @details
@@ -7,7 +7,7 @@
 #' @param type Object of class \code{character} indicating the type of time
 #' series-column from data_score that is used for DOI computation, takes
 #' either "obs", "sad", or "trd". By default takes \code{NULL}
-#' and assumes that only one single type of timeseries is included in the
+#' and assumes that only one single type of time series is included in the
 #' data.
 #' @param measure Object of class \code{character} indicating the measure
 #' used for DOI computation, takes either "gini", "hhi", or "entropy".
@@ -21,7 +21,7 @@
 #' plot. When \code{data_doi} includes more than 9 unique keywords, only
 #' the first 9 keywords are used.
 #'
-#' @return Boxplot of timeseries as \code{ggplot2} object
+#' @return Boxplot of time series as \code{ggplot2} object
 #'
 #' @examples
 #' \dontrun{

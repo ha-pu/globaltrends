@@ -92,11 +92,11 @@
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
 #'   \item{score_obs}{\code{double} search score for the respective location-keyword-date
-#'   combination - no timeseries adjustment}
+#'   combination - no time series adjustment}
 #'   \item{score_sad}{\code{double} search score for the respective location-keyword-date
-#'   combination - seasonally adjusted timeseries}
+#'   combination - seasonally adjusted time series}
 #'   \item{score_trd}{\code{double} search score for the respective location-keyword-date
-#'   combination - trend-only timeseries}
+#'   combination - trend-only time series}
 #'   \item{batch_c}{\code{integer} number of control batch}
 #'   \item{batch_o}{\code{integer} number of object batch}
 #' }
@@ -111,7 +111,7 @@
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{type}{\code{character} indicating the type of timeseries-column from
+#'   \item{type}{\code{character} indicating the type of time series-column from
 #'   \code{data_score} that is used for DOI computation, takes either
 #'   "socre_obs", "score_sad", or "score_trd"}
 #'   \item{gini}{\code{double} DOI computed as inverted Gini coefficient of
@@ -136,7 +136,7 @@
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
 #'   format with \code{lubridate::as_date}}
-#'   \item{type}{\code{character} indicating the type of timeseries-adjustment
+#'   \item{type}{\code{character} indicating the type of time series-adjustment
 #'   applied to data in column "hits", takes either "socre_obs", "score_sad",
 #'   or "score_trd"}
 #'   \item{hits}{\code{integer} worldwide search hits for the respective

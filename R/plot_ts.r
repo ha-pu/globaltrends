@@ -1,4 +1,4 @@
-#' @title Line plot of data_doi timeseries
+#' @title Line plot of data_doi time series
 #'
 #' @description
 #' @details
@@ -17,7 +17,7 @@
 #' \code{data_doi} includes more than 9 or 5 unique keywords, only
 #' the first 9 or 5 keywords are used.
 #'
-#' @return Line plot of timeseries as \code{ggplot2} object
+#' @return Line plot of time series as \code{ggplot2} object
 #'
 #' @examples
 #' \dontrun{
@@ -50,7 +50,7 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, g
   if (grid) {
     if (len_keywords > 9) {
       warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
-      data_doi <- filter(data_doi, keyword %in% unique(data$keyword)[1:9])
+      data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
     }
     plot <- plot +
       geom_line(aes(y = measure)) +
@@ -63,7 +63,7 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, g
   } else {
     if (len_keywords > 9) {
       warning(glue("The plot function is limited to 5 keywords as coloured lines.\nYou use {len_keywords} keywords.\nOnly the first 5 keywords are used."))
-      data_doi <- filter(data_doi, keyword %in% unique(data$keyword)[1:5])
+      data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:5])
     }
     plot <- plot +
       geom_line(aes(y = measure, colour = keyword))
