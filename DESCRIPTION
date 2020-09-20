@@ -13,6 +13,7 @@ Imports:
   DBI,
   dbplyr,
   dplyr,
+  forcats,
   forecast,
   ggplot2,
   glue,
