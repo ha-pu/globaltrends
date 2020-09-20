@@ -10,7 +10,7 @@ A tibble with 288 rows and 5 variables:
   \item{keyword}{\code{character} keyword for which the data was downloaded}
   \item{date}{date as \code{integer} variable, can be transformed into date
   format with \code{lubridate::as_date}}
-  \item{type}{\code{character} indicating the type of timeseries-adjustment
+  \item{type}{\code{character} indicating the type of time series-adjustment
   applied to data in column "hits", takes either "socre_obs", "score_sad",
   or "score_trd"}
   \item{hits}{\code{integer} worldwide search hits for the respective

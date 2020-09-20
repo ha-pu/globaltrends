@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ts.r
 \name{plot_ts}
 \alias{plot_ts}
-\title{Line plot of data_doi timeseries}
+\title{Line plot of data_doi time series}
 \usage{
 plot_ts(
   data_doi,
@@ -19,7 +19,7 @@ plot_ts(
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
 either "obs", "sad", or "trd". By default takes \code{NULL}
-and assumes that only one single type of timeseries is included in the
+and assumes that only one single type of time series is included in the
 data.}
 
 \item{measure}{Object of class \code{character} indicating the measure
@@ -39,10 +39,10 @@ keywords are separated by color.}
 applicale when \code{grid == TRUE}.}
 }
 \value{
-Line plot of timeseries as \code{ggplot2} object
+Line plot of time series as \code{ggplot2} object
 }
 \description{
-Line plot of data_doi timeseries
+Line plot of data_doi time series
 }
 \details{
 

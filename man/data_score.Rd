@@ -13,11 +13,11 @@ A tibble with 480 rows and 8 variables:
   \item{date}{date as \code{integer} variable, can be transformed into date
   format with \code{lubridate::as_date}}
   \item{score_obs}{\code{double} search score for the respective location-keyword-date
-  combination - no timeseries adjustment}
+  combination - no time series adjustment}
   \item{score_sad}{\code{double} search score for the respective location-keyword-date
-  combination - seasonally adjusted timeseries}
+  combination - seasonally adjusted time series}
   \item{score_trd}{\code{double} search score for the respective location-keyword-date
-  combination - trend-only timeseries}
+  combination - trend-only time series}
   \item{batch_c}{\code{integer} number of control batch}
   \item{batch_o}{\code{integer} number of object batch}
 }
