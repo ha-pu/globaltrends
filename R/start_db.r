@@ -59,7 +59,6 @@ start_db <- function() {
 
   tbl_doi <- tbl(globaltrends_db, "data_doi")
   tbl_control <- tbl(globaltrends_db, "data_control")
-  tbl_mapping <- tbl(globaltrends_db, "data_mapping")
   tbl_object <- tbl(globaltrends_db, "data_object")
   tbl_score <- tbl(globaltrends_db, "data_score")
   tbl_global <- tbl(globaltrends_db, "data_global")
@@ -93,7 +92,6 @@ start_db <- function() {
     tbl_time,
     tbl_doi,
     tbl_control,
-    tbl_mapping,
     tbl_object,
     tbl_score,
     tbl_global,
@@ -109,7 +107,6 @@ start_db <- function() {
     ".tbl_time",
     ".tbl_doi",
     ".tbl_control",
-    ".tbl_mapping",
     ".tbl_object",
     ".tbl_score",
     ".tbl_global",
@@ -124,7 +121,6 @@ start_db <- function() {
     globaltrends_db,
     tbl_doi,
     tbl_control,
-    tbl_mapping,
     tbl_object,
     tbl_score,
     tbl_global,
@@ -140,7 +136,6 @@ start_db <- function() {
     "globaltrends_db",
     "tbl_doi",
     "tbl_control",
-    "tbl_mapping",
     "tbl_object",
     "tbl_score",
     "tbl_global",
