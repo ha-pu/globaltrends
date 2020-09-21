@@ -66,8 +66,7 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
         }
         i <- i + 1
       }
-      message(glue("Successfully downloaded object data | object: {object} | 
-                 control: {control} | location: {.x} [{current}/{total}]",
+      message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {.x} [{current}/{total}]",
         current = which(locations == .x), total = length(locations)
       ))
     }
