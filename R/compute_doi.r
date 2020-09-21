@@ -54,6 +54,7 @@ compute_doi <- function(control, object, locations = "countries") UseMethod("com
 #' @export
 
 compute_doi.numeric <- function(control = 1, object, locations = "countries") {
+  if (length(object) > 1) compute_doi(control = control, object = as.list(object), locations = locations)
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
