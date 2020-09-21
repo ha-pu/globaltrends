@@ -213,4 +213,5 @@ test_that("remove_object", {
 # disconnect ----
 test_that("disconnect", {
   expect_message(disconnect_db())
+  unlink("db", recursive = TRUE)
 })

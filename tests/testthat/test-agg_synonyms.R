@@ -25,7 +25,7 @@ test_that("add_synonyms", {
     )
   )
 
-  expect_length(nrow(keyword_synonyms), 2)
+  expect_equal(nrow(keyword_synonyms), 2)
 })
 
 # download data ----
@@ -49,7 +49,7 @@ test_that("keyword_score", {
     filter(location == "CN") %>%
     summarise(score = mean(score_obs), .groups = "drop")
 
-  expect_gt(out1_cn$score, out2_cn$score)
+  expect_gt(out2_cn$score, out1_cn$score)
 })
 
 test_that("keyword_synonym", {
@@ -70,3 +70,4 @@ test_that("keyword_synonym", {
 
 # disconnect ----
 disconnect_db()
+unlink("db", recursive = TRUE)
