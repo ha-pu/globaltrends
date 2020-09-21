@@ -1,7 +1,7 @@
 Package: globaltrends
 Type: Package
 Title: Measure global trends with Google Trends
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at")
 Author: Harald Puhr [aut, cre]
 Maintainer: Harald Puhr <harald.puhr@wu.ac.at>
