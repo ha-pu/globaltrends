@@ -10,6 +10,19 @@ test_that("initialize", {
   expect_message(
     start_db()
   )
+  rm(
+    tbl_doi,
+    tbl_control,
+    tbl_mapping,
+    tbl_object,
+    tbl_score,
+    tbl_global,
+    keywords_control,
+    time_control,
+    keyword_object,
+    time_object,
+    keywords_synonyms
+  )
 })
 
 # add keywords ----
