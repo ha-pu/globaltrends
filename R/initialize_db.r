@@ -82,22 +82,11 @@ initialize_db <- function() {
   keyword TEXT,
   date INTEGER,
   hits INTEGER,
-  batch INTEGER
-          )")
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch);")
-  message("Table 'data_control' has been created.")
-
-  # data_mapping
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_mapping (
-  location TEXT,
-  keyword TEXT,
-  date INTEGER,
-  hits INTEGER,
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_map ON data_mapping (batch_c, batch_o);")
-  message("Table 'data_mapping' has been created.")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
+  message("Table 'data_control' has been created.")
 
   # data_score
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_score (
@@ -108,7 +97,8 @@ initialize_db <- function() {
   score_sad REAL,
   score_trd REAL,
   batch_c INTEGER,
-  batch_o INTEGER
+  batch_o INTEGER,
+  synonym INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Table 'data_score' has been created.")

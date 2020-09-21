@@ -4,7 +4,6 @@
 \alias{export_control}
 \alias{export_object}
 \alias{export_global}
-\alias{export_mapping}
 \alias{export_score}
 \alias{export_doi}
 \title{Export data from database table}
@@ -14,8 +13,6 @@ export_control(control = NULL)
 export_object(keyword = NULL, object = NULL)
 
 export_global(keyword = NULL, object = NULL, type = NULL)
-
-export_mapping(keyword = NULL, object = NULL, control = NULL)
 
 export_score(keyword = NULL, object = NULL, control = NULL)
 
@@ -59,8 +56,6 @@ date, hits, control
 date, hits, object
 \item \code{export_global} exports table  with columns keyword, date, hits,
 control
-\item \code{export_mapping} exports table  with columns location, keyword,
-date, hits, control, object
 \item \code{export_score} exports table  with columns location, keyword,
 date, score_obs, score_sad, score_trd, control, object
 \item \code{export_doi} exports table with columns keyword, date, type, gini,

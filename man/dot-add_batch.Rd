@@ -4,20 +4,11 @@
 \alias{.add_batch}
 \alias{.add_batch.character}
 \alias{.add_batch.list}
-\alias{.add_keyword_batch}
 \title{Add keyword batches to batch_keywords and batch_time}
 \usage{
-.add_batch(type, keyword, time = "2010-01-01 2020-07-31")
-
-\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2020-07-31")
-
-\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2020-07-31")
-
-.add_keyword_batch(type, keyword, time)
+.add_batch(type, keyword, time = "2010-01-01 2019-12-31")
 }
 \description{
 Add keyword batches to batch_keywords and batch_time
-
-Add batch of keywords
 }
 \keyword{internal}

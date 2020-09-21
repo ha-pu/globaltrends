@@ -6,22 +6,22 @@
 \alias{compute_score.list}
 \title{Compute keyword-country search score}
 \usage{
-compute_score(control, object, locations = countries)
+compute_score(control = 1, object, locations = countries)
 
-\method{compute_score}{numeric}(control, object, locations = countries)
+\method{compute_score}{numeric}(control = 1, object, locations = countries)
 
-\method{compute_score}{list}(control, object, locations = countries)
+\method{compute_score}{list}(control = 1, object, locations = countries)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
-of class \code{numeric}.}
+of class \code{numeric}. Defaults to 1.}
 
 \item{object}{Object batch for which the data is downloaded. Object
 of class \code{numeric} or object of class \code{list} containing single
 elements of class \code{numeric}.}
 
-\item{locations}{List of countries or regions for which the data is downloaded.
-Refers to lists generated in \code{start_db}.}
+\item{locations}{List of countries or regions for which the data is
+downloaded. Refers to lists generated in \code{start_db}.}
 }
 \value{
 Message that data was computed successfully. Data is uploaded

@@ -12,23 +12,17 @@ The function exports the following objects to .GlobalEnv:
   \item globaltrends_db A DBIConnection object, as returned by
   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
   directory
-  \item data_locations A remote data source pointing to the table "data_locations" in
+  \item tbl_doi A remote data source pointing to the table "data_doi" in
   the connected SQLite database
-  \item batch_keywords A remote data source pointing to the table "batch_keywords"
-  in the connected SQLite database
-  \item batch_time A remote data source pointing to the table "batch_times"
-  in the connected SQLite database
-  \item data_doi A remote data source pointing to the table "data_doi" in
+  \item tbl_control A remote data source pointing to the table "data_control" in
   the connected SQLite database
-  \item data_control A remote data source pointing to the table "data_control" in
+  \item tbl_mapping A remote data source pointing to the table "data_mapping" in
   the connected SQLite database
-  \item data_mapping A remote data source pointing to the table "data_mapping" in
+  \item tbl_object A remote data source pointing to the table "data_object" in
   the connected SQLite database
-  \item data_object A remote data source pointing to the table "data_object" in
+  \item tbl_score A remote data source pointing to the table "data_score" in
   the connected SQLite database
-  \item data_score A remote data source pointing to the table "data_score" in
-  the connected SQLite database
-  \item data_global A remote data source pointing to the table "data_global" in
+  \item tbl_global A remote data source pointing to the table "data_global" in
   the connected SQLite database
   \item countries A \code{character} vector containing ISO2 country codes of
   countries that add at leas 0.1% to global GDP

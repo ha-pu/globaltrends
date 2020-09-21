@@ -14,7 +14,6 @@ test_that("initialize", {
     tbl_control,
     tbl_doi,
     tbl_global,
-    tbl_mapping,
     tbl_object,
     tbl_score,
     keyword_synonyms,
@@ -33,7 +32,6 @@ test_that("keywords_control", {
       keyword = c(
         "gmail",
         "map",
-        "translate",
         "wikipedia",
         "youtube"
       ),
@@ -44,7 +42,7 @@ test_that("keywords_control", {
   out_time <- filter(.tbl_time, batch == new_batch & type == "control")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 5)
+  expect_equal(nrow(out_keywords), 4)
   expect_equal(nrow(out_time), 1)
 })
 
@@ -54,7 +52,6 @@ test_that("keywords_object", {
       keyword = c(
         "fc barcelona",
         "fc bayern",
-        "liverpool fc",
         "manchester united",
         "real madrid"
       ),
@@ -65,7 +62,7 @@ test_that("keywords_object", {
   out_time <- filter(.tbl_time, batch == new_batch & type == "object")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 5)
+  expect_equal(nrow(out_keywords), 4)
   expect_equal(nrow(out_time), 1)
 })
 
@@ -76,29 +73,16 @@ test_that("control_download", {
   )
   out <- filter(.tbl_control, batch == 1)
   out <- collect(out)
-  expect_equal(nrow(out), 1800)
+  expect_equal(nrow(out), 1440)
 })
 
 test_that("object_download", {
   expect_message(
     download_object(object = 1, locations = countries[1:3])
   )
-  out <- filter(.tbl_object, batch == 1)
+  out <- filter(.tbl_object, batch_o == 1)
   out <- collect(out)
   expect_equal(nrow(out), 1800)
-})
-
-test_that("mapping_download", {
-  expect_message(
-    download_mapping(
-      control = 1,
-      object = 1,
-      locations = countries[1:3]
-    )
-  )
-  out <- filter(.tbl_mapping, batch_c == 1 & batch_o == 1)
-  out <- collect(out)
-  expect_equal(nrow(out), 720)
 })
 
 test_that("global_download", {
@@ -107,7 +91,7 @@ test_that("global_download", {
   )
   out <- filter(.tbl_global, batch == 1)
   out <- collect(out)
-  expect_equal(nrow(out), 1800)
+  expect_equal(nrow(out), 1440)
 })
 
 # compute data ----
@@ -121,7 +105,7 @@ test_that("compute_scoring", {
   )
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1)
   out <- collect(out)
-  expect_equal(nrow(out), 1800)
+  expect_equal(nrow(out), 1440)
 })
 
 test_that("compute_doi", {
@@ -134,13 +118,13 @@ test_that("compute_doi", {
   )
   out <- filter(.tbl_doi, batch_c == 1 & batch_o == 1)
   out <- collect(out)
-  expect_equal(nrow(out), 1800)
+  expect_equal(nrow(out), 1440)
 })
 
 # export data ----
 test_that("export_control", {
   out <- export_control(control = 1)
-  expect_equal(nrow(out), 1800)
+  expect_equal(nrow(out), 1440)
 })
 
 test_that("export_object", {
@@ -148,14 +132,9 @@ test_that("export_object", {
   expect_equal(nrow(out), 360)
 })
 
-test_that("export_mapping", {
-  out <- export_mapping(control = 1, object = 1)
-  expect_equal(nrow(out), 720)
-})
-
 test_that("export_global", {
   out <- export_global(type = "sad")
-  expect_equal(nrow(out), 600)
+  expect_equal(nrow(out), 480)
 })
 
 test_that("export_score", {
@@ -170,7 +149,7 @@ test_that("export_doi", {
     type = "trd",
     locations = "countries"
   )
-  expect_equal(nrow(out), 600)
+  expect_equal(nrow(out), 480)
 })
 
 # plot data ----
@@ -194,8 +173,8 @@ test_that("plot_box", {
 })
 
 test_that("plot_trend", {
-  data1 <- export_doi(keyword = "liverpool fc", locations = "countries")
-  data2 <- export_global(keyword = "liverpool fc")
+  data1 <- export_doi(keyword = "manchester united", locations = "countries")
+  data2 <- export_global(keyword = "manchester united")
   out <- plot_trend(
     data_doi = data1,
     data_global = data2,
@@ -234,4 +213,5 @@ test_that("remove_object", {
 # disconnect ----
 test_that("disconnect", {
   expect_message(disconnect_db())
+  unlink("db", recursive = TRUE)
 })

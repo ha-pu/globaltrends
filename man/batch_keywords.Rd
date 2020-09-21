@@ -7,8 +7,8 @@
 \format{
 A tibble with 4 rows and 3 variables:
 \describe{
-  \item{type}{\code{character} indicating the type of batch, takes "control" for
-  control batches and "object" for object batches}
+  \item{type}{\code{character} indicating the type of batch, takes "control"
+  for control batches and "object" for object batches}
   \item{batch}{\code{integer} number of the batch}
   \item{keyword}{\code{character} keywords included in the respective batch}
 }

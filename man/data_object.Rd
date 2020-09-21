@@ -7,14 +7,15 @@
 \format{
 A tibble with 2090 rows and 5 variables:
 \describe{
-  \item{location}{\code{character} ISO2 code of country or region for which the
-  data was downloaded}
+  \item{location}{\code{character} ISO2 code of country or region for which
+  the data was downloaded}
   \item{keyword}{\code{character} keyword for which the data was downloaded}
   \item{date}{date as \code{integer} variable, can be transformed into date
   format with \code{lubridate::as_date}}
-  \item{hits}{\code{integer} search hits for the respective location-keyword-date
-  combination}
-  \item{batch}{\code{integer} number of batch}
+  \item{hits}{\code{integer} search hits for the respective
+  location-keyword-date combination}
+  \item{batch_c}{\code{integer} number of control batch}
+  \item{batch_o}{\code{integer} number of object batch}
 }
 }
 \source{
