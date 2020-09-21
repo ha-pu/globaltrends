@@ -65,7 +65,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
       }
     } else if (table == "data_global") {
       if (!is.null(object) & is.null(control)) {
-        .remove_data_global(batch = object)
+        .remove_data_global(batch_o = object)
       }
     }
   } else {
@@ -87,7 +87,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", ".keywords_control")
     invisible(list2env(lst_export, envir = .GlobalEnv))
-    message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
+    message(glue("Successfully deleted control batch {batch_c} from 'batch_keywords'."))
 
     .remove_data_control(batch_c = batch_c)
   } else if (type == "object") {
@@ -98,7 +98,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", ".keywords_object")
     invisible(list2env(lst_export, envir = .GlobalEnv))
-    message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
+    message(glue("Successfully deleted object batch {batch_o} from 'batch_keywords'."))
 
     .remove_data_object(batch_o = batch_o)
   }
