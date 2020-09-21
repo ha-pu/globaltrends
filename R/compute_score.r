@@ -30,6 +30,7 @@
 #' @export
 #' @rdname compute_score
 #' @importFrom DBI dbWriteTable
+#' @importFrom dplyr anti_join
 #' @importFrom dplyr case_when
 #' @importFrom dplyr coalesce
 #' @importFrom dplyr collect
