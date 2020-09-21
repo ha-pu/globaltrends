@@ -30,8 +30,6 @@
 #' date, hits, object
 #' \item \code{export_global} exports table  with columns keyword, date, hits,
 #' control
-#' \item \code{export_mapping} exports table  with columns location, keyword,
-#' date, hits, control, object
 #' \item \code{export_score} exports table  with columns location, keyword,
 #' date, score_obs, score_sad, score_trd, control, object
 #' \item \code{export_doi} exports table with columns keyword, date, type, gini,
@@ -93,20 +91,6 @@ export_global <- function(keyword = NULL, object = NULL, type = NULL) {
     in_type = type
   )
   out <- rename(out, object = batch)
-  return(out)
-}
-
-#' @rdname export_data
-#' @export
-
-export_mapping <- function(keyword = NULL, object = NULL, control = NULL) {
-  out <- .export_data_double(
-    table = .tbl_mapping,
-    in_keyword = keyword,
-    in_object = object,
-    in_control = control
-  )
-  out <- rename(out, control = batch_c, object = batch_o)
   return(out)
 }
 
