@@ -58,6 +58,7 @@ compute_score <- function(control = 1, object, locations = countries) UseMethod(
 #' @export
 
 compute_score.numeric <- function(control = 1, object, locations = countries) {
+  if (length(object) > 1) compute_score(control = control, object = as.list(object), locations = locations)
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
@@ -214,6 +215,7 @@ compute_score.numeric <- function(control = 1, object, locations = countries) {
     }
     message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
   })
+  .aggregate_synonym()
 }
 
 #' @rdname compute_score
