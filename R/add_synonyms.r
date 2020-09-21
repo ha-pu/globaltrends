@@ -20,8 +20,6 @@
 #' @importFrom tibble tibble
 
 add_synonym <- function(keyword, synonym) {
-  if (length(synonym) > 1) walk(synonym, add_synonym, keyword = keyword)
-  
   out <- tibble(keyword, synonym)
   dbWriteTable(
     conn = globaltrends_db,
