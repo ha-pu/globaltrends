@@ -55,7 +55,7 @@ start_db <- function() {
   tbl_locations <- tbl(globaltrends_db, "data_locations")
   tbl_keywords <- tbl(globaltrends_db, "batch_keywords")
   tbl_time <- tbl(globaltrends_db, "batch_time")
-  keyword_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
+  tbl_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
 
   tbl_doi <- tbl(globaltrends_db, "data_doi")
   tbl_control <- tbl(globaltrends_db, "data_control")
@@ -83,7 +83,7 @@ start_db <- function() {
   time_object <- filter(tbl_time, type == "object")
   time_object <- select(time_object, -type)
   time_object <- collect(time_object)
-  keyword_synonyms <- collect(keyword_synonyms)
+  keyword_synonyms <- collect(tbl_synonyms)
 
   # write objects to .GlobalEnv ----
   lst_object <- list(
@@ -95,6 +95,7 @@ start_db <- function() {
     tbl_object,
     tbl_score,
     tbl_global,
+	tbl_synonyms,
     keywords_control,
     time_control,
     keywords_object,
@@ -110,6 +111,7 @@ start_db <- function() {
     ".tbl_object",
     ".tbl_score",
     ".tbl_global",
+	".tbl_synonyms",
     ".keywords_control",
     ".time_control",
     ".keywords_object",
