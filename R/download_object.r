@@ -43,6 +43,7 @@ download_object <- function(object, control = 1, locations = countries) UseMetho
 #' @export
 
 download_object.numeric <- function(object, control = 1, locations = countries) {
+  if (length(object) > 1) download_object(control = control, object = as.list(object), locations = locations)
   .test_batch(object)
   terms_obj <- .keywords_object$keyword[.keywords_object$batch == object]
   time <- .time_object$time[.time_object$batch == object]
