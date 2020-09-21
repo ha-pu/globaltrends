@@ -61,12 +61,12 @@ compute_score.numeric <- function(control, object, locations = countries) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_score", batch_c = control, batch_o = object, location = .x)) {
-      qry_mapping <- filter(data_mapping, batch_c == control & batch_o == object & location == .x)
+      qry_mapping <- filter(.tbl_mapping, batch_c == control & batch_o == object & location == .x)
       qry_mapping <- collect(qry_mapping)
       if (nrow(qry_mapping) != 0) {
-        qry_control <- filter(data_control, batch == control & location == .x)
+        qry_control <- filter(.tbl_control, batch == control & location == .x)
         qry_control <- collect(qry_control)
-        qry_object <- filter(data_object, batch == object & location == .x)
+        qry_object <- filter(.tbl_object, batch == object & location == .x)
         qry_object <- collect(qry_object)
 
         qry_control <- mutate(qry_control, date = as_date(date))
@@ -78,7 +78,13 @@ compute_score.numeric <- function(control, object, locations = countries) {
         qry_object <- .reset_date(qry_object)
         qry_mapping <- .reset_date(qry_mapping)
 
-        if (min(nrow(count(qry_control, date)), nrow(count(qry_object, date)), nrow(count(qry_mapping, date))) >= 24) {
+        if (
+          min(
+            nrow(count(qry_control, date)),
+            nrow(count(qry_object, date)),
+            nrow(count(qry_mapping, date))
+          ) >= 24
+        ) {
           # adjust to time series and impute negative values
           qry_control <- nest(qry_control, data = c(date, hits))
           qry_control <- mutate(qry_control, data = map(data, .adjust_ts))
@@ -126,12 +132,30 @@ compute_score.numeric <- function(control, object, locations = countries) {
             )
           )
         }
-        qry_control <- pivot_longer(qry_control, cols = contains("hits"), names_to = "key", values_to = "value")
-        qry_object <- pivot_longer(qry_object, cols = contains("hits"), names_to = "key", values_to = "value")
-        qry_mapping <- pivot_longer(qry_mapping, cols = contains("hits"), names_to = "key", values_to = "value")
+        qry_control <- pivot_longer(
+          qry_control,
+          cols = contains("hits"),
+          names_to = "key",
+          values_to = "value"
+        )
+        qry_object <- pivot_longer(
+          qry_object,
+          cols = contains("hits"),
+          names_to = "key",
+          values_to = "value"
+        )
+        qry_mapping <- pivot_longer(qry_mapping,
+          cols = contains("hits"),
+          names_to = "key",
+          values_to = "value"
+        )
 
         # set to benchmark
-        tmp_con <- inner_join(qry_mapping, qry_control, by = c("location", "keyword", "date", "key"), suffix = c("_m", "_c"))
+        tmp_con <- inner_join(qry_mapping,
+          qry_control,
+          by = c("location", "keyword", "date", "key"),
+          suffix = c("_m", "_c")
+        )
         tmp_con <- mutate(tmp_con,
           value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
           value_c = case_when(value_c == 0 ~ 1, TRUE ~ value_c)
@@ -142,7 +166,12 @@ compute_score.numeric <- function(control, object, locations = countries) {
         tmp_con <- mutate(tmp_con, value = value * benchmark)
         tmp_con <- select(tmp_con, location, date, key, keyword, value)
 
-        tmp_obj <- inner_join(qry_mapping, qry_object, by = c("location", "keyword", "date", "key"), suffix = c("_m", "_o"))
+        tmp_obj <- inner_join(
+          qry_mapping,
+          qry_object,
+          by = c("location", "keyword", "date", "key"),
+          suffix = c("_m", "_o")
+        )
         tmp_obj <- mutate(tmp_obj,
           value_m = case_when(value_m == 0 ~ 1, TRUE ~ value_m),
           value_o = case_when(value_o == 0 ~ 1, TRUE ~ value_o)
@@ -163,8 +192,8 @@ compute_score.numeric <- function(control, object, locations = countries) {
           key = str_replace(key, "hits_", "score_")
         )
         object_agg <- select(object_agg, location, date, keyword, key, score)
-        data_score <- pivot_wider(object_agg, names_from = key, values_from = score, values_fill = 0)
-        out <- mutate(data_score, batch_c = control, batch_o = object)
+        out_score <- pivot_wider(object_agg, names_from = key, values_from = score, values_fill = 0)
+        out <- mutate(out_score, batch_c = control, batch_o = object)
         dbWriteTable(conn = globaltrends_db, name = "data_score", value = out, append = TRUE)
       }
     }
