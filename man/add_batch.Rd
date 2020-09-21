@@ -3,21 +3,28 @@
 \name{add_control_keyword}
 \alias{add_control_keyword}
 \alias{add_object_keyword}
+\alias{.add_batch.character}
+\alias{.add_batch.list}
 \title{Add batch of control keywords}
 \usage{
-add_control_keyword(keyword, time = "2010-01-01 2020-07-31")
+add_control_keyword(keyword, time = "2010-01-01 2019-12-31")
 
-add_object_keyword(keyword, time = "2010-01-01 2020-07-31")
+add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
+
+\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2019-12-31")
+
+\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2019-12-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of class
 \code{character} or a \code{list} of \code{character} element. When a
 \code{character} vector contains more than five keywords, the vector is
-split into five-keyword batches. A \code{list} must contain
-\code{character} elements of length five or less.}
+split into four-keyword batches. A \code{list} must contain
+\code{character} elements of length four or less.}
 
 \item{time}{Time frame for which the batch data should be loaded. Object of
-class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".}
+class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
+to "2010-01-01 2019-12-31".}
 }
 \value{
 Message that the batch was created successfully. Batch data is
@@ -31,38 +38,63 @@ Add batch of object keywords
 \examples{
 \dontrun{
 add_control_keyword(
-  keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-  time = "2016-01-01 2019-12-31"
-)
-add_control_keyword(
-  keyword = c("amazon", "apple", "facebook", "google", "microsoft"),
-  time = "2016-01-01 2019-12-31"
-)
-
-add_control_keyword(
   keyword = c(
-    "gmail", "maps", "news", "translate", "weather", "wikipedia",
+    "gmail",
+    "maps",
+    "wikipedia",
     "youtube"
-  ), time = "2016-01-01 2019-12-31"
+  ),
+  time = "2016-01-01 2019-12-31"
 )
-add_control_keyword(
+add_object_keyword(
   keyword = c(
-    "amazon", "apple", "facebook", "google", "microsoft",
-    "netflix", "twitter"
-  ), time = "2016-01-01 2019-12-31"
+    "apple",
+    "facebook",
+    "google",
+    "microsoft"
+  ),
+  time = "2016-01-01 2019-12-31"
 )
 
 add_control_keyword(
-  keyword = list(c("gmail", "maps", "news"), c(
-    "translate", "weather",
-    "wikipedia", "youtube"
-  )), time = "2016-01-01 2019-12-31"
+  keyword = c(
+    "gmail",
+    "maps",
+    "news",
+    "translate",
+    "weather",
+    "wikipedia",
+    "youtube"
+  ),
+  time = "2016-01-01 2019-12-31"
 )
 add_control_keyword(
-  keyword = list(c("amazon", "apple", "facebook", "google"), c(
+  keyword = c(
+    "amazon",
+    "apple",
+    "facebook",
+    "google",
     "microsoft",
-    "netflix", "twitter"
-  )), time = "2016-01-01 2019-12-31"
+    "netflix",
+    "twitter"
+  ),
+  time = "2016-01-01 2019-12-31"
+)
+
+add_control_keyword(
+  keyword = list(
+    c("gmail", "maps", "news"),
+    c("translate", "weather", "wikipedia", "youtube")
+  ),
+  time = "2016-01-01 2019-12-31"
+)
+add_control_keyword(
+  keyword = list(
+    c("amazon", "apple", "facebook", "google"),
+    c("microsoft", "netflix", "twitter")
+  ),
+  time = "2016-01-01 2019-12-31"
 )
 }
 }
+\keyword{internal}

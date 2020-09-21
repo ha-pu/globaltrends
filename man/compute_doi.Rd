@@ -8,7 +8,7 @@
 \usage{
 compute_doi(control, object, locations = "countries")
 
-\method{compute_doi}{numeric}(control, object, locations = "countries")
+\method{compute_doi}{numeric}(control = 1, object, locations = "countries")
 
 \method{compute_doi}{list}(control, object, locations = "countries")
 }
