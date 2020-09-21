@@ -34,7 +34,7 @@ add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
 add_synonym.character <- function(keyword, synonym) {
   if (!is.character(keyword)) stop("Error:'keyword' must of type 'character'.\nYou supplied an input of another type!")
   if (length(keyword) > 1) stop("Error:'keyword' must be input of length 1.\nYou supplied an input of length > 1!")
-  if (length(synonym) > 1) add_synonmy(keyword = keyword, synonym = as.list(synonym))
+  if (length(synonym) > 1) add_synonym(keyword = keyword, synonym = as.list(synonym))
   out <- tibble(keyword, synonym)
   dbWriteTable(
     conn = globaltrends_db,
