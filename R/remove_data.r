@@ -84,9 +84,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     keywords_control <- filter(batch_keywords, type == "control")
     keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
-	lst_export <- list(keywords_control, keywords_control)
-	names(lst_export) <- list("keywords_control", ".keywords_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    assign("keywords_control", keywords_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_keywords'."))
 
     .remove_data_control(batch = batch)
@@ -94,9 +92,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     keywords_object <- filter(batch_keywords, type == "object")
     keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
-	lst_export <- list(keywords_object, keywords_object)
-	names(lst_export) <- list("keywords_object", ".keywords_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    assign("keywords_object", keywords_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_keywords'."))
 
     .remove_data_object(batch = batch)
@@ -116,17 +112,13 @@ remove_data <- function(table, control = NULL, object = NULL) {
     time_control <- filter(batch_time, type == "control")
     time_control <- select(time_control, -type)
     time_control <- collect(time_control)
-	lst_export <- list(time_control, time_control)
-	names(lst_export) <- list("time_control", ".time_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    assign("time_control", time_control, envir = .GlobalEnv)
     message(glue("Successfully deleted control batch {batch} from 'batch_time'."))
   } else if (type == "object") {
     time_object <- filter(batch_time, type == "object")
     time_object <- select(time_object, -type)
     time_object <- collect(time_object)
-	lst_export <- list(time_object, time_object)
-	names(lst_export) <- list("time_object", ".time_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    assign("time_object", time_object, envir = .GlobalEnv)
     message(glue("Successfully deleted object batch {batch} from 'batch_time'."))
   }
 }

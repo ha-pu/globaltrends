@@ -41,8 +41,8 @@ download_control <- function(control, locations = countries) UseMethod("download
 
 download_control.numeric <- function(control, locations = countries) {
   .test_batch(control)
-  terms <- .keywords_control$keyword[.keywords_control$batch == control]
-  time <- .time_control$time[.time_control$batch == control]
+  terms <- keywords_control$keyword[keywords_control$batch == control]
+  time <- time_control$time[time_control$batch == control]
   walk(locations, ~ {
     if (.test_empty(table = "data_control", batch_c = control, location = .x)) {
       out <- .get_trend(location = .x, term = terms, time = time)

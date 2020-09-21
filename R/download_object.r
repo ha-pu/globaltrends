@@ -42,8 +42,8 @@ download_object <- function(object, locations = countries) UseMethod("download_o
 
 download_object.numeric <- function(object, locations = countries) {
   .test_batch(object)
-  terms <- .keywords_object$keyword[.keywords_object$batch == object]
-  time <- .time_object$time[.time_object$batch == object]
+  terms <- keywords_object$keyword[keywords_object$batch == object]
+  time <- time_object$time[time_object$batch == object]
   walk(locations, ~ {
     if (.test_empty(table = "data_object", batch_o = object, location = .x)) {
       out <- .get_trend(location = .x, term = terms, time = time)

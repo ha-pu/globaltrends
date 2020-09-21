@@ -61,10 +61,7 @@
 #' @importFrom dplyr rename
 
 export_control <- function(control = NULL) {
-  out <- .export_data_single(
-    table = .tbl_control,
-    in_control = control
-  )
+  out <- .export_data_single(table = data_control, in_control = control)
   out <- rename(out, control = batch)
   return(out)
 }
@@ -73,11 +70,7 @@ export_control <- function(control = NULL) {
 #' @export
 
 export_object <- function(keyword = NULL, object = NULL) {
-  out <- .export_data_single(
-    table = .tbl_object,
-    in_keyword = keyword,
-    in_object = object
-  )
+  out <- .export_data_single(table = data_object, in_keyword = keyword, in_object = object)
   out <- rename(out, object = batch)
   return(out)
 }
@@ -86,12 +79,7 @@ export_object <- function(keyword = NULL, object = NULL) {
 #' @export
 
 export_global <- function(keyword = NULL, object = NULL, type = NULL) {
-  out <- .export_data_single(
-    table = .tbl_global,
-    in_keyword = keyword,
-    in_object = object,
-    in_type = type
-  )
+  out <- .export_data_single(table = data_global, in_keyword = keyword, in_object = object, in_type = type)
   out <- rename(out, object = batch)
   return(out)
 }
@@ -100,12 +88,7 @@ export_global <- function(keyword = NULL, object = NULL, type = NULL) {
 #' @export
 
 export_mapping <- function(keyword = NULL, object = NULL, control = NULL) {
-  out <- .export_data_double(
-    table = .tbl_mapping,
-    in_keyword = keyword,
-    in_object = object,
-    in_control = control
-  )
+  out <- .export_data_double(table = data_mapping, in_keyword = keyword, in_object = object, in_control = control)
   out <- rename(out, control = batch_c, object = batch_o)
   return(out)
 }
@@ -114,12 +97,7 @@ export_mapping <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @export
 
 export_score <- function(keyword = NULL, object = NULL, control = NULL) {
-  out <- .export_data_double(
-    table = .tbl_score,
-    in_keyword = keyword,
-    in_object = object,
-    in_control = control
-  )
+  out <- .export_data_double(table = data_score, in_keyword = keyword, in_object = object, in_control = control)
   out <- rename(out, control = batch_c, object = batch_o)
   return(out)
 }
@@ -128,14 +106,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @export
 
 export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
-  out <- .export_data_double(
-    table = .tbl_doi,
-    in_keyword = keyword,
-    in_object = object,
-    in_control = control,
-    in_locations = locations,
-    in_type = type
-  )
+  out <- .export_data_double(table = data_doi, in_keyword = keyword, in_object = object, in_control = control, in_locations = locations, in_type = type)
   out <- rename(out, control = batch_c, object = batch_o)
   return(out)
 }
