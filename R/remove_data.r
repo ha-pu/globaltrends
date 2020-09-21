@@ -147,32 +147,19 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @title Remove from data_object
 #' @keywords internal
 
-.remove_data_object <- function(batch) {
-  .test_batch(batch)
-  dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch=?", params = list(batch))
-  message(glue("Successfully deleted object batch {batch} from 'data_object'."))
-
-  .remove_data_mapping(batch_o = batch)
-  .remove_data_global(batch = batch)
-}
-
-#' @rdname dot-remove_data
-#' @title Remove from data_mapping
-#' @keywords internal
-
-.remove_data_mapping <- function(batch_c = NULL, batch_o = NULL) {
+.remove_data_object <- function(batch_c = NULL, batch_o = NULL) {
   if (is.null(batch_o) & !is.null(batch_c)) {
     .test_batch(batch_c)
-    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_mapping'."))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch_c=?", params = list(batch_c))
+    message(glue("Successfully deleted control batch {batch_c} from 'data_object'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     .test_batch(batch_o)
-    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_mapping'."))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=?", params = list(batch_o))
+    message(glue("Successfully deleted object batch {batch_o} from 'data_object'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     walk(c(batch_c, batch_o), .test_batch)
-    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_mapping WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_mapping'."))
+    dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
+    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_object'."))
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
