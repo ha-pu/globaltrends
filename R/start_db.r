@@ -57,12 +57,12 @@ start_db <- function() {
   tbl_time <- tbl(globaltrends_db, "batch_time")
   keyword_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
 
-  tbl_doi <- tbl(globaltrends_db, "tbl_doi")
-  tbl_control <- tbl(globaltrends_db, "tbl_control")
-  tbl_mapping <- tbl(globaltrends_db, "tbl_mapping")
-  tbl_object <- tbl(globaltrends_db, "tbl_object")
-  tbl_score <- tbl(globaltrends_db, "tbl_score")
-  tbl_global <- tbl(globaltrends_db, "tbl_global")
+  tbl_doi <- tbl(globaltrends_db, "data_doi")
+  tbl_control <- tbl(globaltrends_db, "data_control")
+  tbl_mapping <- tbl(globaltrends_db, "data_mapping")
+  tbl_object <- tbl(globaltrends_db, "data_object")
+  tbl_score <- tbl(globaltrends_db, "data_score")
+  tbl_global <- tbl(globaltrends_db, "data_global")
 
   # load files ----
   countries <- filter(tbl_locations, type == "countries")
