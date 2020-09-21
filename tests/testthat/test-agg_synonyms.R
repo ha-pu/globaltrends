@@ -36,7 +36,7 @@ download_object(object = 2, locations = countries[2:3])
 compute_score(control = 1, object = 1, locations = countries[1:2])
 out1 <- export_score(control = 1, keyword = "fc bayern")
 
-compute_score(control = 1, object = 2, locations = countries[1:2])
+compute_score(control = 1, object = 2, locations = countries[1:3])
 out2 <- export_score(control = 1, keyword = "fc bayern")
 
 # compare results ----
@@ -58,14 +58,14 @@ test_that("keyword_synonym", {
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
 
-  expect_equal(out2_cn$synonym, 1)
+  expect_equal(out2_cn$synonym, 0)
 
   out2_jp <- .tbl_score %>%
     filter(keyword == "bayern munich" & location == "JP") %>%
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
 
-  expect_equal(out2_jp$synonym, 0)
+  expect_equal(out2_jp$synonym, 1)
 })
 
 # disconnect ----
