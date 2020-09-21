@@ -11,33 +11,37 @@ test_that("initialize", {
     start_db()
   )
   rm(
-    tbl_doi,
     tbl_control,
+    tbl_doi,
+    tbl_global,
     tbl_mapping,
     tbl_object,
     tbl_score,
-    tbl_global,
+    keyword_synonyms,
     keywords_control,
+    keywords_object,
     time_control,
-    keyword_object,
     time_object,
-    keywords_synonyms
+    envir = .GlobalEnv
   )
 })
 
 # add keywords ----
 test_that("keywords_control", {
   expect_message(
-    new_batch <- add_control_keyword(keyword = c(
-      "gmail",
-      "map",
-      "translate",
-      "wikipedia",
-      "youtube"
-    ))
+    new_batch <- add_control_keyword(
+      keyword = c(
+        "gmail",
+        "map",
+        "translate",
+        "wikipedia",
+        "youtube"
+      ),
+      time = "2010-01-01 2019-12-31"
+    )
   )
-  out_keywords <- filter(batch_keywords, batch == new_batch & type == "control")
-  out_time <- filter(batch_time, batch == new_batch & type == "control")
+  out_keywords <- filter(.tbl_keywords, batch == new_batch & type == "control")
+  out_time <- filter(.tbl_time, batch == new_batch & type == "control")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
   expect_equal(nrow(out_keywords), 5)
@@ -46,16 +50,19 @@ test_that("keywords_control", {
 
 test_that("keywords_object", {
   expect_message(
-    new_batch <- add_object_keyword(keyword = c(
-      "fc barcelona",
-      "fc bayern",
-      "liverpool fc",
-      "manchester united",
-      "real madrid"
-    ))
+    new_batch <- add_object_keyword(
+      keyword = c(
+        "fc barcelona",
+        "fc bayern",
+        "liverpool fc",
+        "manchester united",
+        "real madrid"
+      ),
+      time = "2010-01-01 2019-12-31"
+    )
   )
-  out_keywords <- filter(batch_keywords, batch == new_batch & type == "object")
-  out_time <- filter(batch_time, batch == new_batch & type == "object")
+  out_keywords <- filter(.tbl_keywords, batch == new_batch & type == "object")
+  out_time <- filter(.tbl_time, batch == new_batch & type == "object")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
   expect_equal(nrow(out_keywords), 5)
@@ -65,20 +72,20 @@ test_that("keywords_object", {
 # run downloads ----
 test_that("control_download", {
   expect_message(
-    download_control(control = 1, locations = countries[1:5])
+    download_control(control = 1, locations = countries[1:3])
   )
-  out <- filter(data_control, batch == 1)
+  out <- filter(.tbl_control, batch == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("object_download", {
   expect_message(
-    download_object(object = 1, locations = countries[1:5])
+    download_object(object = 1, locations = countries[1:3])
   )
-  out <- filter(data_object, batch == 1)
+  out <- filter(.tbl_object, batch == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("mapping_download", {
@@ -86,21 +93,21 @@ test_that("mapping_download", {
     download_mapping(
       control = 1,
       object = 1,
-      locations = countries[1:5]
+      locations = countries[1:3]
     )
   )
-  out <- filter(data_mapping, batch_c == 1 & batch_o == 1)
+  out <- filter(.tbl_mapping, batch_c == 1 & batch_o == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 720)
 })
 
 test_that("global_download", {
   expect_message(
     download_global(object = 1)
   )
-  out <- filter(data_global, batch == 1)
+  out <- filter(.tbl_global, batch == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 1800)
 })
 
 # compute data ----
@@ -109,12 +116,12 @@ test_that("compute_scoring", {
     compute_score(
       control = 1,
       object = 1,
-      locations = countries[1:5]
+      locations = countries[1:3]
     )
   )
-  out <- filter(data_score, batch_c == 1 & batch_o == 1)
+  out <- filter(.tbl_score, batch_c == 1 & batch_o == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("compute_doi", {
@@ -125,49 +132,45 @@ test_that("compute_doi", {
       locations = "countries"
     )
   )
-  out <- filter(data_doi, batch_c == 1 & batch_o == 1)
+  out <- filter(.tbl_doi, batch_c == 1 & batch_o == 1)
   out <- collect(out)
-  expect_named(out)
+  expect_equal(nrow(out), 1800)
 })
 
 # export data ----
 test_that("export_control", {
-  expect_named(
-    export_control(control = 1)
-  )
+  out <- export_control(control = 1)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("export_object", {
-  expect_named(
-    export_object(keyword = "manchester united")
-  )
+  out <- export_object(keyword = "manchester united")
+  expect_equal(nrow(out), 360)
 })
 
 test_that("export_mapping", {
-  expect_named(
-    export_mapping(control = 1, object = 1)
-  )
+  out <- export_mapping(control = 1, object = 1)
+  expect_equal(nrow(out), 720)
 })
 
 test_that("export_global", {
-  expect_named(export_global(type = "sad"))
+  out <- export_global(type = "sad")
+  expect_equal(nrow(out), 600)
 })
 
 test_that("export_score", {
-  expect_named(
-    export_score(keyword = "real madrid")
-  )
+  out <- export_score(keyword = "real madrid")
+  expect_equal(nrow(out), 360)
 })
 
 test_that("export_doi", {
-  expect_named(
-    export_doi(
-      control = 1,
-      object = 1,
-      type = "trd",
-      locations = "countries"
-    )
+  out <- export_doi(
+    control = 1,
+    object = 1,
+    type = "trd",
+    locations = "countries"
   )
+  expect_equal(nrow(out), 600)
 })
 
 # plot data ----
@@ -208,12 +211,24 @@ test_that("remove_control", {
   expect_message(
     remove_data(table = "batch_keywords", control = 1)
   )
+  out_keywords <- filter(.tbl_keywords, batch == 1 & type == "control")
+  out_time <- filter(.tbl_time, batch == 1 & type == "control")
+  out_keywords <- collect(out_keywords)
+  out_time <- collect(out_time)
+  expect_equal(nrow(out_keywords), 0)
+  expect_equal(nrow(out_time), 0)
 })
 
 test_that("remove_object", {
   expect_message(
     remove_data(table = "batch_keywords", object = 1)
   )
+  out_keywords <- filter(.tbl_keywords, batch == 1 & type == "object")
+  out_time <- filter(.tbl_time, batch == 1 & type == "object")
+  out_keywords <- collect(out_keywords)
+  out_time <- collect(out_time)
+  expect_equal(nrow(out_keywords), 0)
+  expect_equal(nrow(out_time), 0)
 })
 
 # disconnect ----
