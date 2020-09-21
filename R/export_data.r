@@ -57,6 +57,7 @@
 #' @rdname export_data
 #' @export
 #' @importFrom dplyr rename
+#' @importFrom dplyr select
 
 export_control <- function(control = NULL) {
   out <- .export_data_single(
@@ -70,13 +71,14 @@ export_control <- function(control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_object <- function(keyword = NULL, object = NULL) {
-  out <- .export_data_single(
+export_object <- function(keyword = NULL, object = NULL, control = NULL) {
+  out <- .export_data_double(
     table = .tbl_object,
     in_keyword = keyword,
-    in_object = object
+    in_object = object,
+    in_control = control
   )
-  out <- rename(out, object = batch)
+  out <- rename(out, object = batch_o, control = batch_c)
   return(out)
 }
 
@@ -105,6 +107,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL) {
     in_control = control
   )
   out <- rename(out, control = batch_c, object = batch_o)
+  out <- select(out, -synonym)
   return(out)
 }
 
