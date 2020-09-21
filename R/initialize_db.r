@@ -85,7 +85,7 @@ initialize_db <- function() {
   batch_c INTEGER,
   batch_o INTEGER
           )")
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_map ON data_mapping (batch_c, batch_o);")
+  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
   message("Table 'data_control' has been created.")
 
   # data_score
