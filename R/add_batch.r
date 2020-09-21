@@ -16,19 +16,19 @@
 #' \dontrun{
 #' add_control_keyword(
 #'   keyword = c(
-#'   "gmail",
-#'   "maps",
-#'   "wikipedia",
-#'   "youtube"
+#'     "gmail",
+#'     "maps",
+#'     "wikipedia",
+#'     "youtube"
 #'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_object_keyword(
 #'   keyword = c(
-#'   "apple",
-#'   "facebook",
-#'   "google",
-#'   "microsoft"
+#'     "apple",
+#'     "facebook",
+#'     "google",
+#'     "microsoft"
 #'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
@@ -60,16 +60,16 @@
 #'
 #' add_control_keyword(
 #'   keyword = list(
-#'   c("gmail", "maps", "news"),
-#'   c("translate", "weather","wikipedia", "youtube")
+#'     c("gmail", "maps", "news"),
+#'     c("translate", "weather", "wikipedia", "youtube")
 #'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
 #'   keyword = list(
-#'   c("amazon", "apple", "facebook", "google"), 
-#'   c("microsoft", "netflix", "twitter")
-#'   ), 
+#'     c("amazon", "apple", "facebook", "google"),
+#'     c("microsoft", "netflix", "twitter")
+#'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' }
@@ -152,13 +152,13 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
     keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
-	names(lst_export) <- list("keywords_control", ".keywords_control")
+    names(lst_export) <- list("keywords_control", ".keywords_control")
     invisible(list2env(lst_export, envir = .GlobalEnv))
     time_control <- filter(.tbl_time, type == "control")
     time_control <- select(time_control, -type)
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
-	names(lst_export) <- list("time_control", ".time_control")
+    names(lst_export) <- list("time_control", ".time_control")
     invisible(list2env(lst_export, envir = .GlobalEnv))
     message(glue("Successfully created new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
@@ -176,13 +176,13 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
     keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
-	names(lst_export) <- list("keywords_object", ".keywords_object")
+    names(lst_export) <- list("keywords_object", ".keywords_object")
     invisible(list2env(lst_export, envir = .GlobalEnv))
     time_object <- filter(.tbl_time, type == "object")
     time_object <- select(time_object, -type)
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)
-	names(lst_export) <- list("time_object", ".time_object")
+    names(lst_export) <- list("time_object", ".time_object")
     invisible(list2env(lst_export, envir = .GlobalEnv))
     message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)

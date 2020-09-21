@@ -64,10 +64,10 @@ compute_doi.numeric <- function(control = 1, object, locations = "countries") {
       location %in% pull(
         collect(filter(.tbl_locations, type == locations)),
         location
-        )
+      )
     )
     data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
-    
+
     # compute doi measures
     out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
     out <- nest(out, data = c(location, score))

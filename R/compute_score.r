@@ -13,7 +13,7 @@
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
 #' elements of class \code{numeric}.
-#' @param locations List of countries or regions for which the data is 
+#' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}.
 #'
 #' @seealso
