@@ -80,7 +80,7 @@ test_that("object_download", {
   expect_message(
     download_object(object = 1, locations = countries[1:3])
   )
-  out <- filter(.tbl_object, batch == 1)
+  out <- filter(.tbl_object, batch_o == 1)
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
