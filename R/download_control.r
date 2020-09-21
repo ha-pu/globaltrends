@@ -40,6 +40,7 @@ download_control <- function(control, locations = countries) UseMethod("download
 #' @export
 
 download_control.numeric <- function(control, locations = countries) {
+  if (length(control) > 1) download_control(control = as.list(control), locations = locations)
   .test_batch(control)
   terms <- .keywords_control$keyword[.keywords_control$batch == control]
   time <- .time_control$time[.time_control$batch == control]
