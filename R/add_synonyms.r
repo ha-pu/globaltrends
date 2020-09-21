@@ -1,5 +1,10 @@
 #' Add keyword synonyms
 #'
+#' @aliases
+#' add_synonym
+#' add_synonym.character
+#' add_synonym.list
+#'
 #' @description
 #' @details 
 #'
@@ -17,9 +22,19 @@
 #' @export
 #' @importFrom DBI dbWriteTable
 #' @importFrom glue glue
+#' @importFrom purrr walk
 #' @importFrom tibble tibble
 
-add_synonym <- function(keyword, synonym) {
+add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
+
+#' @rdname add_synonym
+#' @method add_synonym character
+#' @export
+
+add_synonym.character <- function(keyword, synonym) {
+  if (!is.character(keyword)) stop("Error:'keyword' must of type 'character'.\nYou supplied an input of another type!")
+  if (length(keyword) > 1) stop("Error:'keyword' must be input of length 1.\nYou supplied an input of length > 1!")
+  if (length(synonym) > 1) add_synonmy(keyword = keyword, synonym = as.list(synonym))
   out <- tibble(keyword, synonym)
   dbWriteTable(
     conn = globaltrends_db,
@@ -33,3 +48,11 @@ add_synonym <- function(keyword, synonym) {
   invisible(list2env(lst_export, envir = .GlobalEnv))
   message(glue("Successfully added synonym | keyword: {keyword} | synonym: {synonym}"))
 }
+
+#' @rdname add_synonym
+#' @method add_synonym list
+#' @export
+
+add_synonym.list <- function(keyword, synonym) {
+  walk(synonym, add_synonym, keyword = keyword)
+]
