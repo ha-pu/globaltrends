@@ -198,7 +198,10 @@ compute_score.numeric <- function(control = 1, object, locations = countries) {
           out,
           batch_c = control,
           batch_o = object,
-          synonym = FALSE
+          synonym = case_when(
+            keyword %in% .keyword_synonyms$synonym ~ TRUE,
+            TRUE ~ FALSE
+          )
         )
         dbWriteTable(
           conn = globaltrends_db,
