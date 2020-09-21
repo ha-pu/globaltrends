@@ -13,17 +13,17 @@
     in_location <- location
     in_locations <- locations
     if (table == "data_control") {
-      out <- filter(.tbl_control, batch == in_batch_c & location == in_location)
+      out <- filter(data_control, batch == in_batch_c & location == in_location)
     } else if (table == "data_object") {
-      out <- filter(.tbl_object, batch == in_batch_o & location == in_location)
+      out <- filter(data_object, batch == in_batch_o & location == in_location)
     } else if (table == "data_mapping") {
-      out <- filter(.tbl_mapping, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
+      out <- filter(data_mapping, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
     } else if (table == "data_score") {
-      out <- filter(.tbl_score, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
+      out <- filter(data_score, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
     } else if (table == "data_doi") {
-      out <- filter(.tbl_doi, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
+      out <- filter(data_doi, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
     } else if (table == "data_global") {
-      out <- filter(.tbl_global, batch == in_batch_o)
+      out <- filter(data_global, batch == in_batch_o)
     }
     out <- head(out)
     out <- collect(out)

@@ -49,27 +49,17 @@ download_mapping.numeric <- function(control, object, locations = countries) {
   walk(c(control, object), .test_batch)
   walk(locations, ~ {
     if (.test_empty(table = "data_mapping", batch_c = control, batch_o = object, location = .x)) {
-      qry_control <- filter(.tbl_control, batch == control & location == .x)
+      qry_control <- filter(data_control, batch == control & location == .x)
       qry_control <- collect(qry_control)
-      qry_object <- filter(.tbl_object, batch == object & location == .x)
+      qry_object <- filter(data_object, batch == object & location == .x)
       qry_object <- collect(qry_object)
       if (nrow(qry_control) > 0 & nrow(qry_object) > 0) {
         term_con <- summarise(group_by(qry_control, keyword), hits = mean(hits))
         term_con <- term_con$keyword[order(term_con$hits)]
         term_obj <- summarise(group_by(qry_object, keyword), hits = mean(hits))
         term_obj <- term_obj$keyword[term_obj$hits == max(term_obj$hits)]
-        date_min <- as_date(
-          max(
-            min(qry_control$date),
-            coalesce(min(qry_object$date), min(qry_control$date))
-          )
-        )
-        date_max <- as_date(
-          min(
-            max(qry_control$date),
-            coalesce(max(qry_object$date), max(qry_control$date))
-          )
-        )
+        date_min <- as_date(max(min(qry_control$date), coalesce(min(qry_object$date), min(qry_control$date))))
+        date_max <- as_date(min(max(qry_control$date), coalesce(max(qry_object$date), max(qry_control$date))))
         if (date_min < date_max) {
           i <- 1
           while (i <= length(term_con)) {
