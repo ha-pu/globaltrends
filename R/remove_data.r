@@ -49,7 +49,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
       }
     } else if (table == "data_object") {
       if (!is.null(object) & is.null(control)) {
-        .remove_data_object(batch = object)
+        .remove_data_object(batch_c = control, batch_o = object)
       }
     } else if (table == "data_mapping") {
       if (!is.null(control) | !is.null(object)) {
@@ -140,7 +140,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch))
   message(glue("Successfully deleted control batch {batch} from 'data_control'."))
 
-  .remove_data_mapping(batch_c = batch)
+  .remove_data_object(batch_c = batch)
 }
 
 #' @rdname dot-remove_data
