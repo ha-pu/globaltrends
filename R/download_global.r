@@ -42,9 +42,9 @@ download_global <- function(object) UseMethod("download_global", object)
 
 download_global.numeric <- function(object) {
   .test_batch(object)
-  terms <- keywords_object$keyword[keywords_object$batch == object]
-  terms <- terms[!(terms %in% keyword_synonyms$synonym)]
-  time <- time_object$time[time_object$batch == object]
+  terms <- .keywords_object$keyword[.keywords_object$batch == object]
+  terms <- terms[!(terms %in% .keyword_synonyms$synonym)]
+  time <- .time_object$time[.time_object$batch == object]
   if (.test_empty(table = "data_global", batch_o = object)) {
     out <- map_dfr(terms, ~ {
       out <- .get_trend(location = "", term = .x, time = time)
@@ -74,7 +74,7 @@ download_global.numeric <- function(object) {
         out <- expand_grid(out, tibble(type = c("score_obs", "score_sad", "score_trd")))
       }
       out <- mutate(out, batch = object)
-      message(glue("Successfully downloaded worldwide data | term: {current}/{total_terms} [{object}/{total_batches}]", current = which(terms == .x), total_terms = length(terms), total_batches = max(keywords_object$batch)))
+      message(glue("Successfully downloaded worldwide data | term: {current}/{total_terms} [{object}/{total_batches}]", current = which(terms == .x), total_terms = length(terms), total_batches = max(.keywords_object$batch)))
       return(out)
     })
     out <- mutate(out, batch = object)

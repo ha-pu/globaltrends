@@ -10,23 +10,17 @@
 #'   \item globaltrends_db A DBIConnection object, as returned by
 #'   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
 #'   directory
-#'   \item data_locations A remote data source pointing to the table "data_locations" in
+#'   \item tbl_doi A remote data source pointing to the table "data_doi" in
 #'   the connected SQLite database
-#'   \item batch_keywords A remote data source pointing to the table "batch_keywords"
-#'   in the connected SQLite database
-#'   \item batch_time A remote data source pointing to the table "batch_times"
-#'   in the connected SQLite database
-#'   \item data_doi A remote data source pointing to the table "data_doi" in
+#'   \item tbl_control A remote data source pointing to the table "data_control" in
 #'   the connected SQLite database
-#'   \item data_control A remote data source pointing to the table "data_control" in
+#'   \item tbl_mapping A remote data source pointing to the table "data_mapping" in
 #'   the connected SQLite database
-#'   \item data_mapping A remote data source pointing to the table "data_mapping" in
+#'   \item tbl_object A remote data source pointing to the table "data_object" in
 #'   the connected SQLite database
-#'   \item data_object A remote data source pointing to the table "data_object" in
+#'   \item tbl_score A remote data source pointing to the table "data_score" in
 #'   the connected SQLite database
-#'   \item data_score A remote data source pointing to the table "data_score" in
-#'   the connected SQLite database
-#'   \item data_global A remote data source pointing to the table "data_global" in
+#'   \item tbl_global A remote data source pointing to the table "data_global" in
 #'   the connected SQLite database
 #'   \item countries A \code{character} vector containing ISO2 country codes of
 #'   countries that add at leas 0.1% to global GDP
@@ -58,43 +52,106 @@ start_db <- function() {
   message("Successfully connected to database.")
 
   # get tables ----
-  data_locations <- tbl(globaltrends_db, "data_locations")
-  batch_keywords <- tbl(globaltrends_db, "batch_keywords")
-  batch_time <- tbl(globaltrends_db, "batch_time")
+  tbl_locations <- tbl(globaltrends_db, "data_locations")
+  tbl_keywords <- tbl(globaltrends_db, "batch_keywords")
+  tbl_time <- tbl(globaltrends_db, "batch_time")
   keyword_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
 
-  data_doi <- tbl(globaltrends_db, "data_doi")
-  data_control <- tbl(globaltrends_db, "data_control")
-  data_mapping <- tbl(globaltrends_db, "data_mapping")
-  data_object <- tbl(globaltrends_db, "data_object")
-  data_score <- tbl(globaltrends_db, "data_score")
-  data_global <- tbl(globaltrends_db, "data_global")
+  tbl_doi <- tbl(globaltrends_db, "data_doi")
+  tbl_control <- tbl(globaltrends_db, "data_control")
+  tbl_mapping <- tbl(globaltrends_db, "data_mapping")
+  tbl_object <- tbl(globaltrends_db, "data_object")
+  tbl_score <- tbl(globaltrends_db, "data_score")
+  tbl_global <- tbl(globaltrends_db, "data_global")
 
   # load files ----
-  countries <- filter(data_locations, type == "countries")
+  countries <- filter(tbl_locations, type == "countries")
   countries <- collect(countries)
   countries <- pull(countries, location)
-  us_states <- filter(data_locations, type == "us_states")
+  us_states <- filter(tbl_locations, type == "us_states")
   us_states <- collect(us_states)
   us_states <- pull(us_states, location)
 
-  keywords_control <- filter(batch_keywords, type == "control")
+  keywords_control <- filter(tbl_keywords, type == "control")
   keywords_control <- select(keywords_control, -type)
   keywords_control <- collect(keywords_control)
-  time_control <- filter(batch_time, type == "control")
+  time_control <- filter(tbl_time, type == "control")
   time_control <- select(time_control, -type)
   time_control <- collect(time_control)
-  keywords_object <- filter(batch_keywords, type == "object")
+  keywords_object <- filter(tbl_keywords, type == "object")
   keywords_object <- select(keywords_object, -type)
   keywords_object <- collect(keywords_object)
-  time_object <- filter(batch_time, type == "object")
+  time_object <- filter(tbl_time, type == "object")
   time_object <- select(time_object, -type)
   time_object <- collect(time_object)
   keyword_synonyms <- collect(keyword_synonyms)
 
   # write objects to .GlobalEnv ----
-  lst_object <- list(globaltrends_db, data_locations, batch_keywords, batch_time, data_doi, data_control, data_mapping, data_object, data_score, data_global, countries, us_states, keywords_control, time_control, keywords_object, time_object, keyword_synonyms)
-  names(lst_object) <- list("globaltrends_db", "data_locations", "batch_keywords", "batch_time", "data_doi", "data_control", "data_mapping", "data_object", "data_score", "data_global", "countries", "us_states", "keywords_control", "time_control", "keywords_object", "time_object", "keyword_synonyms")
+  lst_object <- list(
+    tbl_locations,
+    tbl_keywords,
+    tbl_time,
+    tbl_doi,
+    tbl_control,
+    tbl_mapping,
+    tbl_object,
+    tbl_score,
+    tbl_global,
+    keywords_control,
+    time_control,
+    keywords_object,
+    time_object,
+    keyword_synonyms
+  )
+  names(lst_object) <- list(
+    ".tbl_locations",
+    ".tbl_keywords",
+    ".tbl_time",
+    ".tbl_doi",
+    ".tbl_control",
+    ".tbl_mapping",
+    ".tbl_object",
+    ".tbl_score",
+    ".tbl_global",
+    ".keywords_control",
+    ".time_control",
+    ".keywords_object",
+    ".time_object",
+    ".keyword_synonyms"
+  )
+  invisible(list2env(lst_object, envir = .GlobalEnv))
+  lst_object <- list(
+    globaltrends_db,
+    tbl_doi,
+    tbl_control,
+    tbl_mapping,
+    tbl_object,
+    tbl_score,
+    tbl_global,
+    countries,
+    us_states,
+    keywords_control,
+    time_control,
+    keywords_object,
+    time_object,
+    keyword_synonyms
+  )
+  names(lst_object) <- list(
+    "globaltrends_db",
+    "tbl_doi",
+    "tbl_control",
+    "tbl_mapping",
+    "tbl_object",
+    "tbl_score",
+    "tbl_global",
+    "countries",
+    "us_states",
+    "keywords_control",
+    "time_control",
+    "keywords_object",
+    "time_object",
+    "keyword_synonyms"
+  )
   invisible(list2env(lst_object, envir = .GlobalEnv))
   message("Successfully exported all objects to .GlobalEnv.")
 }
