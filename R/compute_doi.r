@@ -57,16 +57,27 @@ compute_doi.numeric <- function(control, object, locations = "countries") {
   control <- control[[1]]
   walk(c(control, object), .test_batch)
   if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-    data <- collect(filter(data_score, batch_c == control & batch_o == object))
-    data <- filter(data, location %in% pull(collect(filter(data_locations, type == locations)), location))
+    data <- collect(filter(.tbl_score, batch_c == control & batch_o == object))
+    data <- filter(
+      data,
+      location %in% pull(
+        collect(
+          filter(
+            .tbl_locations,
+			type == locations
+          )
+        ),
+        location
+      )
+    )
 
     # run dict replace
-    if (any(data$keyword %in% keyword_synonyms$keyword)) {
-      keyword1 <- unique(data$keyword[data$keyword %in% keyword_synonyms$keyword])
+    if (any(data$keyword %in% .keyword_synonyms$keyword)) {
+      keyword1 <- unique(data$keyword[data$keyword %in% .keyword_synonyms$keyword])
       out <- map_dfr(keyword1, ~ {
-        keyword2 <- keyword_synonyms$synonym[keyword_synonyms$keyword == .x]
+        keyword2 <- .keyword_synonyms$synonym[.keyword_synonyms$keyword == .x]
         if (!any(keyword2 %in% data$keyword)) {
-          out <- keywords_object$batch[keywords_object$keyword == keyword2]
+          out <- .keywords_object$batch[.keywords_object$keyword == keyword2]
           out <- filter(data_score, batch_c == control & batch_o == out)
           out <- collect(out)
           out <- out[out$keyword == keyword2, ]
@@ -74,12 +85,18 @@ compute_doi.numeric <- function(control, object, locations = "countries") {
         }
       })
       data <- bind_rows(data, out)
-      data$keyword <- str_replace_all(data$keyword, set_names(keyword_synonyms$keyword[keyword_synonyms$keyword %in% keyword1], keyword_synonyms$synonym[keyword_synonyms$keyword %in% keyword1]))
+      data$keyword <- str_replace_all(
+        data$keyword,
+        set_names(
+          .keyword_synonyms$keyword[.keyword_synonyms$keyword %in% keyword1],
+          .keyword_synonyms$synonym[.keyword_synonyms$keyword %in% keyword1]
+        )
+      )
       data <- group_by(data, location, date, keyword, batch_c, batch_o)
       data <- summarise_if(data, is.double, sum)
       data <- ungroup(data)
     }
-    data <- data[!(data$keyword %in% keyword_synonyms$synonym), ]
+    data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
 
     # compute doi measures
     out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
@@ -95,7 +112,7 @@ compute_doi.numeric <- function(control, object, locations = "countries") {
     out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
     dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
   }
-  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(keywords_object$batch)))
+  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(.keywords_object$batch)))
 }
 
 #' @rdname compute_doi
