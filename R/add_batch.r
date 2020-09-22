@@ -1,10 +1,12 @@
-#' @title Add batch of control keywords
+#' @title Add batch of control or object keywords
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. When a
-#' \code{character} vector contains more than five keywords, the vector is
-#' split into four-keyword batches. A \code{list} must contain
-#' \code{character} elements of length four or less.
+#' \code{character} or a \code{list} of \code{character} element. For control 
+#' keywords, batches can consist of up to five keywords, for object keywords
+#' batch length is limited to four keyowrds. When a \code{character} vector 
+#' contains more than four (five) keywords, the vector is split into
+#' four-keyword (five-keyword) batches. A \code{list} must contain 
+#' \code{character} elements of length four (five) or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
 #' to "2010-01-01 2019-12-31".
@@ -15,46 +17,20 @@
 #' @examples
 #' \dontrun{
 #' add_control_keyword(
-#'   keyword = c(
-#'     "gmail",
-#'     "maps",
-#'     "wikipedia",
-#'     "youtube"
-#'   ),
+#'   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_object_keyword(
-#'   keyword = c(
-#'     "apple",
-#'     "facebook",
-#'     "google",
-#'     "microsoft"
-#'   ),
+#'   keyword = c("apple", "facebook", "google", "microsoft"),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #'
 #' add_control_keyword(
-#'   keyword = c(
-#'     "gmail",
-#'     "maps",
-#'     "news",
-#'     "translate",
-#'     "weather",
-#'     "wikipedia",
-#'     "youtube"
-#'   ),
+#'   keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' add_control_keyword(
-#'   keyword = c(
-#'     "amazon",
-#'     "apple",
-#'     "facebook",
-#'     "google",
-#'     "microsoft",
-#'     "netflix",
-#'     "twitter"
-#'   ),
+#'   keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #'
@@ -77,7 +53,7 @@
 #' @export
 
 add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
-  out <- .add_batch(type = "control", keyword = keyword, time = time)
+  out <- .add_batch(type = "control", keyword = keyword, time = time, max = 5)
   return(out)
 }
 
@@ -87,7 +63,7 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @export
 
 add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
-  out <- .add_batch(type = "object", keyword = keyword, time = time)
+  out <- .add_batch(type = "object", keyword = keyword, time = time, max = 4)
   return(out)
 }
 
@@ -106,19 +82,19 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @importFrom glue glue
 #' @importFrom tibble tibble
 
-.add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31") UseMethod(".add_batch", keyword)
+.add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
 
 #' @keywords internal
 #' @rdname add_batch
 #' @method .add_batch character
 
-.add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31") {
-  if (length(keyword) > 4) {
-    keyword <- split(keyword, ceiling(seq_along(keyword) / 4))
+.add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
+  if (length(keyword) > max) {
+    keyword <- split(keyword, ceiling(seq_along(keyword) / max))
   } else {
     keyword <- list(keyword)
   }
-  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time))
+  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
@@ -127,8 +103,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @rdname add_batch
 #' @method .add_batch list
 
-.add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31") {
-  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time))
+.add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
+  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
@@ -136,8 +112,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @title Add batch of keywords
 #' @keywords internal
 
-.add_keyword_batch <- function(type, keyword, time) {
-  if (length(keyword) > 4) stop("Error: Lenght of list elements must not exceed 4.\nYou provided a list elment with length > 4.")
+.add_keyword_batch <- function(type, keyword, time, max) {
+  if (length(keyword) > max) stop(glue("Error: Lenght of list elements must not exceed {max}.\nYou provided a list elment with length {length(keyword)}."))
   if (type == "control") {
     if (nrow(.keywords_control) == 0) {
       new_batch <- 1
