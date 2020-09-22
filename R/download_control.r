@@ -40,6 +40,7 @@ download_control <- function(control, locations = countries) UseMethod("download
 #' @export
 
 download_control.numeric <- function(control, locations = countries) {
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
   if (length(control) > 1) download_control(control = as.list(control), locations = locations)
   .test_batch(control)
   terms <- .keywords_control$keyword[.keywords_control$batch == control]

@@ -54,6 +54,8 @@ compute_doi <- function(control, object, locations = "countries") UseMethod("com
 #' @export
 
 compute_doi.numeric <- function(control = 1, object, locations = "countries") {
+  if (length(locations) != 1) stop(glue("Error: Length object 'locations' must not exeed 1.\nYou provided an object with length {length(locations)}."))
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
   if (length(object) > 1) compute_doi(control = control, object = as.list(object), locations = locations)
   control <- control[[1]]
   walk(c(control, object), .test_batch)

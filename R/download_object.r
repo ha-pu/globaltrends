@@ -43,6 +43,7 @@ download_object <- function(object, control = 1, locations = countries) UseMetho
 #' @export
 
 download_object.numeric <- function(object, control = 1, locations = countries) {
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
   if (length(object) > 1) download_object(control = control, object = as.list(object), locations = locations)
   .test_batch(object)
   terms_obj <- .keywords_object$keyword[.keywords_object$batch == object]

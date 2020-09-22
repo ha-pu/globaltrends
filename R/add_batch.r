@@ -113,7 +113,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @keywords internal
 
 .add_keyword_batch <- function(type, keyword, time, max) {
-  if (length(keyword) > max) stop(glue("Error: Lenght of list elements must not exceed {max}.\nYou provided a list elment with length {length(keyword)}."))
+  if (length(keyword) > max) stop(glue("Error: Length of list elements must not exceed {max}.\nYou provided a list elment with length {length(keyword)}."))
+  if (!is.character(keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou provided an element of type {typeof(keyword)}."))
+  if (!is.character(time)) stop(glue("Error: 'time' must be object of type character.\nYou provided an element of type {typeof(time)}."))
   if (type == "control") {
     if (nrow(.keywords_control) == 0) {
       new_batch <- 1

@@ -58,6 +58,7 @@ compute_score <- function(control = 1, object, locations = countries) UseMethod(
 #' @export
 
 compute_score.numeric <- function(control = 1, object, locations = countries) {
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
   if (length(object) > 1) compute_score(control = control, object = as.list(object), locations = locations)
   control <- control[[1]]
   walk(c(control, object), .test_batch)

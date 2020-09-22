@@ -41,12 +41,12 @@
 #' @importFrom tidyr pivot_longer
 
 plot_trend <- function(data_doi, data_global, type = NULL, measure = "gini", locations = NULL, smooth = TRUE) {
-  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}!"))
-  if (!is.data.frame(data_global)) stop(glue("Error: 'data_global' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_global)}!"))
-  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}!"))
-  if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}!"))
-  if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}!"))
-  if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}!"))
+  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
+  if (!is.data.frame(data_global)) stop(glue("Error: 'data_global' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_global)}."))
+  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}."))
+  if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}."))
+  if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
+  if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
   
   data_doi <- mutate(data_doi, type = str_replace(type, "score_", ""))
   data_global <- mutate(data_global, type = str_replace(type, "hits_", ""))

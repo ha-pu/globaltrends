@@ -58,6 +58,7 @@
 #' @export
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
+#' @importFrom glue glue
 
 export_control <- function(control = NULL) {
   out <- .export_data_single(
@@ -143,13 +144,13 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   in_object <- in_object[[1]]
   in_control <- in_control[[1]]
   in_type <- in_type[[1]]
-  if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of a different type.")
+  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
-  if (!is.null(in_type) & !is.character(in_type)) stop("Error: 'type' must be NULL or object of type character.\nYou supplied an object of a different type.")
+  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be NULL or object of type character.\nYou supplied an object of type {typeof(in_type)}."))
 
+  if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch == in_object)
   if (!is.null(in_control)) table <- filter(table, batch == in_control)
@@ -175,14 +176,14 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   in_control <- in_control[[1]]
   in_locations <- in_locations[[1]]
   in_type <- in_type[[1]]
-  if (!is.null(in_type)) in_type <- paste0("score_", in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of a different type.")
+  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be NULL or object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
-  if (!is.null(in_locations) & !is.character(in_locations)) stop("Error: 'locations' must be NULL or object of type character.\nYou supplied an object of a different type.")
-  if (!is.null(in_type) & !is.character(in_type)) stop("Error: 'type' must be NULL or object of type character.\nYou supplied an object of a different type.")
+  if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be NULL or object of type character.\nYou supplied an object of type {typeof(in_locations)}."))
+  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be NULL or object of type character.\nYou supplied an object of type {typeof(in_type)}."))
 
+  if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch_o == in_object)
   if (!is.null(in_control)) table <- filter(table, batch_c == in_control)

@@ -69,7 +69,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
       }
     }
   } else {
-    stop("Error: 'table' must be an object of type character.\nYou supplied an object of a different type.")
+    stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))
   }
 }
 

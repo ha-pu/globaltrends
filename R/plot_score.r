@@ -39,8 +39,8 @@
 #' @importFrom stringr str_to_upper
 
 plot_score <- function(data_score, type = "obs") {
-  if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}!"))
-  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}!"))
+  if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}."))
+  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}."))
   
   in_type <- type
   len_keywords <- length(unique(data_score$keyword))
