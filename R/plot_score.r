@@ -39,6 +39,9 @@
 #' @importFrom stringr str_to_upper
 
 plot_score <- function(data_score, type = "obs") {
+  if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}!"))
+  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}!"))
+  
   in_type <- type
   len_keywords <- length(unique(data_score$keyword))
   data_score$measure <- data_score[paste0("score_", in_type)][[1]]
@@ -51,7 +54,6 @@ plot_score <- function(data_score, type = "obs") {
   keyword <- unique(data_score$keyword)[[1]]
   data_score <- group_by(data_score, location)
   data_score <- summarise(data_score, measure = mean(measure), .groups = "drop")
-  data_score <- mutate(data_score, measure = 100 * measure / max(measure))
   data_score <- arrange(data_score, -measure)
   data_score <- slice(data_score, 1:10)
   data_score <- mutate(data_score, location = as_factor(location))

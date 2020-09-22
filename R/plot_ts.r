@@ -4,27 +4,22 @@
 #' @details
 #'
 #' @inheritParams plot_box
-#' @param grid Object of class \code{logical} indicating whether the
-#' \code{facet_wrap} function of \code{ggplot2} should be used. Otherwise,
-#' keywords are separated by color.
 #' @param smooth Object of class \code{logical} indicating whether the
-#' \code{geom_smooth} function of \code{ggplot2} should be used. Only
-#' applicale when \code{grid == TRUE}.
+#' \code{geom_smooth} function of \code{ggplot2} should be used.
 #'
 #' @section Warning:
-#' \code{plot_ts} is limited to 9 unique keywords for \code{grid == TRUE}
-#' and 5 unique keywords otherwise to avoid an overcrowded plot. When
-#' \code{data_doi} includes more than 9 or 5 unique keywords, only
-#' the first 9 or 5 keywords are used.
+#' \code{plot_ts} is limited to 9 unique keywords to avoid an overcrowded
+#'  plot. When \code{data_doi} includes more than 9 unique keywords, only
+#' the first 9 keywords are used.
 #'
 #' @return Line plot of time series as \code{ggplot2} object
 #'
 #' @examples
 #' \dontrun{
 #' data <- export_doi(object = 1, locations = "countries")
-#' plot_ts(data_doi = data, type = "obs", measure = "gini", grid = TRUE, smooth = TRUE)
-#' plot_ts(data_doi = data, type = "sad", measure = "hhi", grid = TRUE, smooth = FALSE)
-#' plot_ts(data_doi = data, type = "trd", measure = "entropy", grid = FALSE, smooth = TRUE)
+#' plot_ts(data_doi = data, type = "obs", measure = "gini", smooth = TRUE)
+#' plot_ts(data_doi = data, type = "sad", measure = "hhi", smooth = FALSE)
+#' plot_ts(data_doi = data, type = "trd", measure = "entropy", smooth = TRUE)
 #' }
 #'
 #' @export
@@ -38,7 +33,13 @@
 #' @importFrom glue glue
 #' @importFrom stringr str_to_upper
 
-plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, grid = TRUE, smooth = TRUE) {
+plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, smooth = TRUE) {
+  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}!"))
+  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}!"))
+  if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}!"))
+  if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}!"))
+  if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}!"))
+  
   in_type <- type
   in_locations <- locations
   len_keywords <- length(unique(data_doi$keyword))
@@ -47,7 +48,7 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, g
   if (!is.null(in_locations)) data_doi <- filter(data_doi, locations == in_locations)
   plot <- ggplot(data_doi, aes(x = date))
 
-  if (grid) {
+
     if (len_keywords > 9) {
       warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
       data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
@@ -60,22 +61,10 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, g
       plot <- plot +
         geom_smooth(aes(y = measure))
     }
-  } else {
-    if (len_keywords > 9) {
-      warning(glue("The plot function is limited to 5 keywords as coloured lines.\nYou use {len_keywords} keywords.\nOnly the first 5 keywords are used."))
-      data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:5])
-    }
-    plot <- plot +
-      geom_line(aes(y = measure, colour = keyword))
-
-    if (smooth) {
-      warning("The smoothing option currently only works for 'grid == TRUE'.")
-    }
   }
 
   plot <- plot +
-    labs(x = NULL, y = "Degree of internationalization", colour = "Keyword", caption = glue("DOI computed as {str_to_upper(measure)}.")) +
-    theme(legend.position = "bottom")
+    labs(x = NULL, y = "Degree of internationalization", colour = "Keyword", caption = glue("DOI computed as {str_to_upper(measure)}."))
 
   return(plot)
 }
