@@ -23,47 +23,16 @@ test_that("initialize", {
     time_object,
     envir = .GlobalEnv
   )
-})
 
-# add keywords ----
-test_that("keywords_control", {
-  expect_message(
-    new_batch <- add_control_keyword(
-      keyword = c(
-        "gmail",
-        "map",
-        "wikipedia",
-        "youtube"
-      ),
-      time = "2010-01-01 2019-12-31"
-    )
+  add_control_keyword(
+    keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
+    time = "2010-01-01 2019-12-31"
   )
-  out_keywords <- filter(.tbl_keywords, batch == new_batch & type == "control")
-  out_time <- filter(.tbl_time, batch == new_batch & type == "control")
-  out_keywords <- collect(out_keywords)
-  out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 4)
-  expect_equal(nrow(out_time), 1)
-})
 
-test_that("keywords_object", {
-  expect_message(
-    new_batch <- add_object_keyword(
-      keyword = c(
-        "fc barcelona",
-        "fc bayern",
-        "manchester united",
-        "real madrid"
-      ),
-      time = "2010-01-01 2019-12-31"
-    )
+  add_object_keyword(
+    keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
+    time = "2010-01-01 2019-12-31"
   )
-  out_keywords <- filter(.tbl_keywords, batch == new_batch & type == "object")
-  out_time <- filter(.tbl_time, batch == new_batch & type == "object")
-  out_keywords <- collect(out_keywords)
-  out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 4)
-  expect_equal(nrow(out_time), 1)
 })
 
 # run downloads ----
