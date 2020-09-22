@@ -39,5 +39,5 @@
 
   # upload data ----
   dbWriteTable(conn = globaltrends_db, name = "data_locations", value = bind_rows(countries, us_states), append = TRUE)
-  message("Data entered into 'data_locations'.")
+  message("Successfully entered data into 'data_locations'.")
 }

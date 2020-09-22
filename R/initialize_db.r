@@ -26,7 +26,7 @@ initialize_db <- function() {
   # create db ----
   globaltrends_db <- suppressWarnings(src_sqlite("db/globaltrends_db.sqlite", create = TRUE))
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
-  message("Database has been created.")
+  message("Successfully created database.")
 
   # create tables ----
 
@@ -37,7 +37,7 @@ initialize_db <- function() {
   keyword TEXT
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
-  message("Table 'batch_keywords' has been created.")
+  message("Successfully created table 'batch_keywords'.")
 
   # batch_time
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_time (
@@ -46,14 +46,14 @@ initialize_db <- function() {
   time TEXT
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
-  message("Table 'batch_time' has been created.")
+  message("Successfully created table 'batch_time'.")
 
   # keyword_synonyms
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE keyword_synonyms (
   keyword TEXT,
   synonym TEXT
           )")
-  message("Table 'keyword_synonyms' has been created.")
+  message("Successfully created table 'keyword_synonyms'.")
 
   # data_locations
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
@@ -62,7 +62,7 @@ initialize_db <- function() {
   type TEXT
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_location ON data_locations (location);")
-  message("Table 'data_locations' has been created.")
+  message("Successfully created table 'data_locations'.")
   .enter_location(globaltrends_db = globaltrends_db)
 
   # data_control
@@ -74,7 +74,7 @@ initialize_db <- function() {
   batch INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
-  message("Table 'batch_keywords' has been created.")
+  message("Successfully created table 'batch_keywords'.")
 
   # data_object
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_object (
@@ -86,7 +86,7 @@ initialize_db <- function() {
   batch_o INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
-  message("Table 'data_control' has been created.")
+  message("Successfully created table 'data_control'.")
 
   # data_score
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_score (
@@ -101,7 +101,7 @@ initialize_db <- function() {
   synonym INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
-  message("Table 'data_score' has been created.")
+  message("Successfully created table 'data_score'.")
 
   # data_doi
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_doi (
@@ -116,7 +116,7 @@ initialize_db <- function() {
   locations TEXT
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
-  message("Table 'data_doi' has been created.")
+  message("Successfully created table 'data_doi'.")
 
   # data_global
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_global (
@@ -127,7 +127,7 @@ initialize_db <- function() {
   batch INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_wrld ON data_global (batch);")
-  message("Table 'data_global' has been created.")
+  message("Successfully created table 'data_global'.")
 
   # disconnect from db ----
   disconnect_db(db = globaltrends_db)
