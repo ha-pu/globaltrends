@@ -39,7 +39,7 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, s
   if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}."))
   if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
   if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
-  
+
   in_type <- type
   in_locations <- locations
   len_keywords <- length(unique(data_doi$keyword))
@@ -49,18 +49,17 @@ plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, s
   plot <- ggplot(data_doi, aes(x = date))
 
 
-    if (len_keywords > 9) {
-      warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
-      data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
-    }
-    plot <- plot +
-      geom_line(aes(y = measure)) +
-      facet_wrap(~keyword)
+  if (len_keywords > 9) {
+    warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
+    data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
+  }
+  plot <- plot +
+    geom_line(aes(y = measure)) +
+    facet_wrap(~keyword)
 
-    if (smooth) {
-      plot <- plot +
-        geom_smooth(aes(y = measure))
-    }
+  if (smooth) {
+    plot <- plot +
+      geom_smooth(aes(y = measure))
   }
 
   plot <- plot +
