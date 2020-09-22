@@ -42,7 +42,7 @@ test_that("control_download", {
   )
   out <- filter(.tbl_control, batch == 1)
   out <- collect(out)
-  expect_equal(nrow(out), 1440)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("object_download", {
@@ -93,7 +93,7 @@ test_that("compute_doi", {
 # export data ----
 test_that("export_control", {
   out <- export_control(control = 1)
-  expect_equal(nrow(out), 1440)
+  expect_equal(nrow(out), 1800)
 })
 
 test_that("export_object", {
@@ -131,7 +131,7 @@ test_that("plot_score", {
 
 test_that("plot_ts", {
   out <- export_doi(type = "obs", locations = "countries") %>%
-    plot_ts(grid = TRUE, smooth = TRUE)
+    plot_ts(smooth = TRUE)
   expect_s3_class(out, "ggplot")
 })
 
