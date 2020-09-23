@@ -41,20 +41,23 @@ download_control <- function(control, locations = countries) UseMethod("download
 
 download_control.numeric <- function(control, locations = countries) {
   if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
-  if (length(control) > 1) download_control(control = as.list(control), locations = locations)
-  .test_batch(control)
-  terms <- .keywords_control$keyword[.keywords_control$batch == control]
-  time <- .time_control$time[.time_control$batch == control]
-  walk(locations, ~ {
-    if (.test_empty(table = "data_control", batch_c = control, location = .x)) {
-      out <- .get_trend(location = .x, term = terms, time = time)
-      if (!is.null(out)) {
-        out <- mutate(out, batch = control)
-        dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
+  if (length(control) > 1) {
+    download_control(control = as.list(control), locations = locations)
+  } else {
+    .test_batch(control)
+    terms <- .keywords_control$keyword[.keywords_control$batch == control]
+    time <- .time_control$time[.time_control$batch == control]
+    walk(locations, ~ {
+      if (.test_empty(table = "data_control", batch_c = control, location = .x)) {
+        out <- .get_trend(location = .x, term = terms, time = time)
+        if (!is.null(out)) {
+          out <- mutate(out, batch = control)
+          dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
+        }
       }
-    }
-    message(glue("Successfully downloaded control data | control: {control} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
-  })
+      message(glue("Successfully downloaded control data | control: {control} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+    })
+  }
 }
 
 #' @rdname download_control
