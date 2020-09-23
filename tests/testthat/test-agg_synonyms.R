@@ -1,5 +1,4 @@
 # setup ----
-
 initialize_db()
 start_db()
 
@@ -30,14 +29,14 @@ test_that("add_synonyms", {
 
 # download data ----
 download_control(control = 1, locations = countries[1:3])
-download_object(control = 1, object = 1, locations = countries[1:2])
+download_object(object = 1, locations = countries[1:2])
 download_object(object = 2, locations = countries[2:3])
 
-compute_score(control = 1, object = 1, locations = countries[1:2])
-out1 <- export_score(control = 1, keyword = "fc bayern")
+compute_score(object = 1, locations = countries[1:2])
+out1 <- export_score(keyword = "fc bayern")
 
-compute_score(control = 1, object = 2, locations = countries[1:3])
-out2 <- export_score(control = 1, keyword = "fc bayern")
+compute_score(object = 2, locations = countries[1:3])
+out2 <- export_score(keyword = "fc bayern")
 
 # compare results ----
 test_that("keyword_score", {
@@ -70,4 +69,4 @@ test_that("keyword_synonym", {
 
 # disconnect ----
 disconnect_db()
-unlink("db", recursive = TRUE)
+#unlink("db", recursive = TRUE)

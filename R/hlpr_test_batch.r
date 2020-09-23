@@ -3,7 +3,7 @@
 #' @keywords internal
 
 .test_batch <- function(batch) {
-  if(is.null(batch)) {
+  if (is.null(batch)) {
     return(TRUE)
   } else if (is.integer(batch)) {
     return(TRUE)

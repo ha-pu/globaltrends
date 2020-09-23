@@ -47,7 +47,7 @@ plot_trend <- function(data_doi, data_global, type = NULL, measure = "gini", loc
   if (!is.null(measure) & !(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied {measure}."))
   if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
   if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
-  
+
   data_doi <- mutate(data_doi, type = str_replace(type, "score_", ""))
   data_global <- mutate(data_global, type = str_replace(type, "hits_", ""))
   data <- full_join(data_doi, data_global, by = c("keyword", "date", "type", "object"))

@@ -1,11 +1,11 @@
 #' @title Add batch of control or object keywords
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. For control 
+#' \code{character} or a \code{list} of \code{character} element. For control
 #' keywords, batches can consist of up to five keywords, for object keywords
-#' batch length is limited to four keyowrds. When a \code{character} vector 
+#' batch length is limited to four keyowrds. When a \code{character} vector
 #' contains more than four (five) keywords, the vector is split into
-#' four-keyword (five-keyword) batches. A \code{list} must contain 
+#' four-keyword (five-keyword) batches. A \code{list} must contain
 #' \code{character} elements of length four (five) or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
