@@ -118,17 +118,6 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
   message("Successfully created table 'data_doi'.")
 
-  # data_global
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_global (
-  keyword TEXT,
-  date INTEGER,
-  type TEXT,
-  hits REAL,
-  batch INTEGER
-          )")
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_wrld ON data_global (batch);")
-  message("Successfully created table 'data_global'.")
-
   # disconnect from db ----
   disconnect_db(db = globaltrends_db)
 }

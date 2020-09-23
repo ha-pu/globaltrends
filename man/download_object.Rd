@@ -4,6 +4,7 @@
 \alias{download_object}
 \alias{download_object.numeric}
 \alias{download_object.list}
+\alias{download_object_global}
 \title{Download data for object batch}
 \usage{
 download_object(object, control = 1, locations = countries)
@@ -11,11 +12,13 @@ download_object(object, control = 1, locations = countries)
 \method{download_object}{numeric}(object, control = 1, locations = countries)
 
 \method{download_object}{list}(object, control = 1, locations = countries)
+
+download_object_global(control = 1, object)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
 of class \code{numeric} or object of class \code{list} containing single
-elements of class \code{numeric}.}
+object of class \code{numeric}.}
 
 \item{control}{Control batch that is used for mapping. Object of class
 \code{numeric}. Defaults to \code{1}.}

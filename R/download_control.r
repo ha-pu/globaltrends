@@ -1,4 +1,4 @@
-#' @title Download data for control batch
+#' @title Download data for control keywords
 #'
 #' @aliases
 #' download_control
@@ -48,14 +48,21 @@ download_control.numeric <- function(control, locations = countries) {
     terms <- .keywords_control$keyword[.keywords_control$batch == control]
     time <- .time_control$time[.time_control$batch == control]
     walk(locations, ~ {
-      if (.test_empty(table = "data_control", batch_c = control, location = .x)) {
+      if (.x == "") {
+        in_location <- "world"
+      } else {
+        in_location <- .x
+      }
+      if (.test_empty(table = "data_control", batch_c = control, location = in_location)) {
         out <- .get_trend(location = .x, term = terms, time = time)
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
           dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
       }
-      message(glue("Successfully downloaded control data | control: {control} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+      message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
+        current = which(locations == .x), total = length(locations)
+      ))
     })
   }
 }
@@ -66,4 +73,11 @@ download_control.numeric <- function(control, locations = countries) {
 
 download_control.list <- function(control, locations = countries) {
   walk(control, download_control, locations = locations)
+}
+
+#' @rdname download_control
+#' @export
+
+download_control_global <- function(control = 1) {
+  download_control(control = control, locations = "")
 }

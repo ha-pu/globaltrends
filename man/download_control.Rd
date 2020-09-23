@@ -4,18 +4,21 @@
 \alias{download_control}
 \alias{download_control.numeric}
 \alias{download_control.list}
-\title{Download data for control batch}
+\alias{download_control_global}
+\title{Download data for control keywords}
 \usage{
 download_control(control, locations = countries)
 
 \method{download_control}{numeric}(control, locations = countries)
 
 \method{download_control}{list}(control, locations = countries)
+
+download_control_global(control = 1)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
 of class \code{numeric} or object of class \code{list} containing single
-elements of class \code{numeric}.}
+objects of class \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is downloaded.
 Refers to lists generated in \code{start_db}.}
@@ -25,7 +28,7 @@ Message that data was downloaded successfully. Data is uploaded
 to data_control.
 }
 \description{
-Download data for control batch
+Download data for control keywords
 }
 \details{
 

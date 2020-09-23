@@ -4,6 +4,7 @@
 \alias{compute_score}
 \alias{compute_score.numeric}
 \alias{compute_score.list}
+\alias{compute_score_global}
 \title{Compute keyword-country search score}
 \usage{
 compute_score(control = 1, object, locations = countries)
@@ -11,6 +12,8 @@ compute_score(control = 1, object, locations = countries)
 \method{compute_score}{numeric}(control = 1, object, locations = countries)
 
 \method{compute_score}{list}(control = 1, object, locations = countries)
+
+compute_score_global(control = 1, object)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
@@ -18,7 +21,7 @@ of class \code{numeric}. Defaults to 1.}
 
 \item{object}{Object batch for which the data is downloaded. Object
 of class \code{numeric} or object of class \code{list} containing single
-elements of class \code{numeric}.}
+objects of class \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}.}

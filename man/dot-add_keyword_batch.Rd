@@ -4,7 +4,7 @@
 \alias{.add_keyword_batch}
 \title{Add batch of keywords}
 \usage{
-.add_keyword_batch(type, keyword, time)
+.add_keyword_batch(type, keyword, time, max)
 }
 \description{
 Add batch of keywords

@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' remove_data(table = "batch_keywords", control = 1)
-#' remove_data(table = "data_mapping", control = 1, object = 1)
+#' remove_data(table = "data_score", control = 1, object = 1)
 #' }
 #'
 #' @export
@@ -62,12 +62,8 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(control) | !is.null(object)) {
         .remove_data_doi(batch_c = control, batch_o = object)
       }
-    } else if (table == "data_global") {
-      if (!is.null(object)) {
-        .remove_data_global(batch_o = object)
-      }
     } else {
-      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', 'data_doi', or 'data_global'.\nYou supplied {table}."))
+      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou supplied {table}."))
     }
   } else {
     stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))

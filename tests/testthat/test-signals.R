@@ -18,10 +18,12 @@ add_object_keyword(
 
 # download data and compute doi ----
 download_control(control = 1, locations = countries[1:2])
-download_object(object = 1:3, locations = countries[1:2])
-download_global(object = 1)
-compute_score(object = 1:3, locations = countries[1:2])
-compute_doi(object = 1:3)
+download_control_global(control = 1)
+download_object(control = 1, object = 1:3, locations = countries[1:2])
+download_object_global(control = 1, object = 1)
+compute_score(control = 1, object = 1:3, locations = countries[1:2])
+compute_score_global(control = 1, object = 1)
+compute_doi(control = 1, object = 1:3)
 
 # add_control / add_keyword ----
 test_that("add_batch1", {
@@ -87,6 +89,13 @@ test_that("download_control2", {
   expect_error(download_control(locations = sum))
 })
 
+test_that("download_control3", {
+  expect_error(download_control_global(control = 1.5))
+  expect_error(download_control_global(control = "A"))
+  expect_error(download_control_global(control = TRUE))
+  expect_error(download_control_global(control = sum))
+})
+
 # download_object ----
 test_that("download_object1", {
   expect_error(download_object(object = 1.5))
@@ -109,6 +118,21 @@ test_that("download_object3", {
   expect_error(download_object(object = 1, locations = sum))
 })
 
+test_that("download_object4", {
+  expect_error(download_object_global(object = 1.5))
+  expect_error(download_object_global(object = "A"))
+  expect_error(download_object_global(object = TRUE))
+  expect_error(download_object_global(object = sum))
+})
+
+test_that("download_object5", {
+  expect_error(download_object_global(control = 1.5, object = 1))
+  expect_error(download_object_global(control = "A", object = 1))
+  expect_error(download_object_global(control = TRUE, object = 1))
+  expect_error(download_object_global(control = sum, object = 1))
+  expect_error(download_object_global(control = 1:5, object = 1))
+})
+
 # compute_score ----
 test_that("compute_score1", {
   expect_error(compute_score(object = 1.5))
@@ -128,6 +152,20 @@ test_that("compute_score3", {
   expect_error(compute_score(object = 1, locations = 1))
   expect_error(compute_score(object = 1, locations = TRUE))
   expect_error(compute_score(object = 1, locations = sum))
+})
+
+test_that("compute_score4", {
+  expect_error(compute_score_global(object = 1.5))
+  expect_error(compute_score_global(object = "A"))
+  expect_error(compute_score_global(object = TRUE))
+  expect_error(compute_score_global(object = sum))
+})
+
+test_that("compute_score5", {
+  expect_error(compute_score_global(control = 1.5, object = 1))
+  expect_error(compute_score_global(control = "A", object = 1))
+  expect_error(compute_score_global(control = sum, object = 1))
+  expect_error(compute_score_global(control = 1:5, object = 1))
 })
 
 # compute_doi ----
@@ -156,7 +194,7 @@ test_that("compute_doi4", {
 })
 
 # export_data ----
-test_that("export_data1", {
+test_that("export_data1a", {
   expect_error(export_control(control = 1.5))
   expect_error(export_control(control = "A"))
   expect_error(export_control(control = TRUE))
@@ -164,6 +202,13 @@ test_that("export_data1", {
   expect_error(export_control(control = 1:5))
 })
 
+test_that("export_data1b", {
+  expect_error(export_control_global(control = 1.5))
+  expect_error(export_control_global(control = "A"))
+  expect_error(export_control_global(control = TRUE))
+  expect_error(export_control_global(control = sum))
+  expect_error(export_control_global(control = 1:5))
+})
 test_that("export_data2a", {
   expect_error(export_object(keyword = 1))
   expect_error(export_object(keyword = TRUE))
@@ -187,6 +232,29 @@ test_that("export_data2c", {
   expect_error(export_object(control = 1:5))
 })
 
+test_that("export_data2d", {
+  expect_error(export_object_global(keyword = 1))
+  expect_error(export_object_global(keyword = TRUE))
+  expect_error(export_object_global(keyword = sum))
+  expect_error(export_object_global(keyword = letters[1:5]))
+})
+
+test_that("export_data2e", {
+  expect_error(export_object_global(object = 1.5))
+  expect_error(export_object_global(object = "A"))
+  expect_error(export_object_global(object = TRUE))
+  expect_error(export_object_global(object = sum))
+  expect_error(export_object_global(object = 1:5))
+})
+
+test_that("export_data2f", {
+  expect_error(export_object_global(control = 1.5))
+  expect_error(export_object_global(control = "A"))
+  expect_error(export_object_global(control = TRUE))
+  expect_error(export_object_global(control = sum))
+  expect_error(export_object_global(control = 1:5))
+})
+
 test_that("export_data3a", {
   expect_error(export_score(keyword = 1))
   expect_error(export_score(keyword = TRUE))
@@ -208,6 +276,29 @@ test_that("export_data3c", {
   expect_error(export_score(control = TRUE))
   expect_error(export_score(control = sum))
   expect_error(export_score(control = 1:5))
+})
+
+test_that("export_data3d", {
+  expect_error(export_score_global(keyword = 1))
+  expect_error(export_score_global(keyword = TRUE))
+  expect_error(export_score_global(keyword = sum))
+  expect_error(export_score_global(keyword = letters[1:5]))
+})
+
+test_that("export_data3e", {
+  expect_error(export_score_global(object = 1.5))
+  expect_error(export_score_global(object = "A"))
+  expect_error(export_score_global(object = TRUE))
+  expect_error(export_score_global(object = sum))
+  expect_error(export_score_global(object = 1:5))
+})
+
+test_that("export_data3f", {
+  expect_error(export_score_global(control = 1.5))
+  expect_error(export_score_global(control = "A"))
+  expect_error(export_score_global(control = TRUE))
+  expect_error(export_score_global(control = sum))
+  expect_error(export_score_global(control = 1:5))
 })
 
 test_that("export_data4a", {
@@ -358,7 +449,7 @@ test_that("plot_box5", {
 
 # plot_trend ----
 test_that("plot_trend1", {
-  data2 <- export_global(keyword = "fc barcelona")
+  data2 <- export_score_global(keyword = "fc barcelona")
   expect_error(plot_trend(data_doi = 1, data_global = data2))
   expect_error(plot_trend(data_doi = "A", data_global = data2))
   expect_error(plot_trend(data_doi = TRUE, data_global = data2))
@@ -375,7 +466,7 @@ test_that("plot_trend2", {
 
 test_that("plot_trend3", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_global(keyword = "fc barcelona")
+  data2 <- export__score_global(keyword = "fc barcelona")
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = TRUE))
@@ -385,7 +476,7 @@ test_that("plot_trend3", {
 
 test_that("plot_trend4", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_global(keyword = "fc barcelona")
+  data2 <- export_score_global(keyword = "fc barcelona")
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = TRUE))
@@ -395,7 +486,7 @@ test_that("plot_trend4", {
 
 test_that("plot_trend5", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_global(keyword = "fc barcelona")
+  data2 <- export_score_global(keyword = "fc barcelona")
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = TRUE))
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = sum))
@@ -404,7 +495,7 @@ test_that("plot_trend5", {
 
 test_that("plot_trend6", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_global(keyword = "fc barcelona")
+  data2 <- export_score_global(keyword = "fc barcelona")
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = sum))
@@ -413,7 +504,7 @@ test_that("plot_trend6", {
 
 test_that("plot_trend7", {
   data1 <- export_doi()
-  data2 <- export_global()
+  data2 <- export_score_global()
   expect_warning(plot_trend(data_doi = data1, data_global = data2))
 })
 

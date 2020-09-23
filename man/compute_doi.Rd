@@ -6,11 +6,11 @@
 \alias{compute_doi.list}
 \title{Aggregate keyword-country data and compute DOI}
 \usage{
-compute_doi(control, object, locations = "countries")
+compute_doi(control = 1, object, locations = "countries")
 
 \method{compute_doi}{numeric}(control = 1, object, locations = "countries")
 
-\method{compute_doi}{list}(control, object, locations = "countries")
+\method{compute_doi}{list}(control = 1, object, locations = "countries")
 }
 \arguments{
 \item{control}{Control batch for which the search score is used. Object
