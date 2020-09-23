@@ -29,7 +29,7 @@ Remove data from database tables
 \examples{
 \dontrun{
 remove_data(table = "batch_keywords", control = 1)
-remove_data(table = "data_mapping", control = 1, object = 1)
+remove_data(table = "data_score", control = 1, object = 1)
 }
 
 }

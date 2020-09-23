@@ -75,7 +75,7 @@ test_that("compute_scoring_global", {
   expect_message(compute_score_global(control = 1, object = 1))
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
   out <- collect(out)
-  expect_equal(nrow(out), 1440)
+  expect_equal(nrow(out), 480)
 })
 
 test_that("compute_doi", {

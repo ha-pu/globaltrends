@@ -54,7 +54,7 @@ plot_trend <- function(data_doi, data_score_global, type = NULL, measure = "gini
 
   data_doi <- mutate(data_doi, type = str_replace(type, "score_", ""))
   data_doi$measure <- data_doi[measure][[1]]
-  data_score_global$hits <- data_score_global[paste0("score_", in_type)][[1]]
+  data_score_global$hits <- data_score_global[paste0("score_", type)][[1]]
   data <- full_join(data_doi, data_score_global, by = c("keyword", "date", "object"))
   data <- na.omit(data)
 

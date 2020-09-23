@@ -6,7 +6,7 @@
 \usage{
 plot_trend(
   data_doi,
-  data_global,
+  data_score_global,
   type = NULL,
   measure = "gini",
   locations = NULL,
@@ -52,10 +52,10 @@ more than 1 unique keyword, only the first keyword is used.
 \examples{
 \dontrun{
 data1 <- export_doi(keyword = "manchester united", locations = "countries")
-data2 <- export_global(keyword = "manchester united")
-plot_trend(data_doi = data1, data_global = data2, type = "obs", measure = "gini", smooth = TRUE)
-plot_trend(data_doi = data1, data_global = data2, type = "sad", measure = "hhi", smooth = FALSE)
-plot_trend(data_doi = data1, data_global = data2, type = "trd", measure = "entropy", smooth = TRUE)
+data2 <- export_score_global(keyword = "manchester united")
+plot_trend(data_doi = data1, data_score_global = data2, type = "obs", measure = "gini", smooth = TRUE)
+plot_trend(data_doi = data1, data_score_global = data2, type = "sad", measure = "hhi", smooth = FALSE)
+plot_trend(data_doi = data1, data_score_global = data2, type = "trd", measure = "entropy", smooth = TRUE)
 }
 
 }
