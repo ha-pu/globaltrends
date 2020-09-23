@@ -43,8 +43,8 @@
 plot_trend <- function(data_doi, data_global, type = NULL, measure = "gini", locations = NULL, smooth = TRUE) {
   if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
   if (!is.data.frame(data_global)) stop(glue("Error: 'data_global' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_global)}."))
-  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}."))
-  if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}."))
+  if (!is.null(type) & !(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
+  if (!is.null(measure) & !(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied {measure}."))
   if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
   if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
   

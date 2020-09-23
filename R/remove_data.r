@@ -51,10 +51,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(object) & is.null(control)) {
         .remove_data_object(batch_c = control, batch_o = object)
       }
-    } else if (table == "data_mapping") {
-      if (!is.null(control) | !is.null(object)) {
-        .remove_data_mapping(batch_c = control, batch_o = object)
-      }
     } else if (table == "data_score") {
       if (!is.null(control) | !is.null(object)) {
         .remove_data_score(batch_c = control, batch_o = object)
@@ -67,6 +63,8 @@ remove_data <- function(table, control = NULL, object = NULL) {
       if (!is.null(object) & is.null(control)) {
         .remove_data_global(batch_o = object)
       }
+    } else {
+      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', 'data_doi', or 'data_global'.\nYou supplied {table}."))
     }
   } else {
     stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))

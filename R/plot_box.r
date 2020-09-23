@@ -42,8 +42,8 @@
 
 plot_box <- function(data_doi, type = NULL, measure = "gini", locations = NULL) {
   if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
-  if (!is.null(type) & !is.character(type)) stop(glue("Error: 'type' must be of type 'character'.\nYou supplied an object of type {typeof(type)}."))
-  if (!is.null(measure) & !is.character(measure)) stop(glue("Error: 'measure' must be of type 'character'.\nYou supplied an object of type {typeof(measure)}."))
+  if (!is.null(type) & !(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
+  if (!is.null(measure) & !(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied {measure}."))
   if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
 
   in_type <- type
