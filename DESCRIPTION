@@ -1,6 +1,6 @@
 Package: globaltrends
 Type: Package
-Title: Measure global trends with Google Trends
+Title: globaltrens: Download and measure global trends through Google searches
 Version: 0.0.3
 Authors@R: person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at")
 Author: Harald Puhr [aut, cre]
