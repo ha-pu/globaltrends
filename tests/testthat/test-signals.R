@@ -18,10 +18,10 @@ add_object_keyword(
 
 # download data and compute doi ----
 download_control(control = 1, locations = countries[1:2])
-download_object(control = 1, object = 1:3, locations = countries[1:2])
+download_object(object = 1:3, locations = countries[1:2])
 download_global(object = 1)
-compute_score(control = 1, object = 1:3, locations = countries[1:2])
-compute_doi(control = 1, object = 1:3)
+compute_score(object = 1:3, locations = countries[1:2])
+compute_doi(object = 1:3)
 
 # add_control / add_keyword ----
 test_that("add_batch1", {

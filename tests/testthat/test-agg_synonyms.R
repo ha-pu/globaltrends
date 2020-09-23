@@ -10,7 +10,7 @@ add_control_keyword(
 add_object_keyword(
   keyword = list(
     c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-    c("bayern munich", "bayern münchen")
+    c("bayern munich", "bayern munchen")
   ),
   time = "2010-01-01 2019-12-31"
 )
@@ -20,7 +20,7 @@ test_that("add_synonyms", {
   expect_message(
     add_synonym(
       keyword = "fc bayern",
-      synonym = c("bayern munich", "bayern münchen")
+      synonym = c("bayern munich", "bayern munchen")
     )
   )
 
@@ -69,4 +69,4 @@ test_that("keyword_synonym", {
 
 # disconnect ----
 disconnect_db()
-#unlink("db", recursive = TRUE)
+unlink("db", recursive = TRUE)
