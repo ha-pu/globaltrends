@@ -54,8 +54,9 @@ compute_doi <- function(control = 1, object, locations = "countries") UseMethod(
 #' @export
 
 compute_doi.numeric <- function(control = 1, object, locations = "countries") {
+  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (length(locations) != 1) stop(glue("Error: Length object 'locations' must not exeed 1.\nYou provided an object with length {length(locations)}."))
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
   if (length(object) > 1) {
     compute_doi(control = control, object = as.list(object), locations = locations)
   } else {

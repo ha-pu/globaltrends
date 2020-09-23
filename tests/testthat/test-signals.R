@@ -34,6 +34,7 @@ test_that("add_batch2", {
   expect_error(add_control_keyword(time = 1))
   expect_error(add_control_keyword(time = TRUE))
   expect_error(add_control_keyword(time = sum))
+  expect_error(add_control_keyword(time = letters[1:5]))
 })
 
 test_that("add_batch3", {
@@ -46,6 +47,7 @@ test_that("add_batch4", {
   expect_error(add_object_keyword(time = 1))
   expect_error(add_object_keyword(time = TRUE))
   expect_error(add_object_keyword(time = sum))
+  expect_error(add_object_keyword(time = letters[1:5]))
 })
 
 test_that("add_batch5", {
@@ -98,12 +100,13 @@ test_that("download_object2", {
   expect_error(download_object(control = "A", object = 1))
   expect_error(download_object(control = TRUE, object = 1))
   expect_error(download_object(control = sum, object = 1))
+  expect_error(download_object(control = 1:5, object = 1))
 })
 
 test_that("download_object3", {
-  expect_error(download_control(object = 1, locations = 1))
-  expect_error(download_control(object = 1, locations = TRUE))
-  expect_error(download_control(object = 1, locations = sum))
+  expect_error(download_object(object = 1, locations = 1))
+  expect_error(download_object(object = 1, locations = TRUE))
+  expect_error(download_object(object = 1, locations = sum))
 })
 
 # compute_score ----
@@ -117,8 +120,8 @@ test_that("compute_score1", {
 test_that("compute_score2", {
   expect_error(compute_score(control = 1.5, object = 1))
   expect_error(compute_score(control = "A", object = 1))
-  expect_error(compute_score(control = TRUE, object = 1))
   expect_error(compute_score(control = sum, object = 1))
+  expect_error(compute_score(control = 1:5, object = 1))
 })
 
 test_that("compute_score3", {
@@ -138,8 +141,8 @@ test_that("compute_doi1", {
 test_that("compute_doi2", {
   expect_error(compute_doi(control = 1.5, object = 1))
   expect_error(compute_doi(control = "A", object = 1))
-  expect_error(compute_doi(control = TRUE, object = 1))
   expect_error(compute_doi(control = sum, object = 1))
+  expect_error(compute_doi(control = 1:5, object = 1))
 })
 
 test_that("compute_doi3", {
@@ -158,12 +161,14 @@ test_that("export_data1", {
   expect_error(export_control(control = "A"))
   expect_error(export_control(control = TRUE))
   expect_error(export_control(control = sum))
+  expect_error(export_control(control = 1:5))
 })
 
 test_that("export_data2a", {
   expect_error(export_object(keyword = 1))
   expect_error(export_object(keyword = TRUE))
   expect_error(export_object(keyword = sum))
+  expect_error(export_object(keyword = letters[1:5]))
 })
 
 test_that("export_data2b", {
@@ -171,6 +176,7 @@ test_that("export_data2b", {
   expect_error(export_object(object = "A"))
   expect_error(export_object(object = TRUE))
   expect_error(export_object(object = sum))
+  expect_error(export_object(object = 1:5))
 })
 
 test_that("export_data2c", {
@@ -178,12 +184,14 @@ test_that("export_data2c", {
   expect_error(export_object(control = "A"))
   expect_error(export_object(control = TRUE))
   expect_error(export_object(control = sum))
+  expect_error(export_object(control = 1:5))
 })
 
 test_that("export_data3a", {
   expect_error(export_score(keyword = 1))
   expect_error(export_score(keyword = TRUE))
   expect_error(export_score(keyword = sum))
+  expect_error(export_score(keyword = letters[1:5]))
 })
 
 test_that("export_data3b", {
@@ -191,6 +199,7 @@ test_that("export_data3b", {
   expect_error(export_score(object = "A"))
   expect_error(export_score(object = TRUE))
   expect_error(export_score(object = sum))
+  expect_error(export_score(object = 1:5))
 })
 
 test_that("export_data3c", {
@@ -198,12 +207,14 @@ test_that("export_data3c", {
   expect_error(export_score(control = "A"))
   expect_error(export_score(control = TRUE))
   expect_error(export_score(control = sum))
+  expect_error(export_score(control = 1:5))
 })
 
 test_that("export_data4a", {
   expect_error(export_doi(keyword = 1))
   expect_error(export_doi(keyword = TRUE))
   expect_error(export_doi(keyword = sum))
+  expect_error(export_doi(keyword = letters[1:5]))
 })
 
 test_that("export_data4b", {
@@ -211,6 +222,7 @@ test_that("export_data4b", {
   expect_error(export_doi(object = "A"))
   expect_error(export_doi(object = TRUE))
   expect_error(export_doi(object = sum))
+  expect_error(export_doi(object = 1:5))
 })
 
 test_that("export_data4c", {
@@ -218,6 +230,7 @@ test_that("export_data4c", {
   expect_error(export_doi(control = "A"))
   expect_error(export_doi(control = TRUE))
   expect_error(export_doi(control = sum))
+  expect_error(export_doi(control = 1:5))
 })
 
 test_that("export_data4d", {
@@ -225,12 +238,14 @@ test_that("export_data4d", {
   expect_error(export_doi(type = "A"))
   expect_error(export_doi(type = TRUE))
   expect_error(export_doi(type = sum))
+  expect_error(export_doi(type = c("obs", "sad", "trd")))
 })
 
 test_that("export_data4e", {
   expect_error(export_doi(locations = 1))
   expect_error(export_doi(locations = TRUE))
   expect_error(export_doi(locations = sum))
+  expect_error(export_doi(locations = letters[1:5]))
 })
 
 # plot_score ----
@@ -247,6 +262,7 @@ test_that("plot_score2", {
   expect_error(plot_score(data_score = data, type = "A"))
   expect_error(plot_score(data_score = data, type = TRUE))
   expect_error(plot_score(data_score = data, type = sum))
+  expect_error(plot_score(data_score = data, type = c("obs", "sad", "trd")))
 })
 
 test_that("plot_score3", {
@@ -268,6 +284,7 @@ test_that("plot_ts2", {
   expect_error(plot_ts(data_doi = data, type = "A"))
   expect_error(plot_ts(data_doi = data, type = TRUE))
   expect_error(plot_ts(data_doi = data, type = sum))
+  expect_error(plot_ts(data_doi = data, type = c("obs", "sad", "trd")))
 })
 
 test_that("plot_ts3", {
@@ -276,6 +293,7 @@ test_that("plot_ts3", {
   expect_error(plot_ts(data_doi = data, measure = "A"))
   expect_error(plot_ts(data_doi = data, measure = TRUE))
   expect_error(plot_ts(data_doi = data, measure = sum))
+  expect_error(plot_ts(data_doi = data, measure = c("gini", "hhi", "entropy")))
 })
 
 test_that("plot_ts4", {
@@ -283,6 +301,7 @@ test_that("plot_ts4", {
   expect_error(plot_ts(data_doi = data, locations = 1))
   expect_error(plot_ts(data_doi = data, locations = TRUE))
   expect_error(plot_ts(data_doi = data, locations = sum))
+  expect_error(plot_ts(data_doi = data, locations = letters[1:5]))
 })
 
 test_that("plot_ts5", {
@@ -290,6 +309,7 @@ test_that("plot_ts5", {
   expect_error(plot_ts(data_doi = data, smooth = 1))
   expect_error(plot_ts(data_doi = data, smooth = "A"))
   expect_error(plot_ts(data_doi = data, smooth = sum))
+  expect_error(plot_ts(data_doi = data, smooth = c(TRUE, TRUE)))
 })
 
 test_that("plot_ts6", {
@@ -311,6 +331,7 @@ test_that("plot_box2", {
   expect_error(plot_box(data_doi = data, type = "A"))
   expect_error(plot_box(data_doi = data, type = TRUE))
   expect_error(plot_box(data_doi = data, type = sum))
+  expect_error(plot_box(data_doi = data, type = c("obs", "sad", "trd")))
 })
 
 test_that("plot_box3", {
@@ -319,6 +340,7 @@ test_that("plot_box3", {
   expect_error(plot_box(data_doi = data, measure = "A"))
   expect_error(plot_box(data_doi = data, measure = TRUE))
   expect_error(plot_box(data_doi = data, measure = sum))
+  expect_error(plot_box(data_doi = data, measure = c("gini", "hhi", "entropy")))
 })
 
 test_that("plot_box4", {
@@ -326,6 +348,7 @@ test_that("plot_box4", {
   expect_error(plot_box(data_doi = data, locations = 1))
   expect_error(plot_box(data_doi = data, locations = TRUE))
   expect_error(plot_box(data_doi = data, locations = sum))
+  expect_error(plot_box(data_doi = data, locations = letters[1:5]))
 })
 
 test_that("plot_box5", {
@@ -357,6 +380,7 @@ test_that("plot_trend3", {
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = TRUE))
   expect_error(plot_trend(data_doi = data1, data_global = data2, type = sum))
+  expect_error(plot_trend(data_doi = data1, data_global = data2, type = c("obs", "sad", "trd")))
 })
 
 test_that("plot_trend4", {
@@ -366,6 +390,7 @@ test_that("plot_trend4", {
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = TRUE))
   expect_error(plot_trend(data_doi = data1, data_global = data2, measure = sum))
+  expect_error(plot_trend(data_doi = data1, data_global = data2, measure = c("gini", "hhi", "entropy")))
 })
 
 test_that("plot_trend5", {
@@ -374,6 +399,7 @@ test_that("plot_trend5", {
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = TRUE))
   expect_error(plot_trend(data_doi = data1, data_global = data2, locations = sum))
+  expect_error(plot_trend(data_doi = data1, data_global = data2, locations = letters[1:5]))
 })
 
 test_that("plot_trend6", {
@@ -382,6 +408,7 @@ test_that("plot_trend6", {
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = 1))
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = "A"))
   expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = sum))
+  expect_error(plot_trend(data_doi = data1, data_global = data2, smooth = c(TRUE, TRUE)))
 })
 
 test_that("plot_trend7", {
@@ -391,11 +418,26 @@ test_that("plot_trend7", {
 })
 
 # remove_data ----
-test_that("remove_data", {
+test_that("remove_data1", {
   expect_error(remove_data(table = 1))
   expect_error(remove_data(table = "A"))
   expect_error(remove_data(table = TRUE))
   expect_error(remove_data(table = sum))
+  expect_error(remove_data(table = c("data_object", "data_control")))
+})
+
+test_that("remove_data2", {
+  expect_error(remove_data(table = "data_object", control = 1.5, object = 1))
+  expect_error(remove_data(table = "data_object", control = "A", object = 1))
+  expect_error(remove_data(table = "data_object", control = sum, object = 1))
+  expect_error(remove_data(table = "data_object", control = 1:5, object = 1))
+})
+
+test_that("remove_data3", {
+  expect_error(remove_data(table = "data_object", object = 1.5, control = 1))
+  expect_error(remove_data(table = "data_object", object = "A", control = 1))
+  expect_error(remove_data(table = "data_object", object = sum, control = 1))
+  expect_error(remove_data(table = "data_object", object = 1:5, control = 1))
 })
 
 # disconnect ----

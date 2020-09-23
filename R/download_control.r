@@ -10,7 +10,7 @@
 #'
 #' @param control Control batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
-#' elements of class \code{numeric}.
+#' objects of class \code{numeric}.
 #' @param locations List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{start_db}.
 #'
@@ -40,7 +40,7 @@ download_control <- function(control, locations = countries) UseMethod("download
 #' @export
 
 download_control.numeric <- function(control, locations = countries) {
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
   if (length(control) > 1) {
     download_control(control = as.list(control), locations = locations)
   } else {

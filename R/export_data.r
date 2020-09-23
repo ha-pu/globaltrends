@@ -3,21 +3,14 @@
 #' @description
 #' @details
 #'
-#' @param keyword Object keywords for which data should be exported. Element of
-#' class \code{character}. When element length exceeds 1, only the first element
-#' is used for exporting.
-#' @param object Object batch number for which data should be exported. Element
-#' of class \code{numeric}. When element length exceeds 1, only the first element
-#' is used for exporting.
-#' @param control Control batch number for which data should be exported. Element
-#' of class \code{numeric}. When element length exceeds 1, only the first element
-#' is used for exporting.
-#' @param locations Set of locations for which data should be exported. Element
-#' of class \code{character}. When element length exceeds 1, only the first
-#' element is used for exporting.
+#' @param keyword Object keywords for which data should be exported. Object of
+#' class \code{character}.
+#' @param object Object batch number for which data should be exported.
+#' @param control Control batch number for which data should be exported.
+#' @param locations Set of locations for which data should be exported. Object
+#' of class \code{character}.
 #' @param type Type of time series for which data should be exported. Element
-#' of class \code{character}. When element length exceeds 1, only the first
-#' element is used for exporting. Relevant only for "export_global" and
+#' of class \code{character}. Relevant only for "export_global" and
 #' "export_doi". Takes one of the following values: "obs", "sad", "trd".
 #'
 #' @return
@@ -140,6 +133,10 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom lubridate as_date
 
 .export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_type = NULL) {
+  if (length(in_keyword) > 1) stop(glue("Error: 'keyword' must be object of length 1.\nYou provided an object of length {length(in_keyword)}."))
+  if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
+  if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
+  if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
   in_keyword <- in_keyword[[1]]
   in_object <- in_object[[1]]
   in_control <- in_control[[1]]
@@ -171,6 +168,11 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom lubridate as_date
 
 .export_data_double <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL, in_type = NULL) {
+  if (length(in_keyword) > 1) stop(glue("Error: 'keyword' must be object of length 1.\nYou provided an object of length {length(in_keyword)}."))
+  if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
+  if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
+  if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
+  if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
   in_keyword <- in_keyword[[1]]
   in_object <- in_object[[1]]
   in_control <- in_control[[1]]

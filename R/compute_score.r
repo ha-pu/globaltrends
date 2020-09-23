@@ -12,7 +12,7 @@
 #' of class \code{numeric}. Defaults to 1.
 #' @param object Object batch for which the data is downloaded. Object
 #' of class \code{numeric} or object of class \code{list} containing single
-#' elements of class \code{numeric}.
+#' objects of class \code{numeric}.
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}.
 #'
@@ -58,7 +58,8 @@ compute_score <- function(control = 1, object, locations = countries) UseMethod(
 #' @export
 
 compute_score.numeric <- function(control = 1, object, locations = countries) {
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
+  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
   if (length(object) > 1) {
     compute_score(control = control, object = as.list(object), locations = locations)
   } else {
