@@ -28,6 +28,9 @@
 #' @importFrom glue glue
 
 remove_data <- function(table, control = NULL, object = NULL) {
+  if (length(table) > 1) stop(glue("Error: 'table' must be object of length 1.\nYou provided an object of length {length(table)}."))
+  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
+  if (length(object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(object)}."))
   control <- control[[1]]
   object <- object[[1]]
   if (is.character(table)) {
@@ -44,16 +47,12 @@ remove_data <- function(table, control = NULL, object = NULL) {
         .remove_batch_time(type = "object", batch_c = control, batch_o = object)
       }
     } else if (table == "data_control") {
-      if (!is.null(control) & is.null(object)) {
+      if (!is.null(control)) {
         .remove_data_control(batch_c = control, batch_o = object)
       }
     } else if (table == "data_object") {
-      if (!is.null(object) & is.null(control)) {
+      if (!is.null(object) | !is.null(control)) {
         .remove_data_object(batch_c = control, batch_o = object)
-      }
-    } else if (table == "data_mapping") {
-      if (!is.null(control) | !is.null(object)) {
-        .remove_data_mapping(batch_c = control, batch_o = object)
       }
     } else if (table == "data_score") {
       if (!is.null(control) | !is.null(object)) {
@@ -64,9 +63,11 @@ remove_data <- function(table, control = NULL, object = NULL) {
         .remove_data_doi(batch_c = control, batch_o = object)
       }
     } else if (table == "data_global") {
-      if (!is.null(object) & is.null(control)) {
+      if (!is.null(object)) {
         .remove_data_global(batch_o = object)
       }
+    } else {
+      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', 'data_doi', or 'data_global'.\nYou supplied {table}."))
     }
   } else {
     stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))

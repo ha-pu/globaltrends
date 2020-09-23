@@ -24,7 +24,7 @@
   } else {
     out <- out$interest_over_time
     out <- mutate(out,
-      hits = as.numeric(str_replace(hits, "<1", "0.1")),
+      hits = as.double(str_replace(hits, "<1", "0.1")),
       date = as_date(date)
     )
     out <- select(out, location = geo, keyword, date, hits)

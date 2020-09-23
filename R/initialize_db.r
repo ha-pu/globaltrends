@@ -70,7 +70,7 @@ initialize_db <- function() {
   location TEXT,
   keyword TEXT,
   date INTEGER,
-  hits INTEGER,
+  hits REAL,
   batch INTEGER
           )")
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
@@ -81,7 +81,7 @@ initialize_db <- function() {
   location TEXT,
   keyword TEXT,
   date INTEGER,
-  hits INTEGER,
+  hits REAL,
   batch_c INTEGER,
   batch_o INTEGER
           )")

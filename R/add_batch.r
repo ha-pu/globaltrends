@@ -1,12 +1,12 @@
 #' @title Add batch of control or object keywords
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} element. For control 
+#' \code{character} or a \code{list} of \code{character} objects. For control
 #' keywords, batches can consist of up to five keywords, for object keywords
-#' batch length is limited to four keyowrds. When a \code{character} vector 
+#' batch length is limited to four keyowrds. When a \code{character} vector
 #' contains more than four (five) keywords, the vector is split into
-#' four-keyword (five-keyword) batches. A \code{list} must contain 
-#' \code{character} elements of length four (five) or less.
+#' four-keyword (five-keyword) batches. A \code{list} must contain
+#' \code{character} objects of length four (five) or less.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
 #' to "2010-01-01 2019-12-31".
@@ -113,9 +113,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @keywords internal
 
 .add_keyword_batch <- function(type, keyword, time, max) {
-  if (length(keyword) > max) stop(glue("Error: Length of list elements must not exceed {max}.\nYou provided a list elment with length {length(keyword)}."))
-  if (!is.character(keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou provided an element of type {typeof(keyword)}."))
-  if (!is.character(time)) stop(glue("Error: 'time' must be object of type character.\nYou provided an element of type {typeof(time)}."))
+  if (length(keyword) > max) stop(glue("Error: Length of list objects must not exceed {max}.\nYou provided a list object with length {length(keyword)}."))
+  if (!is.character(keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou provided an object of type {typeof(keyword)}."))
+  if (length(time) > 1) stop(glue("Error: 'time' must be object of length 1.\nYou provided an object of length {length(time)}."))
+  if (!is.character(time)) stop(glue("Error: 'time' must be object of type character.\nYou provided an object of type {typeof(time)}."))
   if (type == "control") {
     if (nrow(.keywords_control) == 0) {
       new_batch <- 1

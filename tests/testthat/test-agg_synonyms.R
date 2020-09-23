@@ -1,5 +1,4 @@
 # setup ----
-
 initialize_db()
 start_db()
 
@@ -11,7 +10,7 @@ add_control_keyword(
 add_object_keyword(
   keyword = list(
     c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-    c("bayern munich", "bayern münchen")
+    c("bayern munich", "bayern munchen")
   ),
   time = "2010-01-01 2019-12-31"
 )
@@ -21,7 +20,7 @@ test_that("add_synonyms", {
   expect_message(
     add_synonym(
       keyword = "fc bayern",
-      synonym = c("bayern munich", "bayern münchen")
+      synonym = c("bayern munich", "bayern munchen")
     )
   )
 
@@ -30,14 +29,14 @@ test_that("add_synonyms", {
 
 # download data ----
 download_control(control = 1, locations = countries[1:3])
-download_object(control = 1, object = 1, locations = countries[1:2])
+download_object(object = 1, locations = countries[1:2])
 download_object(object = 2, locations = countries[2:3])
 
-compute_score(control = 1, object = 1, locations = countries[1:2])
-out1 <- export_score(control = 1, keyword = "fc bayern")
+compute_score(object = 1, locations = countries[1:2])
+out1 <- export_score(keyword = "fc bayern")
 
-compute_score(control = 1, object = 2, locations = countries[1:3])
-out2 <- export_score(control = 1, keyword = "fc bayern")
+compute_score(object = 2, locations = countries[1:3])
+out2 <- export_score(keyword = "fc bayern")
 
 # compare results ----
 test_that("keyword_score", {

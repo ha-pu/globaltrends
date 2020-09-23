@@ -47,50 +47,54 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-compute_doi <- function(control, object, locations = "countries") UseMethod("compute_doi", object)
+compute_doi <- function(control = 1, object, locations = "countries") UseMethod("compute_doi", object)
 
 #' @rdname compute_doi
 #' @method compute_doi numeric
 #' @export
 
 compute_doi.numeric <- function(control = 1, object, locations = "countries") {
+  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (length(locations) != 1) stop(glue("Error: Length object 'locations' must not exeed 1.\nYou provided an object with length {length(locations)}."))
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an element of type {typeof(locations)}."))
-  if (length(object) > 1) compute_doi(control = control, object = as.list(object), locations = locations)
-  control <- control[[1]]
-  walk(c(control, object), .test_batch)
-  if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-    data <- collect(filter(.tbl_score, batch_c == control & batch_o == object))
-    data <- filter(
-      data,
-      location %in% pull(
-        collect(filter(.tbl_locations, type == locations)),
-        location
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
+  if (length(object) > 1) {
+    compute_doi(control = control, object = as.list(object), locations = locations)
+  } else {
+    control <- control[[1]]
+    walk(c(control, object), .test_batch)
+    if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
+      data <- collect(filter(.tbl_score, batch_c == control & batch_o == object))
+      data <- filter(
+        data,
+        location %in% pull(
+          collect(filter(.tbl_locations, type == locations)),
+          location
+        )
       )
-    )
-    data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
+      data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
 
-    # compute doi measures
-    out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
-    out <- nest(out, data = c(location, score))
-    out <- mutate(out,
-      gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
-      hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
-      entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
-    )
-    out <- select(out, date, keyword, type, gini, hhi, entropy)
+      # compute doi measures
+      out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
+      out <- nest(out, data = c(location, score))
+      out <- mutate(out,
+        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
+        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
+        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
+      )
+      out <- select(out, date, keyword, type, gini, hhi, entropy)
 
-    # write data
-    out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
-    dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
+      # write data
+      out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
+      dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
+    }
+    message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(.keywords_object$batch)))
   }
-  message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(.keywords_object$batch)))
 }
 
 #' @rdname compute_doi
 #' @method compute_doi list
 #' @export
 
-compute_doi.list <- function(control, object, locations = "countries") {
+compute_doi.list <- function(control = 1, object, locations = "countries") {
   walk(object, compute_doi, control = control, locations = locations)
 }
