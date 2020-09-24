@@ -5,7 +5,8 @@
 #'
 #' @inheritParams plot_box
 #' @param smooth Object of class \code{logical} indicating whether the
-#' \code{geom_smooth} function of \code{ggplot2} should be used.
+#' \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
+#' \code{TRUE}.
 #'
 #' @section Warning:
 #' \code{plot_ts} is limited to 9 unique keywords to avoid an overcrowded
@@ -33,23 +34,23 @@
 #' @importFrom glue glue
 #' @importFrom stringr str_to_upper
 
-plot_ts <- function(data_doi, type = NULL, measure = "gini", locations = NULL, smooth = TRUE) {
+plot_ts <- function(data_doi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
   if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
   if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
-  if (!is.null(type)) if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
+  if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
   if (length(measure) > 1) stop(glue("Error: 'measure' must be object of length 1.\nYou provided an object of length {length(measure)}."))
-  if (!is.null(measure)) if (!(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied {measure}."))
+  if (!(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied {measure}."))
   if (length(locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(locations)}."))
-  if (!is.null(locations) & !is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
+  if (!is.character(locations)) stop(glue("Error: 'locations' must be of type 'character'.\nYou supplied an object of type {typeof(locations)}."))
   if (length(smooth) > 1) stop(glue("Error: 'smooth' must be object of length 1.\nYou provided an object of length {length(smooth)}."))
-  if (!is.null(smooth) & !is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
+  if (!is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
 
   in_type <- type
   in_locations <- locations
   len_keywords <- length(unique(data_doi$keyword))
   data_doi$measure <- data_doi[measure][[1]]
-  if (!is.null(in_type)) data_doi <- filter(data_doi, type == paste0("score_", in_type))
-  if (!is.null(in_locations)) data_doi <- filter(data_doi, locations == in_locations)
+  data_doi <- filter(data_doi, type == paste0("score_", in_type))
+  data_doi <- filter(data_doi, locations == in_locations)
   plot <- ggplot(data_doi, aes(x = date))
 
 

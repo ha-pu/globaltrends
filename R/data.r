@@ -110,22 +110,3 @@
 #'   score is used}
 #' }
 "data_doi"
-
-#' data_global
-#'
-#' xxx.
-#'
-#' @format A tibble with 288 rows and 5 variables:
-#' \describe{
-#'   \item{keyword}{\code{character} keyword for which the data was downloaded}
-#'   \item{date}{date as \code{integer} variable, can be transformed into date
-#'   format with \code{lubridate::as_date}}
-#'   \item{type}{\code{character} indicating the type of time series-adjustment
-#'   applied to data in column "hits", takes either "socre_obs", "score_sad",
-#'   or "score_trd"}
-#'   \item{hits}{\code{integer} worldwide search hits for the respective
-#'   keyword-date combination}
-#'   \item{batch}{\code{integer} number of batch}
-#' }
-#' @source \url{https://trends.google.com/trends/}
-"data_global"

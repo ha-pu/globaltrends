@@ -20,8 +20,6 @@
 #'   the connected SQLite database
 #'   \item tbl_score A remote data source pointing to the table "data_score" in
 #'   the connected SQLite database
-#'   \item tbl_global A remote data source pointing to the table "data_global" in
-#'   the connected SQLite database
 #'   \item countries A \code{character} vector containing ISO2 country codes of
 #'   countries that add at leas 0.1% to global GDP
 #'   \item us_states A \code{character} vector containing ISO2 regional codes of
@@ -61,7 +59,6 @@ start_db <- function() {
   tbl_control <- tbl(globaltrends_db, "data_control")
   tbl_object <- tbl(globaltrends_db, "data_object")
   tbl_score <- tbl(globaltrends_db, "data_score")
-  tbl_global <- tbl(globaltrends_db, "data_global")
 
   # load files ----
   countries <- filter(tbl_locations, type == "countries")
@@ -94,7 +91,6 @@ start_db <- function() {
     tbl_control,
     tbl_object,
     tbl_score,
-    tbl_global,
     tbl_synonyms,
     keywords_control,
     time_control,
@@ -110,7 +106,6 @@ start_db <- function() {
     ".tbl_control",
     ".tbl_object",
     ".tbl_score",
-    ".tbl_global",
     ".tbl_synonyms",
     ".keywords_control",
     ".time_control",
@@ -125,7 +120,6 @@ start_db <- function() {
     tbl_control,
     tbl_object,
     tbl_score,
-    tbl_global,
     countries,
     us_states,
     keywords_control,
@@ -140,7 +134,6 @@ start_db <- function() {
     "tbl_control",
     "tbl_object",
     "tbl_score",
-    "tbl_global",
     "countries",
     "us_states",
     "keywords_control",

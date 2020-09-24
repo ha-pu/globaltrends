@@ -49,6 +49,7 @@
 #'
 #' @rdname export_data
 #' @export
+#' @importFrom dplyr filter
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
 #' @importFrom glue glue
@@ -58,6 +59,20 @@ export_control <- function(control = NULL) {
     table = .tbl_control,
     in_control = control
   )
+  out <- filter(out, location != "world")
+  out <- rename(out, control = batch)
+  return(out)
+}
+
+#' @rdname export_data
+#' @export
+
+export_control_global <- function(control = NULL) {
+  out <- .export_data_single(
+    table = .tbl_control,
+    in_control = control
+  )
+  out <- filter(out, location == "world")
   out <- rename(out, control = batch)
   return(out)
 }
@@ -72,6 +87,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL) {
     in_object = object,
     in_control = control
   )
+  out <- filter(out, location != "world")
   out <- rename(out, object = batch_o, control = batch_c)
   return(out)
 }
@@ -79,14 +95,15 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_global <- function(keyword = NULL, object = NULL, type = NULL) {
-  out <- .export_data_single(
-    table = .tbl_global,
+export_object_global <- function(keyword = NULL, object = NULL, control = NULL) {
+  out <- .export_data_double(
+    table = .tbl_object,
     in_keyword = keyword,
     in_object = object,
-    in_type = type
+    in_control = control
   )
-  out <- rename(out, object = batch)
+  out <- filter(out, location == "world")
+  out <- rename(out, object = batch_o, control = batch_c)
   return(out)
 }
 
@@ -100,6 +117,23 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL) {
     in_object = object,
     in_control = control
   )
+  out <- filter(out, location != "world")
+  out <- rename(out, control = batch_c, object = batch_o)
+  out <- select(out, -synonym)
+  return(out)
+}
+
+#' @rdname export_data
+#' @export
+
+export_score_global <- function(keyword = NULL, object = NULL, control = NULL) {
+  out <- .export_data_double(
+    table = .tbl_score,
+    in_keyword = keyword,
+    in_object = object,
+    in_control = control
+  )
+  out <- filter(out, location == "world")
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
   return(out)

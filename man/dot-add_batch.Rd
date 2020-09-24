@@ -6,7 +6,7 @@
 \alias{.add_batch.list}
 \title{Add keyword batches to batch_keywords and batch_time}
 \usage{
-.add_batch(type, keyword, time = "2010-01-01 2019-12-31")
+.add_batch(type, keyword, time = "2010-01-01 2019-12-31", max)
 }
 \description{
 Add keyword batches to batch_keywords and batch_time

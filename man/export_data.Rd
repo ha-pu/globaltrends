@@ -2,19 +2,25 @@
 % Please edit documentation in R/export_data.r
 \name{export_control}
 \alias{export_control}
+\alias{export_control_global}
 \alias{export_object}
-\alias{export_global}
+\alias{export_object_global}
 \alias{export_score}
+\alias{export_score_global}
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
 export_control(control = NULL)
 
-export_object(keyword = NULL, object = NULL)
+export_control_global(control = NULL)
 
-export_global(keyword = NULL, object = NULL, type = NULL)
+export_object(keyword = NULL, object = NULL, control = NULL)
+
+export_object_global(keyword = NULL, object = NULL, control = NULL)
 
 export_score(keyword = NULL, object = NULL, control = NULL)
+
+export_score_global(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
   keyword = NULL,
@@ -25,26 +31,19 @@ export_doi(
 )
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported. Element
-of class \code{numeric}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{control}{Control batch number for which data should be exported.}
 
-\item{keyword}{Object keywords for which data should be exported. Element of
-class \code{character}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{keyword}{Object keywords for which data should be exported. Object of
+class \code{character}.}
 
-\item{object}{Object batch number for which data should be exported. Element
-of class \code{numeric}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{object}{Object batch number for which data should be exported.}
+
+\item{locations}{Set of locations for which data should be exported. Object
+of class \code{character}.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting. Relevant only for "export_global" and
+of class \code{character}. Relevant only for "export_global" and
 "export_doi". Takes one of the following values: "obs", "sad", "trd".}
-
-\item{locations}{Set of locations for which data should be exported. Element
-of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting.}
 }
 \value{
 The functions export and filter the respective database tables and return

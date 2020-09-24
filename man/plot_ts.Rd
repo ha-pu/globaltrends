@@ -9,7 +9,6 @@ plot_ts(
   type = NULL,
   measure = "gini",
   locations = NULL,
-  grid = TRUE,
   smooth = TRUE
 )
 }
@@ -30,13 +29,8 @@ Defaults to "gini".}
 set of locations should be filtered. By default takes \code{NULL} and
 assumes that only one single set of locations is included in the data.}
 
-\item{grid}{Object of class \code{logical} indicating whether the
-\code{facet_wrap} function of \code{ggplot2} should be used. Otherwise,
-keywords are separated by color.}
-
 \item{smooth}{Object of class \code{logical} indicating whether the
-\code{geom_smooth} function of \code{ggplot2} should be used. Only
-applicale when \code{grid == TRUE}.}
+\code{geom_smooth} function of \code{ggplot2} should be used.}
 }
 \value{
 Line plot of time series as \code{ggplot2} object
@@ -49,18 +43,17 @@ Line plot of data_doi time series
 }
 \section{Warning}{
 
-\code{plot_ts} is limited to 9 unique keywords for \code{grid == TRUE}
-and 5 unique keywords otherwise to avoid an overcrowded plot. When
-\code{data_doi} includes more than 9 or 5 unique keywords, only
-the first 9 or 5 keywords are used.
+\code{plot_ts} is limited to 9 unique keywords to avoid an overcrowded
+ plot. When \code{data_doi} includes more than 9 unique keywords, only
+the first 9 keywords are used.
 }
 
 \examples{
 \dontrun{
 data <- export_doi(object = 1, locations = "countries")
-plot_ts(data_doi = data, type = "obs", measure = "gini", grid = TRUE, smooth = TRUE)
-plot_ts(data_doi = data, type = "sad", measure = "hhi", grid = TRUE, smooth = FALSE)
-plot_ts(data_doi = data, type = "trd", measure = "entropy", grid = FALSE, smooth = TRUE)
+plot_ts(data_doi = data, type = "obs", measure = "gini", smooth = TRUE)
+plot_ts(data_doi = data, type = "sad", measure = "hhi", smooth = FALSE)
+plot_ts(data_doi = data, type = "trd", measure = "entropy", smooth = TRUE)
 }
 
 }

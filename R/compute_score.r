@@ -230,3 +230,10 @@ compute_score.numeric <- function(control = 1, object, locations = countries) {
 compute_score.list <- function(control = 1, object, locations = countries) {
   walk(object, compute_score, control = control, locations = locations)
 }
+
+#' @rdname compute_score
+#' @export
+
+compute_score_global <- function(control = 1, object) {
+  compute_score(control = control, object = object, locations = "world")
+}

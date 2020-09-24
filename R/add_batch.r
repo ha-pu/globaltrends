@@ -80,6 +80,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
 #' @importFrom glue glue
+#' @importFrom purrr map
 #' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)

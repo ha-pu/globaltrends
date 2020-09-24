@@ -3,6 +3,7 @@
 #' @description
 #' @details
 #'
+#' @param data_score Data exported from \code{export_score} function.
 #' @param type Object of class \code{character} indicating the type of time
 #' series-column from data_score that is used, takes either "obs", "sad", or
 #' "trd". By default takes "obs".
@@ -41,7 +42,7 @@
 plot_score <- function(data_score, type = "obs") {
   if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}."))
   if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
-  if (!is.null(type)) if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
+  if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
 
   in_type <- type
   len_keywords <- length(unique(data_score$keyword))

@@ -22,8 +22,6 @@ The function exports the following objects to .GlobalEnv:
   the connected SQLite database
   \item tbl_score A remote data source pointing to the table "data_score" in
   the connected SQLite database
-  \item tbl_global A remote data source pointing to the table "data_global" in
-  the connected SQLite database
   \item countries A \code{character} vector containing ISO2 country codes of
   countries that add at leas 0.1% to global GDP
   \item us_states A \code{character} vector containing ISO2 regional codes of

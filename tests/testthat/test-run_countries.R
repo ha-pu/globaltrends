@@ -3,7 +3,6 @@ library(ggplot2)
 
 # initialize and start ----
 test_that("initialize", {
-  setwd(tempdir())
   expect_message(
     initialize_db()
   )
@@ -13,7 +12,6 @@ test_that("initialize", {
   rm(
     tbl_control,
     tbl_doi,
-    tbl_global,
     tbl_object,
     tbl_score,
     keyword_synonyms,
@@ -36,55 +34,52 @@ test_that("initialize", {
 })
 
 # run downloads ----
-test_that("control_download", {
-  expect_message(
-    download_control(control = 1, locations = countries[1:3])
-  )
-  out <- filter(.tbl_control, batch == 1)
+test_that("download_control", {
+  expect_message(download_control(control = 1, locations = countries[1:3]))
+  out <- filter(.tbl_control, batch == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
 
-test_that("object_download", {
-  expect_message(
-    download_object(object = 1, locations = countries[1:3])
-  )
-  out <- filter(.tbl_object, batch_o == 1)
+test_that("download_control_global", {
+  expect_message(download_control_global(control = 1))
+  out <- filter(.tbl_control, batch == 1 & location == "world")
+  out <- collect(out)
+  expect_equal(nrow(out), 600)
+})
+
+test_that("download_object", {
+  expect_message(download_object(object = 1, locations = countries[1:3]))
+  out <- filter(.tbl_object, batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
 
-test_that("global_download", {
-  expect_message(
-    download_global(object = 1)
-  )
-  out <- filter(.tbl_global, batch == 1)
+test_that("download_object_global", {
+  expect_message(download_object_global(object = 1))
+  out <- filter(.tbl_object, batch_o == 1 & location == "world")
   out <- collect(out)
-  expect_equal(nrow(out), 1440)
+  expect_equal(nrow(out), 600)
 })
 
 # compute data ----
 test_that("compute_scoring", {
   expect_message(
-    compute_score(
-      control = 1,
-      object = 1,
-      locations = countries[1:3]
-    )
-  )
-  out <- filter(.tbl_score, batch_c == 1 & batch_o == 1)
+    compute_score(control = 1, object = 1, locations = countries[1:3]))
+  out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
 })
 
+test_that("compute_scoring_global", {
+  expect_message(compute_score_global(control = 1, object = 1))
+  out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
+  out <- collect(out)
+  expect_equal(nrow(out), 480)
+})
+
 test_that("compute_doi", {
-  expect_message(
-    compute_doi(
-      control = 1,
-      object = 1,
-      locations = "countries"
-    )
-  )
+  expect_message(compute_doi(control = 1, object = 1, locations = "countries"))
   out <- filter(.tbl_doi, batch_c == 1 & batch_o == 1)
   out <- collect(out)
   expect_equal(nrow(out), 1440)
@@ -96,14 +91,19 @@ test_that("export_control", {
   expect_equal(nrow(out), 1800)
 })
 
+test_that("export_control_global", {
+  out <- export_control_global(control = 1)
+  expect_equal(nrow(out), 600)
+})
+
 test_that("export_object", {
   out <- export_object(keyword = "manchester united")
   expect_equal(nrow(out), 360)
 })
 
-test_that("export_global", {
-  out <- export_global(type = "sad")
-  expect_equal(nrow(out), 480)
+test_that("export_object_global", {
+  out <- export_object_global(keyword = "manchester united")
+  expect_equal(nrow(out), 120)
 })
 
 test_that("export_score", {
@@ -111,13 +111,13 @@ test_that("export_score", {
   expect_equal(nrow(out), 360)
 })
 
+test_that("export_score_global", {
+  out <- export_score_global(keyword = "real madrid")
+  expect_equal(nrow(out), 120)
+})
+
 test_that("export_doi", {
-  out <- export_doi(
-    control = 1,
-    object = 1,
-    type = "trd",
-    locations = "countries"
-  )
+  out <- export_doi(control = 1, object = 1, type = "trd", locations = "countries")
   expect_equal(nrow(out), 480)
 })
 
@@ -137,19 +137,18 @@ test_that("plot_ts", {
 
 test_that("plot_box", {
   out <- export_doi(type = "sad", locations = "countries") %>%
-    plot_box()
+    plot_box(type = "sad")
   expect_s3_class(out, "ggplot")
 })
 
 test_that("plot_trend", {
-  data1 <- export_doi(keyword = "manchester united", locations = "countries")
-  data2 <- export_global(keyword = "manchester united")
+  data1 <- export_doi(keyword = "manchester united",
+                      locations = "countries",
+                      type = "obs")
+  data2 <- export_score_global(keyword = "manchester united")
   out <- plot_trend(
     data_doi = data1,
-    data_global = data2,
-    type = "obs",
-    measure = "gini",
-    smooth = TRUE
+    data_score_global = data2
   )
   expect_s3_class(out, "ggplot")
 })

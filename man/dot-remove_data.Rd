@@ -5,27 +5,24 @@
 \alias{.remove_batch_time}
 \alias{.remove_data_control}
 \alias{.remove_data_object}
-\alias{.remove_data_mapping}
 \alias{.remove_data_score}
 \alias{.remove_data_doi}
 \alias{.remove_data_global}
 \title{Remove from batch_keywords}
 \usage{
-.remove_batch_keywords(type, batch)
+.remove_batch_keywords(type, batch_c, batch_o)
 
-.remove_batch_time(type, batch)
+.remove_batch_time(type, batch_c = NULL, batch_o = NULL)
 
-.remove_data_control(batch)
+.remove_data_control(batch_c = NULL, batch_o = NULL)
 
-.remove_data_object(batch)
-
-.remove_data_mapping(batch_c = NULL, batch_o = NULL)
+.remove_data_object(batch_c = NULL, batch_o = NULL)
 
 .remove_data_score(batch_c = NULL, batch_o = NULL)
 
 .remove_data_doi(batch_c = NULL, batch_o = NULL)
 
-.remove_data_global(batch)
+.remove_data_global(batch_c = NULL, batch_o = NULL)
 }
 \description{
 Remove from batch_keywords
@@ -35,8 +32,6 @@ Remove from batch_time
 Remove from data_control
 
 Remove from data_object
-
-Remove from data_mapping
 
 Remove from data_score
 

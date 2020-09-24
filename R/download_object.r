@@ -53,8 +53,13 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
     time <- .time_object$time[.time_object$batch == object]
 
     walk(locations, ~ {
-      if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = .x)) {
-        qry_control <- filter(.tbl_control, batch == control & location == .x)
+      if (.x == "") {
+        in_location <- "world"
+      } else {
+        in_location <- .x
+      }
+      if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
+        qry_control <- filter(.tbl_control, batch == control & location == in_location)
         qry_control <- collect(qry_control)
         if (nrow(qry_control) > 0) {
           terms_con <- summarise(group_by(qry_control, keyword), hits = mean(hits), .groups = "drop")
@@ -71,7 +76,7 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
           }
           i <- i + 1
         }
-        message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {.x} [{current}/{total}]",
+        message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
           current = which(locations == .x), total = length(locations)
         ))
       }
@@ -85,4 +90,11 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
 
 download_object.list <- function(object, control = 1, locations = countries) {
   walk(object, download_object, control = control, locations = locations)
+}
+
+#' @rdname download_object
+#' @export
+
+download_object_global <- function(control = 1, object) {
+  download_object(control = control, object = object, locations = "")
 }
