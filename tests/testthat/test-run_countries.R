@@ -137,19 +137,18 @@ test_that("plot_ts", {
 
 test_that("plot_box", {
   out <- export_doi(type = "sad", locations = "countries") %>%
-    plot_box()
+    plot_box(type = "sad")
   expect_s3_class(out, "ggplot")
 })
 
 test_that("plot_trend", {
-  data1 <- export_doi(keyword = "manchester united", locations = "countries")
+  data1 <- export_doi(keyword = "manchester united",
+                      locations = "countries",
+                      type = "obs")
   data2 <- export_score_global(keyword = "manchester united")
   out <- plot_trend(
     data_doi = data1,
-    data_score_global = data2,
-    type = "obs",
-    measure = "gini",
-    smooth = TRUE
+    data_score_global = data2
   )
   expect_s3_class(out, "ggplot")
 })
