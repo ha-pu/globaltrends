@@ -6,7 +6,7 @@
 \alias{export_object}
 \alias{export_object_global}
 \alias{export_score}
-\alias{export_score_global}
+\alias{export_voi}
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
@@ -20,7 +20,7 @@ export_object_global(keyword = NULL, object = NULL, control = NULL)
 
 export_score(keyword = NULL, object = NULL, control = NULL)
 
-export_score_global(keyword = NULL, object = NULL, control = NULL)
+export_voi(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
   keyword = NULL,

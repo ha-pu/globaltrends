@@ -11,10 +11,11 @@ plot_score(data_score, type = "obs")
 
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used, takes either "obs", "sad", or
-"trd". By default takes "obs".}
+"trd". Defaults to "obs".}
 }
 \value{
-Bar plot of score distribution across locations as \code{ggplot2} object
+Bar plot of score distribution across locations as \code{ggplot2}
+object.
 }
 \description{
 Bar plot of data_score distribution
