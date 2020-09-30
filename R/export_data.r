@@ -126,7 +126,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_score_global <- function(keyword = NULL, object = NULL, control = NULL) {
+export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data_double(
     table = .tbl_score,
     in_keyword = keyword,
