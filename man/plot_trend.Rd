@@ -7,31 +7,32 @@
 plot_trend(
   data_doi,
   data_score_global,
-  type = NULL,
+  type = "obs",
   measure = "gini",
-  locations = NULL,
+  locations = "countries",
   smooth = TRUE
 )
 }
 \arguments{
 \item{data_doi}{Data exported from \code{export_doi} function.}
 
+\item{data_score_global}{Data exported from \code{export_score_global}
+function.}
+
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
-either "obs", "sad", or "trd". By default takes \code{NULL}
-and assumes that only one single type of time series is included in the
-data.}
+either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
 
 \item{measure}{Object of class \code{character} indicating the measure
 used for DOI computation, takes either "gini", "hhi", or "entropy".
 Defaults to "gini".}
 
 \item{locations}{Object of class \code{character} indicating for which
-set of locations should be filtered. By default takes \code{NULL} and
-assumes that only one single set of locations is included in the data.}
+set of locations should be filtered. Defaults to  \code{"countries"}.}
 
 \item{smooth}{Object of class \code{logical} indicating whether the
-\code{geom_smooth} function of \code{ggplot2} should be used.}
+\code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
+\code{TRUE}.}
 }
 \value{
 Line plot of time series as \code{ggplot2} object

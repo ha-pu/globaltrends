@@ -7,6 +7,8 @@
 plot_score(data_score, type = "obs")
 }
 \arguments{
+\item{data_score}{Data exported from \code{export_score} function.}
+
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used, takes either "obs", "sad", or
 "trd". By default takes "obs".}
