@@ -2,9 +2,10 @@ Package: globaltrends
 Type: Package
 Title: Download and measure global trends through Google searches
 Version: 0.0.3
-Authors@R: person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at")
-Author: Harald Puhr [aut, cre]
-Maintainer: Harald Puhr <harald.puhr@wu.ac.at>
+Authors@R: c(
+      person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
+	  person("Jakob", "Müllner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
+	)
 Description: Google offers public access to global search volumes through its
     search engine through the Google Trends portal. The globaltrends package
 	downloads search volumes provided by Google Trends and uses them to measure
