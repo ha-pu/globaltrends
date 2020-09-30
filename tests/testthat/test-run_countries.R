@@ -64,8 +64,7 @@ test_that("download_object_global", {
 
 # compute data ----
 test_that("compute_scoring", {
-  expect_message(
-    compute_score(control = 1, object = 1, locations = countries[1:3]))
+  expect_message(compute_score(control = 1, object = 1))
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
@@ -136,8 +135,8 @@ test_that("plot_doi_ts", {
 })
 
 test_that("plot_voi_ts", {
-  out <- export_voi(type = "obs") %>%
-    plot_voi_ts(smooth = TRUE)
+  out <- export_voi() %>%
+    plot_voi_ts(type = "obs", smooth = TRUE)
   expect_s3_class(out, "ggplot")
 })
 
@@ -148,15 +147,17 @@ test_that("plot_doi_box", {
 })
 
 test_that("plot_voi_box", {
-  out <- export_voi(type = "sad") %>%
+  out <- export_voi() %>%
     plot_voi_box(type = "sad")
   expect_s3_class(out, "ggplot")
 })
 
 test_that("plot_voi_doi", {
-  data1 <- export_doi(keyword = "manchester united",
-                      locations = "countries",
-                      type = "obs")
+  data1 <- export_doi(
+    keyword = "manchester united",
+    locations = "countries",
+    type = "obs"
+  )
   data2 <- export_voi(keyword = "manchester united")
   out <- plot_voi_doi(
     data_doi = data1,

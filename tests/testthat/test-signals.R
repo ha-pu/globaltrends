@@ -3,7 +3,7 @@ initialize_db()
 start_db()
 
 add_control_keyword(
-  keyword = c("gmail", "map", "wikipedia", "youtube"),
+  keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
   time = "2010-01-01 2019-12-31"
 )
 
