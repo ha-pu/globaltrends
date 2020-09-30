@@ -1,0 +1,129 @@
+library(tidyverse)
+
+# lst_dates --------------------------------------------------------------------
+lst_dates <- list(seq.Date(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), by = "month"))
+                  
+# trunc_rnorm ------------------------------------------------------------------
+trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
+  samp <- rnorm(n = nnorm, mean = mean, sd = sd)
+  samp <- samp[samp >= lwr & samp <= upr]
+  if (length(samp) >= n) {
+    return(sample(samp, n))
+  } else {
+    trunc_rnorm(n = n, mean = mean, sd = sd, lwr = lwr, upr = upr, nnorm = nnorm * 1.1)
+  }
+}
+
+# batch_keywords ---------------------------------------------------------------
+kw_control <- tibble(
+  type = "control",
+  batch = 1,
+  keyword = c("gmail", "maps", "translate", "wikipedia", "youtube")
+)
+
+kw_object <- tibble(
+  type = "object",
+  batch = 1:4,
+  keyword = list(
+    c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
+    c("bayern munich", "bayern munchen"),
+    c("amazon", "apple", "facebook", "google"),
+    c("instagram", "microsoft", "netflix", "twitter")
+  )
+) %>%
+  unnest(cols = keyword)
+
+batch_keywords <- bind_rows(kw_control, kw_object)
+usethis::use_data(batch_keywords, overwrite = TRUE)
+
+# batch_time -------------------------------------------------------------------
+ti_control <- tibble(
+  type = "control",
+  batch = 1,
+  time = "2010-01-01 2019-12-31"
+)
+
+ti_object <- tibble(
+  type = "object",
+  batch = 1:4,
+  time = "2010-01-01 2019-12-31"
+)
+
+batch_time <- bind_rows(ti_control, ti_object)
+usethis::use_data(batch_time, overwrite = TRUE)
+
+# data_control -----------------------------------------------------------------
+stat_control <- read_rds("stat_control.rds")
+
+out <- map(seq(nrow(stat_control)),
+     ~ with(stat_control[.x,],
+            trunc_rnorm(n = 120, mean = mean, sd = sd, lwr = min, upr = max)))
+
+data_control <- stat_control %>%
+  select(location, keyword) %>%
+  mutate(hits = out,
+         date = lst_dates,
+         batch = 1L) %>%
+  unnest(cols = c(hits, date)) %>%
+  mutate(hits = as.integer(hits),
+         date = as.integer(date))
+
+usethis::use_data(data_control, overwrite = TRUE)
+
+# data_object ------------------------------------------------------------------
+stat_object <- read_rds("stat_object.rds")
+
+out <- map(seq(nrow(stat_object)),
+           ~ with(stat_object[.x,],
+                  trunc_rnorm(n = 120, mean = mean, sd = sd, lwr = min, upr = max)))
+
+data_object <- stat_object %>%
+  select(location, keyword, batch_o) %>%
+  mutate(hits = out,
+         date = lst_dates,
+         batch_c = 1L) %>%
+  unnest(cols = c(hits, date)) %>%
+  mutate(hits = as.integer(hits),
+         date = as.integer(date))
+
+usethis::use_data(data_object, overwrite = TRUE)
+
+# data_score -------------------------------------------------------------------
+stat_score <- read_rds("stat_score.rds")
+
+out <- map(seq(nrow(stat_score)),
+           ~ with(stat_score[.x,],
+                  trunc_rnorm(n = 120, mean = mean, sd = sd, lwr = min, upr = max)))
+
+data_score <- stat_score %>%
+  select(location, keyword, type) %>%
+  left_join(batch_keywords, by = "keyword") %>%
+  select(-type.y, type = type.x, batch_o = batch) %>%
+  mutate(score = out,
+         date = lst_dates,
+         batch_c = 1L) %>%
+  unnest(cols = c(score, date)) %>%
+  mutate(date = as.integer(date)) %>%
+  pivot_wider(names_from = type, values_from = score)
+
+usethis::use_data(data_score, overwrite = TRUE)
+
+# data_doi ---------------------------------------------------------------------
+stat_doi <- read_rds("stat_doi.rds")
+
+out <- map(seq(nrow(stat_doi)),
+           ~ with(stat_doi[.x,],
+                  trunc_rnorm(n = 120, mean = mean, sd = sd, lwr = min, upr = max)))
+
+data_doi <- stat_doi %>%
+  select(keyword, type, measure) %>%
+  left_join(batch_keywords, by = "keyword") %>%
+  select(-type.y, type = type.x, batch_o = batch) %>%
+  mutate(doi = out,
+         date = lst_dates,
+         batch_c = 1L) %>%
+  unnest(cols = c(doi, date)) %>%
+  mutate(date = as.integer(date)) %>%
+  pivot_wider(names_from = measure, values_from = doi)
+
+usethis::use_data(data_doi, overwrite = TRUE)

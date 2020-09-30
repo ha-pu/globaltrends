@@ -44,3 +44,5 @@ Suggests:
     rmarkdown (>= 2.3),
     testthat (>= 2.3.2)
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
