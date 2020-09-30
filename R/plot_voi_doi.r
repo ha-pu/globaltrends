@@ -27,6 +27,8 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr full_join
 #' @importFrom dplyr mutate
+#' @importFrom forcats as_factor
+#' @importFrom forcats fct_recode
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 geom_line
 #' @importFrom ggplot2 geom_smooth
@@ -69,8 +71,8 @@ plot_voi_doi <- function(data_doi, data_voi, type = "obs", measure = "gini", loc
   data <- filter(data, locations == in_locations)
 
   data <- pivot_longer(data, cols = c(hits, measure), names_to = "plot", values_to = "Trend")
-  data$plot[data$plot == "measure"] <- "Degree of internationalization"
-  data$plot[data$plot == "hits"] <- "Volume of internationalization"
+  data <- mutate(data, plot = as_factor(plot))
+  data <- mutate(data, plot = fct_recode(plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
   plot <- ggplot(data, aes(x = date)) +
     geom_line(aes(y = Trend)) +
     facet_wrap(~plot, scales = "free")
@@ -81,7 +83,7 @@ plot_voi_doi <- function(data_doi, data_voi, type = "obs", measure = "gini", loc
   }
 
   plot <- plot +
-    labs(x = NULL, title = unique(data$keyword)[[1]], caption = glue("DOI computed as {str_to_upper(measure)}."))
+    labs(x = NULL, y = NULL, title = unique(data$keyword)[[1]], caption = glue("DOI computed as {str_to_upper(measure)}."))
 
   return(plot)
 }
