@@ -279,26 +279,26 @@ test_that("export_data3c", {
 })
 
 test_that("export_data3d", {
-  expect_error(export_score_global(keyword = 1))
-  expect_error(export_score_global(keyword = TRUE))
-  expect_error(export_score_global(keyword = sum))
-  expect_error(export_score_global(keyword = letters[1:5]))
+  expect_error(export_voi(keyword = 1))
+  expect_error(export_voi(keyword = TRUE))
+  expect_error(export_voi(keyword = sum))
+  expect_error(export_voi(keyword = letters[1:5]))
 })
 
 test_that("export_data3e", {
-  expect_error(export_score_global(object = 1.5))
-  expect_error(export_score_global(object = "A"))
-  expect_error(export_score_global(object = TRUE))
-  expect_error(export_score_global(object = sum))
-  expect_error(export_score_global(object = 1:5))
+  expect_error(export_voi(object = 1.5))
+  expect_error(export_voi(object = "A"))
+  expect_error(export_voi(object = TRUE))
+  expect_error(export_voi(object = sum))
+  expect_error(export_voi(object = 1:5))
 })
 
 test_that("export_data3f", {
-  expect_error(export_score_global(control = 1.5))
-  expect_error(export_score_global(control = "A"))
-  expect_error(export_score_global(control = TRUE))
-  expect_error(export_score_global(control = sum))
-  expect_error(export_score_global(control = 1:5))
+  expect_error(export_voi(control = 1.5))
+  expect_error(export_voi(control = "A"))
+  expect_error(export_voi(control = TRUE))
+  expect_error(export_voi(control = sum))
+  expect_error(export_voi(control = 1:5))
 })
 
 test_that("export_data4a", {
@@ -361,151 +361,203 @@ test_that("plot_score3", {
   expect_warning(plot_score(data_score = data))
 })
 
-# plot_ts ----
-test_that("plot_ts1", {
-  expect_error(plot_ts(data_doi = 1))
-  expect_error(plot_ts(data_doi = "A"))
-  expect_error(plot_ts(data_doi = TRUE))
-  expect_error(plot_ts(data_doi = sum))
+# plot_doi_ts ----
+test_that("plot_doi_ts1", {
+  expect_error(plot_doi_ts(data_doi = 1))
+  expect_error(plot_doi_ts(data_doi = "A"))
+  expect_error(plot_doi_ts(data_doi = TRUE))
+  expect_error(plot_doi_ts(data_doi = sum))
 })
 
-test_that("plot_ts2", {
+test_that("plot_doi_ts2", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_ts(data_doi = data, type = 1))
-  expect_error(plot_ts(data_doi = data, type = "A"))
-  expect_error(plot_ts(data_doi = data, type = TRUE))
-  expect_error(plot_ts(data_doi = data, type = sum))
-  expect_error(plot_ts(data_doi = data, type = c("obs", "sad", "trd")))
+  expect_error(plot_doi_ts(data_doi = data, type = 1))
+  expect_error(plot_doi_ts(data_doi = data, type = "A"))
+  expect_error(plot_doi_ts(data_doi = data, type = TRUE))
+  expect_error(plot_doi_ts(data_doi = data, type = sum))
+  expect_error(plot_doi_ts(data_doi = data, type = c("obs", "sad", "trd")))
 })
 
-test_that("plot_ts3", {
+test_that("plot_doi_ts3", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_ts(data_doi = data, measure = 1))
-  expect_error(plot_ts(data_doi = data, measure = "A"))
-  expect_error(plot_ts(data_doi = data, measure = TRUE))
-  expect_error(plot_ts(data_doi = data, measure = sum))
-  expect_error(plot_ts(data_doi = data, measure = c("gini", "hhi", "entropy")))
+  expect_error(plot_doi_ts(data_doi = data, measure = 1))
+  expect_error(plot_doi_ts(data_doi = data, measure = "A"))
+  expect_error(plot_doi_ts(data_doi = data, measure = TRUE))
+  expect_error(plot_doi_ts(data_doi = data, measure = sum))
+  expect_error(plot_doi_ts(data_doi = data, measure = c("gini", "hhi", "entropy")))
 })
 
-test_that("plot_ts4", {
+test_that("plot_doi_ts4", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_ts(data_doi = data, locations = 1))
-  expect_error(plot_ts(data_doi = data, locations = TRUE))
-  expect_error(plot_ts(data_doi = data, locations = sum))
-  expect_error(plot_ts(data_doi = data, locations = letters[1:5]))
+  expect_error(plot_doi_ts(data_doi = data, locations = 1))
+  expect_error(plot_doi_ts(data_doi = data, locations = TRUE))
+  expect_error(plot_doi_ts(data_doi = data, locations = sum))
+  expect_error(plot_doi_ts(data_doi = data, locations = letters[1:5]))
 })
 
-test_that("plot_ts5", {
+test_that("plot_doi_ts5", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_ts(data_doi = data, smooth = 1))
-  expect_error(plot_ts(data_doi = data, smooth = "A"))
-  expect_error(plot_ts(data_doi = data, smooth = sum))
-  expect_error(plot_ts(data_doi = data, smooth = c(TRUE, TRUE)))
+  expect_error(plot_doi_ts(data_doi = data, smooth = 1))
+  expect_error(plot_doi_ts(data_doi = data, smooth = "A"))
+  expect_error(plot_doi_ts(data_doi = data, smooth = sum))
+  expect_error(plot_doi_ts(data_doi = data, smooth = c(TRUE, TRUE)))
 })
 
-test_that("plot_ts6", {
+test_that("plot_doi_ts6", {
   data <- export_doi()
-  expect_warning(plot_ts(data_doi = data))
+  expect_warning(plot_doi_ts(data_doi = data))
 })
 
-# plot_box ----
-test_that("plot_box1", {
-  expect_error(plot_box(data_doi = 1))
-  expect_error(plot_box(data_doi = "A"))
-  expect_error(plot_box(data_doi = TRUE))
-  expect_error(plot_box(data_doi = sum))
+# plot_voi_ts ----
+test_that("plot_voi_ts1", {
+  expect_error(plot_voi_ts(data_voi = 1))
+  expect_error(plot_voi_ts(data_voi = "A"))
+  expect_error(plot_voi_ts(data_voi = TRUE))
+  expect_error(plot_voi_ts(data_voi = sum))
 })
 
-test_that("plot_box2", {
+test_that("plot_voi_ts2", {
+  data <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_ts(data_voi = data, type = 1))
+  expect_error(plot_voi_ts(data_voi = data, type = "A"))
+  expect_error(plot_voi_ts(data_voi = data, type = TRUE))
+  expect_error(plot_voi_ts(data_voi = data, type = sum))
+  expect_error(plot_voi_ts(data_voi = data, type = c("obs", "sad", "trd")))
+})
+
+test_that("plot_voi_ts3", {
+  data <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_ts(data_voi = data, smooth = 1))
+  expect_error(plot_voi_ts(data_voi = data, smooth = "A"))
+  expect_error(plot_voi_ts(data_voi = data, smooth = sum))
+  expect_error(plot_voi_ts(data_voi = data, smooth = c(TRUE, TRUE)))
+})
+
+test_that("plot_voi_ts4", {
+  data <- export_voi()
+  expect_warning(plot_voi_ts(data_voi = data))
+})
+
+# plot_doi_box ----
+test_that("plot_doi_box1", {
+  expect_error(plot_doi_box(data_doi = 1))
+  expect_error(plot_doi_box(data_doi = "A"))
+  expect_error(plot_doi_box(data_doi = TRUE))
+  expect_error(plot_doi_box(data_doi = sum))
+})
+
+test_that("plot_doi_box2", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_box(data_doi = data, type = 1))
-  expect_error(plot_box(data_doi = data, type = "A"))
-  expect_error(plot_box(data_doi = data, type = TRUE))
-  expect_error(plot_box(data_doi = data, type = sum))
-  expect_error(plot_box(data_doi = data, type = c("obs", "sad", "trd")))
+  expect_error(plot_doi_box(data_doi = data, type = 1))
+  expect_error(plot_doi_box(data_doi = data, type = "A"))
+  expect_error(plot_doi_box(data_doi = data, type = TRUE))
+  expect_error(plot_doi_box(data_doi = data, type = sum))
+  expect_error(plot_doi_box(data_doi = data, type = c("obs", "sad", "trd")))
 })
 
-test_that("plot_box3", {
+test_that("plot_doi_box3", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_box(data_doi = data, measure = 1))
-  expect_error(plot_box(data_doi = data, measure = "A"))
-  expect_error(plot_box(data_doi = data, measure = TRUE))
-  expect_error(plot_box(data_doi = data, measure = sum))
-  expect_error(plot_box(data_doi = data, measure = c("gini", "hhi", "entropy")))
+  expect_error(plot_doi_box(data_doi = data, measure = 1))
+  expect_error(plot_doi_box(data_doi = data, measure = "A"))
+  expect_error(plot_doi_box(data_doi = data, measure = TRUE))
+  expect_error(plot_doi_box(data_doi = data, measure = sum))
+  expect_error(plot_doi_box(data_doi = data, measure = c("gini", "hhi", "entropy")))
 })
 
-test_that("plot_box4", {
+test_that("plot_doi_box4", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_box(data_doi = data, locations = 1))
-  expect_error(plot_box(data_doi = data, locations = TRUE))
-  expect_error(plot_box(data_doi = data, locations = sum))
-  expect_error(plot_box(data_doi = data, locations = letters[1:5]))
+  expect_error(plot_doi_box(data_doi = data, locations = 1))
+  expect_error(plot_doi_box(data_doi = data, locations = TRUE))
+  expect_error(plot_doi_box(data_doi = data, locations = sum))
+  expect_error(plot_doi_box(data_doi = data, locations = letters[1:5]))
 })
 
-test_that("plot_box5", {
+test_that("plot_doi_box5", {
   data <- export_doi()
-  expect_warning(plot_box(data_doi = data))
+  expect_warning(plot_doi_box(data_doi = data))
 })
 
-# plot_trend ----
-test_that("plot_trend1", {
-  data2 <- export_score_global(keyword = "fc barcelona")
-  expect_error(plot_trend(data_doi = 1, data_score_global = data2))
-  expect_error(plot_trend(data_doi = "A", data_score_global = data2))
-  expect_error(plot_trend(data_doi = TRUE, data_score_global = data2))
-  expect_error(plot_trend(data_doi = sum, data_score_global = data2))
+# plot_voi_box ----
+test_that("plot_voi_box1", {
+  expect_error(plot_voi_box(data_voi = 1))
+  expect_error(plot_voi_box(data_voi = "A"))
+  expect_error(plot_voi_box(data_voi = TRUE))
+  expect_error(plot_voi_box(data_voi = sum))
 })
 
-test_that("plot_trend2", {
+test_that("plot_voi_box2", {
+  data <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_box(data_voi = data, type = 1))
+  expect_error(plot_voi_box(data_voi = data, type = "A"))
+  expect_error(plot_voi_box(data_voi = data, type = TRUE))
+  expect_error(plot_voi_box(data_voi = data, type = sum))
+  expect_error(plot_voi_box(data_voi = data, type = c("obs", "sad", "trd")))
+})
+
+test_that("plot_voi_box4", {
+  data <- export_voi()
+  expect_warning(plot_voi_box(data_voi = data))
+})
+
+# plot_voi_doi ----
+test_that("plot_voi_doi1", {
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_doi(data_doi = 1, data_score_global = data2))
+  expect_error(plot_voi_doi(data_doi = "A", data_score_global = data2))
+  expect_error(plot_voi_doi(data_doi = TRUE, data_score_global = data2))
+  expect_error(plot_voi_doi(data_doi = sum, data_score_global = data2))
+})
+
+test_that("plot_voi_doi2", {
   data1 <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_trend(data_score_global = 1, data_doi = data1))
-  expect_error(plot_trend(data_score_global = "A", data_doi = data1))
-  expect_error(plot_trend(data_score_global = TRUE, data_doi = data1))
-  expect_error(plot_trend(data_score_global = sum, data_doi = data1))
+  expect_error(plot_voi_doi(data_score_global = 1, data_doi = data1))
+  expect_error(plot_voi_doi(data_score_global = "A", data_doi = data1))
+  expect_error(plot_voi_doi(data_score_global = TRUE, data_doi = data1))
+  expect_error(plot_voi_doi(data_score_global = sum, data_doi = data1))
 })
 
-test_that("plot_trend3", {
+test_that("plot_voi_doi3", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_score_global(keyword = "fc barcelona")
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, type = 1))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, type = "A"))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, type = TRUE))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, type = sum))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, type = c("obs", "sad", "trd")))
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = c("obs", "sad", "trd")))
 })
 
-test_that("plot_trend4", {
+test_that("plot_voi_doi4", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_score_global(keyword = "fc barcelona")
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, measure = 1))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, measure = "A"))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, measure = TRUE))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, measure = sum))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, measure = c("gini", "hhi", "entropy")))
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = c("gini", "hhi", "entropy")))
 })
 
-test_that("plot_trend5", {
+test_that("plot_voi_doi5", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_score_global(keyword = "fc barcelona")
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, locations = 1))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, locations = TRUE))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, locations = sum))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, locations = letters[1:5]))
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = letters[1:5]))
 })
 
-test_that("plot_trend6", {
+test_that("plot_voi_doi6", {
   data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_score_global(keyword = "fc barcelona")
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, smooth = 1))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, smooth = "A"))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, smooth = sum))
-  expect_error(plot_trend(data_doi = data1, data_score_global = data2, smooth = c(TRUE, TRUE)))
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = c(TRUE, TRUE)))
 })
 
-test_that("plot_trend7", {
+test_that("plot_voi_doi7", {
   data1 <- export_doi()
-  data2 <- export_score_global()
-  expect_warning(plot_trend(data_doi = data1, data_score_global = data2))
+  data2 <- export_voi()
+  expect_warning(plot_voi_doi(data_doi = data1, data_score_global = data2))
 })
 
 # remove_data ----

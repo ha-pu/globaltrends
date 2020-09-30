@@ -111,8 +111,8 @@ test_that("export_score", {
   expect_equal(nrow(out), 360)
 })
 
-test_that("export_score_global", {
-  out <- export_score_global(keyword = "real madrid")
+test_that("export_voi", {
+  out <- export_voi(keyword = "real madrid")
   expect_equal(nrow(out), 120)
 })
 
@@ -129,26 +129,38 @@ test_that("plot_score", {
   expect_s3_class(out, "ggplot")
 })
 
-test_that("plot_ts", {
+test_that("plot_doi_ts", {
   out <- export_doi(type = "obs", locations = "countries") %>%
-    plot_ts(smooth = TRUE)
+    plot_doi_ts(smooth = TRUE)
   expect_s3_class(out, "ggplot")
 })
 
-test_that("plot_box", {
+test_that("plot_voi_ts", {
+  out <- export_voi(type = "obs") %>%
+    plot_voi_ts(smooth = TRUE)
+  expect_s3_class(out, "ggplot")
+})
+
+test_that("plot_doi_box", {
   out <- export_doi(type = "sad", locations = "countries") %>%
-    plot_box(type = "sad")
+    plot_doi_box(type = "sad")
   expect_s3_class(out, "ggplot")
 })
 
-test_that("plot_trend", {
+test_that("plot_voi_box", {
+  out <- export_voi(type = "sad") %>%
+    plot_voi_box(type = "sad")
+  expect_s3_class(out, "ggplot")
+})
+
+test_that("plot_voi_doi", {
   data1 <- export_doi(keyword = "manchester united",
                       locations = "countries",
                       type = "obs")
-  data2 <- export_score_global(keyword = "manchester united")
-  out <- plot_trend(
+  data2 <- export_voi(keyword = "manchester united")
+  out <- plot_voi_doi(
     data_doi = data1,
-    data_score_global = data2
+    data_voi = data2
   )
   expect_s3_class(out, "ggplot")
 })
