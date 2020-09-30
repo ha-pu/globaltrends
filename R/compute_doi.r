@@ -30,20 +30,13 @@
 #' @export
 #' @rdname compute_doi
 #' @importFrom DBI dbWriteTable
-#' @importFrom dplyr bind_rows
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
-#' @importFrom dplyr summarise_if
-#' @importFrom dplyr ungroup
 #' @importFrom glue glue
 #' @importFrom purrr map_dbl
-#' @importFrom purrr map_dfr
-#' @importFrom purrr set_names
 #' @importFrom purrr walk
-#' @importFrom stringr str_replace_all
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 

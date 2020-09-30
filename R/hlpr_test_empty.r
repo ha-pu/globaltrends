@@ -4,7 +4,6 @@
 #'
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom utils head
 
 .test_empty <- function(table, batch_c = NULL, batch_o = NULL, location = NULL, locations = NULL) {
   if (is.character(table)) {
@@ -23,7 +22,7 @@
     } else if (table == "data_global") {
       out <- filter(.tbl_global, batch == in_batch_o)
     }
-    out <- head(out)
+    out <- utils::head(out)
     out <- collect(out)
     out <- nrow(out)
     out <- out == 0

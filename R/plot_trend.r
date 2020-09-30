@@ -35,8 +35,6 @@
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
-#' @importFrom stats na.omit
-#' @importFrom stringr str_detect
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_to_upper
 #' @importFrom tidyr pivot_longer
@@ -57,7 +55,7 @@ plot_trend <- function(data_doi, data_score_global, type = "obs", measure = "gin
   data_doi$measure <- data_doi[measure][[1]]
   data_score_global$hits <- data_score_global[paste0("score_", type)][[1]]
   data <- full_join(data_doi, data_score_global, by = c("keyword", "date", "object"))
-  data <- na.omit(data)
+  data <- stats::na.omit(data)
 
   in_type <- type
   in_locations <- locations

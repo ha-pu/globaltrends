@@ -34,7 +34,6 @@
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
-#' @importFrom stringr str_split
 
 download_object <- function(object, control = 1, locations = countries) UseMethod("download_object", object)
 

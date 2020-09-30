@@ -12,7 +12,6 @@
 #' @importFrom dplyr select
 #' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
-#' @importFrom WDI WDI
 
 .enter_location <- function(globaltrends_db) {
   # create countries ----
@@ -20,7 +19,7 @@
   countries <- as_tibble(countries)
   countries <- filter(countries, region != "Aggregates")
   countries <- select(countries, location = iso2c)
-  countries <- WDI(country = countries$location, indicator = "NY.GDP.MKTP.KD", start = 2018, end = 2018)
+  countries <- WDI::WDI(country = countries$location, indicator = "NY.GDP.MKTP.KD", start = 2018, end = 2018)
   countries <- bind_rows(countries, tibble(iso2c = "TW", country = "Taiwan", NY.GDP.MKTP.KD = 6.08186e+11, year = 2018))
   countries <- mutate(countries, NY.GDP.MKTP.KD = case_when(is.na(NY.GDP.MKTP.KD) ~ 0, TRUE ~ NY.GDP.MKTP.KD))
   countries <- mutate(countries, gdp_share = NY.GDP.MKTP.KD / sum(NY.GDP.MKTP.KD))

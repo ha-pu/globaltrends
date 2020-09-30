@@ -6,7 +6,6 @@
 #' @importFrom dplyr select
 #' @importFrom gtrendsR gtrends
 #' @importFrom lubridate as_date
-#' @importFrom stats runif
 #' @importFrom stringr str_replace
 
 .get_trend <- function(location, term, time = "all") {
@@ -28,7 +27,7 @@
       date = as_date(date)
     )
     out <- select(out, location = geo, keyword, date, hits)
-    Sys.sleep(runif(1, min = 20, max = 30))
+    Sys.sleep(stats::runif(1, min = 20, max = 30))
     return(out)
   }
 }
