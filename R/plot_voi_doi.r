@@ -16,11 +16,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' data1 <- export_doi(keyword = "manchester united", locations = "countries")
-#' data2 <- export_voi(keyword = "manchester united")
-#' plot_voi_doi(data_doi = data1, data_voi = data2, type = "obs", measure = "gini", smooth = TRUE)
-#' plot_voi_doi(data_doi = data1, data_voi = data2, type = "sad", measure = "hhi", smooth = FALSE)
-#' plot_voi_doi(data_doi = data1, data_voi = data2, type = "trd", measure = "entropy", smooth = TRUE)
+#' data1 <- export_voi(keyword = "manchester united")
+#' data2 <- export_doi(keyword = "manchester united", locations = "countries")
+#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "obs", measure = "gini", smooth = TRUE)
+#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "sad", measure = "hhi", smooth = FALSE)
+#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "trd", measure = "entropy", smooth = TRUE)
 #' }
 #'
 #' @export
@@ -40,7 +40,7 @@
 #' @importFrom stringr str_to_upper
 #' @importFrom tidyr pivot_longer
 
-plot_voi_doi <- function(data_doi, data_voi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
+plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
   if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
   if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
   if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
