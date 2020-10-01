@@ -121,7 +121,8 @@ data_doi <- stat_doi %>%
   select(-type.y, type = type.x, batch_o = batch) %>%
   mutate(doi = out,
          date = lst_dates,
-         batch_c = 1L) %>%
+         batch_c = 1L,
+		 locations = "countries") %>%
   unnest(cols = c(doi, date)) %>%
   mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = measure, values_from = doi)
