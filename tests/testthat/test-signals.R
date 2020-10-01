@@ -1,29 +1,19 @@
 # setup ----
+library(DBI)
+library(dplyr)
+
 initialize_db()
 start_db()
 
-add_control_keyword(
-  keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
-)
-
-add_object_keyword(
-  keyword = c(
-    "fc barcelona", "fc bayern", "manchester united", "real madrid",
-    "amazon", "apple", "facebook", "google",
-    "instagram", "microsoft", "netflix", "twitter"
-  ),
-  time = "2010-01-01 2019-12-31"
-)
-
-# download data and compute doi ----
-download_control(control = 1, locations = countries[1:2])
-download_control_global(control = 1)
-download_object(control = 1, object = 1:3, locations = countries[1:2])
-download_object_global(control = 1, object = 1)
-compute_score(control = 1, object = 1:3, locations = countries[1:2])
-compute_score_global(control = 1, object = 1)
-compute_doi(control = 1, object = 1:3)
+# enter data ----
+data <- filter(data_control, batch == 1 & location %in% c(countries[1:2], "world"))
+dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+data <- filter(data_object, batch_c == 1 & batch_o %in% 1:3 & location %in% c(countries[1:2], "world"))
+dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+data <- filter(data_score, batch_c == 1 & batch_o %in% 1:3 & location %in% c(countries[1:2], "world"))
+dbWriteTable(globaltrends_db, "data_score", data, append = TRUE)
+data <- filter(data_doi, batch_c == 1 & batch_o %in% 1:3 & locations == "countries")
+dbWriteTable(globaltrends_db, "data_doi", data, append = TRUE)
 
 # add_control / add_keyword ----
 test_that("add_batch1", {

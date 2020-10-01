@@ -1,4 +1,7 @@
 # setup ----
+library(DBI)
+library(dplyr)
+
 initialize_db()
 start_db()
 
@@ -27,10 +30,19 @@ test_that("add_synonyms", {
   expect_equal(nrow(keyword_synonyms), 2)
 })
 
-# download data ----
-download_control(control = 1, locations = countries[1:3])
-download_object(object = 1, locations = countries[1:2])
-download_object(object = 2, locations = countries[2:3])
+# enter data ----
+data <- filter(data_control, batch == 1 & location %in% countries[1:3])
+dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+data <- filter(data_object, batch_c == 1 &
+                 keyword %in% c("fc barcelona", "fc bayern", "manchester united", "real madrid") &
+                 location %in% countries[1:2]) %>%
+  mutate(batch_o = 1)
+dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+data <- filter(data_object, batch_c == 1 &
+                 keyword %in% c("bayern munich", "bayern munchen") &
+                 location %in% countries[2:3]) %>%
+  mutate(batch_o = 2)
+dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 
 compute_score(object = 1, locations = countries[1:2])
 out1 <- export_score(keyword = "fc bayern")
