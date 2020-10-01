@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
 ^globaltrends_Vignette\.pdf$
 ^Venger_Puhr_Müllner\.pdf$
 ^vignettes/vignette_draft\.docx$
