@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_doi(control = 1, object = 1, locations = "countries")
-#' compute_doi(control = 1, object = as.list(1:5), locations = "countries")
+#' compute_doi(object = 1, control = 1, locations = "countries")
+#' compute_doi(object = as.list(1:5), control = 1, locations = "countries")
 #' }
 #'
 #' @export
@@ -40,13 +40,13 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-compute_doi <- function(control = 1, object, locations = "countries") UseMethod("compute_doi", object)
+compute_doi <- function(object, control = 1, locations = "countries") UseMethod("compute_doi", object)
 
 #' @rdname compute_doi
 #' @method compute_doi numeric
 #' @export
 
-compute_doi.numeric <- function(control = 1, object, locations = "countries") {
+compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (length(locations) != 1) stop(glue("Error: Length object 'locations' must not exeed 1.\nYou provided an object with length {length(locations)}."))
   if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
@@ -88,7 +88,7 @@ compute_doi.numeric <- function(control = 1, object, locations = "countries") {
 #' @method compute_doi list
 #' @export
 
-compute_doi.list <- function(control = 1, object, locations = "countries") {
+compute_doi.list <- function(object, control = 1, locations = "countries") {
   walk(object, compute_doi, control = control, locations = locations)
 }
 
