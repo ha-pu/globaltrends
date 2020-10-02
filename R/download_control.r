@@ -78,6 +78,6 @@ download_control.list <- function(control, locations = countries) {
 #' @rdname download_control
 #' @export
 
-download_control_global <- function(control = 1) {
+download_control_global <- function(control) {
   download_control(control = control, locations = "")
 }
