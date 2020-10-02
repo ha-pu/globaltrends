@@ -94,6 +94,6 @@ download_object.list <- function(object, control = 1, locations = countries) {
 #' @rdname download_object
 #' @export
 
-download_object_global <- function(control = 1, object) {
-  download_object(control = control, object = object, locations = "")
+download_object_global <- function(object, control = 1) {
+  download_object(object = object, control = control, locations = "")
 }
