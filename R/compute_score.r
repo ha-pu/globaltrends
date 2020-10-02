@@ -23,8 +23,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_score(control = 1, object = 1, locations = countries)
-#' compute_score(control = 1, object = as.list(1:5), locations = countries)
+#' compute_score(object = 1, control = 1, locations = countries)
+#' compute_score(object = as.list(1:5), control = 1, locations = countries)
 #' }
 #'
 #' @export
@@ -51,13 +51,13 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-compute_score <- function(control = 1, object, locations = countries) UseMethod("compute_score", object)
+compute_score <- function(object, control = 1, locations = countries) UseMethod("compute_score", object)
 
 #' @rdname compute_score
 #' @method compute_score numeric
 #' @export
 
-compute_score.numeric <- function(control = 1, object, locations = countries) {
+compute_score.numeric <- function(object, control = 1, locations = countries) {
   if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
   if (length(object) > 1) {
@@ -227,14 +227,14 @@ compute_score.numeric <- function(control = 1, object, locations = countries) {
 #' @method compute_score list
 #' @export
 
-compute_score.list <- function(control = 1, object, locations = countries) {
+compute_score.list <- function(object, control = 1, locations = countries) {
   walk(object, compute_score, control = control, locations = locations)
 }
 
 #' @rdname compute_score
 #' @export
 
-compute_score_global <- function(control = 1, object) {
+compute_score_global <- function(object, control = 1) {
   compute_score(control = control, object = object, locations = "world")
 }
 
