@@ -102,9 +102,21 @@
 
 #' data_score
 #'
-#' xxx.
+#' The table *data_score* contains the search scores for each object batch. Each
+#' line contains the search observed search score (*score_obs*), the seasonally
+#' adjusted search score (*score_sad*), and the trend only search score
+#' (*score_trd*) for each *keyword* in an object *batch_o* for a given
+#' *location* and *date*. The column *batch_c* indicates the control batch that
+#' has been used as baseline search score. Global data takes the value *world*
+#' as location. Search scores are computed automatically written to the table
+#' through \code{compute_score}. The function \code{start_db} exports the table
+#' *data_score* as database connection \code{tbl_score} to \code{.GlobalEnv}.
+#' Users can access the database table through \code{dplyr::tbl}.
+#' 
+#' The sample data included in \code{data_score} was simulated based on actual
+#' Google Trends data.
 #'
-#' @format A tibble with 480 rows and 8 variables:
+#' @format A tibble with 6,000 rows and 8 variables:
 #' \describe{
 #'   \item{location}{\code{character} ISO2 code of country or region for which
 #'   the data was downloaded}
@@ -122,13 +134,27 @@
 #'   \item{synonym}{\code{integer} indicator whether line will be aggregated as
 #'   synonym}
 #' }
+#' @seealso \code{\link{compute_score}}, \code{\link[dplyr]{tbl}}
 "data_score"
 
 #' data_doi
 #'
-#' xxx.
+#' The table *data_doi* contains the degree of internationalization (doi) for
+#' each object batch. Each line contains the doi computed as inverted *gini*
+#' coefficient, as inverted *hhi*, or inverted *entropy* for each *keyword* in
+#' an object *batch_o* for a given *date* and *type* of search score. The column
+#' *batch_c* indicates the control batch that has been used as baseline search
+#' score. Column *locations* indicates which set of locations was used to
+#' compute the distribution of search scores. Degree of internationalization is
+#' computed automatically written to the table through \code{compute_doi}. The
+#' function \code{start_db} exports the table *data_doi* as database connection
+#' \code{tbl_doi} to \code{.GlobalEnv}. Users can access the database table
+#' through \code{dplyr::tbl}.
 #'
-#' @format A tibble with 288 rows and 8 variables:
+#' The sample data included in \code{data_doi} was simulated based on actual
+#' Google Trends data.
+#' 
+#' @format A tibble with 4,320 rows and 9 variables:
 #' \describe{
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
 #'   \item{date}{date as \code{integer} variable, can be transformed into date
@@ -147,4 +173,5 @@
 #'   \item{locations}{\code{character} list of locations for which the search
 #'   score is used}
 #' }
+#' @seealso \code{\link{compute_doi}}, \code{\link[dplyr]{tbl}}
 "data_doi"
