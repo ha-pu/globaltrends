@@ -5,7 +5,7 @@
 \alias{data_control}
 \title{data_control}
 \format{
-A tibble with 2090 rows and 5 variables:
+A tibble with 2,400 rows and 5 variables:
 \describe{
   \item{location}{\code{character} ISO2 code of country or region for which
   the data was downloaded}
@@ -24,6 +24,20 @@ A tibble with 2090 rows and 5 variables:
 data_control
 }
 \description{
-xxx.
+The table *data_control* contains the downloaded data for each control batch.
+Each line contains the search *hits* for each *keyword* in a control *batch*
+for a given *location* and *date*. Global data gets the value *world* as
+location. Data is downloaded and automatically written to the table through
+\code{download_control}. The function \code{start_db} exports the table
+*data_control* as database connection \code{tbl_control} to
+\code{.GlobalEnv}. Users can access the database table through
+\code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_control} was simulated based on actual
+Google Trends data.
+}
+\seealso{
+\code{\link{download_control}}, \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

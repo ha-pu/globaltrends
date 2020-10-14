@@ -13,7 +13,7 @@ download_object(object, control = 1, locations = countries)
 
 \method{download_object}{list}(object, control = 1, locations = countries)
 
-download_object_global(control = 1, object)
+download_object_global(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
@@ -23,18 +23,32 @@ object of class \code{numeric}.}
 \item{control}{Control batch that is used for mapping. Object of class
 \code{numeric}. Defaults to \code{1}.}
 
-\item{locations}{List of countries or regions for which the data is downloaded.
-Refers to lists generated in \code{start_db}.}
+\item{locations}{List of countries or regions for which the data is
+downloaded. Refers to lists generated in \code{start_db}.}
 }
 \value{
 Message that data was downloaded successfully. Data is uploaded
-to data_objectect.
+to data_object.
 }
 \description{
-Download data for object batch
+The function downloads search volumes from Google Trends for an object batch
+(*batch_o*) and one keyword from a control batch (*batch_c*) in a set of
+*locations*. Data is automatically written to table *data_object*. For
+\code{download_object_global} the input *location* is automatically set to
+*world*.
 }
 \details{
-
+Downloads through the Google Trends API are made through
+\code{gtrendsR::gtrends}. Each object batch can consist of up to four
+keywords and is predefined in tables *batch_keywords* and *batch_time*
+through \code{add_keywords}. In addition, one control keyword is added to
+each object batch. The control keyword then allows a mapping between search
+volumes for control keywords stored in *data_control* and search volumes for
+object keywords. The download for a single keyword batch for a single
+location takes about 30 seconds. This includes a randomized waiting period of
+20-30 seconds between downloads. Depending on the frequency of downloads,
+Google Trends might block users for some time. In this case,
+\code{download_object} waits 60 minutes before it retries the download.
 }
 \examples{
 \dontrun{
@@ -44,5 +58,5 @@ download_object(object = as.list(1:5), locations = countries)
 
 }
 \seealso{
-
+\code{\link{data_object}}, \code{\link[gtrendsR]{gtrends}}
 }

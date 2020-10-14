@@ -5,7 +5,7 @@
 \alias{data_score}
 \title{data_score}
 \format{
-A tibble with 480 rows and 8 variables:
+A tibble with 6,000 rows and 8 variables:
 \describe{
   \item{location}{\code{character} ISO2 code of country or region for which
   the data was downloaded}
@@ -28,6 +28,22 @@ A tibble with 480 rows and 8 variables:
 data_score
 }
 \description{
-xxx.
+The table *data_score* contains the search scores for each object batch. Each
+line contains the search observed search score (*score_obs*), the seasonally
+adjusted search score (*score_sad*), and the trend only search score
+(*score_trd*) for each *keyword* in an object *batch_o* for a given
+*location* and *date*. The column *batch_c* indicates the control batch that
+has been used as baseline search score. Global data takes the value *world*
+as location. Search scores are computed automatically written to the table
+through \code{compute_score}. The function \code{start_db} exports the table
+*data_score* as database connection \code{tbl_score} to \code{.GlobalEnv}.
+Users can access the database table through \code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_score} was simulated based on actual
+Google Trends data.
+}
+\seealso{
+\code{\link{compute_score}}, \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

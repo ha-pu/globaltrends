@@ -5,7 +5,7 @@
 \alias{data_doi}
 \title{data_doi}
 \format{
-A tibble with 288 rows and 8 variables:
+A tibble with 4,320 rows and 9 variables:
 \describe{
   \item{keyword}{\code{character} keyword for which the data was downloaded}
   \item{date}{date as \code{integer} variable, can be transformed into date
@@ -29,6 +29,23 @@ A tibble with 288 rows and 8 variables:
 data_doi
 }
 \description{
-xxx.
+The table *data_doi* contains the degree of internationalization (doi) for
+each object batch. Each line contains the doi computed as inverted *gini*
+coefficient, as inverted *hhi*, or inverted *entropy* for each *keyword* in
+an object *batch_o* for a given *date* and *type* of search score. The column
+*batch_c* indicates the control batch that has been used as baseline search
+score. Column *locations* indicates which set of locations was used to
+compute the distribution of search scores. Degree of internationalization is
+computed automatically written to the table through \code{compute_doi}. The
+function \code{start_db} exports the table *data_doi* as database connection
+\code{tbl_doi} to \code{.GlobalEnv}. Users can access the database table
+through \code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_doi} was simulated based on actual
+Google Trends data.
+}
+\seealso{
+\code{\link{compute_doi}}, \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

@@ -5,8 +5,8 @@
 \title{Line plots of VOI and DOI time series}
 \usage{
 plot_voi_doi(
-  data_doi,
   data_voi,
+  data_doi,
   type = "obs",
   measure = "gini",
   locations = "countries",
@@ -14,9 +14,9 @@ plot_voi_doi(
 )
 }
 \arguments{
-\item{data_doi}{Data exported from \code{export_doi} function.}
-
 \item{data_voi}{Data exported from \code{export_voi} function.}
+
+\item{data_doi}{Data exported from \code{export_doi} function.}
 
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
@@ -51,11 +51,11 @@ more than 1 unique keyword, only the first keyword is used.
 
 \examples{
 \dontrun{
-data1 <- export_doi(keyword = "manchester united", locations = "countries")
-data2 <- export_voi(keyword = "manchester united")
-plot_voi_doi(data_doi = data1, data_voi = data2, type = "obs", measure = "gini", smooth = TRUE)
-plot_voi_doi(data_doi = data1, data_voi = data2, type = "sad", measure = "hhi", smooth = FALSE)
-plot_voi_doi(data_doi = data1, data_voi = data2, type = "trd", measure = "entropy", smooth = TRUE)
+data1 <- export_voi(keyword = "manchester united")
+data2 <- export_doi(keyword = "manchester united", locations = "countries")
+plot_voi_doi(data_voi = data1, data_doi = data2, type = "obs", measure = "gini", smooth = TRUE)
+plot_voi_doi(data_voi = data1, data_doi = data2, type = "sad", measure = "hhi", smooth = FALSE)
+plot_voi_doi(data_voi = data1, data_doi = data2, type = "trd", measure = "entropy", smooth = TRUE)
 }
 
 }

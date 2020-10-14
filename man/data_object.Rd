@@ -5,7 +5,7 @@
 \alias{data_object}
 \title{data_object}
 \format{
-A tibble with 2090 rows and 5 variables:
+A tibble with 8,640 rows and 6 variables:
 \describe{
   \item{location}{\code{character} ISO2 code of country or region for which
   the data was downloaded}
@@ -25,6 +25,18 @@ A tibble with 2090 rows and 5 variables:
 data_object
 }
 \description{
-xxx.
+The table *data_object* contains the downloaded data for each object batch.
+Each line contains the search *hits* for each *keyword* in an object
+*batch_o* for a given *location* and *date*. The column *batch_c* indicates
+the control batch to which the data will be mapped. Global data takes the
+value *world* as location. Data is downloaded and automatically written to
+the table through \code{download_object}. The function \code{start_db}
+exports the table *data_object* as database connection \code{tbl_object} to
+\code{.GlobalEnv}. Users can access the database table through
+\code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_object} was simulated based on actual
+Google Trends data.
 }
 \keyword{datasets}

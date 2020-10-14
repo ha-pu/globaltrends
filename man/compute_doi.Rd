@@ -6,18 +6,18 @@
 \alias{compute_doi.list}
 \title{Aggregate keyword-country data and compute DOI}
 \usage{
-compute_doi(control = 1, object, locations = "countries")
+compute_doi(object, control = 1, locations = "countries")
 
-\method{compute_doi}{numeric}(control = 1, object, locations = "countries")
+\method{compute_doi}{numeric}(object, control = 1, locations = "countries")
 
-\method{compute_doi}{list}(control = 1, object, locations = "countries")
+\method{compute_doi}{list}(object, control = 1, locations = "countries")
 }
 \arguments{
-\item{control}{Control batch for which the search score is used. Object
-of class \code{numeric}.}
-
 \item{object}{Object batch for which the keyword-country data
 is aggregated and DOI is computed.  Object of class \code{numeric}.}
+
+\item{control}{Control batch for which the search score is used. Object
+of class \code{numeric}.}
 
 \item{locations}{List of locations for which the search score is used.
 Object of class \code{character}.}
@@ -34,11 +34,11 @@ Aggregate keyword-country data and compute DOI
 }
 \examples{
 \dontrun{
-compute_doi(control = 1, object = 1, locations = "countries")
-compute_doi(control = 1, object = as.list(1:5), locations = "countries")
+compute_doi(object = 1, control = 1, locations = "countries")
+compute_doi(object = as.list(1:5), control = 1, locations = "countries")
 }
 
 }
 \seealso{
-
+\code{\link{data_doi}}, \code{\link[ineq]{ineq}}
 }

@@ -5,7 +5,7 @@
 \alias{batch_keywords}
 \title{batch_keywords}
 \format{
-A tibble with 4 rows and 3 variables:
+A tibble with 19 rows and 3 variables:
 \describe{
   \item{type}{\code{character} indicating the type of batch, takes "control"
   for control batches and "object" for object batches}
@@ -17,6 +17,14 @@ A tibble with 4 rows and 3 variables:
 batch_keywords
 }
 \description{
-xxx.
+The table *batch_keywords* contains the keywords per batch. Each line
+contains one *keyword*, the *type* of the batch (i.e. control or object)
+and the id of the *batch* to which the keyword is assigned. Keywords can be
+added through \code{add_keywords}. The function \code{start_db} exports the
+table *batch_keywords* as objects \code{keywords_control} and
+\code{keywords_object} to \code{.GlobalEnv}.
+}
+\seealso{
+\code{\link{add_keywords}}
 }
 \keyword{datasets}
