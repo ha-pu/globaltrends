@@ -42,7 +42,18 @@
 
 #' data_control
 #'
-#' xxx.
+#' The table *data_control* contains the downloaded data for each control batch.
+#' Each line contains the search *hits* for each *keyword* in a control *batch*
+#' for a given *location* and *date*. Global data gets the value *world* as
+#' location. Data is downloaded and automatically written to the table through
+#' \code{download_control}. The function \code{start_db} exports the table
+#' *data_control* as database connection \code{tbl_control} to
+#' \code{.GlobalEnv}. Users can access the database table through
+#' \code{dplyr::tbl}.
+#'
+#' The sample data included in \code{data_control} was simulated based on actual
+#' Google Trends data.
+#'
 #'
 #' @format A tibble with 2,400 rows and 5 variables:
 #' \describe{
@@ -56,13 +67,25 @@
 #'   \item{batch}{\code{integer} number of batch}
 #' }
 #' @source \url{https://trends.google.com/trends/}
+#' @seealso \code{\link{download_control}}, \code{\link[dplyr]{tbl}}
 "data_control"
 
 #' data_object
 #'
-#' xxx.
+#' The table *data_object* contains the downloaded data for each object batch.
+#' Each line contains the search *hits* for each *keyword* in an object
+#' *batch_o* for a given *location* and *date*. The column *batch_c* indicates
+#' the control batch to which the data will be mapped. Global data takes the
+#' value *world* as location. Data is downloaded and automatically written to
+#' the table through \code{download_object}. The function \code{start_db}
+#' exports the table *data_object* as database connection \code{tbl_object} to
+#' \code{.GlobalEnv}. Users can access the database table through
+#' \code{dplyr::tbl}.
 #'
-#' @format A tibble with 2090 rows and 5 variables:
+#' The sample data included in \code{data_object} was simulated based on actual
+#' Google Trends data.
+#'
+#' @format A tibble with 8,640 rows and 6 variables:
 #' \describe{
 #'   \item{location}{\code{character} ISO2 code of country or region for which
 #'   the data was downloaded}
