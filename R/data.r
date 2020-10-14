@@ -1,21 +1,34 @@
 #' batch_keywords
 #'
-#' xxx.
+#' The table *batch_keywords* contains the keywords per batch. Each line
+#' contains one *keyword*, the *type* of the batch (i.e. control or object)
+#' and the id of the *batch* to which the keyword is assigned. Keywords can be
+#' added through \code{add_keywords}. The function \code{start_db} exports the
+#' table *batch_keywords* as objects \code{keywords_control} and
+#' \code{keywords_object} to \code{.GlobalEnv}.
 #'
-#' @format A tibble with 4 rows and 3 variables:
+#' @format A tibble with 19 rows and 3 variables:
 #' \describe{
 #'   \item{type}{\code{character} indicating the type of batch, takes "control"
 #'   for control batches and "object" for object batches}
 #'   \item{batch}{\code{integer} number of the batch}
 #'   \item{keyword}{\code{character} keywords included in the respective batch}
 #' }
+#' 
+#' @seealso \code{\link{add_keywords}}
 "batch_keywords"
 
 #' batch_time
 #'
-#' xxx.
+#' The table *batch_time* contains the time frame for which data is downloaded
+#' per batch. Each line contains one *time* frame, the *type* of the batch (i.e.
+#' control or object) and the id of the *batch* to which the time frame is
+#' assigned. Time frames take the form \code{"YYYY-MM-DD YYYY-MM-DD"}. Time
+#' frames are added automatically through \code{add_keywords}. The function
+#' \code{start_db} exports the table *batch_time* as objects \code{time_control}
+#' and \code{time_object} to \code{.GlobalEnv}.
 #'
-#' @format A tibble with 2 rows and 3 variables:
+#' @format A tibble with 5 rows and 3 variables:
 #' \describe{
 #'   \item{type}{\code{character} indicating the type of batch, takes "control"
 #'   for control batches and "object" for object batches}
@@ -23,13 +36,15 @@
 #'   \item{time}{\code{character} timeframe for the respective batch as
 #'   "YYYY-MM-DD YYYY-MM-DD"}
 #' }
+#' 
+#' @seealso \code{\link{add_keywords}}
 "batch_time"
 
 #' data_control
 #'
 #' xxx.
 #'
-#' @format A tibble with 2090 rows and 5 variables:
+#' @format A tibble with 2,400 rows and 5 variables:
 #' \describe{
 #'   \item{location}{\code{character} ISO2 code of country or region for which
 #'   the data was downloaded}
