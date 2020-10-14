@@ -16,7 +16,7 @@
 #' @param locations List of countries or regions for which the data is downloaded.
 #' Refers to lists generated in \code{start_db}.
 #'
-#' @seealso
+#' @seealso \code{\link{data_object}}, \code{\link[gtrendsR]{gtrends}}
 #'
 #' @return
 #' Message that data was downloaded successfully. Data is uploaded

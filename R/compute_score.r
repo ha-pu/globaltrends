@@ -16,7 +16,8 @@
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}.
 #'
-#' @seealso
+#' @seealso \code{\link{data_score}}, \code{\link[stats]{stl}},
+#' \code{\link[forecast]{seasadj}}
 #'
 #' @return Message that data was computed successfully. Data is uploaded
 #' to data_score.

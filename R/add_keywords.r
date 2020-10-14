@@ -49,6 +49,7 @@
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' }
+#' @seealso \code{\link{batch_keywords}}, \code{\link{batch_time}}
 #' @rdname add_batch
 #' @export
 

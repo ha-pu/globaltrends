@@ -15,7 +15,7 @@
 #' @param locations List of locations for which the search score is used.
 #' Object of class \code{character}.
 #'
-#' @seealso
+#' @seealso \code{\link{data_doi}}, \code{\link[ineq]{ineq}}
 #'
 #' @return
 #' Message that data was aggregated successfully. Data is uploaded
