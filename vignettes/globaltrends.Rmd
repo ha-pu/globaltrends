@@ -28,7 +28,7 @@ With the help of the `globaltrends` package, researches and analysts can compute
 # Google Trends as a measure of firm internationalization
 The `globaltrends` package computes two conceptually distinct measures of firm internationalization capturing the **volume of internationalization** (**VOI**) and the **degree of internationalization** (**DOI**). We do so since the absolute search volumes for firms is conceptually different from its international distribution. In the figure below, we illustrate this differentiation and analyze the internationalization of the *fidget spinner* toy, a product with a very distinctive, fad-like internationalization history. The *fidget spinner* was invented and commercialized in late 2016 and became the world’s most sold toy within only two months of commercialization. After 2017, interest in the *fidget spinner* somewhat resided, but remained highly globalized. In other words, the *fidget spinner* internationalized at a very fast pace and interest in the product is still evenly distributed across the globe, but this interest remains at a much lower overall volume. By creating two separate measures, we can capture both global search volumes as wells as the distribution of search volumes across the globe, allowing for more fine-grained analysis and interactions between these distinguishable concepts of firm internationalization.
 
-[XXXXX PLOT note_doi_voi XXXXX]
+[](plot001.png){width=100%}
 
 In the `globaltrends` package, we provide a tailor-made operationalization of firm internationalization that does not approximate the configuration of the firm’s international operations but relies on their global recognition. Our package allows users to download time series of Google search volumes from 2004 onwards. Because Google Trends organizes its data output as single-country keyword batches, the package uses batched downloads. Within these batches, Google Trends normalizes search volumes to values between 0 and 100. We devise a mapping algorithm to transform Google Trends output to a more general data structure. For each country, we download a set of baseline keywords that captures “standard” search volumes in the country. We then download batches of company names, including synonyms and alternative spellings, for each country. Next, we follow Castelnuovo and Tran (2017) to map search volumes for firms to search volumes for baseline keywords in each country. We then use these time series to compute search scores as the ratio between the search volumes for a firm in comparison to search volumes for the baseline keywords in each country.  
 
@@ -124,7 +124,10 @@ download_control(control = new_control, locations = countries)
 
 A message indicates each successful download volumes for control keywords. The data is written directly to the database. The function `download_control_global` follows the same approach and downloads control data on a global level.
 
-[XXXXX CODE XXXXX]
+```{r, eval = FALSE}
+download_control_global(control = new_control)
+#> Successfully downloaded control data | control: 1 | location: world [1/1]
+```
 
 ### Download object data
 For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch, consisting of up to four keywords. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *Illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
@@ -160,21 +163,13 @@ download_object(object = new_object, locations = countries)
 #> Successfully downloaded object data | object: 2 | location: DO [66/66]
 ```
 
-A message indicates each successful download. The data is written directly to the database.
-
-### Download mapping data
-The control and object data downloaded with the steps outlined above, is normalized for each keyword batch. Therefore, we cannot directly compare these data. To compute search scores for the object keywords ([see below](#compute-search-scores)), `globaltrends` generates a mapping between control and object batches. The `download_mapping` function downloads a two-keyword batch combining one keyword from the control batch and one keyword from the object batch.
-
-```{r, eval = FALSE}
-download_mapping(control = new_control[[1]], object = new_object, locations = countries)
-#> Successfully downloaded mapping data | control: 1 | object: 1 | location: US [1/66]
-#> ...
-#> Successfully downloaded mapping data | control: 1 | object: 2 | location: DO [66/66]
-```
-
 A message indicates each successful download of search volumes for object keywords. The data is written directly to the database. The function `download_object_global` follows the same approach and downloads object data on a global level.
 
-[XXXXX CODE XXXXX]
+```{r, eval = FALSE}
+download_object_global(object = new_object)
+#> Successfully downloaded object data | object: 1 | location: world [1/1]
+#> Successfully downloaded object data | object: 2 | location: world [1/1]
+```
 
 ## Compute search scores and internationalization
 Once the user has completed all control and object downloads, `globaltrends` computes search scores for each keyword-date-location combination and at a global level (*volume of internationalization*). Next, the package uses the across-country distribution of these search scores to measure the *degree of internationalization* of an object keyword.
@@ -191,7 +186,11 @@ compute_score(control = new_control[[1]], object = new_object, locations = count
 
 A message indicates each successful computation of search scores. The data is written directly to the database. The computation of the volume of internationalization follows the same principles. Instead of search volumes of baseline and object keywords at the country level, the function `compute_voi` compares baseline and object search volumes at the global level.
 
-[XXXXX CODE XXXXX]
+```{r, eval = FALSE}
+compute_voi(control = new_control[[1]], object = new_object)
+#> Successfully computed search score | control: 1 | object: 1 | location: world [1/1]
+#> Successfully computed search score | control: 1 | object: 2 | location: world [1/1]
+```
 
 ### Compute degree of internationalization
 The `globaltrends` package uses the distribution of search scores across countries to compute the degree of internationalization for objects of interest. The function `compute_doi` uses an inverted Gini-coefficient as measure for the degree of internationalization. The more uniform the distribution of search scores across all countries, the higher the inverted Gini-coefficient and the greater the degree of internationalization. In addition to the Gini-coefficient, the package uses inverted Herfindahl index and inverted Entropy as measures for internationalization ([details below](#alternative-dispersion-measures)).
@@ -213,13 +212,13 @@ data_score %>%
   filter(keyword == "coca cola") %>%
   collect()
 
-#> # A tibble: 7,128 x 8
+#> # A tibble: 8,040 x 8
 #>    location keyword    date score_obs score_sad score_trd batch_c batch_o
 #>    <chr>    <chr>     <int>     <dbl>     <dbl>     <dbl>   <int>   <int>
 #>  1 US       coca cola 14610   0.00362   0.00381   0.00548       1      1
 #>  ...
 #> 10 US       coca cola 14883   0.00347   0.00365   0.00389       1      1
-#> # ... with 7,118 more rows
+#> # ... with 8,030 more rows
 ```
 
 To enhance usability, the `globaltrends` package includes a set of export functions that offer some filters and return data as `tibble`. Currently the functions do not include `list` inputs – users are advised to `purrr::map_dfr` or `dplyr::filter` instead.
@@ -227,33 +226,33 @@ To enhance usability, the `globaltrends` package includes a set of export functi
 ```{r, eval = FALSE}
 export_control(control = 1)
 
-#> # A tibble: 35,640 x 5
+#> # A tibble: 39,600 x 5
 #>    location keyword date        hits control
 #>    <chr>    <chr>   <date>     <dbl>   <int>
 #>  1 US       gmail   2010-01-01    22       1
 #>  ...
 #> 10 US       gmail   2010-10-01    27       1
-#> # ... with 35,630 more rows
+#> # ... with 39,590 more rows
 
 export_score(object = 1, control = 1)
 
-#> # A tibble: 21,384 x 8
+#> # A tibble: 23,760 x 8
 #>    location keyword   date       score_obs score_sad score_trd control object
 #>    <chr>    <chr>     <date>         <dbl>     <dbl>     <dbl>   <int>  <int>
 #>  1 US       coca cola 2010-01-01   0.00362   0.00381   0.00548       1     1
 #>  ...
 #> 10 US       coca cola 2010-10-01   0.00347   0.00365   0.00389       1     1
-#> # ... with 21,374 more rows
+#> # ... with 23,750 more rows
 
 purrr::map_dfr(c("coca cola", "microsoft"), export_doi, control = 1, type = "obs")
 
-#> # A tibble: 216 x 9
+#> # A tibble: 240 x 9
 #>    keyword   date       type       gini   hhi entropy control object locations
 #>    <chr>     <date>     <chr>     <dbl> <dbl>   <dbl>   <int>  <int> <chr>    
 #>  1 coca cola 2010-01-01 score_obs 0.397 0.874  -0.938       1     1 countries
 #>  ...
 #> 10 coca cola 2010-10-01 score_obs 0.574 0.968  -0.303       1     1 countries
-#> # ... with 206 more rows
+#> # ... with 230 more rows
 ```
 
 The export functions from `globaltrends` also allow direct interaction with `dplyr` or other packages for further analysis.
@@ -284,7 +283,7 @@ export_score(keyword = "coca cola", control = 1) %>%
   plot_score()
 ```
 
-![](plot_score.png){width=100%}
+![](plot002.png){width=100%}
 
 The functions `plot_voi_ts`, `plot_doi_ts`, `plot_voi_box`, and `plot_doi_box` use output from `export_voi` and `export_doi`, respectively. The two time series plots `plot_voi_ts` and `plot_doi_ts` show how the volume and degree of internationalization for objects of interest develops over time. The functions `plot_voi_box` and `plot_doi_box` generate boxplots of the volume and degree of internationalization distribution. The four plots below compare the volume and degree of internationalization for the six companies in our sample. At first glance, we see that Coca-Cola, Facebook, and Microsoft have higher degrees of internationalization than Alaska Air Group, Illinois Tool Works, and J.M. Smucker. It seems as if the degree of internationalization of Facebook and Microsoft increased slightly from 2010 to 2015. Although the overall trend remains stable, Coca-Cola shows greater within-time series variation than the other companies.
 
@@ -295,9 +294,9 @@ plot_ts(data_doi = data, grid = TRUE, smooth = TRUE)
 plot_box(data_doi = data)
 ```
 
-![](plot_ts1.png){width=100%}
+![](plot003.png){width=100%}
 
-![](plot_box1.png){width=100%}
+![](plot004.png){width=100%}
 
 With the function `plot_voi_doi`, users can compare the volume of internationalization for an object of interest to its degree of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s volume of internationalization to its degree of internationalization. While volume of internationalization indicates the level of global search scores, degree of internationalization relates to the global distribution of search scores. We see that Facebook’s volume of internationalization constantly decreased after its peak in 2013. At the same time, we observe that the degree of internationalization grew from 2010 before peaking in 2013.
 
@@ -307,29 +306,28 @@ out_global <- export_global(keyword = "facebook", type = "obs")
 plot_trend(data_doi = out_doi, data_global = out_global)
 ```
 
-![](plot_trend1.png){width=100%}
+![](plot005.png){width=100%}
 
 ## Additional options
 The `globaltrends` package offers several options that allow robustness checks and adjustments to the computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, or change the set of locations.
 
 ### Time series adjustments
-The computation of search scores in the `globaltrends` package compares a time series of search volumes for an object keyword to the time series of base line search volumes. Noise and seasonality in search volume time series could affect the resulting search scores. The `globaltrends` package offers two time series adjustments as robustness checks. In the `data_score` table, column `score_obs` refers to values without adjustment. Column `score_trd` uses the underlying time series’ trend for computation.
+The computation of search scores in the `globaltrends` package compares a time series of search volumes for an object keyword to the time series of base line search volumes. Noise and seasonality in search volume time series could affect the resulting search scores. The `globaltrends` package offers two time series adjustments as robustness checks. In the `data_score` table, column `score_obs` refers to values without adjustment. Column `score_trd` uses the underlying time series’ trend for computation. Column `score_sad` corrects the time series for seasonal patterns. In general, outcomes for all three types of time series are similar. `score_trd` applies the greatest smoothing, while `score_sad` reduces some noise.
 
 ```{r, eval = FALSE}
+# computation seasonally adjusted ----------------------------------------------
 search_score <- ts(data$hits, frequency = 12)
 fit <- stl(search_score, s.window = "period")
 trend <- fit$time.series[, "trend"]
-```
 
-Column `score_sad` corrects the time series for seasonal patterns. In general, outcomes for all three types of time series are similar. `score_trd` applies the greatest smoothing, while `score_sad` reduces some noise.
-
-```{r, eval = FALSE}
+# computation trend only -------------------------------------------------------
 search_score <- ts(data$hits, frequency = 12)
 fit <- stl(search_score, s.window = "period")
 seasad <- forecast::seasadj(fit)
 ```
 
-[XXXXX PLOT note_score_cor1, note_score_cor2 XXXXX]
+![](plot006.png){width=100%}
+![](plot007.png){width=100%}
 
 The `export_doi`, `plot_voi_ts`, `plot_doi_ts`, `plot_voi_box`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of time series through the `type` input.
 
@@ -343,9 +341,19 @@ plot_trend(data_doi, data_global, type = "obs")
 ### Alternative dispersion measures
 The `globaltrends` package computes degree of internationalization based on the across-location distribution of search scores. By default, the package uses an inverted Gini-coefficient. As alternatives, the package uses inverted Herfindahl index and inverted Entropy as robustness checks. In general, all the three dispersion measures come to similar results.
 
-[XXXXX CODE XXXXX]
+```{r, eval = FALSE}
+# computation inverted ginig coefficient ---------------------------------------
+dplyr::coalesce(1 - ineq::ineq(search_score, type = "Gini"), 0)
 
-[XXXXX PLOT note_doi_cor1, note_doi_cor2 XXXXX]
+# computation inverted herfindahl index ----------------------------------------
+dplyr::coalesce(1 - sum((search_score / sum(search_score))^2), 0)
+
+# computation inverted entropy -------------------------------------------------
+dplyr::coalesce(-1 * ineq::ineq(search_score, parameter = 1, type = "entropy"), 0)
+```
+
+![](plot008.png){width=100%}
+![](plot009.png){width=100%}
 
 The `export_doi`, `plot_doi_ts`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of dispersion measures through the `measure` input.
 
@@ -367,16 +375,18 @@ compute_score(control = 1, object = 2, locations = us_states)
 compute_doi(control = 1, object = list(1,2), locations = "us_states")
 ```
 
-[XXXXX PLOT note_ap_ts2 XXXXX]
+![](plot010.png){width=100%}
 
 # Further applications
 To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g. *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
 
-![](plot_box2.png){width=100%}
+![](plot011.png){width=100%}
 
 The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, fads or scandals.
 
-[XXXXX PLOT note_ap_ts4, note_ap_ts7, note_ap_ts8 XXXXX]
+![](plot012.png){width=100%}
+![](plot013.png){width=100%}
+![](plot014.png){width=100%}
 
 # References
 Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based Uncertainty index for the United States and Australia. *Economics Letters*, 161: 149-153.  
