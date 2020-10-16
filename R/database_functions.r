@@ -1,8 +1,24 @@
 #' @title Initialize database
 #'
 #' @description
+#' The function creates a new database for the \code{globaltrends} package and
+#' creates all necessary tables within the database.
+#'
 #' @details
-#' @seealso
+#' The function creates a new SQLite database for the \code{globaltrends}
+#' package. The database is saved as "db/globaltrends_db.sqlite" in the working
+#' directory. If the folder "db" does not exists in the working directory, the
+#' folder is created. If the database already exists in the working directory,
+#' the database is deleted and re-created. Within the database all tables are
+#' created and the default location sets are added to the respective table:
+#' \itemize{
+#'   \item *countries* - all countries with a share in global GDP >= 0.1% in 2018
+#'   \item *us_states* - all US federal states and Washington DC
+#' }
+#' After creating the database, the function disconnects from the database.
+#'
+#' @seealso \code{\link{start_db}}, \code{\link{disconnect_db}},
+#' \url{https://www.sqlite.org/index.html}
 #'
 #' @return Database is created.
 #'
@@ -15,7 +31,6 @@
 #' @importFrom DBI dbConnect
 #' @importFrom DBI dbDisconnect
 #' @importFrom DBI dbExecute
-#' @importFrom dplyr src_sqlite
 #' @importFrom RSQLite SQLite
 
 initialize_db <- function() {
@@ -24,7 +39,7 @@ initialize_db <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ----
-  globaltrends_db <- suppressWarnings(src_sqlite("db/globaltrends_db.sqlite", create = TRUE))
+  if (file.exists("db/globaltrends_db.sqlite")) file.remove("db/globaltrends_db.sqlite")
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Successfully created database.")
 
@@ -169,8 +184,14 @@ initialize_db <- function() {
 #' @title Load globaltrends database and tables
 #'
 #' @description
-#' @details
-#' @seealso
+#' The function connects to the database file "db/globaltrends_db.sqlite" in the
+#' working directory. After connecting to the database connections to the
+#' database tables (through \code{dplyr::tbl}) are created. Data from the tables
+#' *batch_keywords* and *batch_time* are exported to the \code{tibble} objects
+#' *keywords_control*, *keywords_object*, *time_control*, and *time_object*.
+#'
+#' @seealso \code{\link{initialize_db}}, \code{\link{disconnect_db}},
+#' \code{\link[dplyr]{tbl}}
 #'
 #' @return
 #' The function exports the following objects to .GlobalEnv:
@@ -189,7 +210,7 @@ initialize_db <- function() {
 #'   \item tbl_score A remote data source pointing to the table "data_score" in
 #'   the connected SQLite database
 #'   \item countries A \code{character} vector containing ISO2 country codes of
-#'   countries that add at leas 0.1% to global GDP
+#'   countries that add at least 0.1% to global GDP
 #'   \item us_states A \code{character} vector containing ISO2 regional codes of
 #'   US states
 #'   \item keywords_control A \code{tibble} containing keywords of control batches
@@ -317,9 +338,11 @@ start_db <- function() {
 #' @title Disconnect from database
 #'
 #' @description
-#' @details
+#' The function closes the connection to the database file
+#' "db/globaltrends_db.sqlite" in the working directory.
 #'
-#' @seealso
+#' @seealso \code{\link{initialize_db}}, \code{\link{start_db}}
+#'
 #' @return
 #' Message that disconnection was successful.
 #'

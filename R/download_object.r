@@ -11,7 +11,7 @@
 #' *locations*. Data is automatically written to table *data_object*. For
 #' \code{download_object_global} the input *location* is automatically set to
 #' *world*.
-#' 
+#'
 #' @details
 #' Downloads through the Google Trends API are made through
 #' \code{gtrendsR::gtrends}. Each object batch can consist of up to four

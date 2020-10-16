@@ -10,7 +10,21 @@ initialize_db()
 Database is created.
 }
 \description{
-Initialize database
+The function creates a new database for the \code{globaltrends} package and
+creates all necessary tables within the database.
+}
+\details{
+The function creates a new SQLite database for the \code{globaltrends}
+package. The database is saved as "db/globaltrends_db.sqlite" in the working
+directory. If the folder "db" does not exists in the working directory, the
+folder is created. If the database already exists in the working directory,
+the database is deleted and re-created. Within the database all tables are
+created and the default location sets are added to the respective table:
+\itemize{
+  \item *countries* - all countries with a share in global GDP >= 0.1% in 2018
+  \item *us_states* - all US federal states and Washington DC
+}
+After creating the database, the function disconnects from the database.
 }
 \examples{
 \dontrun{
@@ -19,5 +33,6 @@ initialize_db()
 
 }
 \seealso{
-
+\code{\link{start_db}}, \code{\link{disconnect_db}},
+\url{https://www.sqlite.org/index.html}
 }

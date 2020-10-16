@@ -34,13 +34,13 @@ test_that("add_synonyms", {
 data <- filter(data_control, batch == 1 & location %in% countries[1:3])
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(data_object, batch_c == 1 &
-                 keyword %in% c("fc barcelona", "fc bayern", "manchester united", "real madrid") &
-                 location %in% countries[1:2]) %>%
+  keyword %in% c("fc barcelona", "fc bayern", "manchester united", "real madrid") &
+  location %in% countries[1:2]) %>%
   mutate(batch_o = 1)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 data <- filter(data_object, batch_c == 1 &
-                 keyword %in% c("bayern munich", "bayern munchen") &
-                 location %in% countries[2:3]) %>%
+  keyword %in% c("bayern munich", "bayern munchen") &
+  location %in% countries[2:3]) %>%
   mutate(batch_o = 2)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 

@@ -10,10 +10,8 @@ disconnect_db(db = globaltrends_db)
 Message that disconnection was successful.
 }
 \description{
-Disconnect from database
-}
-\details{
-
+The function closes the connection to the database file
+"db/globaltrends_db.sqlite" in the working directory.
 }
 \examples{
 \dontrun{
@@ -21,5 +19,5 @@ disconnect_db()
 }
 }
 \seealso{
-
+\code{\link{initialize_db}}, \code{\link{start_db}}
 }

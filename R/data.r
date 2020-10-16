@@ -14,7 +14,7 @@
 #'   \item{batch}{\code{integer} number of the batch}
 #'   \item{keyword}{\code{character} keywords included in the respective batch}
 #' }
-#' 
+#'
 #' @seealso \code{\link{add_keywords}}
 "batch_keywords"
 
@@ -36,7 +36,7 @@
 #'   \item{time}{\code{character} timeframe for the respective batch as
 #'   "YYYY-MM-DD YYYY-MM-DD"}
 #' }
-#' 
+#'
 #' @seealso \code{\link{add_keywords}}
 "batch_time"
 
@@ -112,7 +112,7 @@
 #' through \code{compute_score}. The function \code{start_db} exports the table
 #' *data_score* as database connection \code{tbl_score} to \code{.GlobalEnv}.
 #' Users can access the database table through \code{dplyr::tbl}.
-#' 
+#'
 #' The sample data included in \code{data_score} was simulated based on actual
 #' Google Trends data.
 #'
@@ -153,7 +153,7 @@
 #'
 #' The sample data included in \code{data_doi} was simulated based on actual
 #' Google Trends data.
-#' 
+#'
 #' @format A tibble with 4,320 rows and 9 variables:
 #' \describe{
 #'   \item{keyword}{\code{character} keyword for which the data was downloaded}
