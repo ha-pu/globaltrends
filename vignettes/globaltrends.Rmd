@@ -326,8 +326,10 @@ fit <- stl(search_score, s.window = "period")
 seasad <- forecast::seasadj(fit)
 ```
 
-![](plot006.png){width=100%}
-![](plot007.png){width=100%}
+<center>
+![](plot006.png){height=45%, width=45%}
+![](plot007.png){height=45%, width=45%}
+</center>
 
 The `export_doi`, `plot_voi_ts`, `plot_doi_ts`, `plot_voi_box`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of time series through the `type` input.
 
@@ -352,8 +354,10 @@ dplyr::coalesce(1 - sum((search_score / sum(search_score))^2), 0)
 dplyr::coalesce(-1 * ineq::ineq(search_score, parameter = 1, type = "entropy"), 0)
 ```
 
-![](plot008.png){width=100%}
-![](plot009.png){width=100%}
+<center>
+![](plot008.png){height=45%, width=45%}
+![](plot009.png){height=45%, width=45%}
+</center>
 
 The `export_doi`, `plot_doi_ts`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of dispersion measures through the `measure` input.
 
@@ -385,7 +389,13 @@ To measure degree of internationalization, `globaltrends` offers a wide array of
 The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, fads or scandals.
 
 ![](plot012.png){width=100%}
+
+***
+
 ![](plot013.png){width=100%}
+
+***
+
 ![](plot014.png){width=100%}
 
 # References
