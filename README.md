@@ -8,46 +8,50 @@ The enormous detail of the data opens additional applications in research that a
 `globaltrends` provides user-friendly access to Google Trends. For an extensive academic application of the `globaltrends` package, please refer to Venger, Puhr, and Müllner (2020, *Venger_Puhr_Müllner_2020.pdf*). The package vignette (*globaltrends_Vignette.pdf*) offers additonal technical details and a basic tutorial.
 
 ````
-# install ----
+# install ----------------------------------------------------------------------
 devtools::install_github("ha-pu/globaltrends/*release", build_vignettes = TRUE)
 
-# packages ----
+# packages ---------------------------------------------------------------------
 library(dplyr)
 library(globaltrends)
 
-# connect to db ----
+# connect to db ----------------------------------------------------------------
 initialize_db()
 start_db()
 
-# add new control batch ----
+# add new control batch --------------------------------------------------------
 new_control <- add_control_keyword(keyword = c("gmail", "map", "translate", "wikipedia", "youtube"))
 
-# add new object batch ----
+# add new object batch ---------------------------------------------------------
 new_object <- add_object_keyword(keyword = c("manchester united", "real madrid"))
 
-# run control download ----
+# run control download ---------------------------------------------------------
 download_control(control = new_control)
+download_control_global(control = new_control)
 
-# run object download ----
+# run object download ----------------------------------------------------------
 download_object(object = new_object)
+download_object_global(control = new_control)
 
-# run map download ----
-download_mapping(control = new_control, object = new_object)
-
-# compute search score ----
+# compute search score ---------------------------------------------------------
 compute_score(control = new_control, object = new_object)
+compute_voi(contorl = new_contorl, object = new_object)
 
-# compute degree of internationalization ----
+# compute degree of internationalization ---------------------------------------
 compute_doi(control = new_control, object = new_object)
 
-# export data ----
+# export data ------------------------------------------------------------------
 out_score <- export_score(keyword = "manchester united")
+out_voi <- export_voi(keyword = "manchester united")
 out_doi <- export_doi(type = "obs", locations = "countries")
 
 # plot data ----
-plot_score(data_score = out_score
-plot_ts(data_doi = out_doi)
-plot_box(data_doi = out_doi)
+plot_score(data_score = out_score)
+plot_voi_ts(data_voi = out_voi)
+plot_voi_box(data_voi = out_voi)
+plot_doi_ts(data_doi = out_doi)
+plot_doi_box(data_doi = out_doi)
+plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
 
 # disconnect from db ----
 disconnect_db()
