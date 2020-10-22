@@ -7,8 +7,10 @@
 #' class \code{character}.
 #' @param object Object batch number for which data should be exported.
 #' @param control Control batch number for which data should be exported.
-#' @param locations Set of locations for which data should be exported. Object
-#' of class \code{character}.
+#' @param locations List of locations for which the search score is used.
+#' For \code{export_control}, \code{export_object}, or \code{export_score}
+#' refers to lists generated in \code{start_db}. For \code{export_doi}
+#' object of class \code{character}.
 #' @param type Type of time series for which data should be exported. Element
 #' of class \code{character}. Relevant only for "export_global" and
 #' "export_doi". Takes one of the following values: "obs", "sad", "trd".
@@ -35,9 +37,9 @@
 #' \dontrun{
 #' export_control(control = 2)
 #'
-#' export_object(keyword = "manchester united")
+#' export_object(keyword = "manchester united", locations = countries)
 #'
-#' export_score(object = 3, control = 1) %>%
+#' export_score(object = 3, control = 1, locations = us_states) %>%
 #'   readr::write_csv("data_score.csv")
 #'
 #' export_doi(
@@ -54,11 +56,15 @@
 #' @importFrom dplyr select
 #' @importFrom glue glue
 
-export_control <- function(control = NULL) {
+export_control <- function(control = NULL, locations = NULL) {
   out <- .export_data_single(
     table = .tbl_control,
     in_control = control
   )
+  if (!is.null(locations)) {
+    in_location <- locations
+    out <- filter(out, location %in% in_location)
+  }
   out <- filter(out, location != "world")
   out <- rename(out, control = batch)
   return(out)
@@ -80,13 +86,17 @@ export_control_global <- function(control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_object <- function(keyword = NULL, object = NULL, control = NULL) {
+export_object <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   out <- .export_data_double(
     table = .tbl_object,
     in_keyword = keyword,
     in_object = object,
     in_control = control
   )
+  if (!is.null(locations)) {
+    in_location <- locations
+    out <- filter(out, location %in% in_location)
+  }
   out <- filter(out, location != "world")
   out <- rename(out, object = batch_o, control = batch_c)
   return(out)
@@ -110,13 +120,17 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 #' @rdname export_data
 #' @export
 
-export_score <- function(keyword = NULL, object = NULL, control = NULL) {
+export_score <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   out <- .export_data_double(
     table = .tbl_score,
     in_keyword = keyword,
     in_object = object,
     in_control = control
   )
+  if (!is.null(locations)) {
+    in_location <- locations
+    out <- filter(out, location %in% in_location)
+  }
   out <- filter(out, location != "world")
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
