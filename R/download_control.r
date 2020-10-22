@@ -25,7 +25,7 @@
 #' of class \code{numeric} or object of class \code{list} containing single
 #' objects of class \code{numeric}.
 #' @param locations List of countries or regions for which the data is
-#' downloaded.' Refers to lists generated in \code{start_db}.
+#' downloaded. Refers to lists generated in \code{start_db}.
 #'
 #' @seealso \code{\link{data_control}}, \code{\link[gtrendsR]{gtrends}}
 #'
