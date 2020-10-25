@@ -1,7 +1,14 @@
 #' @title Remove data from database tables
 #'
 #' @description
+#' The function removes data from database tables for control or object batches.
+#' 
 #' @details
+#' The function removes data "greedily": all data that builds on the deleted
+#' data is removed. For example, when data from *data_control* is removed data
+#' in *data_object* that maps to this control batch is also removed. The
+#' dependency structure works as follows: *batch_keyword* / *batch_time* ->
+#' *data_control* -> *data_object* -> *data_score* -> *data_doi*.
 #'
 #' @param table Database table from which the batch should be removed.  Object
 #' of class \code{character}.
@@ -10,7 +17,9 @@
 #' @param object Object batch for which the data is removed Object
 #' of class \code{numeric}.
 #'
-#' @seealso
+#' @seealso \code{\link{batch_keywords}}, \code{\link{batch_time}},
+#' \code{\link{data_control}}, \code{\link{data_object}},
+#' \code{\link{data_score}}, \code{\link{data_doi}}
 #'
 #' @return Message that data was removed successfully. Data is removed
 #' from database.

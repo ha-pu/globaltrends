@@ -1,7 +1,14 @@
 #' @title Export data from database table
 #'
 #' @description
+#' The function allows to export data from database tables.
+#' 
 #' @details
+#' Exports can be filtered by *keyword*, *object*, *control*, *locations*, or
+#' *type*. Not all filters are applicable for all functions. When filter
+#' *keyword* and *object* are used together, *keyword* overrules *object*.
+#' Currently the functions do not include list inputs - users are advised to
+#' \code{purrr::map_dfr} or \code{dplyr::filter} instead.
 #'
 #' @param keyword Object keywords for which data should be exported. Object of
 #' class \code{character}.
@@ -31,7 +38,9 @@
 #' hhi, entropy, control, object, locations
 #' }
 #'
-#' @seealso
+#' @seealso \code{\link{data_control}}, \code{\link{data_object}},
+#' \code{\link{data_score}}, \code{\link{data_doi}},
+#' \code{\link[purrr]{map_dfr}}, \code{\link[dplyr]{filter}}
 #'
 #' @examples
 #' \dontrun{

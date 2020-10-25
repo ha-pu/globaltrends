@@ -18,7 +18,10 @@
 #' After creating the database, the function disconnects from the database.
 #'
 #' @seealso \code{\link{start_db}}, \code{\link{disconnect_db}},
-#' \url{https://www.sqlite.org/index.html}
+#' \url{https://www.sqlite.org/index.html}, \code{\link{batch_keywords}},
+#' \code{\link{batch_time}}, \code{\link{data_control}},
+#' \code{\link{data_object}}, \code{\link{data_score}},
+#' \code{\link{data_doi}}
 #'
 #' @return Database is created.
 #'
