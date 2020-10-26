@@ -6,10 +6,10 @@
 #' download_control.list
 #'
 #' @description
-#' The function downloads search volumes from Google Trends for a *control*
-#' batch in a set of *locations*. Data is automatically written to table
-#' *data_control*. For \code{download_control_global} the input *location* is
-#' automatically set to *world*.
+#' The function downloads search volumes from Google Trends for a \emph{control}
+#' batch in a set of \emph{locations}. Data is automatically written to table
+#' \emph{data_control}. For \code{download_control_global} the input
+#' \emph{location} is automatically set to \emph{world}.
 #'
 #' @details
 #' Downloads through the Google Trends API are made through

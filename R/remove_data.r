@@ -5,10 +5,11 @@
 #' 
 #' @details
 #' The function removes data "greedily": all data that builds on the deleted
-#' data is removed. For example, when data from *data_control* is removed data
-#' in *data_object* that maps to this control batch is also removed. The
-#' dependency structure works as follows: *batch_keyword* / *batch_time* ->
-#' *data_control* -> *data_object* -> *data_score* -> *data_doi*.
+#' data is removed. For example, when data from \emph{data_control} is removed
+#' data in \emph{data_object} that maps to this control batch is also removed.
+#' The dependency structure works as follows: \emph{batch_keyword} /
+#' \emph{batch_time} -> \emph{data_control} -> \emph{data_object} ->
+#' \emph{data_score} -> \emph{data_doi}.
 #'
 #' @param table Database table from which the batch should be removed.  Object
 #' of class \code{character}.

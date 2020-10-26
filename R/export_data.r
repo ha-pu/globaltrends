@@ -4,11 +4,12 @@
 #' The function allows to export data from database tables.
 #' 
 #' @details
-#' Exports can be filtered by *keyword*, *object*, *control*, *locations*, or
-#' *type*. Not all filters are applicable for all functions. When filter
-#' *keyword* and *object* are used together, *keyword* overrules *object*.
-#' Currently the functions do not include list inputs - users are advised to
-#' \code{purrr::map_dfr} or \code{dplyr::filter} instead.
+#' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
+#' \emph{locations}, or \emph{type}. Not all filters are applicable for all
+#' functions. When filter \emph{keyword} and \emph{object} are used together,
+#' \emph{keyword} overrules \emph{object}. Currently the functions do not
+#' include list inputs - users are advised to \code{purrr::map_dfr} or
+#' \code{dplyr::filter} instead.
 #'
 #' @param keyword Object keywords for which data should be exported. Object of
 #' class \code{character}.

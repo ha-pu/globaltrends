@@ -1,11 +1,11 @@
 #' batch_keywords
 #'
-#' The table *batch_keywords* contains the keywords per batch. Each line
-#' contains one *keyword*, the *type* of the batch (i.e. control or object)
-#' and the id of the *batch* to which the keyword is assigned. Keywords can be
-#' added through \code{add_keywords}. The function \code{start_db} exports the
-#' table *batch_keywords* as objects \code{keywords_control} and
-#' \code{keywords_object} to \code{.GlobalEnv}.
+#' The table \emph{batch_keywords} contains the keywords per batch. Each line
+#' contains one \emph{keyword}, the \emph{type} of the batch (i.e. control or
+#' object) and the id of the \emph{batch} to which the keyword is assigned.
+#' Keywords can be added through \code{add_keywords}. The function
+#' \code{start_db} exports the table \emph{batch_keywords} as objects
+#' \code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
 #'
 #' @format A tibble with 19 rows and 3 variables:
 #' \describe{
@@ -20,13 +20,14 @@
 
 #' batch_time
 #'
-#' The table *batch_time* contains the time frame for which data is downloaded
-#' per batch. Each line contains one *time* frame, the *type* of the batch (i.e.
-#' control or object) and the id of the *batch* to which the time frame is
-#' assigned. Time frames take the form \code{"YYYY-MM-DD YYYY-MM-DD"}. Time
-#' frames are added automatically through \code{add_keywords}. The function
-#' \code{start_db} exports the table *batch_time* as objects \code{time_control}
-#' and \code{time_object} to \code{.GlobalEnv}.
+#' The table \emph{batch_time} contains the time frame for which data is
+#' downloaded per batch. Each line contains one \emph{time} frame, the
+#' \emph{type} of the batch (i.e. control or object) and the id of the
+#' \emph{batch} to which the time frame is assigned. Time frames take the form
+#' \code{"YYYY-MM-DD YYYY-MM-DD"}. Time frames are added automatically through
+#' \code{add_keywords}. The function \code{start_db} exports the table
+#' \emph{batch_time} as objects \code{time_control} and \code{time_object} to
+#' \code{.GlobalEnv}.
 #'
 #' @format A tibble with 5 rows and 3 variables:
 #' \describe{
@@ -42,14 +43,14 @@
 
 #' data_control
 #'
-#' The table *data_control* contains the downloaded data for each control batch.
-#' Each line contains the search *hits* for each *keyword* in a control *batch*
-#' for a given *location* and *date*. Global data gets the value *world* as
-#' location. Data is downloaded and automatically written to the table through
-#' \code{download_control}. The function \code{start_db} exports the table
-#' *data_control* as database connection \code{tbl_control} to
-#' \code{.GlobalEnv}. Users can access the database table through
-#' \code{dplyr::tbl}.
+#' The table \emph{data_control} contains the downloaded data for each control
+#' batch. Each line contains the search \emph{hits} for each \emph{keyword} in a
+#' control \emph{batch} for a given \emph{location} and \emph{date}. Global data
+#' gets the value \emph{world} as location. Data is downloaded and automatically
+#' written to the table through \code{download_control}. The function
+#' \code{start_db} exports the table \emph{data_control} as database connection
+#' \code{tbl_control} to \code{.GlobalEnv}. Users can access the database table
+#' through \code{dplyr::tbl}.
 #'
 #' The sample data included in \code{data_control} was simulated based on actual
 #' Google Trends data.
@@ -72,13 +73,14 @@
 
 #' data_object
 #'
-#' The table *data_object* contains the downloaded data for each object batch.
-#' Each line contains the search *hits* for each *keyword* in an object
-#' *batch_o* for a given *location* and *date*. The column *batch_c* indicates
-#' the control batch to which the data will be mapped. Global data takes the
-#' value *world* as location. Data is downloaded and automatically written to
-#' the table through \code{download_object}. The function \code{start_db}
-#' exports the table *data_object* as database connection \code{tbl_object} to
+#' The table \emph{data_object} contains the downloaded data for each object
+#' batch. Each line contains the search \emph{hits} for each \emph{keyword} in
+#' an object \emph{batch_o} for a given \emph{location} and \emph{date}. The
+#' column \emph{batch_c} indicates the control batch to which the data will be
+#' mapped. Global data takes the value \emph{world} as location. Data is
+#' downloaded and automatically written to the table through
+#' \code{download_object}. The function \code{start_db} exports the table
+#' \emph{data_object} as database connection \code{tbl_object} to
 #' \code{.GlobalEnv}. Users can access the database table through
 #' \code{dplyr::tbl}.
 #'
@@ -102,15 +104,16 @@
 
 #' data_score
 #'
-#' The table *data_score* contains the search scores for each object batch. Each
-#' line contains the search observed search score (*score_obs*), the seasonally
-#' adjusted search score (*score_sad*), and the trend only search score
-#' (*score_trd*) for each *keyword* in an object *batch_o* for a given
-#' *location* and *date*. The column *batch_c* indicates the control batch that
-#' has been used as baseline search score. Global data takes the value *world*
-#' as location. Search scores are computed automatically written to the table
-#' through \code{compute_score}. The function \code{start_db} exports the table
-#' *data_score* as database connection \code{tbl_score} to \code{.GlobalEnv}.
+#' The table \emph{data_score} contains the search scores for each object batch.
+#' Each line contains the search observed search score (\emph{score_obs}), the
+#' seasonally adjusted search score (\emph{score_sad}), and the trend only
+#' search score (\emph{score_trd}) for each \emph{keyword} in an object
+#' \emph{batch_o} for a given \emph{location} and \emph{date}. The column
+#' \emph{batch_c} indicates the control batch that has been used as baseline
+#' search score. Global data takes the value \emph{world} as location. Search
+#' scores are computed automatically written to the table through
+#' \code{compute_score}. The function \code{start_db} exports the table
+#' \emph{data_score} as database connection \code{tbl_score} to \code{.GlobalEnv}.
 #' Users can access the database table through \code{dplyr::tbl}.
 #'
 #' The sample data included in \code{data_score} was simulated based on actual
@@ -139,15 +142,16 @@
 
 #' data_doi
 #'
-#' The table *data_doi* contains the degree of internationalization (doi) for
-#' each object batch. Each line contains the doi computed as inverted *gini*
-#' coefficient, as inverted *hhi*, or inverted *entropy* for each *keyword* in
-#' an object *batch_o* for a given *date* and *type* of search score. The column
-#' *batch_c* indicates the control batch that has been used as baseline search
-#' score. Column *locations* indicates which set of locations was used to
-#' compute the distribution of search scores. Degree of internationalization is
-#' computed automatically written to the table through \code{compute_doi}. The
-#' function \code{start_db} exports the table *data_doi* as database connection
+#' The table \emph{data_doi} contains the degree of internationalization (doi)
+#' for each object batch. Each line contains the doi computed as inverted
+#' \emph{gini} coefficient, as inverted \emph{hhi}, or inverted \emph{entropy}
+#' for each \emph{keyword} in an object \emph{batch_o} for a given \emph{date}
+#' and \emph{type} of search score. The column \emph{batch_c} indicates the
+#' control batch that has been used as baseline search score. Column
+#' \emph{locations} indicates which set of locations was used to compute the
+#' distribution of search scores. Degree of internationalization is computed
+#' automatically written to the table through \code{compute_doi}. The function
+#' \code{start_db} exports the table \emph{data_doi} as database connection
 #' \code{tbl_doi} to \code{.GlobalEnv}. Users can access the database table
 #' through \code{dplyr::tbl}.
 #'

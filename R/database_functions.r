@@ -12,8 +12,9 @@
 #' the database is deleted and re-created. Within the database all tables are
 #' created and the default location sets are added to the respective table:
 #' \itemize{
-#'   \item *countries* - all countries with a share in global GDP >= 0.1% in 2018
-#'   \item *us_states* - all US federal states and Washington DC
+#'   \item \emph{countries} - all countries with a share in global GDP >= 0.1%
+#'   in 2018
+#'   \item \emph{us_states} - all US federal states and Washington DC
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
@@ -190,8 +191,9 @@ initialize_db <- function() {
 #' The function connects to the database file "db/globaltrends_db.sqlite" in the
 #' working directory. After connecting to the database connections to the
 #' database tables (through \code{dplyr::tbl}) are created. Data from the tables
-#' *batch_keywords* and *batch_time* are exported to the \code{tibble} objects
-#' *keywords_control*, *keywords_object*, *time_control*, and *time_object*.
+#' \emph{batch_keywords} and \emph{batch_time} are exported to the \code{tibble}
+#' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
+#' and \emph{time_object}.
 #'
 #' @seealso \code{\link{initialize_db}}, \code{\link{disconnect_db}},
 #' \code{\link[dplyr]{tbl}}
