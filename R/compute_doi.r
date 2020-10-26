@@ -9,7 +9,7 @@
 #' The function computes degree of internationalization (doi) for object
 #' keywords. Degree of internationalization is measured based on the
 #' distribution of country search scores.
-#' 
+#'
 #' @details
 #' The function uses an inverted Gini-coefficient
 #' \code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}

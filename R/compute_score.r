@@ -11,7 +11,7 @@
 #' for object batches are divided by the sum of search volumes for the
 #' respective control batch. \code{compute_voi} computes volume of
 #' internationalization (voi) as global search scores.
-#' 
+#'
 #' @details
 #' The search score computation proceeds in four steps. First, the function
 #' aggregates all search volumes to monthly data. Then, it applies some optional

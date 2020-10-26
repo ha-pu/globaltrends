@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The function removes data from database tables for control or object batches.
-#' 
+#'
 #' @details
 #' The function removes data "greedily": all data that builds on the deleted
 #' data is removed. For example, when data from \emph{data_control} is removed

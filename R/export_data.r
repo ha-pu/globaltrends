@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The function allows to export data from database tables.
-#' 
+#'
 #' @details
 #' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
 #' \emph{locations}, or \emph{type}. Not all filters are applicable for all
