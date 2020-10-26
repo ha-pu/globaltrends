@@ -6,10 +6,11 @@
 #' compute_score.list
 #'
 #' @description
-#' The function computes search scores for object keyword. Search volumes for
+#' The function computes search scores for object keywords. Search volumes for
 #' control and object batches are mapped to the same base. Next, search volumes
 #' for object batches are divided by the sum of search volumes for the
-#' respective control batch.
+#' respective control batch. \code{compute_voi} computes volume of
+#' internationalization (voi) as global search scores.
 #' 
 #' @details
 #' The search score computation proceeds in four steps. First, the function
