@@ -17,18 +17,10 @@ either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
 Boxplot of time series as \code{ggplot2} object.
 }
 \description{
-Boxplot of VOI time series
+The function uses the output of \code{export_voi} to prepare a box plot of
+the distribution of volume of internationalization values. When the output
+includes more than nine keywords, only the first nine keywords are used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_voi_box} is limited to 9 unique keywords to avoid an overcrowded
-plot. When \code{data_voi} includes more than 9 unique keywords, only
-the first 9 keywords are used.
-}
-
 \examples{
 \dontrun{
 data <- export_voi(object = 1)
@@ -37,4 +29,7 @@ plot_voi_box(data_voi = data, type = "sad")
 plot_voi_box(data_voi = data, type = "trd")
 }
 
+}
+\seealso{
+\code{\link{export_voi}}
 }

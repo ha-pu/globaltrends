@@ -18,18 +18,10 @@ Bar plot of score distribution across locations as \code{ggplot2}
 object.
 }
 \description{
-Bar plot of data_score distribution
+The function uses the output of \code{export_score} to prepare a bar plot of
+search scores for the top 10 countries. When the output includes more than
+one keyword, only the first keyword is used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_score} is limited to 1 unique keyword to avoid an
-overcrowded plot. When \code{data_doi} or \code{data_score} includes
-more than 1 unique keyword, only the first keyword is used.
-}
-
 \examples{
 \dontrun{
 data <- export_score(keyword = "manchester united", locations = "countries")
@@ -39,4 +31,7 @@ data <- dplyr::filter(data, location \%in\% countries)
 plot_score(data_score = data, type = "trd")
 }
 
+}
+\seealso{
+\code{\link{export_score}}
 }

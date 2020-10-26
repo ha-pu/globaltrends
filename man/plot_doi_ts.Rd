@@ -34,18 +34,10 @@ set of locations should be filtered. Defaults to \code{"countries"}.}
 Line plot of time series as \code{ggplot2} object.
 }
 \description{
-Line plot of DOI time series
+The function uses the output of \code{export_doi} to prepare a time series
+plot of degree of internationalization values. When the output includes more
+than nine keywords, only the first nine keywords are used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_doi_ts} is limited to 9 unique keywords to avoid an overcrowded
- plot. When \code{data_doi} includes more than 9 unique keywords, only
-the first 9 keywords are used.
-}
-
 \examples{
 \dontrun{
 data <- export_doi(object = 1, locations = "countries")
@@ -54,4 +46,7 @@ plot_doi_ts(data_doi = data, type = "sad", measure = "hhi", smooth = FALSE)
 plot_doi_ts(data_doi = data, type = "trd", measure = "entropy", smooth = TRUE)
 }
 
+}
+\seealso{
+\code{\link{export_doi}}
 }

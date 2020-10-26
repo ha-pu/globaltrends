@@ -18,13 +18,14 @@ A tibble with 5 rows and 3 variables:
 batch_time
 }
 \description{
-The table *batch_time* contains the time frame for which data is downloaded
-per batch. Each line contains one *time* frame, the *type* of the batch (i.e.
-control or object) and the id of the *batch* to which the time frame is
-assigned. Time frames take the form \code{"YYYY-MM-DD YYYY-MM-DD"}. Time
-frames are added automatically through \code{add_keywords}. The function
-\code{start_db} exports the table *batch_time* as objects \code{time_control}
-and \code{time_object} to \code{.GlobalEnv}.
+The table \emph{batch_time} contains the time frame for which data is
+downloaded per batch. Each line contains one \emph{time} frame, the
+\emph{type} of the batch (i.e. control or object) and the id of the
+\emph{batch} to which the time frame is assigned. Time frames take the form
+\code{"YYYY-MM-DD YYYY-MM-DD"}. Time frames are added automatically through
+\code{add_keywords}. The function \code{start_db} exports the table
+\emph{batch_time} as objects \code{time_control} and \code{time_object} to
+\code{.GlobalEnv}.
 }
 \seealso{
 \code{\link{add_keywords}}

@@ -24,14 +24,14 @@ A tibble with 2,400 rows and 5 variables:
 data_control
 }
 \description{
-The table *data_control* contains the downloaded data for each control batch.
-Each line contains the search *hits* for each *keyword* in a control *batch*
-for a given *location* and *date*. Global data gets the value *world* as
-location. Data is downloaded and automatically written to the table through
-\code{download_control}. The function \code{start_db} exports the table
-*data_control* as database connection \code{tbl_control} to
-\code{.GlobalEnv}. Users can access the database table through
-\code{dplyr::tbl}.
+The table \emph{data_control} contains the downloaded data for each control
+batch. Each line contains the search \emph{hits} for each \emph{keyword} in a
+control \emph{batch} for a given \emph{location} and \emph{date}. Global data
+gets the value \emph{world} as location. Data is downloaded and automatically
+written to the table through \code{download_control}. The function
+\code{start_db} exports the table \emph{data_control} as database connection
+\code{tbl_control} to \code{.GlobalEnv}. Users can access the database table
+through \code{dplyr::tbl}.
 }
 \details{
 The sample data included in \code{data_control} was simulated based on actual

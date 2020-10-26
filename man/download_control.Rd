@@ -21,17 +21,17 @@ of class \code{numeric} or object of class \code{list} containing single
 objects of class \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is
-downloaded.' Refers to lists generated in \code{start_db}.}
+downloaded. Refers to lists generated in \code{start_db}.}
 }
 \value{
 Message that data was downloaded successfully. Data is uploaded
 to data_control.
 }
 \description{
-The function downloads search volumes from Google Trends for a *control*
-batch in a set of *locations*. Data is automatically written to table
-*data_control*. For \code{download_control_global} the input *location* is
-automatically set to *world*.
+The function downloads search volumes from Google Trends for a \emph{control}
+batch in a set of \emph{locations}. Data is automatically written to table
+\emph{data_control}. For \code{download_control_global} the input
+\emph{location} is automatically set to \emph{world}.
 }
 \details{
 Downloads through the Google Trends API are made through

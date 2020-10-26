@@ -32,10 +32,10 @@ to data_object.
 }
 \description{
 The function downloads search volumes from Google Trends for an object batch
-(*batch_o*) and one keyword from a control batch (*batch_c*) in a set of
-*locations*. Data is automatically written to table *data_object*. For
-\code{download_object_global} the input *location* is automatically set to
-*world*.
+(\emph{batch_o}) and one keyword from a control batch (\emph{batch_c}) in a
+set of \emph{locations}. Data is automatically written to table
+\emph{data_object}. For \code{download_object_global} the input
+\emph{location} is automatically set to \emph{world}.
 }
 \details{
 Downloads through the Google Trends API are made through

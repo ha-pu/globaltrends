@@ -24,18 +24,10 @@ set of locations should be filtered. Defaults to \code{"countries"}.}
 Boxplot of time series as \code{ggplot2} object.
 }
 \description{
-Boxplot of DOI time series
+The function uses the output of \code{export_doi} to prepare a box plot of
+the distribution of degree of internationalization values. When the output
+includes more than nine keywords, only the first nine keywords are used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_doi_box} is limited to 9 unique keywords to avoid an overcrowded
-plot. When \code{data_doi} includes more than 9 unique keywords, only
-the first 9 keywords are used.
-}
-
 \examples{
 \dontrun{
 data <- export_doi(object = 1, locations = "countries")
@@ -44,4 +36,7 @@ plot_doi_box(data_doi = data, type = "sad", measure = "hhi")
 plot_doi_box(data_doi = data, type = "trd", measure = "entropy")
 }
 
+}
+\seealso{
+\code{\link{export_doi}}
 }

@@ -21,18 +21,10 @@ either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
 Line plot of time series as \code{ggplot2} object.
 }
 \description{
-Line plot of VOI time series
+The function uses the output of \code{export_voi} to prepare a time series
+plot of volume of internationalization values. When the output includes more
+than nine keywords, only the first nine keywords are used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_voi_ts} is limited to 9 unique keywords to avoid an overcrowded
- plot. When \code{data_voi} includes more than 9 unique keywords, only
-the first 9 keywords are used.
-}
-
 \examples{
 \dontrun{
 data <- export_voi(object = 1)
@@ -41,4 +33,7 @@ plot_voi_ts(data_voi = data, type = "sad", smooth = FALSE)
 plot_voi_ts(data_voi = data, type = "trd", smooth = TRUE)
 }
 
+}
+\seealso{
+\code{\link{export_voi}}
 }

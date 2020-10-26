@@ -37,18 +37,11 @@ set of locations should be filtered. Defaults to \code{"countries"}.}
 Line plot of time series as \code{ggplot2} object.
 }
 \description{
-Line plots of VOI and DOI time series
+The function uses the outputs of \code{export_voi} and \code{export_doi} to
+prepare a parallel time series plot of volume and degree of
+internationalization values. When the output includes more than one keyword,
+only the first keyword is used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_voi_doi} is limited to 1 unique keyword to avoid an
-overcrowded plot. When \code{data_doi} or \code{data_score} includes
-more than 1 unique keyword, only the first keyword is used.
-}
-
 \examples{
 \dontrun{
 data1 <- export_voi(keyword = "manchester united")
@@ -58,4 +51,7 @@ plot_voi_doi(data_voi = data1, data_doi = data2, type = "sad", measure = "hhi", 
 plot_voi_doi(data_voi = data1, data_doi = data2, type = "trd", measure = "entropy", smooth = TRUE)
 }
 
+}
+\seealso{
+\code{\link{export_voi}}, \code{\link{export_doi}}
 }

@@ -25,13 +25,14 @@ A tibble with 8,640 rows and 6 variables:
 data_object
 }
 \description{
-The table *data_object* contains the downloaded data for each object batch.
-Each line contains the search *hits* for each *keyword* in an object
-*batch_o* for a given *location* and *date*. The column *batch_c* indicates
-the control batch to which the data will be mapped. Global data takes the
-value *world* as location. Data is downloaded and automatically written to
-the table through \code{download_object}. The function \code{start_db}
-exports the table *data_object* as database connection \code{tbl_object} to
+The table \emph{data_object} contains the downloaded data for each object
+batch. Each line contains the search \emph{hits} for each \emph{keyword} in
+an object \emph{batch_o} for a given \emph{location} and \emph{date}. The
+column \emph{batch_c} indicates the control batch to which the data will be
+mapped. Global data takes the value \emph{world} as location. Data is
+downloaded and automatically written to the table through
+\code{download_object}. The function \code{start_db} exports the table
+\emph{data_object} as database connection \code{tbl_object} to
 \code{.GlobalEnv}. Users can access the database table through
 \code{dplyr::tbl}.
 }

@@ -29,15 +29,16 @@ A tibble with 4,320 rows and 9 variables:
 data_doi
 }
 \description{
-The table *data_doi* contains the degree of internationalization (doi) for
-each object batch. Each line contains the doi computed as inverted *gini*
-coefficient, as inverted *hhi*, or inverted *entropy* for each *keyword* in
-an object *batch_o* for a given *date* and *type* of search score. The column
-*batch_c* indicates the control batch that has been used as baseline search
-score. Column *locations* indicates which set of locations was used to
-compute the distribution of search scores. Degree of internationalization is
-computed automatically written to the table through \code{compute_doi}. The
-function \code{start_db} exports the table *data_doi* as database connection
+The table \emph{data_doi} contains the degree of internationalization (doi)
+for each object batch. Each line contains the doi computed as inverted
+\emph{gini} coefficient, as inverted \emph{hhi}, or inverted \emph{entropy}
+for each \emph{keyword} in an object \emph{batch_o} for a given \emph{date}
+and \emph{type} of search score. The column \emph{batch_c} indicates the
+control batch that has been used as baseline search score. Column
+\emph{locations} indicates which set of locations was used to compute the
+distribution of search scores. Degree of internationalization is computed
+automatically written to the table through \code{compute_doi}. The function
+\code{start_db} exports the table \emph{data_doi} as database connection
 \code{tbl_doi} to \code{.GlobalEnv}. Users can access the database table
 through \code{dplyr::tbl}.
 }

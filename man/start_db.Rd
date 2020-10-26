@@ -37,8 +37,9 @@ The function exports the following objects to .GlobalEnv:
 The function connects to the database file "db/globaltrends_db.sqlite" in the
 working directory. After connecting to the database connections to the
 database tables (through \code{dplyr::tbl}) are created. Data from the tables
-*batch_keywords* and *batch_time* are exported to the \code{tibble} objects
-*keywords_control*, *keywords_object*, *time_control*, and *time_object*.
+\emph{batch_keywords} and \emph{batch_time} are exported to the \code{tibble}
+objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
+and \emph{time_object}.
 }
 \examples{
 \dontrun{

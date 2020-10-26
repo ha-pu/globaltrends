@@ -28,15 +28,16 @@ A tibble with 6,000 rows and 8 variables:
 data_score
 }
 \description{
-The table *data_score* contains the search scores for each object batch. Each
-line contains the search observed search score (*score_obs*), the seasonally
-adjusted search score (*score_sad*), and the trend only search score
-(*score_trd*) for each *keyword* in an object *batch_o* for a given
-*location* and *date*. The column *batch_c* indicates the control batch that
-has been used as baseline search score. Global data takes the value *world*
-as location. Search scores are computed automatically written to the table
-through \code{compute_score}. The function \code{start_db} exports the table
-*data_score* as database connection \code{tbl_score} to \code{.GlobalEnv}.
+The table \emph{data_score} contains the search scores for each object batch.
+Each line contains the search observed search score (\emph{score_obs}), the
+seasonally adjusted search score (\emph{score_sad}), and the trend only
+search score (\emph{score_trd}) for each \emph{keyword} in an object
+\emph{batch_o} for a given \emph{location} and \emph{date}. The column
+\emph{batch_c} indicates the control batch that has been used as baseline
+search score. Global data takes the value \emph{world} as location. Search
+scores are computed automatically written to the table through
+\code{compute_score}. The function \code{start_db} exports the table
+\emph{data_score} as database connection \code{tbl_score} to \code{.GlobalEnv}.
 Users can access the database table through \code{dplyr::tbl}.
 }
 \details{

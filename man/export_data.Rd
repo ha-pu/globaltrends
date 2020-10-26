@@ -10,15 +10,15 @@
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
-export_control(control = NULL)
+export_control(control = NULL, locations = NULL)
 
 export_control_global(control = NULL)
 
-export_object(keyword = NULL, object = NULL, control = NULL)
+export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_object_global(keyword = NULL, object = NULL, control = NULL)
 
-export_score(keyword = NULL, object = NULL, control = NULL)
+export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
 
@@ -33,13 +33,15 @@ export_doi(
 \arguments{
 \item{control}{Control batch number for which data should be exported.}
 
+\item{locations}{List of locations for which the search score is used.
+For \code{export_control}, \code{export_object}, or \code{export_score}
+refers to lists generated in \code{start_db}. For \code{export_doi}
+object of class \code{character}.}
+
 \item{keyword}{Object keywords for which data should be exported. Object of
 class \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
-
-\item{locations}{Set of locations for which data should be exported. Object
-of class \code{character}.}
 
 \item{type}{Type of time series for which data should be exported. Element
 of class \code{character}. Relevant only for "export_global" and
@@ -62,18 +64,23 @@ hhi, entropy, control, object, locations
 }
 }
 \description{
-Export data from database table
+The function allows to export data from database tables.
 }
 \details{
-
+Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
+\emph{locations}, or \emph{type}. Not all filters are applicable for all
+functions. When filter \emph{keyword} and \emph{object} are used together,
+\emph{keyword} overrules \emph{object}. Currently the functions do not
+include list inputs - users are advised to \code{purrr::map_dfr} or
+\code{dplyr::filter} instead.
 }
 \examples{
 \dontrun{
 export_control(control = 2)
 
-export_object(keyword = "manchester united")
+export_object(keyword = "manchester united", locations = countries)
 
-export_score(object = 3, control = 1) \%>\%
+export_score(object = 3, control = 1, locations = us_states) \%>\%
   readr::write_csv("data_score.csv")
 
 export_doi(
@@ -85,5 +92,7 @@ export_doi(
 
 }
 \seealso{
-
+\code{\link{data_control}}, \code{\link{data_object}},
+\code{\link{data_score}}, \code{\link{data_doi}},
+\code{\link[purrr]{map_dfr}}, \code{\link[dplyr]{filter}}
 }

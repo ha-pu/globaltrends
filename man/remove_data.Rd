@@ -21,10 +21,15 @@ Message that data was removed successfully. Data is removed
 from database.
 }
 \description{
-Remove data from database tables
+The function removes data from database tables for control or object batches.
 }
 \details{
-
+The function removes data "greedily": all data that builds on the deleted
+data is removed. For example, when data from \emph{data_control} is removed
+data in \emph{data_object} that maps to this control batch is also removed.
+The dependency structure works as follows: \emph{batch_keyword} /
+\emph{batch_time} -> \emph{data_control} -> \emph{data_object} ->
+\emph{data_score} -> \emph{data_doi}.
 }
 \examples{
 \dontrun{
@@ -34,5 +39,7 @@ remove_data(table = "data_score", control = 1, object = 1)
 
 }
 \seealso{
-
+\code{\link{batch_keywords}}, \code{\link{batch_time}},
+\code{\link{data_control}}, \code{\link{data_object}},
+\code{\link{data_score}}, \code{\link{data_doi}}
 }

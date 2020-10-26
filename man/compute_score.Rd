@@ -31,10 +31,26 @@ Message that data was computed successfully. Data is uploaded
 to data_score.
 }
 \description{
-Compute keyword-country search score
+The function computes search scores for object keywords. Search volumes for
+control and object batches are mapped to the same base. Next, search volumes
+for object batches are divided by the sum of search volumes for the
+respective control batch. \code{compute_voi} computes volume of
+internationalization (voi) as global search scores.
 }
 \details{
+The search score computation proceeds in four steps. First, the function
+aggregates all search volumes to monthly data. Then, it applies some optional
+time series adjustments: seasonally adjusted (\code{forecast::seasadj}) and
+trend only (\code{stats::stl}). Next, it follows the procedure outlined by
+Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
+the mapping, object search volumes are divided by the sum of control search
+volumes in the respective control batch. We use the sum of search volumes for
+a set of control keywords, rather than the search volumes for a single
+control keyword, to smooth-out variation in the underlying control data.
 
+Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
+Uncertainty index for the United States and Australia. Economics Letters,
+161: 149-153.
 }
 \examples{
 \dontrun{

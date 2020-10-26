@@ -17,12 +17,12 @@ A tibble with 19 rows and 3 variables:
 batch_keywords
 }
 \description{
-The table *batch_keywords* contains the keywords per batch. Each line
-contains one *keyword*, the *type* of the batch (i.e. control or object)
-and the id of the *batch* to which the keyword is assigned. Keywords can be
-added through \code{add_keywords}. The function \code{start_db} exports the
-table *batch_keywords* as objects \code{keywords_control} and
-\code{keywords_object} to \code{.GlobalEnv}.
+The table \emph{batch_keywords} contains the keywords per batch. Each line
+contains one \emph{keyword}, the \emph{type} of the batch (i.e. control or
+object) and the id of the \emph{batch} to which the keyword is assigned.
+Keywords can be added through \code{add_keywords}. The function
+\code{start_db} exports the table \emph{batch_keywords} as objects
+\code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
 }
 \seealso{
 \code{\link{add_keywords}}
