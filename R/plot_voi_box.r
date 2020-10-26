@@ -1,17 +1,16 @@
 #' @title Boxplot of VOI time series
 #'
 #' @description
-#' @details
+#' The function uses the output of \code{export_voi} to prepare a box plot of
+#' the distribution of volume of internationalization values. When the output
+#' includes more than nine keywords, only the first nine keywords are used.
 #'
 #' @param data_voi Data exported from \code{export_voi} function.
 #' @inheritParams plot_doi_box
 #'
-#' @section Warning:
-#' \code{plot_voi_box} is limited to 9 unique keywords to avoid an overcrowded
-#' plot. When \code{data_voi} includes more than 9 unique keywords, only
-#' the first 9 keywords are used.
-#'
 #' @return Boxplot of time series as \code{ggplot2} object.
+#'
+#' @seealso \code{\link{export_voi}}
 #'
 #' @examples
 #' \dontrun{

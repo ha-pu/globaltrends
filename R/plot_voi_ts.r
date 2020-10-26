@@ -1,17 +1,16 @@
 #' @title Line plot of VOI time series
 #'
 #' @description
-#' @details
+#' The function uses the output of \code{export_voi} to prepare a time series
+#' plot of volume of internationalization values. When the output includes more
+#' than nine keywords, only the first nine keywords are used.
 #'
 #' @inheritParams plot_doi_ts
 #' @inheritParams plot_voi_box
 #'
-#' @section Warning:
-#' \code{plot_voi_ts} is limited to 9 unique keywords to avoid an overcrowded
-#'  plot. When \code{data_voi} includes more than 9 unique keywords, only
-#' the first 9 keywords are used.
-#'
 #' @return Line plot of time series as \code{ggplot2} object.
+#'
+#' @seealso \code{\link{export_voi}}
 #'
 #' @examples
 #' \dontrun{

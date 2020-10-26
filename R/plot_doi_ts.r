@@ -1,19 +1,18 @@
 #' @title Line plot of DOI time series
 #'
 #' @description
-#' @details
+#' The function uses the output of \code{export_doi} to prepare a time series
+#' plot of degree of internationalization values. When the output includes more
+#' than nine keywords, only the first nine keywords are used.
 #'
 #' @inheritParams plot_doi_box
 #' @param smooth Object of class \code{logical} indicating whether the
 #' \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
 #' \code{TRUE}.
 #'
-#' @section Warning:
-#' \code{plot_doi_ts} is limited to 9 unique keywords to avoid an overcrowded
-#'  plot. When \code{data_doi} includes more than 9 unique keywords, only
-#' the first 9 keywords are used.
-#'
 #' @return Line plot of time series as \code{ggplot2} object.
+#'
+#' @seealso \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{

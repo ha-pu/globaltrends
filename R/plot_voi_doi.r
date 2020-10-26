@@ -1,18 +1,18 @@
 #' @title Line plots of VOI and DOI time series
 #'
 #' @description
-#' @details
+#' The function uses the outputs of \code{export_voi} and \code{export_doi} to
+#' prepare a parallel time series plot of volume and degree of
+#' internationalization values. When the output includes more than one keyword,
+#' only the first keyword is used.
 #'
 #' @inheritParams plot_doi_box
 #' @inheritParams plot_doi_ts
 #' @param data_voi Data exported from \code{export_voi} function.
 #'
-#' @section Warning:
-#' \code{plot_voi_doi} is limited to 1 unique keyword to avoid an
-#' overcrowded plot. When \code{data_doi} or \code{data_score} includes
-#' more than 1 unique keyword, only the first keyword is used.
-#'
 #' @return Line plot of time series as \code{ggplot2} object.
+#'
+#' @seealso \code{\link{export_voi}}, \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{

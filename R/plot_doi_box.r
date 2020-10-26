@@ -1,7 +1,9 @@
 #' @title Boxplot of DOI time series
 #'
 #' @description
-#' @details
+#' The function uses the output of \code{export_doi} to prepare a box plot of
+#' the distribution of degree of internationalization values. When the output
+#' includes more than nine keywords, only the first nine keywords are used.
 #'
 #' @param data_doi Data exported from \code{export_doi} function.
 #' @param type Object of class \code{character} indicating the type of time
@@ -13,12 +15,9 @@
 #' @param locations Object of class \code{character} indicating for which
 #' set of locations should be filtered. Defaults to \code{"countries"}.
 #'
-#' @section Warning:
-#' \code{plot_doi_box} is limited to 9 unique keywords to avoid an overcrowded
-#' plot. When \code{data_doi} includes more than 9 unique keywords, only
-#' the first 9 keywords are used.
-#'
 #' @return Boxplot of time series as \code{ggplot2} object.
+#'
+#' @seealso \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{

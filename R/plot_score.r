@@ -1,20 +1,19 @@
 #' @title Bar plot of data_score distribution
 #'
 #' @description
-#' @details
+#' The function uses the output of \code{export_score} to prepare a bar plot of
+#' search scores for the top 10 countries. When the output includes more than
+#' one keyword, only the first keyword is used.
 #'
 #' @param data_score Data exported from \code{export_score} function.
 #' @param type Object of class \code{character} indicating the type of time
 #' series-column from data_score that is used, takes either "obs", "sad", or
 #' "trd". Defaults to "obs".
 #'
-#' @section Warning:
-#' \code{plot_score} is limited to 1 unique keyword to avoid an
-#' overcrowded plot. When \code{data_doi} or \code{data_score} includes
-#' more than 1 unique keyword, only the first keyword is used.
-#'
 #' @return Bar plot of score distribution across locations as \code{ggplot2}
 #' object.
+#'
+#' @seealso \code{\link{export_score}}
 #'
 #' @examples
 #' \dontrun{
