@@ -1,5 +1,8 @@
 #' @title Add batch of control or object keywords
 #'
+#' @description
+#' @details
+#'
 #' @param keyword Keywords that should be added as batch. Vector of class
 #' \code{character} or a \code{list} of \code{character} objects. For control
 #' keywords, batches can consist of up to five keywords, for object keywords
