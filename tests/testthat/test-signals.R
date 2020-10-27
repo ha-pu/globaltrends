@@ -118,7 +118,6 @@ test_that("download_object4", {
 test_that("download_object5", {
   expect_error(download_object_global(control = 1.5, object = 1))
   expect_error(download_object_global(control = "A", object = 1))
-  expect_error(download_object_global(control = TRUE, object = 1))
   expect_error(download_object_global(control = sum, object = 1))
   expect_error(download_object_global(control = 1:5, object = 1))
 })
@@ -545,9 +544,9 @@ test_that("plot_voi_doi6", {
 })
 
 test_that("plot_voi_doi7", {
-  data1 <- export_doi()
-  data2 <- export_voi()
-  expect_warning(plot_voi_doi(data_doi = data1, data_score_global = data2))
+  data1 <- export_voi()
+  data2 <- export_doi()
+  expect_warning(plot_voi_doi(data_voi = data1, data_doi = data2))
 })
 
 # remove_data ----
