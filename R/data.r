@@ -15,7 +15,7 @@
 #'   \item{keyword}{\code{character} keywords included in the respective batch}
 #' }
 #'
-#' @seealso \code{\link{add_batch}}
+#' @seealso \code{\link{add_keyword}}
 "batch_keywords"
 
 #' batch_time
@@ -38,7 +38,7 @@
 #'   "YYYY-MM-DD YYYY-MM-DD"}
 #' }
 #'
-#' @seealso \code{\link{add_batch}}
+#' @seealso \code{\link{add_keyword}}
 "batch_time"
 
 #' data_control
