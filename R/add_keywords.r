@@ -1,15 +1,21 @@
 #' @title Add batch of control or object keywords
 #'
 #' @description
+#' The function adds a batch of keywords and a time period for downloads to the
+#' database. The batches serve as input for all download and computation
+#' functions.
+#' 
 #' @details
+#' Since Google Trends allows a maximum of five keywords, batches of control
+#' keywords can consist of up to five keywords. Since one control keyword is
+#' added to batches of object keywords for mapping, object batch length is
+#' limited to four keywords. When a \code{character} vector contains more than
+#' four (five) keywords, the vector is split into four-keyword (five-keyword)
+#' batches. A \code{list} must contain \code{character} objects of length four
+#' (five) or less.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} objects. For control
-#' keywords, batches can consist of up to five keywords, for object keywords
-#' batch length is limited to four keyowrds. When a \code{character} vector
-#' contains more than four (five) keywords, the vector is split into
-#' four-keyword (five-keyword) batches. A \code{list} must contain
-#' \code{character} objects of length four (five) or less.
+#' \code{character} or a \code{list} of \code{character} objects.
 #' @param time Time frame for which the batch data should be loaded. Object of
 #' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
 #' to "2010-01-01 2019-12-31".
@@ -17,6 +23,7 @@
 #' @return
 #' Message that the batch was created successfully. Batch data is
 #' uploaded to batch_keywords and batch_time.
+#' 
 #' @examples
 #' \dontrun{
 #' add_control_keyword(
@@ -53,7 +60,7 @@
 #' )
 #' }
 #' @seealso \code{\link{batch_keywords}}, \code{\link{batch_time}}
-#' @rdname add_batch
+#' @rdname add_keyword
 #' @export
 
 add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
@@ -90,7 +97,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 .add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
 
 #' @keywords internal
-#' @rdname add_batch
+#' @rdname add_keyword
 #' @method .add_batch character
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
@@ -105,7 +112,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 }
 
 #' @keywords internal
-#' @rdname add_batch
+#' @rdname add_keyword
 #' @method .add_batch list
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
@@ -183,13 +190,21 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' add_synonym.list
 #'
 #' @description
-#' @details
+#' The function allows to add synonyms for object keywords. Sometimes, objects
+#' of interest are searched with different keywords on Google, e.g. FC Bayern
+#' for Bayern Munich. Search scores for keywords that are added as synonyms are
+#' aggregated when running \code{compute_score}. The function allows only
+#' synonyms for a single keyword.
 #'
-#' @param keyword Keyword of type \code{character} for which the synonmys are
-#' added
-#' @param synonym Synonmy of type \code{character}
+#' @param keyword Keyword of type \code{character} and length 1 for which the
+#' synonyms are added.
+#' @param synonym Synonym of type \code{character}.
 #'
 #' @return
+#' Message that the synonym has been added successfully. Synonym data is
+#' uploaded to keyword_synonyms.
+#'
+#' @seealso \code{\link{compute_score}}
 #'
 #' @examples
 #' \dontrun{
