@@ -21,11 +21,13 @@
 #' the mapping, object search volumes are divided by the sum of control search
 #' volumes in the respective control batch. We use the sum of search volumes for
 #' a set of control keywords, rather than the search volumes for a single
-#' control keyword, to smooth-out variation in the underlying control data.
+#' control keyword, to smooth-out variation in the underlying control data. When
+#' synonyms were specified through \code{add_synonyms}, search scores for
+#' synonyms are added to the main keyword.
 #'
-#' Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
+#' \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 #' Uncertainty index for the United States and Australia. Economics Letters,
-#' 161: 149-153.
+#' 161: 149-153.}
 #'
 #'
 #' @param control Control batch for which the data is downloaded. Object
@@ -36,8 +38,8 @@
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}.
 #'
-#' @seealso \code{\link{data_score}}, \code{\link[stats]{stl}},
-#' \code{\link[forecast]{seasadj}}
+#' @seealso \code{\link{data_score}}, \code{\link{add_synonyms}},
+#' \code{\link[stats]{stl}}, \code{\link[forecast]{seasadj}}
 #'
 #' @return Message that data was computed successfully. Data is uploaded
 #' to data_score.
@@ -161,7 +163,8 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
           )
 
           # set to benchmark
-          data_control <- inner_join(qry_object,
+          data_control <- inner_join(
+            qry_object,
             qry_control,
             by = c(
               "location",
@@ -171,7 +174,8 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
             ),
             suffix = c("_o", "_c")
           )
-          data_control <- mutate(data_control,
+          data_control <- mutate(
+            data_control,
             value_o = case_when(
               value_o == 0 ~ 1,
               TRUE ~ value_o
