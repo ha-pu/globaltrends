@@ -4,7 +4,11 @@
 \alias{disconnect_db}
 \title{Disconnect from database}
 \usage{
-disconnect_db()
+disconnect_db(db = globaltrends_db)
+}
+\arguments{
+\item{db}{Connection to database file that should be closed. Defaults
+to \emph{globaltrends_db}.}
 }
 \value{
 Message that disconnection was successful.

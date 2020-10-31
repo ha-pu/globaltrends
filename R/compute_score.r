@@ -22,7 +22,7 @@
 #' volumes in the respective control batch. We use the sum of search volumes for
 #' a set of control keywords, rather than the search volumes for a single
 #' control keyword, to smooth-out variation in the underlying control data. When
-#' synonyms were specified through \code{add_synonyms}, search scores for
+#' synonyms were specified through \code{add_synonym}, search scores for
 #' synonyms are added to the main keyword.
 #'
 #' \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
@@ -38,7 +38,7 @@
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}.
 #'
-#' @seealso \code{\link{data_score}}, \code{\link{add_synonyms}},
+#' @seealso \code{\link{data_score}}, \code{\link{add_synonym}},
 #' \code{\link[stats]{stl}}, \code{\link[forecast]{seasadj}}
 #'
 #' @return Message that data was computed successfully. Data is uploaded

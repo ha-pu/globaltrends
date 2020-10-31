@@ -47,7 +47,7 @@ the mapping, object search volumes are divided by the sum of control search
 volumes in the respective control batch. We use the sum of search volumes for
 a set of control keywords, rather than the search volumes for a single
 control keyword, to smooth-out variation in the underlying control data. When
-synonyms were specified through \code{add_synonyms}, search scores for
+synonyms were specified through \code{add_synonym}, search scores for
 synonyms are added to the main keyword.
 
 \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
@@ -62,6 +62,6 @@ compute_score(object = as.list(1:5), control = 1, locations = countries)
 
 }
 \seealso{
-\code{\link{data_score}}, \code{\link{add_synonyms}},
+\code{\link{data_score}}, \code{\link{add_synonym}},
 \code{\link[stats]{stl}}, \code{\link[forecast]{seasadj}}
 }

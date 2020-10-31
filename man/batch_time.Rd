@@ -28,6 +28,6 @@ downloaded per batch. Each line contains one \emph{time} frame, the
 \code{.GlobalEnv}.
 }
 \seealso{
-\code{\link{add_keyword}}
+\code{\link[globaltrends]{add_keyword}}
 }
 \keyword{datasets}
