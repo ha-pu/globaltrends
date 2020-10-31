@@ -4,7 +4,7 @@
 #' The function adds a batch of keywords and a time period for downloads to the
 #' database. The batches serve as input for all download and computation
 #' functions.
-#' 
+#'
 #' @details
 #' Since Google Trends allows a maximum of five keywords, batches of control
 #' keywords can consist of up to five keywords. Since one control keyword is
@@ -23,7 +23,7 @@
 #' @return
 #' Message that the batch was created successfully. Batch data is
 #' uploaded to batch_keywords and batch_time.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' add_control_keyword(
@@ -70,7 +70,7 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 #' @title Add batch of object keywords
 #'
-#' @rdname add_batch
+#' @rdname add_keyword
 #' @export
 
 add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
@@ -87,6 +87,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' .add_batch.character
 #' .add_batch.list
 #'
+#' @rdname dot-add_batch
+#'
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -96,8 +98,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 .add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
 
+#' @rdname dot-add_batch
 #' @keywords internal
-#' @rdname add_keyword
 #' @method .add_batch character
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
@@ -111,8 +113,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
   return(new_batches)
 }
 
+#' @rdname dot-add_batch
 #' @keywords internal
-#' @rdname add_keyword
 #' @method .add_batch list
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
