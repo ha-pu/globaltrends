@@ -3,26 +3,15 @@
 \name{add_control_keyword}
 \alias{add_control_keyword}
 \alias{add_object_keyword}
-\alias{.add_batch.character}
-\alias{.add_batch.list}
 \title{Add batch of control or object keywords}
 \usage{
 add_control_keyword(keyword, time = "2010-01-01 2019-12-31")
 
 add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
-
-\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2019-12-31", max)
-
-\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2019-12-31", max)
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of class
-\code{character} or a \code{list} of \code{character} objects. For control
-keywords, batches can consist of up to five keywords, for object keywords
-batch length is limited to four keyowrds. When a \code{character} vector
-contains more than four (five) keywords, the vector is split into
-four-keyword (five-keyword) batches. A \code{list} must contain
-\code{character} objects of length four (five) or less.}
+\code{character} or a \code{list} of \code{character} objects.}
 
 \item{time}{Time frame for which the batch data should be loaded. Object of
 class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
@@ -33,9 +22,18 @@ Message that the batch was created successfully. Batch data is
 uploaded to batch_keywords and batch_time.
 }
 \description{
-Add batch of control or object keywords
-
-Add batch of object keywords
+The function adds a batch of keywords and a time period for downloads to the
+database. The batches serve as input for all download and computation
+functions.
+}
+\details{
+Since Google Trends allows a maximum of five keywords, batches of control
+keywords can consist of up to five keywords. Since one control keyword is
+added to batches of object keywords for mapping, object batch length is
+limited to four keywords. When a \code{character} vector contains more than
+four (five) keywords, the vector is split into four-keyword (five-keyword)
+batches. A \code{list} must contain \code{character} objects of length four
+(five) or less.
 }
 \examples{
 \dontrun{
@@ -76,4 +74,3 @@ add_control_keyword(
 \seealso{
 \code{\link{batch_keywords}}, \code{\link{batch_time}}
 }
-\keyword{internal}

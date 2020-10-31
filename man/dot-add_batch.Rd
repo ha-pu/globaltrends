@@ -7,6 +7,10 @@
 \title{Add keyword batches to batch_keywords and batch_time}
 \usage{
 .add_batch(type, keyword, time = "2010-01-01 2019-12-31", max)
+
+\method{.add_batch}{character}(type, keyword, time = "2010-01-01 2019-12-31", max)
+
+\method{.add_batch}{list}(type, keyword, time = "2010-01-01 2019-12-31", max)
 }
 \description{
 Add keyword batches to batch_keywords and batch_time

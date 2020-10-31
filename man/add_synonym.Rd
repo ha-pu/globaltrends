@@ -13,23 +13,28 @@ add_synonym(keyword, synonym)
 \method{add_synonym}{list}(keyword, synonym)
 }
 \arguments{
-\item{keyword}{Keyword of type \code{character} for which the synonmys are
-added}
+\item{keyword}{Keyword of type \code{character} and length 1 for which the
+synonyms are added.}
 
-\item{synonym}{Synonmy of type \code{character}}
+\item{synonym}{Synonym of type \code{character}.}
 }
 \value{
-
+Message that the synonym has been added successfully. Synonym data is
+uploaded to keyword_synonyms.
 }
 \description{
-Add keyword synonyms
-}
-\details{
-
+The function allows to add synonyms for object keywords. Sometimes, objects
+of interest are searched with different keywords on Google, e.g. FC Bayern
+for Bayern Munich. Search scores for keywords that are added as synonyms are
+aggregated when running \code{compute_score}. The function allows only
+synonyms for a single keyword.
 }
 \examples{
 \dontrun{
 add_synonym(keyword = "fc bayern", synonym = "bayern munich")
 }
 
+}
+\seealso{
+\code{\link{compute_score}}
 }

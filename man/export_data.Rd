@@ -94,5 +94,5 @@ export_doi(
 \seealso{
 \code{\link{data_control}}, \code{\link{data_object}},
 \code{\link{data_score}}, \code{\link{data_doi}},
-\code{\link[purrr]{map_dfr}}, \code{\link[dplyr]{filter}}
+\code{\link[purrr]{map}}, \code{\link[dplyr]{filter}}
 }
