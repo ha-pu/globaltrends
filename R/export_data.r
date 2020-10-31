@@ -64,6 +64,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
+#' @importFrom rlang .data
 #' @importFrom glue glue
 
 export_control <- function(control = NULL, locations = NULL) {
@@ -73,10 +74,10 @@ export_control <- function(control = NULL, locations = NULL) {
   )
   if (!is.null(locations)) {
     in_location <- locations
-    out <- filter(out, location %in% in_location)
+    out <- filter(out, .data$location %in% in_location)
   }
-  out <- filter(out, location != "world")
-  out <- rename(out, control = batch)
+  out <- filter(out, .data$location != "world")
+  out <- rename(out, control = .data$batch)
   return(out)
 }
 
@@ -88,8 +89,8 @@ export_control_global <- function(control = NULL) {
     table = .tbl_control,
     in_control = control
   )
-  out <- filter(out, location == "world")
-  out <- rename(out, control = batch)
+  out <- filter(out, .data$location == "world")
+  out <- rename(out, control = .data$batch)
   return(out)
 }
 
@@ -105,10 +106,10 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
   )
   if (!is.null(locations)) {
     in_location <- locations
-    out <- filter(out, location %in% in_location)
+    out <- filter(out, .data$location %in% in_location)
   }
-  out <- filter(out, location != "world")
-  out <- rename(out, object = batch_o, control = batch_c)
+  out <- filter(out, .data$location != "world")
+  out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   return(out)
 }
 
@@ -122,8 +123,8 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
     in_object = object,
     in_control = control
   )
-  out <- filter(out, location == "world")
-  out <- rename(out, object = batch_o, control = batch_c)
+  out <- filter(out, .data$location == "world")
+  out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   return(out)
 }
 
@@ -139,11 +140,11 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   )
   if (!is.null(locations)) {
     in_location <- locations
-    out <- filter(out, location %in% in_location)
+    out <- filter(out, .data$location %in% in_location)
   }
-  out <- filter(out, location != "world")
-  out <- rename(out, control = batch_c, object = batch_o)
-  out <- select(out, -synonym)
+  out <- filter(out, .data$location != "world")
+  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- select(out, -.data$synonym)
   return(out)
 }
 
@@ -157,9 +158,9 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
     in_object = object,
     in_control = control
   )
-  out <- filter(out, location == "world")
-  out <- rename(out, control = batch_c, object = batch_o)
-  out <- select(out, -synonym)
+  out <- filter(out, .data$location == "world")
+  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- select(out, -.data$synonym)
   return(out)
 }
 
@@ -175,7 +176,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
     in_locations = locations,
     in_type = type
   )
-  out <- rename(out, control = batch_c, object = batch_o)
+  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   return(out)
 }
 
@@ -206,13 +207,13 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
 
   if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
-  if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
-  if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch == in_object)
-  if (!is.null(in_control)) table <- filter(table, batch == in_control)
-  if (!is.null(in_type)) table <- filter(table, type == in_type)
+  if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
+  if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch == in_object)
+  if (!is.null(in_control)) table <- filter(table, .data$batch == in_control)
+  if (!is.null(in_type)) table <- filter(table, .data$type == in_type)
 
   table <- collect(table)
-  table <- mutate(table, date = as_date(date))
+  table <- mutate(table, date = as_date(.data$date))
   return(table)
 }
 
@@ -244,13 +245,13 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)
-  if (!is.null(in_keyword)) table <- filter(table, keyword == in_keyword)
-  if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, batch_o == in_object)
-  if (!is.null(in_control)) table <- filter(table, batch_c == in_control)
-  if (!is.null(in_locations)) table <- filter(table, locations == in_locations)
-  if (!is.null(in_type)) table <- filter(table, type == in_type)
+  if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
+  if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch_o == in_object)
+  if (!is.null(in_control)) table <- filter(table, .data$batch_c == in_control)
+  if (!is.null(in_locations)) table <- filter(table, .data$locations == in_locations)
+  if (!is.null(in_type)) table <- filter(table, .data$type == in_type)
 
   table <- collect(table)
-  table <- mutate(table, date = as_date(date))
+  table <- mutate(table, date = as_date(.data$date))
   return(table)
 }

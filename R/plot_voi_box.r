@@ -27,6 +27,7 @@
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
+#' @importFrom rlang .data
 
 plot_voi_box <- function(data_voi, type = "obs") {
   if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
@@ -37,10 +38,10 @@ plot_voi_box <- function(data_voi, type = "obs") {
   len_keywords <- length(unique(data_voi$keyword))
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a boxplot.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
-    data_voi <- filter(data_voi, keyword %in% unique(data_voi$keyword)[1:9])
+    data_voi <- filter(data_voi, .data$keyword %in% unique(data_voi$keyword)[1:9])
   }
   data_voi$measure <- data_voi[paste0("score_", in_type)][[1]]
-  plot <- ggplot(data_voi, aes(x = keyword, y = measure)) +
+  plot <- ggplot(data_voi, aes(x = .data$keyword, y = .data$measure)) +
     geom_boxplot() +
     labs(x = NULL, y = "Volume of internationalization")
 

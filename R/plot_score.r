@@ -37,6 +37,7 @@
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
+#' @importFrom rlang .data
 #' @importFrom stringr str_to_upper
 
 plot_score <- function(data_score, type = "obs") {
@@ -50,18 +51,18 @@ plot_score <- function(data_score, type = "obs") {
 
   if (len_keywords > 1) {
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
-    data_score <- filter(data_score, keyword %in% unique(data_score$keyword)[[1]])
+    data_score <- filter(data_score, .data$keyword %in% unique(data_score$keyword)[[1]])
   }
 
   keyword <- unique(data_score$keyword)[[1]]
-  data_score <- group_by(data_score, location)
-  data_score <- summarise(data_score, measure = mean(measure), .groups = "drop")
-  data_score <- arrange(data_score, -measure)
+  data_score <- group_by(data_score, .data$location)
+  data_score <- summarise(data_score, measure = mean(.data$measure), .groups = "drop")
+  data_score <- arrange(data_score, -.data$measure)
   data_score <- slice(data_score, 1:10)
-  data_score <- mutate(data_score, location = as_factor(location))
+  data_score <- mutate(data_score, location = as_factor(.data$location))
 
   plot <- ggplot(data_score) +
-    geom_col(aes(x = location, y = measure))
+    geom_col(aes(x = .data$location, y = .data$measure))
 
 
   plot <- plot +

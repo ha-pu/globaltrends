@@ -94,6 +94,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @importFrom dplyr filter
 #' @importFrom glue glue
 #' @importFrom purrr map
+#' @importFrom rlang .data
 #' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
@@ -141,14 +142,14 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
     dbWriteTable(conn = globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "control")
     dbWriteTable(conn = globaltrends_db, name = "batch_time", value = data, append = TRUE)
-    keywords_control <- filter(.tbl_keywords, type == "control")
-    keywords_control <- select(keywords_control, -type)
+    keywords_control <- filter(.tbl_keywords, .data$type == "control")
+    keywords_control <- select(keywords_control, -.data$type)
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", ".keywords_control")
     invisible(list2env(lst_export, envir = .GlobalEnv))
-    time_control <- filter(.tbl_time, type == "control")
-    time_control <- select(time_control, -type)
+    time_control <- filter(.tbl_time, .data$type == "control")
+    time_control <- select(time_control, -.data$type)
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", ".time_control")
@@ -165,14 +166,14 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
     dbWriteTable(conn = globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "object")
     dbWriteTable(conn = globaltrends_db, name = "batch_time", value = data, append = TRUE)
-    keywords_object <- filter(.tbl_keywords, type == "object")
-    keywords_object <- select(keywords_object, -type)
+    keywords_object <- filter(.tbl_keywords, .data$type == "object")
+    keywords_object <- select(keywords_object, -.data$type)
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", ".keywords_object")
     invisible(list2env(lst_export, envir = .GlobalEnv))
-    time_object <- filter(.tbl_time, type == "object")
-    time_object <- select(time_object, -type)
+    time_object <- filter(.tbl_time, .data$type == "object")
+    time_object <- select(time_object, -.data$type)
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", ".time_object")

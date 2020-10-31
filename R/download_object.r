@@ -51,6 +51,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
+#' @importFrom rlang .data
 
 download_object <- function(object, control = 1, locations = countries) UseMethod("download_object", object)
 
@@ -75,10 +76,10 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
         in_location <- .x
       }
       if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
-        qry_control <- filter(.tbl_control, batch == control & location == in_location)
+        qry_control <- filter(.tbl_control, .data$batch == control & .data$location == in_location)
         qry_control <- collect(qry_control)
         if (nrow(qry_control) > 0) {
-          terms_con <- summarise(group_by(qry_control, keyword), hits = mean(hits), .groups = "drop")
+          terms_con <- summarise(group_by(qry_control, .data$keyword), hits = mean(.data$hits), .groups = "drop")
           terms_con <- terms_con$keyword[order(terms_con$hits)]
         }
 

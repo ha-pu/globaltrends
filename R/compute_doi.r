@@ -50,6 +50,7 @@
 #' @importFrom glue glue
 #' @importFrom purrr map_dbl
 #' @importFrom purrr walk
+#' @importFrom rlang .data
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
@@ -69,10 +70,10 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
     control <- control[[1]]
     walk(c(control, object), .test_batch)
     if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-      data <- collect(filter(.tbl_score, batch_c == control & batch_o == object))
+      data <- collect(filter(.tbl_score, .data$batch_c == control & .data$batch_o == object))
       data <- filter(
         data,
-        location %in% pull(
+        .data$location %in% pull(
           collect(filter(.tbl_locations, type == locations)),
           location
         )
@@ -81,13 +82,13 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
 
       # compute doi measures
       out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
-      out <- nest(out, data = c(location, score))
+      out <- nest(out, data = c(.data$location, .data$score))
       out <- mutate(out,
-        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
-        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
-        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
+        gini = map_dbl(.data$data, ~ .compute_gini(series = .x$score)),
+        hhi = map_dbl(.data$data, ~ .compute_hhi(series = .x$score)),
+        entropy = map_dbl(.data$data, ~ .compute_entropy(series = .x$score))
       )
-      out <- select(out, date, keyword, type, gini, hhi, entropy)
+      out <- select(out, .data$date, .data$keyword, .data$type, .data$gini, .data$hhi, .data$entropy)
 
       # write data
       out <- mutate(out, batch_c = control, batch_o = object, locations = locations)

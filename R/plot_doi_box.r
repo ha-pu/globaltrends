@@ -34,6 +34,7 @@
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
+#' @importFrom rlang .data
 #' @importFrom stringr str_to_upper
 
 plot_doi_box <- function(data_doi, type = "obs", measure = "gini", locations = "countries") {
@@ -50,12 +51,12 @@ plot_doi_box <- function(data_doi, type = "obs", measure = "gini", locations = "
   len_keywords <- length(unique(data_doi$keyword))
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a boxplot.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
-    data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
+    data_doi <- filter(data_doi, .data$keyword %in% unique(data_doi$keyword)[1:9])
   }
   data_doi$measure <- data_doi[measure][[1]]
-  data_doi <- filter(data_doi, type == paste0("score_", in_type))
-  data_doi <- filter(data_doi, locations == in_locations)
-  plot <- ggplot(data_doi, aes(x = keyword, y = measure)) +
+  data_doi <- filter(data_doi, .data$type == paste0("score_", in_type))
+  data_doi <- filter(data_doi, .data$locations == in_locations)
+  plot <- ggplot(data_doi, aes(x = .data$keyword, y = .data$measure)) +
     geom_boxplot() +
     labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
 

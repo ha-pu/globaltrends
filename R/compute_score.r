@@ -68,6 +68,7 @@
 #' @importFrom glue glue
 #' @importFrom lubridate as_date
 #' @importFrom purrr walk
+#' @importFrom rlang .data
 #' @importFrom stringr str_replace
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
@@ -97,15 +98,15 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
       )) {
         qry_object <- filter(
           .tbl_object,
-          batch_c == control & batch_o == object & location == .x
+          .data$batch_c == control & .data$batch_o == object & .data$location == .x
         )
         qry_object <- collect(qry_object)
         if (nrow(qry_object) != 0) {
-          qry_control <- filter(.tbl_control, batch == control & location == .x)
+          qry_control <- filter(.tbl_control, .data$batch == control & .data$location == .x)
           qry_control <- collect(qry_control)
 
-          qry_control <- mutate(qry_control, date = as_date(date))
-          qry_object <- mutate(qry_object, date = as_date(date))
+          qry_control <- mutate(qry_control, date = as_date(.data$date))
+          qry_object <- mutate(qry_object, date = as_date(.data$date))
 
           # adapt time series frequency
           qry_control <- .reset_date(qry_control)
@@ -113,39 +114,39 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
 
           if (
             min(
-              nrow(count(qry_control, date)),
-              nrow(count(qry_object, date))
+              nrow(count(qry_control, .data$date)),
+              nrow(count(qry_object, .data$date))
             ) >= 24
           ) {
             # adjust to time series and impute negative values
-            qry_control <- nest(qry_control, data = c(date, hits))
-            qry_control <- mutate(qry_control, data = map(data, .adjust_ts))
-            qry_control <- unnest(qry_control, data)
+            qry_control <- nest(qry_control, data = c(.data$date, .data$hits))
+            qry_control <- mutate(qry_control, data = map(.data$data, .adjust_ts))
+            qry_control <- unnest(qry_control, .data$data)
             qry_control <- mutate(qry_control,
               hits_trd = case_when(
-                hits_trd < 0 & hits_sad < 0 ~ 0.1,
-                hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
-                TRUE ~ hits_trd
+                .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
+                .data$hits_trd < 0 ~ (.data$hits_obs + .data$hits_sad) / 2,
+                TRUE ~ .data$hits_trd
               ),
               hits_sad = case_when(
-                hits_sad < 0 & hits_trd < 0 ~ 0.1,
-                hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
-                TRUE ~ hits_sad
+                .data$hits_sad < 0 & .data$hits_trd < 0 ~ 0.1,
+                .data$hits_sad < 0 ~ (.data$hits_obs + .data$hits_trd) / 2,
+                TRUE ~ .data$hits_sad
               )
             )
-            qry_object <- nest(qry_object, data = c(date, hits))
-            qry_object <- mutate(qry_object, data = map(data, .adjust_ts))
-            qry_object <- unnest(qry_object, data)
+            qry_object <- nest(qry_object, data = c(.data$date, .data$hits))
+            qry_object <- mutate(qry_object, data = map(.data$data, .adjust_ts))
+            qry_object <- unnest(qry_object, .data$data)
             qry_object <- mutate(qry_object,
               hits_trd = case_when(
-                hits_trd < 0 & hits_sad < 0 ~ 0.1,
-                hits_trd < 0 ~ (hits_obs + hits_sad) / 2,
-                TRUE ~ hits_trd
+                .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
+                .data$hits_trd < 0 ~ (.data$hits_obs + .data$hits_sad) / 2,
+                TRUE ~ .data$hits_trd
               ),
               hits_sad = case_when(
-                hits_sad < 0 & hits_trd < 0 ~ 0.1,
-                hits_sad < 0 ~ (hits_obs + hits_trd) / 2,
-                TRUE ~ hits_sad
+                .data$hits_sad < 0 & .data$hits_trd < 0 ~ 0.1,
+                .data$hits_sad < 0 ~ (.data$hits_obs + .data$hits_trd) / 2,
+                TRUE ~ .data$hits_sad
               )
             )
           }
@@ -177,52 +178,52 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
           data_control <- mutate(
             data_control,
             value_o = case_when(
-              value_o == 0 ~ 1,
-              TRUE ~ value_o
+              .data$value_o == 0 ~ 1,
+              TRUE ~ .data$value_o
             ),
             value_c = case_when(
-              value_c == 0 ~ 1,
-              TRUE ~ value_c
+              .data$value_c == 0 ~ 1,
+              TRUE ~ .data$value_c
             )
           )
           data_control <- mutate(data_control,
-            benchmark = coalesce(value_o / value_c, 0)
+            benchmark = coalesce(.data$value_o / .data$value_c, 0)
           )
-          data_control <- select(data_control, location, date, key, benchmark)
+          data_control <- select(data_control, .data$location, .data$date, .data$key, .data$benchmark)
           data_control <- inner_join(
             data_control,
             qry_control,
             by = c("location", "date", "key")
           )
-          data_control <- mutate(data_control, value = value * benchmark)
+          data_control <- mutate(data_control, value = .data$value * .data$benchmark)
           data_control <- select(
             data_control,
-            location,
-            date,
-            key,
-            keyword,
-            value
+            .data$location,
+            .data$date,
+            .data$key,
+            .data$keyword,
+            .data$value
           )
 
           data_object <- anti_join(qry_object, data_control, by = c("keyword"))
 
           # compute score
-          data_control <- group_by(data_control, location, date, key)
-          data_control <- summarise(data_control, value_c = sum(value), .groups = "drop")
+          data_control <- group_by(data_control, .data$location, .data$date, .data$key)
+          data_control <- summarise(data_control, value_c = sum(.data$value), .groups = "drop")
           data_object <- left_join(
             data_object,
             data_control,
             by = c("location", "date", "key")
           )
           data_object <- mutate(data_object,
-            score = coalesce(value / value_c, 0),
-            key = str_replace(key, "hits_", "score_")
+            score = coalesce(.data$value / .data$value_c, 0),
+            key = str_replace(.data$key, "hits_", "score_")
           )
-          data_object <- select(data_object, location, date, keyword, key, score)
+          data_object <- select(data_object, .data$location, .data$date, .data$keyword, .data$key, .data$score)
           out <- pivot_wider(
             data_object,
-            names_from = key,
-            values_from = score,
+            names_from = .data$key,
+            values_from = .data$score,
             values_fill = 0
           )
           out <- mutate(
@@ -230,7 +231,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
             batch_c = control,
             batch_o = object,
             synonym = case_when(
-              keyword %in% .keyword_synonyms$synonym ~ TRUE,
+              .data$keyword %in% .keyword_synonyms$synonym ~ TRUE,
               TRUE ~ FALSE
             )
           )
@@ -275,13 +276,14 @@ compute_score_global <- function(object, control = 1) {
 #' @importFrom lubridate month
 #' @importFrom lubridate year
 #' @importFrom lubridate ymd
+#' @importFrom rlang .data
 
 .reset_date <- function(data) {
-  out <- mutate(data, day = 1, month = month(date), year = year(date))
-  out <- group_by(out, location, keyword, year, month, day)
-  out <- summarise(out, hits = mean(hits), .groups = "drop")
-  out <- mutate(out, date = ymd(glue("{year}-{month}-{day}")))
-  out <- select(out, location, keyword, date, hits)
+  out <- mutate(data, day = 1, month = month(.data$date), year = year(.data$date))
+  out <- group_by(out, .data$location, .data$keyword, .data$year, .data$month, .data$day)
+  out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
+  out <- mutate(out, date = ymd(glue("{.data$year}-{.data$month}-{.data$day}")))
+  out <- select(out, .data$location, .data$keyword, .data$date, .data$hits)
   return(out)
 }
 
@@ -319,16 +321,17 @@ compute_score_global <- function(object, control = 1) {
 #' @importFrom dplyr mutate
 #' @importFrom dplyr left_join
 #' @importFrom dplyr select
+#' @importFrom rlang .data
 #' @importFrom purrr walk
 
 .aggregate_synonym <- function() {
-  data_score <- filter(.tbl_score, synonym)
+  data_score <- filter(.tbl_score, .data$synonym)
   data_score <- collect(data_score)
 
   if (nrow(data_score) > 0) {
     walk(unique(data_score$keyword), ~ {
       keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x]
-      data_main <- filter(.tbl_score, keyword == keyword_main)
+      data_main <- filter(.tbl_score, .data$keyword == keyword_main)
       data_main <- collect(data_main)
 
       data_synonym <- filter(data_score, keyword == .x)
@@ -339,26 +342,26 @@ compute_score_global <- function(object, control = 1) {
         suffix = c("", "_s")
       )
       data_main <- mutate(data_main,
-        score_obs = score_obs + coalesce(score_obs_s, 0),
-        score_sad = score_sad + coalesce(score_sad_s, 0),
-        score_trd = score_trd + coalesce(score_trd_s, 0)
+        score_obs = .data$score_obs + coalesce(.data$score_obs_s, 0),
+        score_sad = .data$score_sad + coalesce(.data$score_sad_s, 0),
+        score_trd = .data$score_trd + coalesce(.data$score_trd_s, 0)
       )
       data_main <- select(
         data_main,
-        location,
-        keyword,
-        date,
-        score_obs,
-        score_sad,
-        score_trd,
-        batch_c,
-        batch_o,
-        synonym
+        .data$location,
+        .data$keyword,
+        .data$date,
+        .data$score_obs,
+        .data$score_sad,
+        .data$score_trd,
+        .data$batch_c,
+        .data$batch_o,
+        .data$synonym
       )
 
       data_synonym_agg <- inner_join(
         data_synonym,
-        select(data_main, location, date, batch_c),
+        select(data_main, .data$location, .data$date, .data$batch_c),
         by = c("location", "date", "batch_c")
       )
       data_synonym_agg <- mutate(data_synonym_agg, synonym = 0)

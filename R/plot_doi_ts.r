@@ -31,6 +31,7 @@
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
+#' @importFrom rlang .data
 #' @importFrom stringr str_to_upper
 
 plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
@@ -48,22 +49,22 @@ plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "c
   in_locations <- locations
   len_keywords <- length(unique(data_doi$keyword))
   data_doi$measure <- data_doi[measure][[1]]
-  data_doi <- filter(data_doi, type == paste0("score_", in_type))
-  data_doi <- filter(data_doi, locations == in_locations)
-  plot <- ggplot(data_doi, aes(x = date))
+  data_doi <- filter(data_doi, .data$type == paste0("score_", in_type))
+  data_doi <- filter(data_doi, .data$locations == in_locations)
+  plot <- ggplot(data_doi, aes(x = .data$date))
 
 
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
-    data_doi <- filter(data_doi, keyword %in% unique(data_doi$keyword)[1:9])
+    data_doi <- filter(data_doi, .data$keyword %in% unique(data_doi$keyword)[1:9])
   }
   plot <- plot +
-    geom_line(aes(y = measure)) +
-    facet_wrap(~keyword)
+    geom_line(aes(y = .data$measure)) +
+    facet_wrap(~ .data$keyword)
 
   if (smooth) {
     plot <- plot +
-      geom_smooth(aes(y = measure))
+      geom_smooth(aes(y = .data$measure))
   }
 
   plot <- plot +

@@ -45,6 +45,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom glue glue
 #' @importFrom purrr walk
+#' @importFrom rlang .data
 
 download_control <- function(control, locations = countries) UseMethod("download_control", control)
 

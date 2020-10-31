@@ -36,6 +36,7 @@
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom ggplot2 labs
 #' @importFrom glue glue
+#' @importFrom rlang .data
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_to_upper
 #' @importFrom tidyr pivot_longer
@@ -52,7 +53,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", loc
   if (length(smooth) > 1) stop(glue("Error: 'smooth' must be object of length 1.\nYou provided an object of length {length(smooth)}."))
   if (!is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
 
-  data_doi <- mutate(data_doi, type = str_replace(type, "score_", ""))
+  data_doi <- mutate(data_doi, type = str_replace(.data$type, "score_", ""))
   data_doi$measure <- data_doi[measure][[1]]
   data_voi$hits <- data_voi[paste0("score_", type)][[1]]
   data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"))
@@ -64,22 +65,22 @@ plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", loc
 
   if (len_keywords > 1) {
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
-    data <- filter(data, keyword %in% unique(data$keyword)[[1]])
+    data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
   }
 
-  data <- filter(data, type == in_type)
-  data <- filter(data, locations == in_locations)
+  data <- filter(data, .data$type == in_type)
+  data <- filter(data, .data$locations == in_locations)
 
-  data <- pivot_longer(data, cols = c(hits, measure), names_to = "plot", values_to = "Trend")
-  data <- mutate(data, plot = as_factor(plot))
-  data <- mutate(data, plot = fct_recode(plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
-  plot <- ggplot(data, aes(x = date)) +
-    geom_line(aes(y = Trend)) +
-    facet_wrap(~plot, scales = "free")
+  data <- pivot_longer(data, cols = c(.data$hits, .data$measure), names_to = "plot", values_to = "Trend")
+  data <- mutate(data, plot = as_factor(.data$plot))
+  data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
+  plot <- ggplot(data, aes(x = .data$date)) +
+    geom_line(aes(y = .data$Trend)) +
+    facet_wrap(~ .data$plot, scales = "free")
 
   if (smooth) {
     plot <- plot +
-      geom_smooth(aes(y = Trend))
+      geom_smooth(aes(y = .data$Trend))
   }
 
   plot <- plot +

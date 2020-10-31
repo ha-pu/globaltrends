@@ -7,6 +7,7 @@
 #' @importFrom dplyr select
 #' @importFrom gtrendsR gtrends
 #' @importFrom lubridate as_date
+#' @importFrom rlang .data
 #' @importFrom stringr str_replace
 
 .get_trend <- function(location, term, time = "all") {
@@ -24,10 +25,10 @@
   } else {
     out <- out$interest_over_time
     out <- mutate(out,
-      hits = as.double(str_replace(hits, "<1", "0.1")),
-      date = as_date(date)
+      hits = as.double(str_replace(.data$hits, "<1", "0.1")),
+      date = as_date(.data$date)
     )
-    out <- select(out, location = geo, keyword, date, hits)
+    out <- select(out, location = .data$geo, .data$keyword, .data$date, .data$hits)
     Sys.sleep(stats::runif(1, min = 20, max = 30))
     return(out)
   }
@@ -69,15 +70,15 @@
     in_location <- location
     in_locations <- locations
     if (table == "data_control") {
-      out <- filter(.tbl_control, batch == in_batch_c & location == in_location)
+      out <- filter(.tbl_control, .data$batch == in_batch_c & .data$location == in_location)
     } else if (table == "data_object") {
-      out <- filter(.tbl_object, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
+      out <- filter(.tbl_object, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
     } else if (table == "data_score") {
-      out <- filter(.tbl_score, batch_c == in_batch_c & batch_o == in_batch_o & location == in_location)
+      out <- filter(.tbl_score, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
     } else if (table == "data_doi") {
-      out <- filter(.tbl_doi, batch_c == in_batch_c & batch_o == in_batch_o & locations == in_locations)
+      out <- filter(.tbl_doi, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$locations == in_locations)
     } else if (table == "data_global") {
-      out <- filter(.tbl_global, batch == in_batch_o)
+      out <- filter(.tbl_global, .data$batch == in_batch_o)
     }
     out <- utils::head(out)
     out <- collect(out)
