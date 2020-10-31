@@ -348,6 +348,9 @@ start_db <- function() {
 #'
 #' @seealso \code{\link{initialize_db}}, \code{\link{start_db}}
 #'
+#' @param db Connection to database file that should be closed. Defaults
+#' to \emph{globaltrends_db}.
+#'
 #' @return
 #' Message that disconnection was successful.
 #'
