@@ -74,8 +74,8 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       data <- filter(
         data,
         .data$location %in% pull(
-          collect(filter(.tbl_locations, type == locations)),
-          location
+          collect(filter(.tbl_locations, .data$type == locations)),
+          .data$location
         )
       )
       data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
