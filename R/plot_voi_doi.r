@@ -12,7 +12,9 @@
 #'
 #' @return Line plot of time series as \code{ggplot2} object.
 #'
-#' @seealso \code{\link{export_voi}}, \code{\link{export_doi}}
+#' @seealso
+#' \code{\link{export_voi}},
+#' \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{

@@ -1,19 +1,20 @@
 Package: globaltrends
 Type: Package
-Title: Download and measure global trends through Google searches
+Title: Download and measure global trends through Google searche volumes
 Version: 0.0.3
 Authors@R: c(
-      person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
-	  person("Jakob", "Müllner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
+    person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
+	  person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
 	)
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
-Description: Google offers public access to global search volumes through its
-    search engine through the Google Trends portal. The globaltrends package
-	downloads search volumes provided by Google Trends and uses them to measure
-	and analyze the distribution of search trends across countries or within
-    countries. globaltrends allows researchers and analysts to investigate
-	patterns within these trends, such as degree of internationalization of
+Description: Google offers public access to global search volumes from its
+  search engine through the Google Trends portal. The globaltrends package
+	downloads these search volumes provided by Google Trends and uses them to
+	measure and analyze the distribution of search scores across countries or
+	within countries. The package allows researchers and analysts to use these
+	search scores to investigate global trends based on patterns within these
+	scores. This offers insights such as degree of internationalization of
 	firms and organizations or dissemination of political, social, or
 	technological trends across the globe or within single countries.
 License: MIT + file LICENSE

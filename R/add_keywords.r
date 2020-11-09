@@ -1,28 +1,30 @@
-#' @title Add batch of control or object keywords
+#' @title Add batches of control or object keywords
 #'
 #' @description
-#' The function adds a batch of keywords and a time period for downloads to the
-#' database. The batches serve as input for all download and computation
-#' functions.
+#' The function adds one or more batches of keywords with a time period for
+#' downloads to the database. The batches serve as input for all download and
+#' computation functions.
 #'
 #' @details
-#' Since Google Trends allows a maximum of five keywords, batches of control
-#' keywords can consist of up to five keywords. Since one control keyword is
-#' added to batches of object keywords for mapping, object batch length is
-#' limited to four keywords. When a \code{character} vector contains more than
-#' four (five) keywords, the vector is split into four-keyword (five-keyword)
-#' batches. A \code{list} must contain \code{character} objects of length four
-#' (five) or less.
+#' Since Google Trends allows a maximum of five keywords for each query, batches
+#' of control keywords can consist of up to five keywords. Since one control
+#' keyword is added to batches of object keywords for mapping, object batch
+#' length is limited to four keywords. When a \code{character} vector contains
+#' more than four (five) keywords, the vector is split into four-keyword
+#' (five-keyword) batches. A \code{list} must contain \code{character} vectors
+#' of length four (five) or less. Each batch of keywords is combined with a time
+#' period for which data will be downloaded. To change the time period for an
+#' existing batch, all downloads and computations must be rerun. 
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
-#' \code{character} or a \code{list} of \code{character} objects.
-#' @param time Time frame for which the batch data should be loaded. Object of
-#' class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
-#' to "2010-01-01 2019-12-31".
+#' \code{character} or a \code{list} of \code{character} vectors.
+#' @param time Time frame for which the batch data should be downloaded. Object
+#' of class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
+#' Defaults to \emph{"2010-01-01 2019-12-31"}.
 #'
 #' @return
-#' Message that the batch was created successfully. Batch data is
-#' uploaded to batch_keywords and batch_time.
+#' Message that the batch has been created successfully. Batch data is
+#' written to tables \emph{batch_keywords} and \emph{batch_time}.
 #'
 #' @examples
 #' \dontrun{
@@ -59,7 +61,10 @@
 #'   time = "2016-01-01 2019-12-31"
 #' )
 #' }
-#' @seealso \code{\link{batch_keywords}}, \code{\link{batch_time}}
+#' @seealso
+#' \code{\link{batch_keywords}},
+#' \code{\link{batch_time}}
+#' 
 #' @rdname add_keyword
 #' @export
 
@@ -185,7 +190,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
   }
 }
 
-#' Add keyword synonyms
+#' Add synonyms for object keywords
 #'
 #' @aliases
 #' add_synonym
@@ -194,10 +199,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #'
 #' @description
 #' The function allows to add synonyms for object keywords. Sometimes, objects
-#' of interest are searched with different keywords on Google, e.g. FC Bayern
+#' of interest can be searched with different keywords on Google, e.g. FC Bayern
 #' for Bayern Munich. Search scores for keywords that are added as synonyms are
-#' aggregated when running \code{compute_score}. The function allows only
-#' synonyms for a single keyword.
+#' aggregated when running \code{compute_score}. The function allows to add
+#' synonyms for a single keyword at a time.
 #'
 #' @param keyword Keyword of type \code{character} and length 1 for which the
 #' synonyms are added.
@@ -205,7 +210,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #'
 #' @return
 #' Message that the synonym has been added successfully. Synonym data is
-#' uploaded to keyword_synonyms.
+#' written to table \emph{keyword_synonyms}.
 #'
 #' @seealso \code{\link{compute_score}}
 #'

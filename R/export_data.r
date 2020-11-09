@@ -39,9 +39,13 @@
 #' hhi, entropy, control, object, locations
 #' }
 #'
-#' @seealso \code{\link{data_control}}, \code{\link{data_object}},
-#' \code{\link{data_score}}, \code{\link{data_doi}},
-#' \code{\link[purrr]{map}}, \code{\link[dplyr]{filter}}
+#' @seealso
+#' \code{\link{data_control}},
+#' \code{\link{data_object}},
+#' \code{\link{data_score}},
+#' \code{\link{data_doi}},
+#' \code{\link[purrr]{map}},
+#' \code{\link[dplyr]{filter}}
 #'
 #' @examples
 #' \dontrun{

@@ -6,23 +6,32 @@
 #'
 #' @details
 #' The function creates a new SQLite database for the \code{globaltrends}
-#' package. The database is saved as "db/globaltrends_db.sqlite" in the working
-#' directory. If the folder "db" does not exists in the working directory, the
+#' package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
+#' the working directory. If the folder \emph{db} does not exists in the working directory, the
 #' folder is created. If the database already exists in the working directory,
 #' the database is deleted and re-created. Within the database all tables are
 #' created and the default location sets are added to the respective table:
 #' \itemize{
-#'   \item \emph{countries} - all countries with a share in global GDP >= 0.1%
+#'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
 #'   in 2018
 #'   \item \emph{us_states} - all US federal states and Washington DC
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
-#' @seealso \code{\link{start_db}}, \code{\link{disconnect_db}},
-#' \url{https://www.sqlite.org/index.html}, \code{\link{batch_keywords}},
-#' \code{\link{batch_time}}, \code{\link{data_control}},
-#' \code{\link{data_object}}, \code{\link{data_score}},
-#' \code{\link{data_doi}}
+#' @section Warning:
+#' Re-creating an existing database will overwrite the existing database file
+#' and leads to loss of data!
+#'
+#' @seealso
+#' \code{\link{start_db}},
+#' \code{\link{disconnect_db}},
+#' \code{\link{batch_keywords}},
+#' \code{\link{batch_time}},
+#' \code{\link{data_control}},
+#' \code{\link{data_object}},
+#' \code{\link{data_score}},
+#' \code{\link{data_doi}},
+#' \url{https://www.sqlite.org/index.html}
 #'
 #' @return Database is created.
 #'
@@ -39,17 +48,15 @@
 
 initialize_db <- function() {
 
-  # create db folder ----
+  # create db folder -----------------------------------------------------------
   if (!dir.exists("db")) dir.create("db")
 
-  # create db ----
+  # create db ------------------------------------------------------------------
   if (file.exists("db/globaltrends_db.sqlite")) file.remove("db/globaltrends_db.sqlite")
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Successfully created database.")
 
-  # create tables ----
-
-  # batch_keywords
+  # batch_keywords -------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_keywords (
   type TEXT,
   batch INTEGER,
@@ -58,7 +65,7 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
   message("Successfully created table 'batch_keywords'.")
 
-  # batch_time
+  # batch_time -----------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_time (
   type TEXT,
   batch INTEGER,
@@ -67,14 +74,14 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Successfully created table 'batch_time'.")
 
-  # keyword_synonyms
+  # keyword_synonyms -----------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE keyword_synonyms (
   keyword TEXT,
   synonym TEXT
           )")
   message("Successfully created table 'keyword_synonyms'.")
 
-  # data_locations
+  # data_locations -------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
   name TEXT,
   location TEXT,
@@ -84,7 +91,7 @@ initialize_db <- function() {
   message("Successfully created table 'data_locations'.")
   .enter_location(globaltrends_db = globaltrends_db)
 
-  # data_control
+  # data_control ---------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_control (
   location TEXT,
   keyword TEXT,
@@ -95,7 +102,7 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
   message("Successfully created table 'batch_keywords'.")
 
-  # data_object
+  # data_object ----------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_object (
   location TEXT,
   keyword TEXT,
@@ -107,7 +114,7 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
   message("Successfully created table 'data_control'.")
 
-  # data_score
+  # data_score -----------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_score (
   location TEXT,
   keyword TEXT,
@@ -122,7 +129,7 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Successfully created table 'data_score'.")
 
-  # data_doi
+  # data_doi -------------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_doi (
   keyword TEXT,
   date INTEGER,
@@ -137,7 +144,7 @@ initialize_db <- function() {
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
   message("Successfully created table 'data_doi'.")
 
-  # disconnect from db ----
+  # disconnect from db ---------------------------------------------------------
   disconnect_db(db = globaltrends_db)
 }
 
@@ -159,7 +166,7 @@ initialize_db <- function() {
 #' @importFrom tibble tibble
 
 .enter_location <- function(globaltrends_db) {
-  # create countries ----
+  # create countries -----------------------------------------------------------
   countries <- WDI::WDI_data$country
   countries <- as_tibble(countries)
   countries <- filter(countries, .data$region != "Aggregates")
@@ -174,14 +181,14 @@ initialize_db <- function() {
   countries <- select(countries, location = .data$iso2c, name = .data$country)
   countries <- mutate(countries, type = "countries")
 
-  # create us_states ----
+  # create us_states -----------------------------------------------------------
   us_states <- gtrendsR::countries
   us_states <- mutate_all(us_states, as.character)
   us_states <- us_states[which(us_states$sub_code == "US-AL")[[1]]:which(us_states$sub_code == "US-DC")[[1]], ]
   us_states <- select(us_states, location = .data$sub_code, .data$name)
   us_states <- mutate(us_states, type = "us_states")
 
-  # upload data ----
+  # upload data ----------------------------------------------------------------
   dbWriteTable(conn = globaltrends_db, name = "data_locations", value = bind_rows(countries, us_states), append = TRUE)
   message("Successfully entered data into 'data_locations'.")
 }
@@ -189,8 +196,8 @@ initialize_db <- function() {
 #' @title Load globaltrends database and tables
 #'
 #' @description
-#' The function connects to the database file "db/globaltrends_db.sqlite" in the
-#' working directory. After connecting to the database connections to the
+#' The function connects to the database file \emph{db/globaltrends_db.sqlite}
+#' in the working directory. After connecting to the database connections to the
 #' database tables (through \code{dplyr::tbl}) are created. Data from the tables
 #' \emph{batch_keywords} and \emph{batch_time} are exported to the \code{tibble}
 #' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
@@ -205,21 +212,22 @@ initialize_db <- function() {
 #'   \item globaltrends_db A DBIConnection object, as returned by
 #'   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
 #'   directory
-#'   \item tbl_doi A remote data source pointing to the table "data_doi" in
+#'   \item tbl_doi A remote data source pointing to the table \emph{data_doi} in
 #'   the connected SQLite database
-#'   \item tbl_control A remote data source pointing to the table "data_control" in
-#'   the connected SQLite database
-#'   \item tbl_mapping A remote data source pointing to the table "data_mapping" in
-#'   the connected SQLite database
-#'   \item tbl_object A remote data source pointing to the table "data_object" in
-#'   the connected SQLite database
-#'   \item tbl_score A remote data source pointing to the table "data_score" in
-#'   the connected SQLite database
+#'   \item tbl_control A remote data source pointing to the table
+#'   \emph{data_control} in the connected SQLite database
+#'   \item tbl_mapping A remote data source pointing to the table
+#'   \emph{data_mapping} in the connected SQLite database
+#'   \item tbl_object A remote data source pointing to the table
+#'   \emph{data_object} in the connected SQLite database
+#'   \item tbl_score A remote data source pointing to the table
+#'   \emph{data_score} in the connected SQLite database
 #'   \item countries A \code{character} vector containing ISO2 country codes of
-#'   countries that add at least 0.1% to global GDP
+#'   countries that add at least 0.1\% to global GDP
 #'   \item us_states A \code{character} vector containing ISO2 regional codes of
 #'   US states
-#'   \item keywords_control A \code{tibble} containing keywords of control batches
+#'   \item keywords_control A \code{tibble} containing keywords of control
+#'   batches
 #'   \item time_control A \code{tibble} containing times of control batches
 #'   \item keywords_object A \code{tibble} containing keywords of object batches
 #'   \item time_object A \code{tibble} containing times of control batches
@@ -241,11 +249,11 @@ initialize_db <- function() {
 #' @importFrom RSQLite SQLite
 
 start_db <- function() {
-  # connect to db ----
+  # connect to db --------------------------------------------------------------
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Successfully connected to database.")
 
-  # get tables ----
+  # get tables -----------------------------------------------------------------
   tbl_locations <- tbl(globaltrends_db, "data_locations")
   tbl_keywords <- tbl(globaltrends_db, "batch_keywords")
   tbl_time <- tbl(globaltrends_db, "batch_time")
@@ -256,7 +264,7 @@ start_db <- function() {
   tbl_object <- tbl(globaltrends_db, "data_object")
   tbl_score <- tbl(globaltrends_db, "data_score")
 
-  # load files ----
+  # load files -----------------------------------------------------------------
   countries <- filter(tbl_locations, .data$type == "countries")
   countries <- collect(countries)
   countries <- pull(countries, .data$location)
@@ -278,7 +286,7 @@ start_db <- function() {
   time_object <- collect(time_object)
   keyword_synonyms <- collect(tbl_synonyms)
 
-  # write objects to .GlobalEnv ----
+  # write objects to .GlobalEnv ------------------------------------------------
   lst_object <- list(
     tbl_locations,
     tbl_keywords,
@@ -346,12 +354,12 @@ start_db <- function() {
 #'
 #' @description
 #' The function closes the connection to the database file
-#' "db/globaltrends_db.sqlite" in the working directory.
+#' \emph{db/globaltrends_db.sqlite} in the working directory.
 #'
 #' @seealso \code{\link{initialize_db}}, \code{\link{start_db}}
 #'
 #' @param db Connection to database file that should be closed. Defaults
-#' to \emph{globaltrends_db}.
+#' to \code{globaltrends_db}.
 #'
 #' @return
 #' Message that disconnection was successful.
