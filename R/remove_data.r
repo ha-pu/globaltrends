@@ -22,13 +22,20 @@
 #' \code{\link{data_control}}, \code{\link{data_object}},
 #' \code{\link{data_score}}, \code{\link{data_doi}}
 #'
-#' @return Message that data was removed successfully. Data is removed
-#' from database.
+#' @return Message that data has been removed successfully. Data is removed
+#' from database tables.
 #'
 #' @examples
 #' \dontrun{
-#' remove_data(table = "batch_keywords", control = 1)
-#' remove_data(table = "data_score", control = 1, object = 1)
+#' remove_data(
+#' table = "batch_keywords",
+#' control = 1
+#' )
+#' remove_data(
+#' table = "data_score",
+#' control = 1,
+#' object = 1
+#' )
 #' }
 #'
 #' @export

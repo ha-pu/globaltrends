@@ -8,16 +8,28 @@
 #' @inheritParams plot_doi_ts
 #' @inheritParams plot_voi_box
 #'
-#' @return Line plot of time series as \code{ggplot2} object.
+#' @return Line plot of VOI time series as \code{ggplot2} object.
 #'
 #' @seealso \code{\link{export_voi}}
 #'
 #' @examples
 #' \dontrun{
 #' data <- export_voi(object = 1)
-#' plot_voi_ts(data_voi = data, type = "obs", smooth = TRUE)
-#' plot_voi_ts(data_voi = data, type = "sad", smooth = FALSE)
-#' plot_voi_ts(data_voi = data, type = "trd", smooth = TRUE)
+#' plot_voi_ts(
+#' data_voi = data,
+#' type = "obs",
+#' smooth = TRUE
+#' )
+#' plot_voi_ts(
+#' data_voi = data,
+#' type = "sad",
+#' smooth = FALSE
+#' )
+#' plot_voi_ts(
+#' data_voi = data,
+#' type = "trd",
+#' smooth = TRUE
+#' )
 #' }
 #'
 #' @export

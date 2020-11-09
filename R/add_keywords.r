@@ -216,7 +216,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #'
 #' @examples
 #' \dontrun{
-#' add_synonym(keyword = "fc bayern", synonym = "bayern munich")
+#' add_synonym(
+#'   keyword = "fc bayern",
+#' synonym = "bayern munich"
+#' )
 #' }
 #'
 #' @export

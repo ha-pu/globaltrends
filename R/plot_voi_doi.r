@@ -10,7 +10,7 @@
 #' @inheritParams plot_doi_ts
 #' @param data_voi Data exported from \code{export_voi} function.
 #'
-#' @return Line plot of time series as \code{ggplot2} object.
+#' @return Line plot of VOI and DOI time series as \code{ggplot2} object.
 #'
 #' @seealso
 #' \code{\link{export_voi}},
@@ -19,10 +19,30 @@
 #' @examples
 #' \dontrun{
 #' data1 <- export_voi(keyword = "manchester united")
-#' data2 <- export_doi(keyword = "manchester united", locations = "countries")
-#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "obs", measure = "gini", smooth = TRUE)
-#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "sad", measure = "hhi", smooth = FALSE)
-#' plot_voi_doi(data_voi = data1, data_doi = data2, type = "trd", measure = "entropy", smooth = TRUE)
+#' data2 <- export_doi(
+#' keyword = "manchester united", 
+#' locations = "countries")
+#' plot_voi_doi(
+#' data_voi = data1,
+#' data_doi = data2,
+#' type = "obs",
+#' measure = "gini",
+#' smooth = TRUE
+#' )
+#' plot_voi_doi(
+#' data_voi = data1, 
+#' data_doi = data2, 
+#' type = "sad", 
+#' measure = "hhi", 
+#' smooth = FALSE
+#' )
+#' plot_voi_doi(
+#' data_voi = data1, 
+#' data_doi = data2,
+#'  type = "trd", 
+#' measure = "entropy", 
+#' smooth = TRUE
+#' )
 #' }
 #'
 #' @export

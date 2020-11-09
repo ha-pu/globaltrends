@@ -50,8 +50,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_score(object = 1, control = 1, locations = countries)
-#' compute_score(object = as.list(1:5), control = 1, locations = countries)
+#' compute_score(
+#' object = 1,
+#' control = 1, 
+#' locations = countries
+#' )
+#' compute_score(
+#' object = as.list(1:5), 
+#' control = 1, 
+#' locations = countries
+#' )
 #' }
 #'
 #' @export

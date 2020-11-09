@@ -8,23 +8,38 @@
 #' @param data_doi Data exported from \code{export_doi} function.
 #' @param type Object of class \code{character} indicating the type of time
 #' series-column from data_score that is used for DOI computation, takes
-#' either "obs", "sad", or "trd". Defaults to \code{"obs"}.
+#' either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.
 #' @param measure Object of class \code{character} indicating the measure
-#' used for DOI computation, takes either "gini", "hhi", or "entropy".
-#' Defaults to "gini".
+#' used for DOI computation, takes either \emph{gini}, \emph{hhi}, or
+#' \emph{entropy}. Defaults to \emph{"gini"}.
 #' @param locations Object of class \code{character} indicating for which
-#' set of locations should be filtered. Defaults to \code{"countries"}.
+#' set of locations should be filtered. Defaults to \emph{"countries"}.
 #'
-#' @return Boxplot of time series as \code{ggplot2} object.
+#' @return Boxplot of DOI distribution as \code{ggplot2} object.
 #'
 #' @seealso \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{
-#' data <- export_doi(object = 1, locations = "countries")
-#' plot_doi_box(data_doi = data, type = "obs", measure = "gini")
-#' plot_doi_box(data_doi = data, type = "sad", measure = "hhi")
-#' plot_doi_box(data_doi = data, type = "trd", measure = "entropy")
+#' data <- export_doi(
+#' object = 1, 
+#' locations = "countries"
+#' )
+#' plot_doi_box(
+#' data_doi = data, 
+#' type = "obs", 
+#' measure = "gini"
+#' )
+#' plot_doi_box(
+#' data_doi = data, 
+#' type = "sad", 
+#' measure = "hhi"
+#' )
+#' plot_doi_box(
+#' data_doi = data, 
+#' type = "trd", 
+#' measure = "entropy"
+#' )
 #' }
 #'
 #' @export

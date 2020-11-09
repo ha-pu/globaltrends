@@ -8,16 +8,25 @@
 #' @param data_voi Data exported from \code{export_voi} function.
 #' @inheritParams plot_doi_box
 #'
-#' @return Boxplot of time series as \code{ggplot2} object.
+#' @return Boxplot of VOI distribution as \code{ggplot2} object.
 #'
 #' @seealso \code{\link{export_voi}}
 #'
 #' @examples
 #' \dontrun{
 #' data <- export_voi(object = 1)
-#' plot_voi_box(data_voi = data, type = "obs")
-#' plot_voi_box(data_voi = data, type = "sad")
-#' plot_voi_box(data_voi = data, type = "trd")
+#' plot_voi_box(
+#' data_voi = data, 
+#' type = "obs"
+#' )
+#' plot_voi_box(
+#' data_voi = data, 
+#' type = "sad"
+#' )
+#' plot_voi_box(
+#' data_voi = data,
+#'  type = "trd"
+#' )
 #' }
 #'
 #' @export

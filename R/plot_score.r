@@ -7,8 +7,8 @@
 #'
 #' @param data_score Data exported from \code{export_score} function.
 #' @param type Object of class \code{character} indicating the type of time
-#' series-column from data_score that is used, takes either "obs", "sad", or
-#' "trd". Defaults to "obs".
+#' series-column from data_score that is used, takes either \emph{obs},
+#' \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.
 #'
 #' @return Bar plot of score distribution across locations as \code{ggplot2}
 #' object.
@@ -17,11 +17,23 @@
 #'
 #' @examples
 #' \dontrun{
-#' data <- export_score(keyword = "manchester united", locations = "countries")
-#' plot_score(data_score = data, type = "obs")
-#' plot_score(data_score = data, type = "sad")
+#' data <- export_score(
+#' keyword = "manchester united", 
+#' locations = "countries"
+#' )
+#' plot_score(
+#' data_score = data, 
+#' type = "obs"
+#' )
+#' plot_score(
+#' data_score = data, 
+#' type = "sad"
+#' )
 #' data <- dplyr::filter(data, location %in% countries)
-#' plot_score(data_score = data, type = "trd")
+#' plot_score(
+#' data_score = data, 
+#' type = "trd"
+#' )
 #' }
 #'
 #' @export

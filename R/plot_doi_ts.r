@@ -10,16 +10,34 @@
 #' \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
 #' \code{TRUE}.
 #'
-#' @return Line plot of time series as \code{ggplot2} object.
+#' @return Line plot of DOI time series as \code{ggplot2} object.
 #'
 #' @seealso \code{\link{export_doi}}
 #'
 #' @examples
 #' \dontrun{
-#' data <- export_doi(object = 1, locations = "countries")
-#' plot_doi_ts(data_doi = data, type = "obs", measure = "gini", smooth = TRUE)
-#' plot_doi_ts(data_doi = data, type = "sad", measure = "hhi", smooth = FALSE)
-#' plot_doi_ts(data_doi = data, type = "trd", measure = "entropy", smooth = TRUE)
+#' data <- export_doi(
+#' object = 1, 
+#' locations = "countries"
+#' )
+#' plot_doi_ts(
+#' data_doi = data, 
+#' type = "obs", 
+#' measure = "gini", 
+#' smooth = TRUE
+#' )
+#' plot_doi_ts(
+#' data_doi = data, 
+#' type = "sad", 
+#' measure = "hhi", 
+#' smooth = FALSE
+#' )
+#' plot_doi_ts(
+#' data_doi = data, 
+#' type = "trd", 
+#' measure = "entropy", 
+#' smooth = TRUE
+#' )
 #' }
 #'
 #' @export
