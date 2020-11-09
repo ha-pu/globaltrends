@@ -11,14 +11,14 @@ plot_voi_ts(data_voi, type = "obs", smooth = TRUE)
 
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
-either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
+either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.}
 
 \item{smooth}{Object of class \code{logical} indicating whether the
 \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
 \code{TRUE}.}
 }
 \value{
-Line plot of time series as \code{ggplot2} object.
+Line plot of VOI time series as \code{ggplot2} object.
 }
 \description{
 The function uses the output of \code{export_voi} to prepare a time series
@@ -28,9 +28,21 @@ than nine keywords, only the first nine keywords are used.
 \examples{
 \dontrun{
 data <- export_voi(object = 1)
-plot_voi_ts(data_voi = data, type = "obs", smooth = TRUE)
-plot_voi_ts(data_voi = data, type = "sad", smooth = FALSE)
-plot_voi_ts(data_voi = data, type = "trd", smooth = TRUE)
+plot_voi_ts(
+  data_voi = data,
+  type = "obs",
+  smooth = TRUE
+)
+plot_voi_ts(
+  data_voi = data,
+  type = "sad",
+  smooth = FALSE
+)
+plot_voi_ts(
+  data_voi = data,
+  type = "trd",
+  smooth = TRUE
+)
 }
 
 }

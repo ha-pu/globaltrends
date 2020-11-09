@@ -7,25 +7,25 @@
 \format{
 A tibble with 5 rows and 3 variables:
 \describe{
-  \item{type}{\code{character} indicating the type of batch, takes "control"
-  for control batches and "object" for object batches}
-  \item{batch}{\code{integer} number of the batch}
-  \item{time}{\code{character} timeframe for the respective batch as
-  "YYYY-MM-DD YYYY-MM-DD"}
+  \item{type}{Column of type \code{character} showing the type of each batch,
+  takes "control" for control batches and "object" for object batches.}
+  \item{batch}{Column of type \code{integer} showing number of each batch.}
+  \item{time}{Column of type \code{character} showing the time period for
+  each batch as "YYYY-MM-DD YYYY-MM-DD".}
 }
 }
 \usage{
 batch_time
 }
 \description{
-The table \emph{batch_time} contains the time frame for which data is
-downloaded per batch. Each line contains one \emph{time} frame, the
+The table \emph{batch_time} contains the time period for which data is
+downloaded for each batch. Each line contains one \emph{time} period, the
 \emph{type} of the batch (i.e. control or object) and the id of the
-\emph{batch} to which the time frame is assigned. Time frames take the form
-\code{"YYYY-MM-DD YYYY-MM-DD"}. Time frames are added automatically through
-\code{add_keywords}. The function \code{start_db} exports the table
-\emph{batch_time} as objects \code{time_control} and \code{time_object} to
-\code{.GlobalEnv}.
+\emph{batch} to which the time period is assigned. Time frames take the form
+\code{"YYYY-MM-DD YYYY-MM-DD"}. Time periods are added automatically through
+the function \code{add_keywords}. The function \code{start_db} exports the
+table \emph{batch_time} as objects \code{time_control} and \code{time_object}
+to \code{.GlobalEnv}.
 }
 \seealso{
 \code{\link[globaltrends]{add_keyword}}

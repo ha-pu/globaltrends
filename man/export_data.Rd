@@ -44,23 +44,27 @@ class \code{character}.}
 \item{object}{Object batch number for which data should be exported.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. Relevant only for "export_global" and
-"export_doi". Takes one of the following values: "obs", "sad", "trd".}
+of class \code{character}. Relevant only for \code{export_global} and
+\code{export_doi}. Takes one of the following values: \emph{obs} - observed
+search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
+trend only search scores.}
 }
 \value{
 The functions export and filter the respective database tables and return
 objects of class \code{"tbl_df", "tbl", "data.frame"}.
 \itemize{
-\item \code{export_control} exports table with columns location, keyword,
-date, hits, control
-\item \code{export_object} exports table  with columns location, keyword,
-date, hits, object
-\item \code{export_global} exports table  with columns keyword, date, hits,
-control
-\item \code{export_score} exports table  with columns location, keyword,
-date, score_obs, score_sad, score_trd, control, object
-\item \code{export_doi} exports table with columns keyword, date, type, gini,
-hhi, entropy, control, object, locations
+\item \code{export_control} exports data from table \emph{data_control} with
+columns location, keyword, date, hits, control
+\item \code{export_object} exports data from table \emph{data_object} with
+columns location, keyword, date, hits, object
+\item \code{export_global} exports data from table \emph{data_score} with
+columns keyword, date, hits, control, filters for
+\code{location == "world"}.
+\item \code{export_score} exports data from table \emph{data_score} with
+columns location, keyword, date, score_obs, score_sad, score_trd, control,
+object
+\item \code{export_doi} exports data from table \emph{data_doi} with columns
+keyword, date, type, gini, hhi, entropy, control, object, locations
 }
 }
 \description{
@@ -78,13 +82,22 @@ include list inputs - users are advised to \code{purrr::map_dfr} or
 \dontrun{
 export_control(control = 2)
 
-export_object(keyword = "manchester united", locations = countries)
+export_object(
+  keyword = "manchester united",
+  locations = countries
+)
 
-export_score(object = 3, control = 1, locations = us_states) \%>\%
+export_score(
+  object = 3,
+  control = 1,
+  locations = us_states
+) \%>\%
   readr::write_csv("data_score.csv")
 
 export_doi(
-  keyword = "manchester united", control = 2, type = "sad",
+  keyword = "manchester united",
+  control = 2,
+  type = "sad",
   locations = "us_states"
 ) \%>\%
   write_xl::write_xlsx("data_doi.xlsx")
@@ -92,7 +105,10 @@ export_doi(
 
 }
 \seealso{
-\code{\link{data_control}}, \code{\link{data_object}},
-\code{\link{data_score}}, \code{\link{data_doi}},
-\code{\link[purrr]{map}}, \code{\link[dplyr]{filter}}
+\code{\link{data_control}},
+\code{\link{data_object}},
+\code{\link{data_score}},
+\code{\link{data_doi}},
+\code{\link[purrr]{map}},
+\code{\link[dplyr]{filter}}
 }

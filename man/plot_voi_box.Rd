@@ -11,10 +11,10 @@ plot_voi_box(data_voi, type = "obs")
 
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
-either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
+either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.}
 }
 \value{
-Boxplot of time series as \code{ggplot2} object.
+Boxplot of VOI distribution as \code{ggplot2} object.
 }
 \description{
 The function uses the output of \code{export_voi} to prepare a box plot of
@@ -24,9 +24,18 @@ includes more than nine keywords, only the first nine keywords are used.
 \examples{
 \dontrun{
 data <- export_voi(object = 1)
-plot_voi_box(data_voi = data, type = "obs")
-plot_voi_box(data_voi = data, type = "sad")
-plot_voi_box(data_voi = data, type = "trd")
+plot_voi_box(
+  data_voi = data,
+  type = "obs"
+)
+plot_voi_box(
+  data_voi = data,
+  type = "sad"
+)
+plot_voi_box(
+  data_voi = data,
+  type = "trd"
+)
 }
 
 }

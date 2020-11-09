@@ -3,7 +3,7 @@
 \name{add_control_keyword}
 \alias{add_control_keyword}
 \alias{add_object_keyword}
-\title{Add batch of control or object keywords}
+\title{Add batches of control or object keywords}
 \usage{
 add_control_keyword(keyword, time = "2010-01-01 2019-12-31")
 
@@ -11,29 +11,31 @@ add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of class
-\code{character} or a \code{list} of \code{character} objects.}
+\code{character} or a \code{list} of \code{character} vectors.}
 
-\item{time}{Time frame for which the batch data should be loaded. Object of
-class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD". Defaults
-to "2010-01-01 2019-12-31".}
+\item{time}{Time frame for which the batch data should be downloaded. Object
+of class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
+Defaults to \emph{"2010-01-01 2019-12-31"}.}
 }
 \value{
-Message that the batch was created successfully. Batch data is
-uploaded to batch_keywords and batch_time.
+Message that the batch has been created successfully. Batch data is
+written to tables \emph{batch_keywords} and \emph{batch_time}.
 }
 \description{
-The function adds a batch of keywords and a time period for downloads to the
-database. The batches serve as input for all download and computation
-functions.
+The function adds one or more batches of keywords with a time period for
+downloads to the database. The batches serve as input for all download and
+computation functions.
 }
 \details{
-Since Google Trends allows a maximum of five keywords, batches of control
-keywords can consist of up to five keywords. Since one control keyword is
-added to batches of object keywords for mapping, object batch length is
-limited to four keywords. When a \code{character} vector contains more than
-four (five) keywords, the vector is split into four-keyword (five-keyword)
-batches. A \code{list} must contain \code{character} objects of length four
-(five) or less.
+Since Google Trends allows a maximum of five keywords for each query, batches
+of control keywords can consist of up to five keywords. Since one control
+keyword is added to batches of object keywords for mapping, object batch
+length is limited to four keywords. When a \code{character} vector contains
+more than four (five) keywords, the vector is split into four-keyword
+(five-keyword) batches. A \code{list} must contain \code{character} vectors
+of length four (five) or less. Each batch of keywords is combined with a time
+period for which data will be downloaded. To change the time period for an
+existing batch, all downloads and computations must be rerun.
 }
 \examples{
 \dontrun{
@@ -72,5 +74,6 @@ add_control_keyword(
 }
 }
 \seealso{
-\code{\link{batch_keywords}}, \code{\link{batch_time}}
+\code{\link{batch_keywords}},
+\code{\link{batch_time}}
 }

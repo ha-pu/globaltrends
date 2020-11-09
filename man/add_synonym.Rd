@@ -4,7 +4,7 @@
 \alias{add_synonym}
 \alias{add_synonym.character}
 \alias{add_synonym.list}
-\title{Add keyword synonyms}
+\title{Add synonyms for object keywords}
 \usage{
 add_synonym(keyword, synonym)
 
@@ -20,18 +20,21 @@ synonyms are added.}
 }
 \value{
 Message that the synonym has been added successfully. Synonym data is
-uploaded to keyword_synonyms.
+written to table \emph{keyword_synonyms}.
 }
 \description{
 The function allows to add synonyms for object keywords. Sometimes, objects
-of interest are searched with different keywords on Google, e.g. FC Bayern
+of interest can be searched with different keywords on Google, e.g. FC Bayern
 for Bayern Munich. Search scores for keywords that are added as synonyms are
-aggregated when running \code{compute_score}. The function allows only
-synonyms for a single keyword.
+aggregated when running \code{compute_score}. The function allows to add
+synonyms for a single keyword at a time.
 }
 \examples{
 \dontrun{
-add_synonym(keyword = "fc bayern", synonym = "bayern munich")
+add_synonym(
+  keyword = "fc bayern",
+  synonym = "bayern munich"
+)
 }
 
 }

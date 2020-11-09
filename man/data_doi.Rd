@@ -7,40 +7,47 @@
 \format{
 A tibble with 4,320 rows and 9 variables:
 \describe{
-  \item{keyword}{\code{character} keyword for which the data was downloaded}
-  \item{date}{date as \code{integer} variable, can be transformed into date
-  format with \code{lubridate::as_date}}
-  \item{type}{\code{character} indicating the type of time series-column from
-  \code{data_score} that is used for DOI computation, takes either
-  "socre_obs", "score_sad", or "score_trd"}
-  \item{gini}{\code{double} DOI computed as inverted Gini coefficient of
-  search score from \code{data_score}}
-  \item{hhi}{\code{double} DOI computed as inverted Herfindahl-Hirschman
-  index of search score from \code{data_score}}
-  \item{entropy}{\code{double} DOI computed as inverted Entropy measure for
-  search score from \code{data_score}}
-  \item{batch_c}{\code{integer} number of control batch}
-  \item{batch_o}{\code{integer} number of object batch}
-  \item{locations}{\code{character} list of locations for which the search
-  score is used}
+  \item{keyword}{Column of type \code{character} showing the keyword for
+  which the data was computed.}
+  \item{date}{Column of type \code{integer} showing the date for which the
+  data was computed Can be transformed into date format with
+  \code{lubridate::as_date}.}
+  \item{type}{Column of type \code{character} indicating the type of time
+  series-column from \code{data_score} that is used for DOI computation,
+  takes either "socre_obs", "score_sad", or "score_trd".}
+  \item{gini}{Column of type \code{double} showing the DOI computed as
+  inverted Gini coefficient of the search score distribution from
+  \code{data_score}.}
+  \item{hhi}{Column of type \code{double} showing the DOI computed as
+  inverted Herfindahl-Hirschman index of the search score distribution from
+  \code{data_score}.}
+  \item{entropy}{Column of type \code{double} showing the DOI computed as
+  inverted Entropy measure for the search score distribution from
+  \code{data_score}.}
+  \item{batch_c}{Column of type \code{integer} showing the number of each
+  control batch.}
+  \item{batch_o}{Column of type \code{integer} showing the number of each
+  object batch.}
+  \item{locations}{Column of type \code{character} showing the list of
+  locations for which the search score distribution is used.}
 }
 }
 \usage{
 data_doi
 }
 \description{
-The table \emph{data_doi} contains the degree of internationalization (doi)
-for each object batch. Each line contains the doi computed as inverted
+The table \emph{data_doi} contains the degree of internationalization (DOI)
+for each object batch. Each line contains the DOI computed as inverted
 \emph{gini} coefficient, as inverted \emph{hhi}, or inverted \emph{entropy}
 for each \emph{keyword} in an object \emph{batch_o} for a given \emph{date}
 and \emph{type} of search score. The column \emph{batch_c} indicates the
-control batch that has been used as baseline search score. Column
+control batch that has been used as baseline for mapping. Column
 \emph{locations} indicates which set of locations was used to compute the
-distribution of search scores. Degree of internationalization is computed
-automatically written to the table through \code{compute_doi}. The function
-\code{start_db} exports the table \emph{data_doi} as database connection
-\code{tbl_doi} to \code{.GlobalEnv}. Users can access the database table
-through \code{dplyr::tbl}.
+distribution of search scores. DOI is computed and automatically written to
+the table with the function \code{compute_doi}. The function \code{start_db}
+exports the table \emph{data_doi} as database connection \code{tbl_doi} to
+\code{.GlobalEnv}. Users can access the database table through
+\code{dplyr::tbl}.
 }
 \details{
 The sample data included in \code{data_doi} was simulated based on actual

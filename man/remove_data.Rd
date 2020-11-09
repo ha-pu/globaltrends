@@ -17,8 +17,8 @@ of class \code{numeric}.}
 of class \code{numeric}.}
 }
 \value{
-Message that data was removed successfully. Data is removed
-from database.
+Message that data has been removed successfully. Data is removed
+from database tables.
 }
 \description{
 The function removes data from database tables for control or object batches.
@@ -33,8 +33,15 @@ The dependency structure works as follows: \emph{batch_keyword} /
 }
 \examples{
 \dontrun{
-remove_data(table = "batch_keywords", control = 1)
-remove_data(table = "data_score", control = 1, object = 1)
+remove_data(
+  table = "batch_keywords",
+  control = 1
+)
+remove_data(
+  table = "data_score",
+  control = 1,
+  object = 1
+)
 }
 
 }

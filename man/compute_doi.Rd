@@ -20,35 +20,44 @@ is aggregated and DOI is computed.  Object of class \code{numeric}.}
 of class \code{numeric}.}
 
 \item{locations}{List of locations for which the search score is used.
-Object of class \code{character}.}
+Object of class \code{character}. Defaults to \emph{"countries"}.}
 }
 \value{
-Message that data was aggregated successfully. Data is uploaded
-to data_doi.
+Message that data was aggregated successfully. Data is written to table
+\emph{data_doi}.
 }
 \description{
-The function computes degree of internationalization (doi) for object
+The function computes degree of internationalization (DOI) for object
 keywords. Degree of internationalization is measured based on the
 distribution of country search scores.
 }
 \details{
 The function uses an inverted Gini-coefficient
-\code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}
+[\code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}]
 as measure for the degree of internationalization. The more uniform the
 distribution of search scores across all countries, the higher the inverted
 Gini-coefficient and the greater the degree of internationalization. In
 addition to the Gini-coefficient, the package uses inverted Herfindahl index
-\code{coalesce(1 - sum((series / sum(series))^2), 0)} and inverted Entropy
-\code{dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)}
+[\code{coalesce(1 - sum((series / sum(series))^2), 0)}] and inverted Entropy
+[\code{dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)}]
 as measures for internationalization.
 }
 \examples{
 \dontrun{
-compute_doi(object = 1, control = 1, locations = "countries")
-compute_doi(object = as.list(1:5), control = 1, locations = "countries")
+compute_doi(
+  object = 1,
+  control = 1,
+  locations = "countries"
+)
+compute_doi(
+  object = as.list(1:5),
+  control = 1,
+  locations = "countries"
+)
 }
 
 }
 \seealso{
-\code{\link{data_doi}}, \code{\link[ineq]{ineq}}
+\code{\link{data_doi}},
+\code{\link[ineq]{ineq}}
 }

@@ -11,17 +11,17 @@ plot_doi_box(data_doi, type = "obs", measure = "gini", locations = "countries")
 
 \item{type}{Object of class \code{character} indicating the type of time
 series-column from data_score that is used for DOI computation, takes
-either "obs", "sad", or "trd". Defaults to \code{"obs"}.}
+either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.}
 
 \item{measure}{Object of class \code{character} indicating the measure
-used for DOI computation, takes either "gini", "hhi", or "entropy".
-Defaults to "gini".}
+used for DOI computation, takes either \emph{gini}, \emph{hhi}, or
+\emph{entropy}. Defaults to \emph{"gini"}.}
 
 \item{locations}{Object of class \code{character} indicating for which
-set of locations should be filtered. Defaults to \code{"countries"}.}
+set of locations should be filtered. Defaults to \emph{"countries"}.}
 }
 \value{
-Boxplot of time series as \code{ggplot2} object.
+Boxplot of DOI distribution as \code{ggplot2} object.
 }
 \description{
 The function uses the output of \code{export_doi} to prepare a box plot of
@@ -30,10 +30,25 @@ includes more than nine keywords, only the first nine keywords are used.
 }
 \examples{
 \dontrun{
-data <- export_doi(object = 1, locations = "countries")
-plot_doi_box(data_doi = data, type = "obs", measure = "gini")
-plot_doi_box(data_doi = data, type = "sad", measure = "hhi")
-plot_doi_box(data_doi = data, type = "trd", measure = "entropy")
+data <- export_doi(
+  object = 1,
+  locations = "countries"
+)
+plot_doi_box(
+  data_doi = data,
+  type = "obs",
+  measure = "gini"
+)
+plot_doi_box(
+  data_doi = data,
+  type = "sad",
+  measure = "hhi"
+)
+plot_doi_box(
+  data_doi = data,
+  type = "trd",
+  measure = "entropy"
+)
 }
 
 }

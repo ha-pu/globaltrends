@@ -8,14 +8,14 @@ disconnect_db(db = globaltrends_db)
 }
 \arguments{
 \item{db}{Connection to database file that should be closed. Defaults
-to \emph{globaltrends_db}.}
+to \code{globaltrends_db}.}
 }
 \value{
 Message that disconnection was successful.
 }
 \description{
 The function closes the connection to the database file
-"db/globaltrends_db.sqlite" in the working directory.
+\emph{db/globaltrends_db.sqlite} in the working directory.
 }
 \examples{
 \dontrun{

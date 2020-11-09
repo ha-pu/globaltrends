@@ -24,24 +24,25 @@ objects of class \code{numeric}.}
 of class \code{numeric}. Defaults to 1.}
 
 \item{locations}{List of countries or regions for which the data is
-downloaded. Refers to lists generated in \code{start_db}.}
+downloaded. Refers to lists generated in \code{start_db}. Defaults to
+\code{countries}.}
 }
 \value{
-Message that data was computed successfully. Data is uploaded
-to data_score.
+Message that data has been computed successfully. Data is written to
+table \emph{data_score}.
 }
 \description{
 The function computes search scores for object keywords. Search volumes for
 control and object batches are mapped to the same base. Next, search volumes
 for object batches are divided by the sum of search volumes for the
 respective control batch. \code{compute_voi} computes volume of
-internationalization (voi) as global search scores.
+internationalization (VOI) as global search scores.
 }
 \details{
 The search score computation proceeds in four steps. First, the function
 aggregates all search volumes to monthly data. Then, it applies some optional
-time series adjustments: seasonally adjusted (\code{forecast::seasadj}) and
-trend only (\code{stats::stl}). Next, it follows the procedure outlined by
+time series adjustments: seasonally adjusted [\code{forecast::seasadj}] and
+trend only [\code{stats::stl}]. Next, it follows the procedure outlined by
 Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
 the mapping, object search volumes are divided by the sum of control search
 volumes in the respective control batch. We use the sum of search volumes for
@@ -56,12 +57,22 @@ Uncertainty index for the United States and Australia. Economics Letters,
 }
 \examples{
 \dontrun{
-compute_score(object = 1, control = 1, locations = countries)
-compute_score(object = as.list(1:5), control = 1, locations = countries)
+compute_score(
+  object = 1,
+  control = 1,
+  locations = countries
+)
+compute_score(
+  object = as.list(1:5),
+  control = 1,
+  locations = countries
+)
 }
 
 }
 \seealso{
-\code{\link{data_score}}, \code{\link{add_synonym}},
-\code{\link[stats]{stl}}, \code{\link[forecast]{seasadj}}
+\code{\link{data_score}},
+\code{\link{add_synonym}},
+\code{\link[stats]{stl}},
+\code{\link[forecast]{seasadj}}
 }
