@@ -39,14 +39,14 @@
 #' @examples
 #' \dontrun{
 #' compute_doi(
-#' object = 1, 
-#' control = 1,
-#'  locations = "countries"
+#'   object = 1,
+#'   control = 1,
+#'   locations = "countries"
 #' )
 #' compute_doi(
-#' object = as.list(1:5), 
-#' control = 1, 
-#' locations = "countries"
+#'   object = as.list(1:5),
+#'   control = 1,
+#'   locations = "countries"
 #' )
 #' }
 #'

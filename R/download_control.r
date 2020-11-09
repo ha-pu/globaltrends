@@ -40,12 +40,12 @@
 #' @examples
 #' \dontrun{
 #' download_control(
-#' control = 1,
-#' locations = countries
+#'   control = 1,
+#'   locations = countries
 #' )
 #' download_control(
-#' control = as.list(1:5),
-#' locations = countries
+#'   control = as.list(1:5),
+#'   locations = countries
 #' )
 #' }
 #'

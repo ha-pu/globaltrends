@@ -22,23 +22,23 @@
 #' @examples
 #' \dontrun{
 #' data <- export_doi(
-#' object = 1, 
-#' locations = "countries"
+#'   object = 1,
+#'   locations = "countries"
 #' )
 #' plot_doi_box(
-#' data_doi = data, 
-#' type = "obs", 
-#' measure = "gini"
+#'   data_doi = data,
+#'   type = "obs",
+#'   measure = "gini"
 #' )
 #' plot_doi_box(
-#' data_doi = data, 
-#' type = "sad", 
-#' measure = "hhi"
+#'   data_doi = data,
+#'   type = "sad",
+#'   measure = "hhi"
 #' )
 #' plot_doi_box(
-#' data_doi = data, 
-#' type = "trd", 
-#' measure = "entropy"
+#'   data_doi = data,
+#'   type = "trd",
+#'   measure = "entropy"
 #' )
 #' }
 #'

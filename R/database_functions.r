@@ -7,10 +7,11 @@
 #' @details
 #' The function creates a new SQLite database for the \code{globaltrends}
 #' package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
-#' the working directory. If the folder \emph{db} does not exists in the working directory, the
-#' folder is created. If the database already exists in the working directory,
-#' the database is deleted and re-created. Within the database all tables are
-#' created and the default location sets are added to the respective table:
+#' the working directory. If the folder \emph{db} does not exists in the working
+#' directory, the folder is created. If the database already exists in the
+#' working directory, the database is deleted and re-created. Within the
+#' database all tables are created and the default location sets are added to
+#' the respective table:
 #' \itemize{
 #'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
 #'   in 2018

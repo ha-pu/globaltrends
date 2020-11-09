@@ -20,28 +20,29 @@
 #' \dontrun{
 #' data1 <- export_voi(keyword = "manchester united")
 #' data2 <- export_doi(
-#' keyword = "manchester united", 
-#' locations = "countries")
-#' plot_voi_doi(
-#' data_voi = data1,
-#' data_doi = data2,
-#' type = "obs",
-#' measure = "gini",
-#' smooth = TRUE
+#'   keyword = "manchester united",
+#'   locations = "countries"
 #' )
 #' plot_voi_doi(
-#' data_voi = data1, 
-#' data_doi = data2, 
-#' type = "sad", 
-#' measure = "hhi", 
-#' smooth = FALSE
+#'   data_voi = data1,
+#'   data_doi = data2,
+#'   type = "obs",
+#'   measure = "gini",
+#'   smooth = TRUE
 #' )
 #' plot_voi_doi(
-#' data_voi = data1, 
-#' data_doi = data2,
-#'  type = "trd", 
-#' measure = "entropy", 
-#' smooth = TRUE
+#'   data_voi = data1,
+#'   data_doi = data2,
+#'   type = "sad",
+#'   measure = "hhi",
+#'   smooth = FALSE
+#' )
+#' plot_voi_doi(
+#'   data_voi = data1,
+#'   data_doi = data2,
+#'   type = "trd",
+#'   measure = "entropy",
+#'   smooth = TRUE
 #' )
 #' }
 #'

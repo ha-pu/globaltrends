@@ -16,19 +16,19 @@
 #' \dontrun{
 #' data <- export_voi(object = 1)
 #' plot_voi_ts(
-#' data_voi = data,
-#' type = "obs",
-#' smooth = TRUE
+#'   data_voi = data,
+#'   type = "obs",
+#'   smooth = TRUE
 #' )
 #' plot_voi_ts(
-#' data_voi = data,
-#' type = "sad",
-#' smooth = FALSE
+#'   data_voi = data,
+#'   type = "sad",
+#'   smooth = FALSE
 #' )
 #' plot_voi_ts(
-#' data_voi = data,
-#' type = "trd",
-#' smooth = TRUE
+#'   data_voi = data,
+#'   type = "trd",
+#'   smooth = TRUE
 #' )
 #' }
 #'

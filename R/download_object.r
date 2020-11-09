@@ -46,12 +46,12 @@
 #' @examples
 #' \dontrun{
 #' download_object(
-#' object = 1,
-#' locations = countries
+#'   object = 1,
+#'   locations = countries
 #' )
 #' download_object(
-#' object = as.list(1:5),
-#' locations = countries
+#'   object = as.list(1:5),
+#'   locations = countries
 #' )
 #' }
 #'

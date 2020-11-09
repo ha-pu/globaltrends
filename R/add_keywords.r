@@ -14,7 +14,7 @@
 #' (five-keyword) batches. A \code{list} must contain \code{character} vectors
 #' of length four (five) or less. Each batch of keywords is combined with a time
 #' period for which data will be downloaded. To change the time period for an
-#' existing batch, all downloads and computations must be rerun. 
+#' existing batch, all downloads and computations must be rerun.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of class
 #' \code{character} or a \code{list} of \code{character} vectors.
@@ -64,7 +64,7 @@
 #' @seealso
 #' \code{\link{batch_keywords}},
 #' \code{\link{batch_time}}
-#' 
+#'
 #' @rdname add_keyword
 #' @export
 
@@ -218,7 +218,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' \dontrun{
 #' add_synonym(
 #'   keyword = "fc bayern",
-#' synonym = "bayern munich"
+#'   synonym = "bayern munich"
 #' )
 #' }
 #'

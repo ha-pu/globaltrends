@@ -17,26 +17,26 @@
 #' @examples
 #' \dontrun{
 #' data <- export_doi(
-#' object = 1, 
-#' locations = "countries"
+#'   object = 1,
+#'   locations = "countries"
 #' )
 #' plot_doi_ts(
-#' data_doi = data, 
-#' type = "obs", 
-#' measure = "gini", 
-#' smooth = TRUE
+#'   data_doi = data,
+#'   type = "obs",
+#'   measure = "gini",
+#'   smooth = TRUE
 #' )
 #' plot_doi_ts(
-#' data_doi = data, 
-#' type = "sad", 
-#' measure = "hhi", 
-#' smooth = FALSE
+#'   data_doi = data,
+#'   type = "sad",
+#'   measure = "hhi",
+#'   smooth = FALSE
 #' )
 #' plot_doi_ts(
-#' data_doi = data, 
-#' type = "trd", 
-#' measure = "entropy", 
-#' smooth = TRUE
+#'   data_doi = data,
+#'   type = "trd",
+#'   measure = "entropy",
+#'   smooth = TRUE
 #' )
 #' }
 #'

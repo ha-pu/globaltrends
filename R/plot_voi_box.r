@@ -16,16 +16,16 @@
 #' \dontrun{
 #' data <- export_voi(object = 1)
 #' plot_voi_box(
-#' data_voi = data, 
-#' type = "obs"
+#'   data_voi = data,
+#'   type = "obs"
 #' )
 #' plot_voi_box(
-#' data_voi = data, 
-#' type = "sad"
+#'   data_voi = data,
+#'   type = "sad"
 #' )
 #' plot_voi_box(
-#' data_voi = data,
-#'  type = "trd"
+#'   data_voi = data,
+#'   type = "trd"
 #' )
 #' }
 #'

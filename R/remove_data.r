@@ -28,13 +28,13 @@
 #' @examples
 #' \dontrun{
 #' remove_data(
-#' table = "batch_keywords",
-#' control = 1
+#'   table = "batch_keywords",
+#'   control = 1
 #' )
 #' remove_data(
-#' table = "data_score",
-#' control = 1,
-#' object = 1
+#'   table = "data_score",
+#'   control = 1,
+#'   object = 1
 #' )
 #' }
 #'

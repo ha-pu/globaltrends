@@ -18,21 +18,21 @@
 #' @examples
 #' \dontrun{
 #' data <- export_score(
-#' keyword = "manchester united", 
-#' locations = "countries"
+#'   keyword = "manchester united",
+#'   locations = "countries"
 #' )
 #' plot_score(
-#' data_score = data, 
-#' type = "obs"
+#'   data_score = data,
+#'   type = "obs"
 #' )
 #' plot_score(
-#' data_score = data, 
-#' type = "sad"
+#'   data_score = data,
+#'   type = "sad"
 #' )
 #' data <- dplyr::filter(data, location %in% countries)
 #' plot_score(
-#' data_score = data, 
-#' type = "trd"
+#'   data_score = data,
+#'   type = "trd"
 #' )
 #' }
 #'
