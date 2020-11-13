@@ -9,6 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<center>
+![](../hex-globaltrends/hex-globaltrends.png){#id .class width=25% height=25%}
+</center>
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
