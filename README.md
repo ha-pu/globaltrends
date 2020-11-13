@@ -1,6 +1,8 @@
 # globaltrends
 
-![](hex-globaltrends/hex-globaltrends.png)<!-- -->
+<p align="center">
+  <img src="hex-globaltrends/hex-globaltrends.png" width="250" height="250">
+</p>
 
 Google offers public access to global search volumes through its search engine through the [Google Trends portal](http://www.google.com/trends). The `globaltrends` package downloads search volumes provided by Google Trends and uses them to measure and analyze the **distribution of search trends across countries or within countries**. `globaltrends` allows researchers and analysts to investigate patterns within these trends, such as **degree of internationalization** of firms and organizations or dissemination of political, social, or technological trends across the globe or within single countries.  
 
