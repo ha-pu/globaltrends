@@ -127,7 +127,6 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
   }
   out <- filter(out, .data$location != "world")
   out <- rename(out, object = .data$batch_o, control = .data$batch_c)
-  return(out)
 }
 
 #' @rdname export_data

@@ -429,4 +429,3 @@ The enormous detail of the data opens additional applications in research that a
 # References
 * Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based Uncertainty index for the United States and Australia. Economics Letters, 161: 149-153.
 * Venger, O., Puhr, H., & Müllner, J. 2020. MNE Internationalization and Resilience to the Covid-19 Pandemic, Working Paper. Vienna: Vienna University of Economics and Business. Available at https://github.com/ha-pu/globaltrends/blob/master/Venger_Puhr_Muellner_2020.pdf.
-
