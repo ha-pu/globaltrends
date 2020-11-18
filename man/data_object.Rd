@@ -5,16 +5,21 @@
 \alias{data_object}
 \title{data_object}
 \format{
-A tibble with 2090 rows and 5 variables:
+A tibble with 8,640 rows and 6 variables:
 \describe{
-  \item{location}{\code{character} ISO2 code of country or region for which the
-  data was downloaded}
-  \item{keyword}{\code{character} keyword for which the data was downloaded}
-  \item{date}{date as \code{integer} variable, can be transformed into date
-  format with \code{lubridate::as_date}}
-  \item{hits}{\code{integer} search hits for the respective location-keyword-date
-  combination}
-  \item{batch}{\code{integer} number of batch}
+  \item{location}{Column of type \code{character} showing the ISO2 code of
+  the country or region for which the data was downloaded.}
+  \item{keyword}{Column of type \code{character} showing the keyword for
+  which the data was downloaded.}
+  \item{date}{Column of type \code{integer} showing the date for which the
+  data was downloaded. Can be transformed into date format with
+  \code{lubridate::as_date}.}
+  \item{hits}{Column of type \code{double} showing search volumes for the
+  respective location-keyword-date combination.}
+  \item{batch_c}{Column of type \code{integer} showing the number of each
+  control batch.}
+  \item{batch_o}{Column of type \code{integer} showing the number of each
+  object batch.}
 }
 }
 \source{
@@ -24,6 +29,23 @@ A tibble with 2090 rows and 5 variables:
 data_object
 }
 \description{
-xxx.
+The table \emph{data_object} contains the downloaded data for each object
+batch. Each line contains the search \emph{hits} for each \emph{keyword} in
+an object \emph{batch_o} for a given \emph{location} and \emph{date}. The
+column \emph{batch_c} indicates the control batch to which the data will be
+mapped. Global data takes the value \emph{world} as location. Data is
+downloaded and automatically written to the table through the function
+\code{download_object}. The function \code{start_db} exports the table
+\emph{data_object} as database connection \code{tbl_object} to
+\code{.GlobalEnv}. Users can access the database table through
+\code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_object} was simulated based on actual
+Google Trends data.
+}
+\seealso{
+* \code{\link{download_object}}
+* \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

@@ -5,16 +5,19 @@
 \alias{data_control}
 \title{data_control}
 \format{
-A tibble with 2090 rows and 5 variables:
+A tibble with 2,400 rows and 5 variables:
 \describe{
-  \item{location}{\code{character} ISO2 code of country or region for which the
-  data was downloaded}
-  \item{keyword}{\code{character} keyword for which the data was downloaded}
-  \item{date}{date as \code{integer} variable, can be transformed into date
-  format with \code{lubridate::as_date}}
-  \item{hits}{\code{integer} search hits for the respective location-keyword-date
-  combination}
-  \item{batch}{\code{integer} number of batch}
+  \item{location}{Column of type \code{character} showing the ISO2 code of
+  the country or region for which the data was downloaded.}
+  \item{keyword}{Column of type \code{character} showing the keyword for
+  which the data was downloaded.}
+  \item{date}{Column of type \code{integer} showing the date for which the
+  data was downloaded. Can be transformed into date format with
+  \code{lubridate::as_date}.}
+  \item{hits}{Column of type \code{double} showing search volumes for the
+  respective location-keyword-date combination.}
+  \item{batch}{Column of type \code{integer} showing the number of each
+  batch.}
 }
 }
 \source{
@@ -24,6 +27,21 @@ A tibble with 2090 rows and 5 variables:
 data_control
 }
 \description{
-xxx.
+The table \emph{data_control} contains the downloaded data for each control
+batch. Each line contains the search \emph{hits} for each \emph{keyword} in a
+control \emph{batch} for a given \emph{location} and \emph{date}. Global data
+gets the value \emph{world} as location. Data is downloaded and automatically
+written to the table through the function \code{download_control}. The
+function \code{start_db} exports the table \emph{data_control} as database
+connection \code{tbl_control} to \code{.GlobalEnv}. Users can access the
+database table through \code{dplyr::tbl}.
+}
+\details{
+The sample data included in \code{data_control} was simulated based on actual
+Google Trends data.
+}
+\seealso{
+* \code{\link{download_control}}
+* \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

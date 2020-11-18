@@ -5,18 +5,28 @@
 \alias{batch_keywords}
 \title{batch_keywords}
 \format{
-A tibble with 4 rows and 3 variables:
+A tibble with 19 rows and 3 variables:
 \describe{
-  \item{type}{\code{character} indicating the type of batch, takes "control" for
-  control batches and "object" for object batches}
-  \item{batch}{\code{integer} number of the batch}
-  \item{keyword}{\code{character} keywords included in the respective batch}
+  \item{type}{Column of type \code{character} showing the type of each batch,
+  takes "control" for control batches and "object" for object batches.}
+  \item{batch}{Column of type \code{integer} showing the number of each
+  batch.}
+  \item{keyword}{Column of type \code{character} showing the keywords
+  included in each batch.}
 }
 }
 \usage{
 batch_keywords
 }
 \description{
-xxx.
+The table \emph{batch_keywords} contains the keywords for each batch. Each
+line contains one \emph{keyword}, the \emph{type} of the batch (i.e. control
+or object) and the id of the \emph{batch} to which the keyword is assigned.
+Keywords can be added with the function \code{add_keywords}. The function
+\code{start_db} exports the table \emph{batch_keywords} as objects
+\code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
+}
+\seealso{
+* \code{\link[globaltrends]{add_keyword}}
 }
 \keyword{datasets}

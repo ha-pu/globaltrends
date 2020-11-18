@@ -2,22 +2,25 @@
 % Please edit documentation in R/export_data.r
 \name{export_control}
 \alias{export_control}
+\alias{export_control_global}
 \alias{export_object}
-\alias{export_global}
-\alias{export_mapping}
+\alias{export_object_global}
 \alias{export_score}
+\alias{export_voi}
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
-export_control(control = NULL)
+export_control(control = NULL, locations = NULL)
 
-export_object(keyword = NULL, object = NULL)
+export_control_global(control = NULL)
 
-export_global(keyword = NULL, object = NULL, type = NULL)
+export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
-export_mapping(keyword = NULL, object = NULL, control = NULL)
+export_object_global(keyword = NULL, object = NULL, control = NULL)
 
-export_score(keyword = NULL, object = NULL, control = NULL)
+export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+export_voi(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
   keyword = NULL,
@@ -28,62 +31,73 @@ export_doi(
 )
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported. Element
-of class \code{numeric}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{control}{Control batch number for which data should be exported.}
 
-\item{keyword}{Object keywords for which data should be exported. Element of
-class \code{character}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{locations}{List of locations for which the search score is used.
+For \code{export_control}, \code{export_object}, or \code{export_score}
+refers to lists generated in \code{start_db}. For \code{export_doi}
+object of class \code{character}.}
 
-\item{object}{Object batch number for which data should be exported. Element
-of class \code{numeric}. When element length exceeds 1, only the first element
-is used for exporting.}
+\item{keyword}{Object keywords for which data should be exported. Object of
+class \code{character}.}
+
+\item{object}{Object batch number for which data should be exported.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting. Relevant only for "export_global" and
-"export_doi". Takes one of the following values: "obs", "sad", "trd".}
-
-\item{locations}{Set of locations for which data should be exported. Element
-of class \code{character}. When element length exceeds 1, only the first
-element is used for exporting.}
+of class \code{character}. Relevant only for \code{export_global} and
+\code{export_doi}. Takes one of the following values: \emph{obs} - observed
+search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
+trend only search scores.}
 }
 \value{
 The functions export and filter the respective database tables and return
 objects of class \code{"tbl_df", "tbl", "data.frame"}.
 \itemize{
-\item \code{export_control} exports table with columns location, keyword,
-date, hits, control
-\item \code{export_object} exports table  with columns location, keyword,
-date, hits, object
-\item \code{export_global} exports table  with columns keyword, date, hits,
-control
-\item \code{export_mapping} exports table  with columns location, keyword,
-date, hits, control, object
-\item \code{export_score} exports table  with columns location, keyword,
-date, score_obs, score_sad, score_trd, control, object
-\item \code{export_doi} exports table with columns keyword, date, type, gini,
-hhi, entropy, control, object, locations
+  \item \code{export_control} exports data from table \emph{data_control} with
+columns location, keyword, date, hits, control.
+  \item \code{export_object} exports data from table \emph{data_object} with
+columns location, keyword, date, hits, object.
+  \item \code{export_global} exports data from table \emph{data_score} with
+columns keyword, date, hits, control, filters for
+\code{location == "world"}.
+  \item \code{export_score} exports data from table \emph{data_score} with
+columns location, keyword, date, score_obs, score_sad, score_trd, control,
+object.
+  \item \code{export_doi} exports data from table \emph{data_doi} with columns
+keyword, date, type, gini, hhi, entropy, control, object, locations.
 }
 }
 \description{
-Export data from database table
+The function allows to export data from database tables.
 }
 \details{
-
+Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
+\emph{locations}, or \emph{type}. Not all filters are applicable for all
+functions. When filter \emph{keyword} and \emph{object} are used together,
+\emph{keyword} overrules \emph{object}. Currently the functions do not
+include list inputs - users are advised to \code{purrr::map_dfr} or
+\code{dplyr::filter} instead.
 }
 \examples{
 \dontrun{
 export_control(control = 2)
 
-export_object(keyword = "manchester united")
+export_object(
+  keyword = "manchester united",
+  locations = countries
+)
 
-export_score(object = 3, control = 1) \%>\%
+export_score(
+  object = 3,
+  control = 1,
+  locations = us_states
+) \%>\%
   readr::write_csv("data_score.csv")
 
 export_doi(
-  keyword = "manchester united", control = 2, type = "sad",
+  keyword = "manchester united",
+  control = 2,
+  type = "sad",
   locations = "us_states"
 ) \%>\%
   write_xl::write_xlsx("data_doi.xlsx")
@@ -91,5 +105,10 @@ export_doi(
 
 }
 \seealso{
-
+* \code{\link{data_control}}
+* \code{\link{data_object}}
+* \code{\link{data_score}}
+* \code{\link{data_doi}}
+* \code{\link[purrr]{map}}
+* \code{\link[dplyr]{filter}}
 }

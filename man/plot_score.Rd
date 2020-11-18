@@ -7,33 +7,44 @@
 plot_score(data_score, type = "obs")
 }
 \arguments{
+\item{data_score}{Data exported from \code{export_score} function.}
+
 \item{type}{Object of class \code{character} indicating the type of time
-series-column from data_score that is used, takes either "obs", "sad", or
-"trd". By default takes "obs".}
+series-column from data_score that is used, takes either \emph{obs},
+\emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.}
 }
 \value{
-Bar plot of score distribution across locations as \code{ggplot2} object
+Bar plot of score distribution across locations as \code{ggplot2}
+object.
 }
 \description{
-Bar plot of data_score distribution
+The function uses the output of \code{export_score} to prepare a bar plot of
+search scores for the top 10 countries. When the output includes more than
+one keyword, only the first keyword is used.
 }
-\details{
-
-}
-\section{Warning}{
-
-\code{plot_score} is limited to 1 unique keyword to avoid an
-overcrowded plot. When \code{data_doi} or \code{data_score} includes
-more than 1 unique keyword, only the first keyword is used.
-}
-
 \examples{
 \dontrun{
-data <- export_score(keyword = "manchester united", locations = "countries")
-plot_score(data_score = data, type = "obs")
-plot_score(data_score = data, type = "sad")
+data <- export_score(
+  keyword = "manchester united",
+  locations = "countries"
+)
+plot_score(
+  data_score = data,
+  type = "obs"
+)
+plot_score(
+  data_score = data,
+  type = "sad"
+)
 data <- dplyr::filter(data, location \%in\% countries)
-plot_score(data_score = data, type = "trd")
+plot_score(
+  data_score = data,
+  type = "trd"
+)
 }
 
+}
+\seealso{
+* \code{\link{export_score}}
+* \code{\link[ggplot2]{ggplot}}
 }
