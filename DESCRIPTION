@@ -4,12 +4,12 @@ Title: Download and measure global trends through Google searche volumes
 Version: 0.0.3
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
-	  person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
-	)
+	person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
+  )
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Description: Google offers public access to global search volumes from its
-  search engine through the Google Trends portal. The globaltrends package
+    search engine through the Google Trends portal. The globaltrends package
 	downloads these search volumes provided by Google Trends and uses them to
 	measure and analyze the distribution of search scores across countries or
 	within countries. The package allows researchers and analysts to use these
