@@ -47,5 +47,6 @@ plot_voi_ts(
 
 }
 \seealso{
-\code{\link{export_voi}}
+* \code{\link{export_voi}}
+* \code{\link[ggplot2]{ggplot}}
 }

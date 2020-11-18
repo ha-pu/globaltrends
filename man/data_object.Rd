@@ -44,4 +44,8 @@ downloaded and automatically written to the table through the function
 The sample data included in \code{data_object} was simulated based on actual
 Google Trends data.
 }
+\seealso{
+* \code{\link{download_object}}
+* \code{\link[dplyr]{tbl}}
+}
 \keyword{datasets}

@@ -40,10 +40,10 @@
 #' \code{countries}.
 #'
 #' @seealso
-#' \code{\link{data_score}},
-#' \code{\link{add_synonym}},
-#' \code{\link[stats]{stl}},
-#' \code{\link[forecast]{seasadj}}
+#' * \code{\link{data_score}}
+#' * \code{\link{add_synonym}}
+#' * \code{\link[stats]{stl}}
+#' * \code{\link[forecast]{seasadj}}
 #'
 #' @return Message that data has been computed successfully. Data is written to
 #' table \emph{data_score}.
@@ -280,6 +280,7 @@ compute_score_global <- function(object, control = 1) {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
@@ -303,6 +304,7 @@ compute_score_global <- function(object, control = 1) {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom lubridate month
 #' @importFrom lubridate year
@@ -321,6 +323,7 @@ compute_score_global <- function(object, control = 1) {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @export
 #' @importFrom DBI dbExecute

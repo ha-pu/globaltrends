@@ -41,6 +41,7 @@ The sample data included in \code{data_control} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-\code{\link{download_control}}, \code{\link[dplyr]{tbl}}
+* \code{\link{download_control}}
+* \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

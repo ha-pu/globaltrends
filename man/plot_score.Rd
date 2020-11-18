@@ -45,5 +45,6 @@ plot_score(
 
 }
 \seealso{
-\code{\link{export_score}}
+* \code{\link{export_score}}
+* \code{\link[ggplot2]{ggplot}}
 }

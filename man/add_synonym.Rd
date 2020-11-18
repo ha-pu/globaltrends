@@ -39,5 +39,5 @@ add_synonym(
 
 }
 \seealso{
-\code{\link{compute_score}}
+* \code{\link{compute_score}}
 }

@@ -51,6 +51,7 @@ The sample data included in \code{data_score} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-\code{\link{compute_score}}, \code{\link[dplyr]{tbl}}
+* \code{\link{compute_score}}
+* \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

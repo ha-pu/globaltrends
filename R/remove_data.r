@@ -18,9 +18,13 @@
 #' @param object Object batch for which the data is removed Object
 #' of class \code{numeric}.
 #'
-#' @seealso \code{\link{batch_keywords}}, \code{\link{batch_time}},
-#' \code{\link{data_control}}, \code{\link{data_object}},
-#' \code{\link{data_score}}, \code{\link{data_doi}}
+#' @seealso
+#' * \code{\link{batch_keywords}}
+#' * \code{\link{batch_time}}
+#' * \code{\link{data_control}}
+#' * \code{\link{data_object}}
+#' * \code{\link{data_score}}
+#' * \code{\link{data_doi}}
 #'
 #' @return Message that data has been removed successfully. Data is removed
 #' from database tables.
@@ -91,6 +95,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from batch_keywords
 #' @keywords internal
+#' @noRd
 
 .remove_batch_keywords <- function(type, batch_c, batch_o) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -124,6 +129,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from batch_time
 #' @keywords internal
+#' @noRd
 
 .remove_batch_time <- function(type, batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -151,6 +157,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from data_control
 #' @keywords internal
+#' @noRd
 
 .remove_data_control <- function(batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -163,6 +170,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from data_object
 #' @keywords internal
+#' @noRd
 
 .remove_data_object <- function(batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -183,6 +191,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from data_score
 #' @keywords internal
+#' @noRd
 
 .remove_data_score <- function(batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -203,6 +212,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from data_doi
 #' @keywords internal
+#' @noRd
 
 .remove_data_doi <- function(batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)
@@ -221,6 +231,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @rdname dot-remove_data
 #' @title Remove from data_global
 #' @keywords internal
+#' @noRd
 
 .remove_data_global <- function(batch_c = NULL, batch_o = NULL) {
   walk(c(batch_c, batch_o), .test_batch)

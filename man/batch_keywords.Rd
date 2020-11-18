@@ -27,6 +27,6 @@ Keywords can be added with the function \code{add_keywords}. The function
 \code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
 }
 \seealso{
-\code{\link[globaltrends]{add_keyword}}
+* \code{\link[globaltrends]{add_keyword}}
 }
 \keyword{datasets}

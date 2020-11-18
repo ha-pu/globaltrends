@@ -14,8 +14,8 @@
 #' the respective table:
 #' \itemize{
 #'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
-#'   in 2018
-#'   \item \emph{us_states} - all US federal states and Washington DC
+#'   in 2018.
+#'   \item \emph{us_states} - all US federal states and Washington DC.
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
@@ -24,15 +24,15 @@
 #' and leads to loss of data!
 #'
 #' @seealso
-#' \code{\link{start_db}},
-#' \code{\link{disconnect_db}},
-#' \code{\link{batch_keywords}},
-#' \code{\link{batch_time}},
-#' \code{\link{data_control}},
-#' \code{\link{data_object}},
-#' \code{\link{data_score}},
-#' \code{\link{data_doi}},
-#' \url{https://www.sqlite.org/index.html}
+#' * \code{\link{start_db}}
+#' * \code{\link{disconnect_db}}
+#' * \code{\link{batch_keywords}}
+#' * \code{\link{batch_time}}
+#' * \code{\link{data_control}}
+#' * \code{\link{data_object}}
+#' * \code{\link{data_score}}
+#' * \code{\link{data_doi}}
+#' * \url{https://www.sqlite.org/index.html}
 #'
 #' @return Database is created.
 #'
@@ -153,6 +153,7 @@ initialize_db <- function() {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr arrange
@@ -204,8 +205,10 @@ initialize_db <- function() {
 #' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
 #' and \emph{time_object}.
 #'
-#' @seealso \code{\link{initialize_db}}, \code{\link{disconnect_db}},
-#' \code{\link[dplyr]{tbl}}
+#' @seealso
+#' * \code{\link{initialize_db}}
+#' * \code{\link{disconnect_db}}
+#' * \code{\link[dplyr]{tbl}}
 #'
 #' @return
 #' The function exports the following objects to .GlobalEnv:
@@ -357,7 +360,9 @@ start_db <- function() {
 #' The function closes the connection to the database file
 #' \emph{db/globaltrends_db.sqlite} in the working directory.
 #'
-#' @seealso \code{\link{initialize_db}}, \code{\link{start_db}}
+#' @seealso
+#' * \code{\link{initialize_db}}
+#' * \code{\link{start_db}}
 #'
 #' @param db Connection to database file that should be closed. Defaults
 #' to \code{globaltrends_db}.

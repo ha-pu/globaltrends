@@ -66,5 +66,6 @@ plot_doi_ts(
 
 }
 \seealso{
-\code{\link{export_doi}}
+* \code{\link{export_doi}}
+* \code{\link[ggplot2]{ggplot}}
 }

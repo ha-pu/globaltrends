@@ -54,6 +54,7 @@ The sample data included in \code{data_doi} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-\code{\link{compute_doi}}, \code{\link[dplyr]{tbl}}
+* \code{\link{compute_doi}}
+* \code{\link[dplyr]{tbl}}
 }
 \keyword{datasets}

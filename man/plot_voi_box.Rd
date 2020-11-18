@@ -40,5 +40,6 @@ plot_voi_box(
 
 }
 \seealso{
-\code{\link{export_voi}}
+* \code{\link{export_voi}}
+* \code{\link[ggplot2]{ggplot}}
 }

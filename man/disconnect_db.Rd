@@ -23,5 +23,6 @@ disconnect_db()
 }
 }
 \seealso{
-\code{\link{initialize_db}}, \code{\link{start_db}}
+* \code{\link{initialize_db}}
+* \code{\link{start_db}}
 }

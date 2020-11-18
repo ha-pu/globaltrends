@@ -13,7 +13,9 @@
 #' @return Bar plot of score distribution across locations as \code{ggplot2}
 #' object.
 #'
-#' @seealso \code{\link{export_score}}
+#' @seealso
+#' * \code{\link{export_score}}
+#' * \code{\link[ggplot2]{ggplot}}
 #'
 #' @examples
 #' \dontrun{

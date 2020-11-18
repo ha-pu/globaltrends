@@ -71,8 +71,8 @@ compute_score(
 
 }
 \seealso{
-\code{\link{data_score}},
-\code{\link{add_synonym}},
-\code{\link[stats]{stl}},
-\code{\link[forecast]{seasadj}}
+* \code{\link{data_score}}
+* \code{\link{add_synonym}}
+* \code{\link[stats]{stl}}
+* \code{\link[forecast]{seasadj}}
 }

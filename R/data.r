@@ -17,7 +17,8 @@
 #'   included in each batch.}
 #' }
 #'
-#' @seealso \code{\link[globaltrends]{add_keyword}}
+#' @seealso
+#' * \code{\link[globaltrends]{add_keyword}}
 "batch_keywords"
 
 #' batch_time
@@ -40,7 +41,8 @@
 #'   each batch as "YYYY-MM-DD YYYY-MM-DD".}
 #' }
 #'
-#' @seealso \code{\link[globaltrends]{add_keyword}}
+#' @seealso
+#' * \code{\link[globaltrends]{add_keyword}}
 "batch_time"
 
 #' data_control
@@ -73,7 +75,9 @@
 #'   batch.}
 #' }
 #' @source \url{https://trends.google.com/trends/}
-#' @seealso \code{\link{download_control}}, \code{\link[dplyr]{tbl}}
+#' @seealso
+#' * \code{\link{download_control}}
+#' * \code{\link[dplyr]{tbl}}
 "data_control"
 
 #' data_object
@@ -109,6 +113,9 @@
 #'   object batch.}
 #' }
 #' @source \url{https://trends.google.com/trends/}
+#' @seealso
+#' * \code{\link{download_object}}
+#' * \code{\link[dplyr]{tbl}}
 "data_object"
 
 #' data_score
@@ -152,7 +159,9 @@
 #'   \item{synonym}{Column of type \code{integer} showing whether the line will
 #'   be aggregated as synonym.}
 #' }
-#' @seealso \code{\link{compute_score}}, \code{\link[dplyr]{tbl}}
+#' @seealso
+#' * \code{\link{compute_score}}
+#' * \code{\link[dplyr]{tbl}}
 "data_score"
 
 #' data_doi
@@ -199,5 +208,7 @@
 #'   \item{locations}{Column of type \code{character} showing the list of
 #'   locations for which the search score distribution is used.}
 #' }
-#' @seealso \code{\link{compute_doi}}, \code{\link[dplyr]{tbl}}
+#' @seealso
+#' * \code{\link{compute_doi}}
+#' * \code{\link[dplyr]{tbl}}
 "data_doi"

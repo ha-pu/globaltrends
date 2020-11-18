@@ -10,7 +10,9 @@
 #'
 #' @return Boxplot of VOI distribution as \code{ggplot2} object.
 #'
-#' @seealso \code{\link{export_voi}}
+#' @seealso
+#' * \code{\link{export_voi}}
+#' * \code{\link[ggplot2]{ggplot}}
 #'
 #' @examples
 #' \dontrun{

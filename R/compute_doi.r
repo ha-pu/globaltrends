@@ -29,8 +29,8 @@
 #' Object of class \code{character}. Defaults to \emph{"countries"}.
 #'
 #' @seealso
-#' \code{\link{data_doi}},
-#' \code{\link[ineq]{ineq}}
+#' * \code{\link{data_doi}}
+#' * \code{\link[ineq]{ineq}}
 #'
 #' @return
 #' Message that data was aggregated successfully. Data is written to table
@@ -120,6 +120,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom dplyr coalesce
 
@@ -132,6 +133,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 
 .compute_hhi <- function(series) {
   out <- coalesce(1 - sum((series / sum(series))^2), 0)
@@ -142,6 +144,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 
 .compute_entropy <- function(series) {
   out <- coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)

@@ -59,6 +59,6 @@ download_control(
 
 }
 \seealso{
-\code{\link{data_control}},
-\code{\link[gtrendsR]{gtrends}}
+* \code{\link{data_control}}
+* \code{\link[gtrendsR]{gtrends}}
 }

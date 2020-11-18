@@ -46,7 +46,10 @@ remove_data(
 
 }
 \seealso{
-\code{\link{batch_keywords}}, \code{\link{batch_time}},
-\code{\link{data_control}}, \code{\link{data_object}},
-\code{\link{data_score}}, \code{\link{data_doi}}
+* \code{\link{batch_keywords}}
+* \code{\link{batch_time}}
+* \code{\link{data_control}}
+* \code{\link{data_object}}
+* \code{\link{data_score}}
+* \code{\link{data_doi}}
 }

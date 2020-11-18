@@ -62,8 +62,8 @@
 #' )
 #' }
 #' @seealso
-#' \code{\link{batch_keywords}},
-#' \code{\link{batch_time}}
+#' * \code{\link{batch_keywords}}
+#' * \code{\link{batch_time}}
 #'
 #' @rdname add_keyword
 #' @export
@@ -86,6 +86,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @title Add keyword batches to batch_keywords and batch_time
 #'
 #' @keywords internal
+#' @noRd
 #'
 #' @aliases
 #' .add_batch
@@ -106,6 +107,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 #' @rdname dot-add_batch
 #' @keywords internal
+#' @noRd
 #' @method .add_batch character
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
@@ -131,6 +133,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 #' @title Add batch of keywords
 #' @keywords internal
+#' @noRd
 
 .add_keyword_batch <- function(type, keyword, time, max) {
   if (length(keyword) > max) stop(glue("Error: Length of list objects must not exceed {max}.\nYou provided a list object with length {length(keyword)}."))
@@ -212,7 +215,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' Message that the synonym has been added successfully. Synonym data is
 #' written to table \emph{keyword_synonyms}.
 #'
-#' @seealso \code{\link{compute_score}}
+#' @seealso
+#' * \code{\link{compute_score}}
 #'
 #' @examples
 #' \dontrun{

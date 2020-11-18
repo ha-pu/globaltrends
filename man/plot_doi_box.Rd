@@ -53,5 +53,6 @@ plot_doi_box(
 
 }
 \seealso{
-\code{\link{export_doi}}
+* \code{\link{export_doi}}
+* \code{\link[ggplot2]{ggplot}}
 }

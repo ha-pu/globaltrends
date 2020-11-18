@@ -17,7 +17,9 @@
 #'
 #' @return Boxplot of DOI distribution as \code{ggplot2} object.
 #'
-#' @seealso \code{\link{export_doi}}
+#' @seealso
+#' * \code{\link{export_doi}}
+#' * \code{\link[ggplot2]{ggplot}}
 #'
 #' @examples
 #' \dontrun{

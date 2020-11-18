@@ -74,6 +74,6 @@ add_control_keyword(
 }
 }
 \seealso{
-\code{\link{batch_keywords}},
-\code{\link{batch_time}}
+* \code{\link{batch_keywords}}
+* \code{\link{batch_time}}
 }

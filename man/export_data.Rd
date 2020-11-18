@@ -53,18 +53,18 @@ trend only search scores.}
 The functions export and filter the respective database tables and return
 objects of class \code{"tbl_df", "tbl", "data.frame"}.
 \itemize{
-\item \code{export_control} exports data from table \emph{data_control} with
-columns location, keyword, date, hits, control
-\item \code{export_object} exports data from table \emph{data_object} with
-columns location, keyword, date, hits, object
-\item \code{export_global} exports data from table \emph{data_score} with
+  \item \code{export_control} exports data from table \emph{data_control} with
+columns location, keyword, date, hits, control.
+  \item \code{export_object} exports data from table \emph{data_object} with
+columns location, keyword, date, hits, object.
+  \item \code{export_global} exports data from table \emph{data_score} with
 columns keyword, date, hits, control, filters for
 \code{location == "world"}.
-\item \code{export_score} exports data from table \emph{data_score} with
+  \item \code{export_score} exports data from table \emph{data_score} with
 columns location, keyword, date, score_obs, score_sad, score_trd, control,
-object
-\item \code{export_doi} exports data from table \emph{data_doi} with columns
-keyword, date, type, gini, hhi, entropy, control, object, locations
+object.
+  \item \code{export_doi} exports data from table \emph{data_doi} with columns
+keyword, date, type, gini, hhi, entropy, control, object, locations.
 }
 }
 \description{
@@ -105,10 +105,10 @@ export_doi(
 
 }
 \seealso{
-\code{\link{data_control}},
-\code{\link{data_object}},
-\code{\link{data_score}},
-\code{\link{data_doi}},
-\code{\link[purrr]{map}},
-\code{\link[dplyr]{filter}}
+* \code{\link{data_control}}
+* \code{\link{data_object}}
+* \code{\link{data_score}}
+* \code{\link{data_doi}}
+* \code{\link[purrr]{map}}
+* \code{\link[dplyr]{filter}}
 }

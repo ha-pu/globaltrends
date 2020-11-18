@@ -13,8 +13,9 @@
 #' @return Line plot of VOI and DOI time series as \code{ggplot2} object.
 #'
 #' @seealso
-#' \code{\link{export_voi}},
-#' \code{\link{export_doi}}
+#' * \code{\link{export_voi}}
+#' * \code{\link{export_doi}}
+#' * \code{\link[ggplot2]{ggplot}}
 #'
 #' @examples
 #' \dontrun{

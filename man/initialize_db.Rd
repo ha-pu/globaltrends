@@ -23,8 +23,8 @@ database all tables are created and the default location sets are added to
 the respective table:
 \itemize{
   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
-  in 2018
-  \item \emph{us_states} - all US federal states and Washington DC
+  in 2018.
+  \item \emph{us_states} - all US federal states and Washington DC.
 }
 After creating the database, the function disconnects from the database.
 }
@@ -41,13 +41,13 @@ initialize_db()
 
 }
 \seealso{
-\code{\link{start_db}},
-\code{\link{disconnect_db}},
-\code{\link{batch_keywords}},
-\code{\link{batch_time}},
-\code{\link{data_control}},
-\code{\link{data_object}},
-\code{\link{data_score}},
-\code{\link{data_doi}},
-\url{https://www.sqlite.org/index.html}
+* \code{\link{start_db}}
+* \code{\link{disconnect_db}}
+* \code{\link{batch_keywords}}
+* \code{\link{batch_time}}
+* \code{\link{data_control}}
+* \code{\link{data_object}}
+* \code{\link{data_score}}
+* \code{\link{data_doi}}
+* \url{https://www.sqlite.org/index.html}
 }

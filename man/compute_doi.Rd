@@ -58,6 +58,6 @@ compute_doi(
 
 }
 \seealso{
-\code{\link{data_doi}},
-\code{\link[ineq]{ineq}}
+* \code{\link{data_doi}}
+* \code{\link[ineq]{ineq}}
 }

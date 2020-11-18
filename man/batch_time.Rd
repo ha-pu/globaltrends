@@ -28,6 +28,6 @@ table \emph{batch_time} as objects \code{time_control} and \code{time_object}
 to \code{.GlobalEnv}.
 }
 \seealso{
-\code{\link[globaltrends]{add_keyword}}
+* \code{\link[globaltrends]{add_keyword}}
 }
 \keyword{datasets}

@@ -2,6 +2,7 @@
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -38,6 +39,7 @@
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 
 .test_batch <- function(batch) {
   if (is.null(batch)) {
@@ -59,6 +61,7 @@
 #'
 #' @rdname hlprs
 #' @keywords internal
+#' @noRd
 #'
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter

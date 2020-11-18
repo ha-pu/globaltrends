@@ -66,6 +66,6 @@ download_object(
 
 }
 \seealso{
-\code{\link{data_object}},
-\code{\link[gtrendsR]{gtrends}}
+* \code{\link{data_object}}
+* \code{\link[gtrendsR]{gtrends}}
 }

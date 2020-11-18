@@ -36,8 +36,8 @@
 #' \code{countries}.
 #'
 #' @seealso
-#' \code{\link{data_object}},
-#' \code{\link[gtrendsR]{gtrends}}
+#' * \code{\link{data_object}}
+#' * \code{\link[gtrendsR]{gtrends}}
 #'
 #' @return
 #' Message that data was downloaded successfully. Data is written

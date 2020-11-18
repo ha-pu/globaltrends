@@ -49,6 +49,7 @@ start_db()
 
 }
 \seealso{
-\code{\link{initialize_db}}, \code{\link{disconnect_db}},
-\code{\link[dplyr]{tbl}}
+* \code{\link{initialize_db}}
+* \code{\link{disconnect_db}}
+* \code{\link[dplyr]{tbl}}
 }

@@ -30,8 +30,8 @@
 #' \code{countries}.
 #'
 #' @seealso
-#' \code{\link{data_control}},
-#' \code{\link[gtrendsR]{gtrends}}
+#' * \code{\link{data_control}}
+#' * \code{\link[gtrendsR]{gtrends}}
 #'
 #' @return
 #' Message that data has been downloaded successfully. Data is written
