@@ -93,8 +93,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' .add_batch.character
 #' .add_batch.list
 #'
-#' @rdname dot-add_batch
-#'
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -105,7 +103,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 .add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
 
-#' @rdname dot-add_batch
 #' @keywords internal
 #' @noRd
 #' @method .add_batch character
@@ -121,8 +118,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
   return(new_batches)
 }
 
-#' @rdname dot-add_batch
 #' @keywords internal
+#' @noRd
 #' @method .add_batch list
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
