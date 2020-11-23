@@ -40,7 +40,7 @@ download_object_global(control = new_control)
 
 # compute search score ---------------------------------------------------------
 compute_score(control = new_control, object = new_object)
-compute_voi(contorl = new_contorl, object = new_object)
+compute_voi(contorl = new_control, object = new_object)
 
 # compute degree of internationalization ---------------------------------------
 compute_doi(control = new_control, object = new_object)
