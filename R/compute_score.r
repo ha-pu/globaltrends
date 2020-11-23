@@ -272,7 +272,7 @@ compute_score.list <- function(object, control = 1, locations = countries) {
 #' @rdname compute_score
 #' @export
 
-compute_score_global <- function(object, control = 1) {
+compute_voi <- function(object, control = 1) {
   compute_score(control = control, object = object, locations = "world")
 }
 
