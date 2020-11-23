@@ -144,17 +144,17 @@ test_that("compute_score3", {
 })
 
 test_that("compute_score4", {
-  expect_error(compute_score_global(object = 1.5))
-  expect_error(compute_score_global(object = "A"))
-  expect_error(compute_score_global(object = TRUE))
-  expect_error(compute_score_global(object = sum))
+  expect_error(compute_voi(object = 1.5))
+  expect_error(compute_voi(object = "A"))
+  expect_error(compute_voi(object = TRUE))
+  expect_error(compute_voi(object = sum))
 })
 
 test_that("compute_score5", {
-  expect_error(compute_score_global(control = 1.5, object = 1))
-  expect_error(compute_score_global(control = "A", object = 1))
-  expect_error(compute_score_global(control = sum, object = 1))
-  expect_error(compute_score_global(control = 1:5, object = 1))
+  expect_error(compute_voi(control = 1.5, object = 1))
+  expect_error(compute_voi(control = "A", object = 1))
+  expect_error(compute_voi(control = sum, object = 1))
+  expect_error(compute_voi(control = 1:5, object = 1))
 })
 
 # compute_doi ----
