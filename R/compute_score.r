@@ -60,6 +60,10 @@
 #'   control = 1,
 #'   locations = countries
 #' )
+#' compute_voi(
+#'   object = 1,
+#'   control = 1
+#' )
 #' }
 #'
 #' @export
