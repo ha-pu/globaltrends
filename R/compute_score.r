@@ -233,6 +233,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
           )
           data_object <- mutate(data_object,
             score = coalesce(.data$value / .data$value_c, 0),
+            key = str_replace(.data$key, "hits$", "score_obs"),
             key = str_replace(.data$key, "hits_", "score_")
           )
           data_object <- select(data_object, .data$location, .data$date, .data$keyword, .data$key, .data$score)
