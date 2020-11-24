@@ -4,7 +4,7 @@
 \alias{compute_score}
 \alias{compute_score.numeric}
 \alias{compute_score.list}
-\alias{compute_score_global}
+\alias{compute_voi}
 \title{Compute keyword-country search score}
 \usage{
 compute_score(object, control = 1, locations = countries)
@@ -13,7 +13,7 @@ compute_score(object, control = 1, locations = countries)
 
 \method{compute_score}{list}(object, control = 1, locations = countries)
 
-compute_score_global(object, control = 1)
+compute_voi(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
