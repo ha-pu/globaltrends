@@ -80,7 +80,7 @@ plot_score <- function(data_score, type = "obs") {
 
 
   plot <- plot +
-    labs(x = NULL, y = "Search trend", title = keyword, caption = glue("Search trend as {str_to_upper(type)} time series."))
+    labs(x = NULL, y = "Search score", title = keyword, caption = glue("Search score as {str_to_upper(type)} time series."))
 
   return(plot)
 }
