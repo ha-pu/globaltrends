@@ -29,7 +29,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.3a'
+#> [1] '0.0.4'
 ```
 
 # Google Trends
@@ -149,7 +149,7 @@ download_control_global(control = new_control)
 ```
 
 ### Download object data
-For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details below). Therefore, the number of keywords is limited to four, rather than five as for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *Illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
+For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details below). Therefore, the number of keywords is limited to four, rather than five as for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
 
 ```{r, eval = FALSE}
 # add_object_keyword -----------------------------------------------------------
@@ -429,3 +429,28 @@ The enormous detail of the data opens additional applications in research that a
 # References
 * Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based Uncertainty index for the United States and Australia. Economics Letters, 161: 149-153.
 * Venger, O., Puhr, H., & Müllner, J. 2020. MNE Internationalization and Resilience to the Covid-19 Pandemic, Working Paper. Vienna: Vienna University of Economics and Business. Available at https://github.com/ha-pu/globaltrends/blob/master/Venger_Puhr_Muellner_2020.pdf.
+
+# Appendix
+
+## Relevelling of search volumes
+Google Trends does not provide raw search queries for downloads. Instead, Google Trends expresses the number of search queries as search volumes relative to the total number of search queries and then normalizes this data. To use Google Trends data, we have to bring all search volumes to the same level.  
+For object keyword $ko$, included in object batch $bo$, Google Trends observes $SQ_{ko,bo,l,t}$ search queries for location $l$ at time period $t$. The number of raw search queries are transformed to search volumes $SV_{ko,bo,l,t}$ by division through the total number of search queries for the given location-time period pair $l,t$:
+$$SV_{ko,bo,l,t}=\frac{SQ_{ko,bo,l,t}}{\sum SQ_{l,t}}.$$
+Next, Google Trends divides search volumes $SV_{ko,bo,l,t}$ by the maximum search value within object batch $bo$ at location $l$ to normalize search volumes to $\tilde{SV}_{ko,bo,l,t}$:
+$$\tilde{SV}_{ko,bo,l,t}=\frac{SV_{ko,bo,l,t}}{max(SV_{bo,l})*100}.$$
+Since this normalization step is contingent on the maximum search value within object batch $bo$, normalized search volumes $\tilde{SV}$ depend on the other keyword included in the object batch, the choice of location, and time span $T$ ($t \in T$) for which data is obtained. To prepare normalized search volumes $\tilde{SV}$ for further usage, the `globaltrends` packages follows Castelnuovo and Tran (2017, pp. A1-A2) to relevel $\tilde{SV}$ through mapping with a benchmark. To this end, we map all $\tilde{SV}$ values in object batch $bo$ to the same level as $\tilde{SV}$ values in control batch $bc$. The function `download_object` automatically adds a control keyword $kc$ to all object batches $bo$. In functions `compute_score` and `compute_voi`, $\tilde{SV}_{kc,bc,l,t}$ of control keyword $kc$ in control batch $bc$ is divided by $\tilde{SV}_{ko,bc,l,t}$ in object batch $bo$. By multiplying the result of this division with normalized search volumes $\tilde{SV}_{ko,bo,l,t}$, we get releveled search volumes $\tilde{SV}_{ko,bc,l,t}$ for object keyword $ko$, at location $l$, at time period $t$:
+$$\tilde{SV}_{ko,bc,l,t}=\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}.$$
+After the relevelling, search volumes from all object batches use control batch $bc$ for normalization.
+
+## Computing search scores
+The outcome of the relevelling is not a de-normalization but that search volumes are relevelled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ through search volumes for a set of baseline terms $BT$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in BT$:
+$$SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bc,l,t}}{\sum_{kc \in BT} \tilde{SV}_{kc,bc,l,t}}.$$
+Plugging in the formulas for relevelling and normalization from above, we can rewrite the formula for $SC$ as follows:
+$$SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}}{\sum_{kc \in BT} \tilde{SV}_{kc,bc,l,t}}$$
+$$SC_{ko,l,t}=\frac{\frac{SV_{ko,bo,t,l}}{max(SV_{bo,l})*100}*\frac{\frac{SV_{kc,bc,l,t}}{max(SV_{bc,l})*100}}{\frac{SV_{kc,bo,l,t}}{ max(SV_{bo,l})*100}}}{\sum_{kc \in BT} \frac{SV_{kc,bc,l,t}}{ max(SV_{bc,l})*100}}$$
+$$SC_{ko,l,t}=\frac{SV_{ko,bo,t,l}*\frac{SV_{kc,bc,l,t}}{SV_{kc,bo,l,t}}}{\sum_{kc \in BT} SV_{kc,bc,l,t}}$$
+$$SC_{ko,l,t}=\frac{SV_{ko,bc,l,t}}{\sum_{kc \in BT} SV_{kc,bc,l,t}}.$$
+Using the formula for $SV$ from the top, we can reformulate $SC$ as:
+$$SC_{ko,l,t}=\frac{\frac{SQ_{ko,l,t}}{\sum SQ_{l,t}}} {\sum_{kc \in BT} \frac{SQ_{kc,l,t}}{\sum SQ_{l,t}}}.$$
+$$SC_{ko,l,t}=\frac{SQ_{ko,l,t}}{\sum_{kc \in BT} SQ_{kc,l,t}}.$$
+Based on these transformations, we can interpret search score $SC$ as the ratio of search queries $SQ_{ko,l,t}$ for object keyword $ko$ divided by the sum of search queries $SQ_{kc,l,t}$ for control keywords $ko \in BT$ at location $l$ for time period $t$. Since $SC$ is independent from keyword batch $bo$, search scores therefore allow comparison across objects of interest, time periods, and countries.
