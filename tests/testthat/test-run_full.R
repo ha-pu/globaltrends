@@ -1,7 +1,8 @@
+# setup ------------------------------------------------------------------------
 library(dplyr)
 library(ggplot2)
 
-# initialize and start ----
+# initialize and start ---------------------------------------------------------
 test_that("initialize", {
   expect_message(
     initialize_db()
@@ -33,7 +34,7 @@ test_that("initialize", {
   )
 })
 
-# run downloads ----
+# run downloads ----------------------------------------------------------------
 test_that("download_control", {
   expect_message(download_control(control = 1, locations = countries[1:3]))
   out <- filter(.tbl_control, batch == 1 & location != "world")
@@ -62,7 +63,7 @@ test_that("download_object_global", {
   expect_equal(nrow(out), 600)
 })
 
-# compute data ----
+# compute data -----------------------------------------------------------------
 test_that("compute_scoring", {
   expect_message(compute_score(control = 1, object = 1))
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
@@ -70,7 +71,7 @@ test_that("compute_scoring", {
   expect_equal(nrow(out), 1440)
 })
 
-test_that("compute_scoring_global", {
+test_that("compute_scoring_voi", {
   expect_message(compute_voi(control = 1, object = 1))
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
   out <- collect(out)
@@ -84,7 +85,7 @@ test_that("compute_doi", {
   expect_equal(nrow(out), 1440)
 })
 
-# export data ----
+# export data ------------------------------------------------------------------
 test_that("export_control", {
   out <- export_control(control = 1)
   expect_equal(nrow(out), 1800)
@@ -120,7 +121,7 @@ test_that("export_doi", {
   expect_equal(nrow(out), 480)
 })
 
-# plot data ----
+# plot data --------------------------------------------------------------------
 test_that("plot_score", {
   out <- export_score(keyword = "fc bayern") %>%
     filter(location %in% countries) %>%
@@ -166,7 +167,7 @@ test_that("plot_voi_doi", {
   expect_s3_class(out, "ggplot")
 })
 
-# remove data ----
+# remove data ------------------------------------------------------------------
 test_that("remove_control", {
   expect_message(
     remove_data(table = "batch_keywords", control = 1)
@@ -191,7 +192,7 @@ test_that("remove_object", {
   expect_equal(nrow(out_time), 0)
 })
 
-# disconnect ----
+# disconnect -------------------------------------------------------------------
 test_that("disconnect", {
   expect_message(disconnect_db())
   unlink("db", recursive = TRUE)
