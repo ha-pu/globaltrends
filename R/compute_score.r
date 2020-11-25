@@ -105,6 +105,8 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
   } else {
     control <- control[[1]]
     walk(c(control, object), .test_batch)
+    ts_control <- TRUE
+    ts_object <- TRUE
     walk(locations, ~ {
       if (.test_empty(
         table = "data_score",
@@ -165,6 +167,9 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
                 TRUE ~ .data$hits_sad
               )
             )
+          } else {
+            if (nrow(count(qry_control, .data$date)) < 24) ts_control <- FALSE
+            if (nrow(count(qry_object, .data$date)) < 24) ts_object <- FALSE
           }
           qry_control <- pivot_longer(
             qry_control,
@@ -263,6 +268,14 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
       message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
     })
     .aggregate_synonym()
+    if (!ts_control | !ts_object) {
+      text <- case_when(
+        all(!c(ts_control, ts_object)) ~ "control and object",
+        first(!c(ts_control, ts_object)) ~ "control",
+        last(!c(ts_control, ts_object)) ~ "object"
+      )
+      message(glue("You supplied {text} data for less than 24 months.\nNo time series adjustments possible."))
+    }
   }
 }
 
