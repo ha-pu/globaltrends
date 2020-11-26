@@ -14,7 +14,7 @@ The enormous detail of the data opens additional applications in research that a
 
 ````
 # install ----------------------------------------------------------------------
-devtools::install_github("ha-pu/globaltrends/*release", build_vignettes = TRUE)
+devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
 
 # packages ---------------------------------------------------------------------
 library(dplyr)

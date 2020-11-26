@@ -1,11 +1,11 @@
-# setup ----
+# setup ------------------------------------------------------------------------
 library(DBI)
 library(dplyr)
 
 initialize_db()
 start_db()
 
-# enter data ----
+# enter data -------------------------------------------------------------------
 data <- filter(data_control, batch == 1 & location %in% c(countries[1:2], "world"))
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(data_object, batch_c == 1 & batch_o %in% 1:3 & location %in% c(countries[1:2], "world"))
@@ -15,7 +15,7 @@ dbWriteTable(globaltrends_db, "data_score", data, append = TRUE)
 data <- filter(data_doi, batch_c == 1 & batch_o %in% 1:3 & locations == "countries")
 dbWriteTable(globaltrends_db, "data_doi", data, append = TRUE)
 
-# add_control / add_keyword ----
+# add_control / add_keyword ----------------------------------------------------
 test_that("add_batch1", {
   expect_error(add_control_keyword(keyword = 1))
   expect_error(add_control_keyword(keyword = TRUE))
@@ -48,7 +48,7 @@ test_that("add_batch5", {
   expect_error(add_object_keyword(keyword = list(letters[1:5])))
 })
 
-# add_synonyms ----
+# add_synonyms -----------------------------------------------------------------
 test_that("add_synonym1", {
   expect_error(add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]))
 })
@@ -65,7 +65,7 @@ test_that("add_synonym3", {
   expect_error(add_synonym(keyword = "A", synonym = sum))
 })
 
-# download_control ----
+# download_control -------------------------------------------------------------
 test_that("download_control1", {
   expect_error(download_control(control = 1.5))
   expect_error(download_control(control = "A"))
@@ -86,7 +86,7 @@ test_that("download_control3", {
   expect_error(download_control_global(control = sum))
 })
 
-# download_object ----
+# download_object --------------------------------------------------------------
 test_that("download_object1", {
   expect_error(download_object(object = 1.5))
   expect_error(download_object(object = "A"))
@@ -122,7 +122,7 @@ test_that("download_object5", {
   expect_error(download_object_global(control = 1:5, object = 1))
 })
 
-# compute_score ----
+# compute_score ----------------------------------------------------------------
 test_that("compute_score1", {
   expect_error(compute_score(object = 1.5))
   expect_error(compute_score(object = "A"))
@@ -157,7 +157,7 @@ test_that("compute_score5", {
   expect_error(compute_voi(control = 1:5, object = 1))
 })
 
-# compute_doi ----
+# compute_doi ------------------------------------------------------------------
 test_that("compute_doi1", {
   expect_error(compute_doi(object = 1.5))
   expect_error(compute_doi(object = "A"))
@@ -182,7 +182,7 @@ test_that("compute_doi4", {
   expect_error(compute_doi(object = 1, locations = letters[1:2]))
 })
 
-# export_data ----
+# export_data ------------------------------------------------------------------
 test_that("export_data1a", {
   expect_error(export_control(control = 1.5))
   expect_error(export_control(control = "A"))
@@ -328,7 +328,7 @@ test_that("export_data4e", {
   expect_error(export_doi(locations = letters[1:5]))
 })
 
-# plot_score ----
+# plot_score -------------------------------------------------------------------
 test_that("plot_score1", {
   expect_error(plot_score(data_score = 1))
   expect_error(plot_score(data_score = "A"))
@@ -350,7 +350,7 @@ test_that("plot_score3", {
   expect_warning(plot_score(data_score = data))
 })
 
-# plot_doi_ts ----
+# plot_doi_ts ------------------------------------------------------------------
 test_that("plot_doi_ts1", {
   expect_error(plot_doi_ts(data_doi = 1))
   expect_error(plot_doi_ts(data_doi = "A"))
@@ -397,7 +397,7 @@ test_that("plot_doi_ts6", {
   expect_warning(plot_doi_ts(data_doi = data))
 })
 
-# plot_voi_ts ----
+# plot_voi_ts ------------------------------------------------------------------
 test_that("plot_voi_ts1", {
   expect_error(plot_voi_ts(data_voi = 1))
   expect_error(plot_voi_ts(data_voi = "A"))
@@ -427,7 +427,7 @@ test_that("plot_voi_ts4", {
   expect_warning(plot_voi_ts(data_voi = data))
 })
 
-# plot_doi_box ----
+# plot_doi_box -----------------------------------------------------------------
 test_that("plot_doi_box1", {
   expect_error(plot_doi_box(data_doi = 1))
   expect_error(plot_doi_box(data_doi = "A"))
@@ -466,7 +466,7 @@ test_that("plot_doi_box5", {
   expect_warning(plot_doi_box(data_doi = data))
 })
 
-# plot_voi_box ----
+# plot_voi_box -----------------------------------------------------------------
 test_that("plot_voi_box1", {
   expect_error(plot_voi_box(data_voi = 1))
   expect_error(plot_voi_box(data_voi = "A"))
@@ -488,59 +488,59 @@ test_that("plot_voi_box4", {
   expect_warning(plot_voi_box(data_voi = data))
 })
 
-# plot_voi_doi ----
+# plot_voi_doi -----------------------------------------------------------------
 test_that("plot_voi_doi1", {
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_doi = 1, data_score_global = data2))
-  expect_error(plot_voi_doi(data_doi = "A", data_score_global = data2))
-  expect_error(plot_voi_doi(data_doi = TRUE, data_score_global = data2))
-  expect_error(plot_voi_doi(data_doi = sum, data_score_global = data2))
+  expect_error(plot_voi_doi(data_doi = 1, data_voi = data2))
+  expect_error(plot_voi_doi(data_doi = "A", data_voi = data2))
+  expect_error(plot_voi_doi(data_doi = TRUE, data_voi = data2))
+  expect_error(plot_voi_doi(data_doi = sum, data_voi = data2))
 })
 
 test_that("plot_voi_doi2", {
   data1 <- export_doi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_score_global = 1, data_doi = data1))
-  expect_error(plot_voi_doi(data_score_global = "A", data_doi = data1))
-  expect_error(plot_voi_doi(data_score_global = TRUE, data_doi = data1))
-  expect_error(plot_voi_doi(data_score_global = sum, data_doi = data1))
+  expect_error(plot_voi_doi(data_voi = 1, data_doi = data1))
+  expect_error(plot_voi_doi(data_voi = "A", data_doi = data1))
+  expect_error(plot_voi_doi(data_voi = TRUE, data_doi = data1))
+  expect_error(plot_voi_doi(data_voi = sum, data_doi = data1))
 })
 
 test_that("plot_voi_doi3", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = 1))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = "A"))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = TRUE))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = sum))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, type = c("obs", "sad", "trd")))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, type = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, type = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, type = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, type = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, type = c("obs", "sad", "trd")))
 })
 
 test_that("plot_voi_doi4", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = 1))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = "A"))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = TRUE))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = sum))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, measure = c("gini", "hhi", "entropy")))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, measure = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, measure = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, measure = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, measure = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, measure = c("gini", "hhi", "entropy")))
 })
 
 test_that("plot_voi_doi5", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = 1))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = TRUE))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = sum))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, locations = letters[1:5]))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, locations = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, locations = TRUE))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, locations = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, locations = letters[1:5]))
 })
 
 test_that("plot_voi_doi6", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = 1))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = "A"))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = sum))
-  expect_error(plot_voi_doi(data_doi = data1, data_score_global = data2, smooth = c(TRUE, TRUE)))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, smooth = 1))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, smooth = "A"))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, smooth = sum))
+  expect_error(plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)))
 })
 
 test_that("plot_voi_doi7", {
@@ -549,7 +549,7 @@ test_that("plot_voi_doi7", {
   expect_warning(plot_voi_doi(data_voi = data1, data_doi = data2))
 })
 
-# remove_data ----
+# remove_data ------------------------------------------------------------------
 test_that("remove_data1", {
   expect_error(remove_data(table = 1))
   expect_error(remove_data(table = "A"))
@@ -572,6 +572,6 @@ test_that("remove_data3", {
   expect_error(remove_data(table = "data_object", object = 1:5, control = 1))
 })
 
-# disconnect ----
+# disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)

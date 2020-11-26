@@ -1,4 +1,4 @@
-# setup ----
+# setup ------------------------------------------------------------------------
 library(DBI)
 library(dplyr)
 
@@ -18,7 +18,7 @@ add_object_keyword(
   time = "2010-01-01 2019-12-31"
 )
 
-# add synonyms ----
+# add synonyms -----------------------------------------------------------------
 test_that("add_synonyms", {
   expect_message(
     add_synonym(
@@ -30,7 +30,7 @@ test_that("add_synonyms", {
   expect_equal(nrow(keyword_synonyms), 2)
 })
 
-# enter data ----
+# enter data -------------------------------------------------------------------
 data <- filter(data_control, batch == 1 & location %in% countries[1:3])
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(
@@ -54,7 +54,7 @@ out1 <- export_score(keyword = "fc bayern")
 compute_score(object = 2, locations = countries[1:3])
 out2 <- export_score(keyword = "fc bayern")
 
-# compare results ----
+# compare results --------------------------------------------------------------
 test_that("keyword_score", {
   out1_cn <- out1 %>%
     filter(location == "CN") %>%
@@ -83,6 +83,6 @@ test_that("keyword_synonym", {
   expect_equal(out2_jp$synonym, 1)
 })
 
-# disconnect ----
+# disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)

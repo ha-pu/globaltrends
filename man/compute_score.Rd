@@ -62,6 +62,10 @@ compute_score(
   control = 1,
   locations = countries
 )
+compute_voi(
+  object = 1,
+  control = 1
+)
 compute_score(
   object = as.list(1:5),
   control = 1,

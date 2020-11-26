@@ -77,38 +77,59 @@ plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", loc
   if (length(smooth) > 1) stop(glue("Error: 'smooth' must be object of length 1.\nYou provided an object of length {length(smooth)}."))
   if (!is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
 
-  data_doi <- mutate(data_doi, type = str_replace(.data$type, "score_", ""))
-  data_doi$measure <- data_doi[measure][[1]]
-  data_voi$hits <- data_voi[paste0("score_", type)][[1]]
-  data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"))
-  data <- stats::na.omit(data)
-
   in_type <- type
   in_locations <- locations
-  len_keywords <- length(unique(data$keyword))
+  data_doi <- mutate(data_doi, type = str_replace(.data$type, "score_", ""))
+  data_doi$measure <- data_doi[measure][[1]]
+  data_doi <- filter(data_doi, .data$type == in_type)
+  data_doi <- filter(data_doi, .data$locations == in_locations)
+  data_voi$hits <- data_voi[paste0("score_", type)][[1]]
+  data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"))
 
-  if (len_keywords > 1) {
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
-    data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
-  }
+  if (all(is.na(data_voi$hits)) | all(is.na(data_doi$measure))) {
+    text <- "Plot cannot be created."
+    if (all(is.na(data_voi$hits))) {
+      text <- glue("{text}\nThere is no non-missing data for score_{type} in data_voi.")
+    }
+    if (all(is.na(data_doi$measure))) {
+      text <- glue("{text}\nThere is no non-missing data for score_{type} in data_doi.")
+    }
+    if (type != "obs") {
+      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+    }
+    warning(text)
+  } else {
+    data <- select(
+      data,
+      .data$keyword,
+      .data$date,
+      .data$hits,
+      .data$measure
+    )
+    data <- stats::na.omit(data)
 
-  data <- filter(data, .data$type == in_type)
-  data <- filter(data, .data$locations == in_locations)
+    len_keywords <- length(unique(data$keyword))
 
-  data <- pivot_longer(data, cols = c(.data$hits, .data$measure), names_to = "plot", values_to = "Trend")
-  data <- mutate(data, plot = as_factor(.data$plot))
-  data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
-  plot <- ggplot(data, aes(x = .data$date)) +
-    geom_line(aes(y = .data$Trend)) +
-    facet_wrap(~ .data$plot, scales = "free")
+    if (len_keywords > 1) {
+      warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
+      data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
+    }
 
-  if (smooth) {
+    data <- pivot_longer(data, cols = c(.data$hits, .data$measure), names_to = "plot", values_to = "trend")
+    data <- mutate(data, plot = as_factor(.data$plot))
+    data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
+    plot <- ggplot(data, aes(x = .data$date)) +
+      geom_line(aes(y = .data$trend)) +
+      facet_wrap(~ .data$plot, scales = "free")
+
+    if (smooth) {
+      plot <- plot +
+        geom_smooth(aes(y = .data$trend))
+    }
+
     plot <- plot +
-      geom_smooth(aes(y = .data$Trend))
+      labs(x = NULL, y = NULL, title = unique(data$keyword)[[1]], caption = glue("DOI computed as {str_to_upper(measure)}."))
+
+    return(plot)
   }
-
-  plot <- plot +
-    labs(x = NULL, y = NULL, title = unique(data$keyword)[[1]], caption = glue("DOI computed as {str_to_upper(measure)}."))
-
-  return(plot)
 }

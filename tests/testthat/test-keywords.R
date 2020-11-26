@@ -1,11 +1,10 @@
-# setup ----
+# setup ------------------------------------------------------------------------
 library(dplyr)
 
-setwd(tempdir())
 initialize_db()
 start_db()
 
-# add control keywords - vector ----
+# add control keywords - vector ------------------------------------------------
 test_that("keywords_control1", {
   expect_message(
     add_control_keyword(
@@ -23,7 +22,7 @@ test_that("keywords_control1", {
   expect_equal(out_time$n[[1]], 1)
 })
 
-# add control keywords - long vector ----
+# add control keywords - long vector -------------------------------------------
 test_that("keywords_control2", {
   expect_message(
     new_batch <- add_control_keyword(
@@ -45,7 +44,7 @@ test_that("keywords_control2", {
   expect_equal(out_time$n[[2]], 1)
 })
 
-# add control keywords - list ----
+# add control keywords - list --------------------------------------------------
 test_that("keywords_control3", {
   expect_message(
     new_batch <- add_control_keyword(
@@ -70,7 +69,7 @@ test_that("keywords_control3", {
   expect_equal(out_time$n[[2]], 1)
 })
 
-# add object keywords - vector ----
+# add object keywords - vector -------------------------------------------------
 test_that("keywords_object1", {
   expect_message(
     add_object_keyword(
@@ -88,7 +87,7 @@ test_that("keywords_object1", {
   expect_equal(out_time$n[[1]], 1)
 })
 
-# add object keywords - long vector ----
+# add object keywords - long vector --------------------------------------------
 test_that("keywords_object2", {
   expect_message(
     new_batch <- add_object_keyword(
@@ -110,7 +109,7 @@ test_that("keywords_object2", {
   expect_equal(out_time$n[[2]], 1)
 })
 
-# add object keywords - list ----
+# add object keywords - list ---------------------------------------------------
 test_that("keywords_object3", {
   expect_message(
     new_batch <- add_object_keyword(
@@ -135,6 +134,6 @@ test_that("keywords_object3", {
   expect_equal(out_time$n[[2]], 1)
 })
 
-# disconnect ----
+# disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
