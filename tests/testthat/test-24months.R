@@ -15,7 +15,7 @@ data <- filter(data_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) ==
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 .keywords_object <- data %>%
   select(
-    batch = batch_o, 
+    batch = batch_o,
     keyword
   ) %>%
   unique()
@@ -62,7 +62,7 @@ remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
 data <- filter(data_control, batch == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(data_object, batch_c == 1 & batch_o == 1  & year(as_date(date)) == 2019)
+data <- filter(data_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 
 test_that("score5", {
@@ -82,8 +82,8 @@ test_that("score6", {
 # compute_doi ------------------------------------------------------------------
 test_that("doi1", {
   expect_message(
-  compute_doi(object = 1, control = 1),
-  "Successfully computed DOI | control: 1 | object: 1 [1/1]"
+    compute_doi(object = 1, control = 1),
+    "Successfully computed DOI | control: 1 | object: 1 [1/1]"
   )
 })
 
