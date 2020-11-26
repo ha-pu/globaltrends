@@ -85,6 +85,7 @@
 #' @importFrom lubridate as_date
 #' @importFrom purrr walk
 #' @importFrom rlang .data
+#' @importFrom rlang env_parent
 #' @importFrom stringr str_replace
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
@@ -168,8 +169,8 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
               )
             )
           } else {
-            if (nrow(count(qry_control, .data$date)) < 24) ts_control <- FALSE
-            if (nrow(count(qry_object, .data$date)) < 24) ts_object <- FALSE
+            if (nrow(count(qry_control, .data$date)) < 24) assign("ts_control", FALSE, envir = env_parent())
+            if (nrow(count(qry_object, .data$date)) < 24) assign("ts_object", FALSE, envir = env_parent())
           }
           qry_control <- pivot_longer(
             qry_control,
@@ -274,7 +275,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
         first(!c(ts_control, ts_object)) ~ "control",
         last(!c(ts_control, ts_object)) ~ "object"
       )
-      message(glue("You supplied {text} data for less than 24 months.\nNo time series adjustments possible."))
+      warning(glue("You supplied {text} data for less than 24 months.\nNo time series adjustments possible."))
     }
   }
 }

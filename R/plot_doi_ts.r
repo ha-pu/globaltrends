@@ -73,22 +73,30 @@ plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "c
   data_doi <- filter(data_doi, .data$locations == in_locations)
   plot <- ggplot(data_doi, aes(x = .data$date))
 
-
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data_doi <- filter(data_doi, .data$keyword %in% unique(data_doi$keyword)[1:9])
   }
-  plot <- plot +
-    geom_line(aes(y = .data$measure)) +
-    facet_wrap(~ .data$keyword)
-
-  if (smooth) {
+  
+  if (all(is.na(data_doi$measure))) {
+    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    if (type != "obs") {
+      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+    }
+    warning(text)
+  } else {
     plot <- plot +
-      geom_smooth(aes(y = .data$measure))
+      geom_line(aes(y = .data$measure)) +
+      facet_wrap(~ .data$keyword)
+    
+    if (smooth) {
+      plot <- plot +
+        geom_smooth(aes(y = .data$measure))
+    }
+    
+    plot <- plot +
+      labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
+    
+    return(plot)
   }
-
-  plot <- plot +
-    labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
-
-  return(plot)
 }

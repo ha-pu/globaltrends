@@ -59,6 +59,7 @@
 #' @importFrom dplyr select
 #' @importFrom glue glue
 #' @importFrom purrr map_dbl
+#' @importFrom purrr map_lgl
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 #' @importFrom tidyr nest
@@ -91,17 +92,41 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
 
       # compute doi measures
-      out <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
-      out <- nest(out, data = c(.data$location, .data$score))
-      out <- mutate(out,
+      data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
+      data <- nest(data, data = c(.data$location, .data$score))
+      data <- mutate(data, check = map_lgl(.data$data, ~ !all(is.na(.x$score))))
+      out1 <- filter(data, .data$check)
+      out1 <- mutate(
+        out1,
         gini = map_dbl(.data$data, ~ .compute_gini(series = .x$score)),
         hhi = map_dbl(.data$data, ~ .compute_hhi(series = .x$score)),
         entropy = map_dbl(.data$data, ~ .compute_entropy(series = .x$score))
       )
-      out <- select(out, .data$date, .data$keyword, .data$type, .data$gini, .data$hhi, .data$entropy)
+      out2 <- filter(data, !.data$check)
+      out2 <- mutate(
+        out2,
+        gini = NA,
+        hhi = NA,
+        entropy = NA
+      )
+      out <- bind_rows(out1, out2)
+      out <- select(
+        out, 
+        .data$date, 
+        .data$keyword, 
+        .data$type, 
+        .data$gini, 
+        .data$hhi, 
+        .data$entropy
+      )
 
       # write data
-      out <- mutate(out, batch_c = control, batch_o = object, locations = locations)
+      out <- mutate(
+        out, 
+        batch_c = control, 
+        batch_o = object, 
+        locations = locations
+      )
       dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
     }
     message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(.keywords_object$batch)))
