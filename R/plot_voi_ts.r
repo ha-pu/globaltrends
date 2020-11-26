@@ -62,7 +62,7 @@ plot_voi_ts <- function(data_voi, type = "obs", smooth = TRUE) {
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data_voi <- filter(data_voi, .data$keyword %in% unique(data_voi$keyword)[1:9])
   }
-  
+
   if (all(is.na(data_voi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -73,15 +73,15 @@ plot_voi_ts <- function(data_voi, type = "obs", smooth = TRUE) {
     plot <- plot +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$measure))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = "Volume of internationalization")
-    
+
     return(plot)
   }
 }

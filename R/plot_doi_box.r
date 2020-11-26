@@ -73,7 +73,7 @@ plot_doi_box <- function(data_doi, type = "obs", measure = "gini", locations = "
   data_doi$measure <- data_doi[measure][[1]]
   data_doi <- filter(data_doi, .data$type == paste0("score_", in_type))
   data_doi <- filter(data_doi, .data$locations == in_locations)
-  
+
   if (all(is.na(data_doi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -84,7 +84,7 @@ plot_doi_box <- function(data_doi, type = "obs", measure = "gini", locations = "
     plot <- ggplot(data_doi, aes(x = .data$keyword, y = .data$measure)) +
       geom_boxplot() +
       labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
-    
+
     return(plot)
   }
 }

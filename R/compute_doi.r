@@ -111,20 +111,20 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       )
       out <- bind_rows(out1, out2)
       out <- select(
-        out, 
-        .data$date, 
-        .data$keyword, 
-        .data$type, 
-        .data$gini, 
-        .data$hhi, 
+        out,
+        .data$date,
+        .data$keyword,
+        .data$type,
+        .data$gini,
+        .data$hhi,
         .data$entropy
       )
 
       # write data
       out <- mutate(
-        out, 
-        batch_c = control, 
-        batch_o = object, 
+        out,
+        batch_c = control,
+        batch_o = object,
         locations = locations
       )
       dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)

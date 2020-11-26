@@ -85,7 +85,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", loc
   data_doi <- filter(data_doi, .data$locations == in_locations)
   data_voi$hits <- data_voi[paste0("score_", type)][[1]]
   data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"))
-  
+
   if (all(is.na(data_voi$hits)) | all(is.na(data_doi$measure))) {
     text <- "Plot cannot be created."
     if (all(is.na(data_voi$hits))) {
@@ -107,29 +107,29 @@ plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", loc
       .data$measure
     )
     data <- stats::na.omit(data)
-    
+
     len_keywords <- length(unique(data$keyword))
-    
+
     if (len_keywords > 1) {
       warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
       data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
     }
-    
+
     data <- pivot_longer(data, cols = c(.data$hits, .data$measure), names_to = "plot", values_to = "trend")
     data <- mutate(data, plot = as_factor(.data$plot))
     data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
     plot <- ggplot(data, aes(x = .data$date)) +
       geom_line(aes(y = .data$trend)) +
       facet_wrap(~ .data$plot, scales = "free")
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$trend))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = NULL, title = unique(data$keyword)[[1]], caption = glue("DOI computed as {str_to_upper(measure)}."))
-    
+
     return(plot)
   }
 }

@@ -77,7 +77,7 @@ plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "c
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data_doi <- filter(data_doi, .data$keyword %in% unique(data_doi$keyword)[1:9])
   }
-  
+
   if (all(is.na(data_doi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -88,15 +88,15 @@ plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "c
     plot <- plot +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$measure))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
-    
+
     return(plot)
   }
 }

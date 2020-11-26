@@ -52,7 +52,7 @@ plot_voi_box <- function(data_voi, type = "obs") {
     data_voi <- filter(data_voi, .data$keyword %in% unique(data_voi$keyword)[1:9])
   }
   data_voi$measure <- data_voi[paste0("score_", in_type)][[1]]
-  
+
   if (all(is.na(data_voi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -63,7 +63,7 @@ plot_voi_box <- function(data_voi, type = "obs") {
     plot <- ggplot(data_voi, aes(x = .data$keyword, y = .data$measure)) +
       geom_boxplot() +
       labs(x = NULL, y = "Volume of internationalization")
-    
+
     return(plot)
   }
 }

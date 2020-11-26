@@ -71,7 +71,7 @@ plot_score <- function(data_score, type = "obs") {
   keyword <- unique(data_score$keyword)[[1]]
   data_score <- group_by(data_score, .data$location)
   data_score <- summarise(data_score, measure = mean(.data$measure), .groups = "drop")
-  
+
   if (all(is.na(data_score$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -82,14 +82,14 @@ plot_score <- function(data_score, type = "obs") {
     data_score <- arrange(data_score, -.data$measure)
     data_score <- slice(data_score, 1:10)
     data_score <- mutate(data_score, location = as_factor(.data$location))
-    
+
     plot <- ggplot(data_score) +
       geom_col(aes(x = .data$location, y = .data$measure))
-    
-    
+
+
     plot <- plot +
       labs(x = NULL, y = "Search score", title = keyword, caption = glue("Search score as {str_to_upper(type)} time series."))
-    
-    return(plot) 
+
+    return(plot)
   }
 }
