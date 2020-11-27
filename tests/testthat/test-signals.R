@@ -17,81 +17,195 @@ dbWriteTable(globaltrends_db, "data_doi", data, append = TRUE)
 
 # add_control / add_keyword ----------------------------------------------------
 test_that("add_batch1", {
-  expect_error(add_control_keyword(keyword = 1))
-  expect_error(add_control_keyword(keyword = TRUE))
-  expect_error(add_control_keyword(keyword = sum))
+  expect_error(
+    add_control_keyword(keyword = 1),
+    "UseMethod"
+    )
+  expect_error(
+    add_control_keyword(keyword = TRUE),
+               "UseMethod"
+               )
+  expect_error(
+    add_control_keyword(keyword = sum),
+               "UseMethod"
+               )
 })
 
 test_that("add_batch2", {
-  expect_error(add_control_keyword(time = 1))
-  expect_error(add_control_keyword(time = TRUE))
-  expect_error(add_control_keyword(time = sum))
-  expect_error(add_control_keyword(time = letters[1:5]))
+  expect_error(
+    add_control_keyword(time = 1),
+    '"keyword"'
+    )
+  expect_error(
+    add_control_keyword(time = TRUE),
+    '"keyword"'
+    )
+  expect_error(
+    add_control_keyword(time = sum),
+    '"keyword"'
+    )
+  expect_error(
+    add_control_keyword(time = letters[1:5]),
+    '"keyword"'
+    )
 })
 
 test_that("add_batch3", {
-  expect_error(add_object_keyword(keyword = 1))
-  expect_error(add_object_keyword(keyword = TRUE))
-  expect_error(add_object_keyword(keyword = sum))
+  expect_error(
+    add_object_keyword(keyword = 1),
+    "UseMethod"
+    )
+  expect_error(
+    add_object_keyword(keyword = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    add_object_keyword(keyword = sum),
+    "UseMethod"
+    )
 })
 
 test_that("add_batch4", {
-  expect_error(add_object_keyword(time = 1))
-  expect_error(add_object_keyword(time = TRUE))
-  expect_error(add_object_keyword(time = sum))
-  expect_error(add_object_keyword(time = letters[1:5]))
+  expect_error(
+    add_object_keyword(time = 1),
+    '"keyword"'
+    )
+  expect_error(
+    add_object_keyword(time = TRUE),
+    '"keyword"'
+    )
+  expect_error(
+    add_object_keyword(time = sum),
+    '"keyword"'
+    )
+  expect_error(
+    add_object_keyword(time = letters[1:5]),
+    '"keyword"'
+    )
 })
 
 test_that("add_batch5", {
-  expect_error(add_control_keyword(keyword = list(letters[1:6])))
+  expect_error(
+    add_control_keyword(keyword = list(letters[1:6]))
+    "Length of list objects must not exceed 5.\nYou provided a list object with length 6."
+    )
 
-  expect_error(add_object_keyword(keyword = list(letters[1:5])))
+  expect_error(
+    add_object_keyword(keyword = list(letters[1:5])),
+    "Length of list objects must not exceed 4.\nYou provided a list object with length 5."
+    )
 })
 
 # add_synonyms -----------------------------------------------------------------
 test_that("add_synonym1", {
-  expect_error(add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]))
+  expect_error(
+    add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]),
+    "'keyword' must be input of length 1.\nYou supplied an input of length 2."
+    )
 })
 
 test_that("add_synonym2", {
-  expect_error(add_synonym(keyword = 1, synonym = "A"))
-  expect_error(add_synonym(keyword = TRUE, synonym = "A"))
-  expect_error(add_synonym(keyword = sum, synonym = "A"))
+  expect_error(
+    add_synonym(keyword = 1, synonym = "A"),
+    "'keyword' must of type 'character'.\nYou supplied an input of type double."
+    )
+  expect_error(
+    add_synonym(keyword = TRUE, synonym = "A"),
+    "'keyword' must of type 'character'.\nYou supplied an input of type logical."
+    )
+  expect_error(
+    add_synonym(keyword = sum, synonym = "A"),
+    "'keyword' must of type 'character'.\nYou supplied an input of type builtin."
+    )
 })
 
 test_that("add_synonym3", {
-  expect_error(add_synonym(keyword = "A", synonym = 1))
-  expect_error(add_synonym(keyword = "A", synonym = TRUE))
-  expect_error(add_synonym(keyword = "A", synonym = sum))
+  expect_error(
+    add_synonym(keyword = "A", synonym = 1),
+    "UseMethod"
+    )
+  expect_error(
+    add_synonym(keyword = "A", synonym = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    add_synonym(keyword = "A", synonym = sum),
+    "UseMethod"
+    )
 })
 
 # download_control -------------------------------------------------------------
 test_that("download_control1", {
-  expect_error(download_control(control = 1.5))
-  expect_error(download_control(control = "A"))
-  expect_error(download_control(control = TRUE))
-  expect_error(download_control(control = sum))
+  expect_error(
+    download_control(control = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+    )
+  expect_error(
+    download_control(control = "A"),
+    "UseMethod"
+    )
+  expect_error(
+    download_control(control = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    download_control(control = sum),
+    "UseMethod"
+    )
 })
 
 test_that("download_control2", {
-  expect_error(download_control(locations = 1))
-  expect_error(download_control(locations = TRUE))
-  expect_error(download_control(locations = sum))
+  expect_error(
+    download_control(locations = 1),
+    '"control"'
+    )
+  expect_error(
+    download_control(locations = TRUE),
+    '"control"'
+    )
+  expect_error(
+    download_control(locations = sum),
+    '"control"'
+    )
 })
 
 test_that("download_control3", {
-  expect_error(download_control_global(control = 1.5))
-  expect_error(download_control_global(control = "A"))
-  expect_error(download_control_global(control = TRUE))
-  expect_error(download_control_global(control = sum))
+  expect_error(
+    download_control_global(control = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+    )
+  expect_error(
+    download_control_global(control = "A"),
+    "UseMethod"
+    )
+  expect_error(
+    download_control_global(control = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    download_control_global(control = sum),
+    "UseMethod"
+    )
 })
 
 # download_object --------------------------------------------------------------
 test_that("download_object1", {
-  expect_error(download_object(object = 1.5))
-  expect_error(download_object(object = "A"))
-  expect_error(download_object(object = TRUE))
-  expect_error(download_object(object = sum))
+  expect_error(
+    download_object(object = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+    )
+  expect_error(
+    download_object(object = "A"),
+    "UseMethod"
+    )
+  expect_error(
+    download_object(object = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    download_object(object = sum),
+    "UseMethod"
+    )
 })
 
 test_that("download_object2", {
@@ -103,16 +217,37 @@ test_that("download_object2", {
 })
 
 test_that("download_object3", {
-  expect_error(download_object(object = 1, locations = 1))
-  expect_error(download_object(object = 1, locations = TRUE))
-  expect_error(download_object(object = 1, locations = sum))
+  expect_error(
+    download_object(object = 1, locations = 1),
+    "'locations' must be object of type character.\nYou provided an object of type double."
+    )
+  expect_error(
+    download_object(object = 1, locations = TRUE),
+    "'locations' must be object of type character.\nYou provided an object of type logical."
+    )
+  expect_error(
+    download_object(object = 1, locations = sum),
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
+    )
 })
 
 test_that("download_object4", {
-  expect_error(download_object_global(object = 1.5))
-  expect_error(download_object_global(object = "A"))
-  expect_error(download_object_global(object = TRUE))
-  expect_error(download_object_global(object = sum))
+  expect_error(
+    download_object_global(object = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+    )
+  expect_error(
+    download_object_global(object = "A"),
+    "UseMethod"
+    )
+  expect_error(
+    download_object_global(object = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    download_object_global(object = sum),
+    "UseMethod"
+    )
 })
 
 test_that("download_object5", {
@@ -124,10 +259,22 @@ test_that("download_object5", {
 
 # compute_score ----------------------------------------------------------------
 test_that("compute_score1", {
-  expect_error(compute_score(object = 1.5))
-  expect_error(compute_score(object = "A"))
-  expect_error(compute_score(object = TRUE))
-  expect_error(compute_score(object = sum))
+  expect_error(
+    compute_score(object = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+    )
+  expect_error(
+    compute_score(object = "A"),
+    "UseMethod"
+    )
+  expect_error(
+    compute_score(object = TRUE),
+    "UseMethod"
+    )
+  expect_error(
+    compute_score(object = sum),
+    "UseMethod"
+    )
 })
 
 test_that("compute_score2", {
