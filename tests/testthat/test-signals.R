@@ -2,6 +2,7 @@
 library(DBI)
 library(dplyr)
 
+Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
@@ -19,15 +20,15 @@ dbWriteTable(globaltrends_db, "data_doi", data, append = TRUE)
 test_that("add_batch1", {
   expect_error(
     add_control_keyword(keyword = 1),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_control_keyword(keyword = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_control_keyword(keyword = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -53,15 +54,15 @@ test_that("add_batch2", {
 test_that("add_batch3", {
   expect_error(
     add_object_keyword(keyword = 1),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_object_keyword(keyword = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_object_keyword(keyword = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -122,15 +123,15 @@ test_that("add_synonym2", {
 test_that("add_synonym3", {
   expect_error(
     add_synonym(keyword = "A", synonym = 1),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_synonym(keyword = "A", synonym = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     add_synonym(keyword = "A", synonym = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -142,15 +143,15 @@ test_that("download_control1", {
   )
   expect_error(
     download_control(control = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_control(control = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_control(control = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -176,15 +177,15 @@ test_that("download_control3", {
   )
   expect_error(
     download_control_global(control = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_control_global(control = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_control_global(control = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -196,15 +197,15 @@ test_that("download_object1", {
   )
   expect_error(
     download_object(object = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_object(object = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_object(object = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -215,7 +216,7 @@ test_that("download_object2", {
   )
   expect_error(
     download_object(control = 1.5, object = 1),
-    "Batch number must be an integer value.\nYou supplied a non-integer numeric value. "
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
   )
   expect_error(
     download_object(control = "A", object = 1),
@@ -227,7 +228,7 @@ test_that("download_object2", {
   )
   expect_error(
     download_object(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5. "
+    "'control' must be object of length 1.\nYou provided an object of length 5."
   )
 })
 
@@ -253,22 +254,22 @@ test_that("download_object4", {
   )
   expect_error(
     download_object_global(object = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_object_global(object = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     download_object_global(object = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
 test_that("download_object5", {
   expect_error(
     download_object_global(control = 1.5, object = 1),
-    "Batch number must be an integer value.\nYou supplied a non-integer numeric value. "
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
   )
   expect_error(
     download_object_global(control = "A", object = 1),
@@ -280,7 +281,7 @@ test_that("download_object5", {
   )
   expect_error(
     download_object_global(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5. "
+    "'control' must be object of length 1.\nYou provided an object of length 5."
   )
 })
 
@@ -292,15 +293,15 @@ test_that("compute_score1", {
   )
   expect_error(
     compute_score(object = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_score(object = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_score(object = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -330,11 +331,11 @@ test_that("compute_score3", {
   )
   expect_error(
     compute_score(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical. "
+    "'locations' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     compute_score(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin. "
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -345,15 +346,15 @@ test_that("compute_score4", {
   )
   expect_error(
     compute_voi(object = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_voi(object = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_voi(object = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -384,15 +385,15 @@ test_that("compute_doi1", {
   )
   expect_error(
     compute_doi(object = "A"),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_doi(object = TRUE),
-    "UseMethod"
+    "no applicable method"
   )
   expect_error(
     compute_doi(object = sum),
-    "UseMethod"
+    "no applicable method"
   )
 })
 
@@ -433,7 +434,7 @@ test_that("compute_doi3", {
 test_that("compute_doi4", {
   expect_error(
     compute_doi(object = 1, locations = letters[1:2]),
-    "Length object 'locations' must not exeed 1.\nYou provided an object with length 2. "
+    "Length object 'locations' must not exeed 1.\nYou provided an object with length 2."
   )
 })
 
@@ -835,15 +836,15 @@ test_that("export_data4d", {
 test_that("export_data4e", {
   expect_error(
     export_doi(locations = 1),
-    "'type' must be object of type character.\nYou supplied an object of type double."
+    "'locations' must be object of type character.\nYou supplied an object of type double."
   )
   expect_error(
     export_doi(locations = TRUE),
-    "'type' must be object of type character.\nYou supplied an object of type logical."
+    "'locations' must be object of type character.\nYou supplied an object of type logical."
   )
   expect_error(
     export_doi(locations = sum),
-    "'type' must be object of type character.\nYou supplied an object of type builtin."
+    "'locations' must be object of type character.\nYou supplied an object of type builtin."
   )
   expect_error(
     export_doi(locations = letters[1:5]),
@@ -1015,7 +1016,7 @@ test_that("plot_doi_ts6", {
   data <- export_doi()
   expect_warning(
     plot_doi_ts(data_doi = data),
-    "The plot function is limited to 1 keyword.\nYou use 8 keywords.\nOnly the first keyword is used."
+    "The plot function is limited to 9 keywords in a grid."
   )
 })
 
@@ -1087,7 +1088,7 @@ test_that("plot_voi_ts4", {
   data <- export_voi()
   expect_warning(
     plot_voi_ts(data_voi = data),
-    "The plot function is limited to 1 keyword.\nYou use 8 keywords.\nOnly the first keyword is used."
+    "The plot function is limited to 9 keywords in a grid."
   )
 })
 
@@ -1183,7 +1184,7 @@ test_that("plot_doi_box5", {
   data <- export_doi()
   expect_warning(
     plot_doi_box(data_doi = data),
-    "The plot function is limited to 1 keyword.\nYou use 8 keywords.\nOnly the first keyword is used."
+    "The plot function is limited to 9 keywords in a boxplot."
   )
 })
 
@@ -1235,7 +1236,7 @@ test_that("plot_voi_box4", {
   data <- export_voi()
   expect_warning(
     plot_voi_box(data_voi = data),
-    "The plot function is limited to 1 keyword.\nYou use 8 keywords.\nOnly the first keyword is used."
+    "The plot function is limited to 9 keywords in a boxplot."
   )
 })
 
@@ -1377,7 +1378,7 @@ test_that("plot_voi_doi7", {
   data2 <- export_doi()
   expect_warning(
     plot_voi_doi(data_voi = data1, data_doi = data2),
-    "The plot function is limited to 1 keyword.\nYou use 8 keywords.\nOnly the first keyword is used."
+    "The plot function is limited to 1 keyword.\nYou use 10 keywords.\nOnly the first keyword is used."
   )
 })
 
@@ -1446,3 +1447,4 @@ test_that("remove_data3", {
 # disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
+Sys.unsetenv("LANGUAGE")
