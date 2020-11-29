@@ -53,8 +53,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   if (length(table) > 1) stop(glue("Error: 'table' must be object of length 1.\nYou provided an object of length {length(table)}."))
   if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (length(object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(object)}."))
-  control <- control[[1]]
-  object <- object[[1]]
   if (is.character(table)) {
     if (table == "batch_keywords") {
       if (!is.null(control) & is.null(object)) {
