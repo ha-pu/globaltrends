@@ -223,6 +223,10 @@ test_that("download_object2", {
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
+    download_object(control = TRUE, object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
     download_object(control = sum, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
@@ -276,6 +280,10 @@ test_that("download_object5", {
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
+    download_object_global(control = TRUE, object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
     download_object_global(control = sum, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
@@ -312,6 +320,10 @@ test_that("compute_score2", {
   )
   expect_error(
     compute_score(control = "A", object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    compute_score(control = TRUE, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
@@ -368,6 +380,10 @@ test_that("compute_score5", {
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
+    compute_voi(control = TRUE, object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
     compute_voi(control = sum, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
@@ -404,6 +420,10 @@ test_that("compute_doi2", {
   )
   expect_error(
     compute_doi(control = "A", object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    compute_doi(control = TRUE, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
@@ -1416,6 +1436,10 @@ test_that("remove_data2", {
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
+    remove_data(table = "data_object", control = TRUE, object = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
     remove_data(table = "data_object", control = sum, object = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
@@ -1432,6 +1456,10 @@ test_that("remove_data3", {
   )
   expect_error(
     remove_data(table = "data_object", object = "A", control = 1),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    remove_data(table = "data_object", object = TRUE, control = 1),
     "Batch number must be an integer value.\nYou supplied a non-integer value."
   )
   expect_error(
