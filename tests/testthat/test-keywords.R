@@ -1,5 +1,5 @@
 # setup ------------------------------------------------------------------------
-library(dplyr)
+suppressWarnings(library(dplyr))
 
 initialize_db()
 start_db()

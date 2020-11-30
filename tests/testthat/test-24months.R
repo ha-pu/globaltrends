@@ -1,7 +1,7 @@
 # setup ------------------------------------------------------------------------
-library(DBI)
-library(dplyr)
-library(lubridate)
+suppressWarnings(library(DBI))
+suppressWarnings(library(dplyr))
+suppressWarnings(library(lubridate))
 
 initialize_db()
 start_db()

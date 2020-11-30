@@ -1,6 +1,6 @@
 # setup ------------------------------------------------------------------------
-library(DBI)
-library(dplyr)
+suppressWarnings(library(DBI))
+suppressWarnings(library(dplyr))
 
 initialize_db()
 start_db()

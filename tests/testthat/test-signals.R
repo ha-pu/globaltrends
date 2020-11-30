@@ -1,6 +1,6 @@
 # setup ------------------------------------------------------------------------
-library(DBI)
-library(dplyr)
+suppressWarnings(library(DBI))
+suppressWarnings(library(dplyr))
 
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
