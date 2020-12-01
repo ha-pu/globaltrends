@@ -2,115 +2,31 @@
 suppressWarnings(library(dplyr))
 suppressWarnings(library(ggplot2))
 
-# initialize -------------------------------------------------------------------
-test_that("initialize", {
-  out <- capture_messages(initialize_db())
+initialize_db()
+start_db()
 
-  expect_match(
-    out,
-    "Successfully created database.",
-    all = FALSE
-  )
+rm(
+  tbl_control,
+  tbl_doi,
+  tbl_object,
+  tbl_score,
+  keyword_synonyms,
+  keywords_control,
+  keywords_object,
+  time_control,
+  time_object,
+  envir = .GlobalEnv
+)
 
-  expect_match(
-    out,
-    "Successfully created table 'batch_keywords'.",
-    all = FALSE
-  )
+add_control_keyword(
+  keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
+  time = "2010-01-01 2019-12-31"
+)
 
-  expect_match(
-    out,
-    "Successfully created table 'batch_time'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'keyword_synonyms'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'data_locations'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully entered data into 'data_locations'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'batch_keywords'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'data_control'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'data_score'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully created table 'data_doi'.",
-    all = FALSE
-  )
-
-  expect_match(
-    out,
-    "Successfully disconnected.",
-    all = FALSE
-  )
-})
-
-# start ------------------------------------------------------------------------
-test_that("start", {
-  out <- capture_messages(start_db())
-
-  expect_match(
-    out,
-    "Successfully connected to database.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "ccessfully exported all objects to .GlobalEnv.",
-    all = FALSE
-  )
-
-  rm(
-    tbl_control,
-    tbl_doi,
-    tbl_object,
-    tbl_score,
-    keyword_synonyms,
-    keywords_control,
-    keywords_object,
-    time_control,
-    time_object,
-    envir = .GlobalEnv
-  )
-
-  add_control_keyword(
-    keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
-    time = "2010-01-01 2019-12-31"
-  )
-
-  add_object_keyword(
-    keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-    time = "2010-01-01 2019-12-31"
-  )
-})
+add_object_keyword(
+  keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
+  time = "2010-01-01 2019-12-31"
+)
 
 # run downloads ----------------------------------------------------------------
 test_that("download_control", {
@@ -389,10 +305,5 @@ test_that("remove_object", {
 })
 
 # disconnect -------------------------------------------------------------------
-test_that("disconnect", {
-  expect_message(
-    disconnect_db(),
-    "Successfully disconnected."
-  )
-  unlink("db", recursive = TRUE)
-})
+disconnect_db()
+unlink("db", recursive = TRUE)
