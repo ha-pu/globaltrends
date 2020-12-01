@@ -53,7 +53,7 @@ initialize_db <- function() {
   if (!dir.exists("db")) dir.create("db")
 
   # create db ------------------------------------------------------------------
-  if (file.exists("db/globaltrends_db.sqlite")) file.remove("db/globaltrends_db.sqlite")
+  if (file.exists("db/globaltrends_db.sqlite")) stop("Error: File 'db/globaltrends_db.sqlite' already exists.")
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   message("Successfully created database.")
 
