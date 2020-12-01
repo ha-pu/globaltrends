@@ -96,23 +96,23 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
           )
           terms_con <- terms_con$keyword[order(terms_con$hits)]
 
-        i <- 1
-        while (i <= length(terms_con)) {
-          out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
-          if (!is.null(out) & median(out$hits[out$keyword == terms_con[[i]]]) > 1) {
-            out <- mutate(
-              out, 
-              batch_c = control, 
-              batch_o = object
-            )
-            dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
-            break()
+          i <- 1
+          while (i <= length(terms_con)) {
+            out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
+            if (!is.null(out) & median(out$hits[out$keyword == terms_con[[i]]]) > 1) {
+              out <- mutate(
+                out,
+                batch_c = control,
+                batch_o = object
+              )
+              dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
+              break()
+            }
+            i <- i + 1
           }
-          i <- i + 1
-        }
-        message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)
-        ))
+          message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
+            current = which(locations == .x), total = length(locations)
+          ))
         } else {
           message(glue("Download for objec data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
         }

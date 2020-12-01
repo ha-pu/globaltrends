@@ -41,7 +41,7 @@ test_that("keywords_control2", {
     "Successfully created new control batch 3 \\(wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch > 1 & type == "control") %>%
     collect() %>%
     count(batch)
@@ -77,7 +77,7 @@ test_that("keywords_control3", {
     "Successfully created new control batch 5 \\(translate, weather, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch > 3 & type == "control") %>%
     collect() %>%
     count(batch)
@@ -129,7 +129,7 @@ test_that("keywords_object2", {
     "Successfully created new object batch 3 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch > 1 & type == "object") %>%
     collect() %>%
     count(batch)
@@ -165,7 +165,7 @@ test_that("keywords_object3", {
     "Successfully created new object batch 5 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch > 3 & type == "object") %>%
     collect() %>%
     count(batch)

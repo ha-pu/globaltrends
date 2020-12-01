@@ -5,67 +5,67 @@ suppressWarnings(library(ggplot2))
 # initialize -------------------------------------------------------------------
 test_that("initialize", {
   out <- capture_messages(initialize_db())
-  
+
   expect_match(
     out,
     "Successfully created database.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'batch_keywords'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'batch_time'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'keyword_synonyms'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'data_locations'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully entered data into 'data_locations'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'batch_keywords'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'data_control'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'data_score'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully created table 'data_doi'.",
     all = FALSE
   )
-  
+
   expect_match(
     out,
     "Successfully disconnected.",
@@ -76,7 +76,7 @@ test_that("initialize", {
 # start ------------------------------------------------------------------------
 test_that("start", {
   out <- capture_messages(start_db())
-  
+
   expect_match(
     out,
     "Successfully connected to database.",
@@ -87,7 +87,7 @@ test_that("start", {
     "ccessfully exported all objects to .GlobalEnv.",
     all = FALSE
   )
-  
+
   rm(
     tbl_control,
     tbl_doi,
@@ -115,7 +115,7 @@ test_that("start", {
 # run downloads ----------------------------------------------------------------
 test_that("download_control", {
   out <- capture_messages(download_control(control = 1, locations = countries[1:3]))
-  
+
   expect_match(
     out,
     "Successfully downloaded control data | control: 1 | location: US [1/3]",
@@ -131,7 +131,7 @@ test_that("download_control", {
     "Successfully downloaded control data | control: 1 | location: JP [3/3]",
     all = FALSE
   )
-  
+
   out <- filter(.tbl_control, batch == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
@@ -149,7 +149,7 @@ test_that("download_control_global", {
 
 test_that("download_object", {
   out <- capture_messages(download_object(object = 1, locations = countries[1:3]))
-  
+
   expect_match(
     out,
     "Successfully downloaded object data | object: 1 | control: 1 | location: US [1/3]",
@@ -165,7 +165,7 @@ test_that("download_object", {
     "Successfully downloaded object data | object: 1 | control: 1 | location: JP [3/3]",
     all = FALSE
   )
-  
+
   out <- filter(.tbl_object, batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
@@ -184,7 +184,7 @@ test_that("download_object_global", {
 # compute data -----------------------------------------------------------------
 test_that("compute_scoring", {
   out <- capture_messages(compute_score(control = 1, object = 1, locations = countries[1:3]))
-  
+
   expect_match(
     out,
     "Successfully computed search score | control: 1 | object: 1 | location: US [1/3]",
@@ -200,7 +200,7 @@ test_that("compute_scoring", {
     "Successfully computed search score | control: 1 | object: 1 | location: JP [3/3]",
     all = FALSE
   )
-  
+
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
@@ -311,7 +311,7 @@ test_that("plot_voi_doi", {
 # remove data ------------------------------------------------------------------
 test_that("remove_control", {
   out <- capture_messages(remove_data(table = "batch_keywords", control = 1))
-  
+
   expect_match(
     out,
     "Successfully deleted control batch 1 from 'batch_keywords'\\.",
@@ -342,7 +342,7 @@ test_that("remove_control", {
     "Successfully deleted control batch 1 from 'batch_time'\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "control")
   out_time <- filter(.tbl_time, batch == 1 & type == "control")
   out_keywords <- collect(out_keywords)
@@ -353,7 +353,7 @@ test_that("remove_control", {
 
 test_that("remove_object", {
   out <- capture_messages(remove_data(table = "batch_keywords", object = 1))
-  
+
   expect_match(
     out,
     "Successfully deleted object batch 1 from 'batch_keywords'\\.",
@@ -379,7 +379,7 @@ test_that("remove_object", {
     "Successfully deleted object batch 1 from 'batch_time'\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "object")
   out_time <- filter(.tbl_time, batch == 1 & type == "object")
   out_keywords <- collect(out_keywords)
