@@ -213,14 +213,11 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
   if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
-  in_keyword <- in_keyword[[1]]
-  in_object <- in_object[[1]]
-  in_control <- in_control[[1]]
-  in_type <- in_type[[1]]
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
+  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(in_type)}."))
   if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
 
   if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
@@ -250,16 +247,12 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
   if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
   if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
-  in_keyword <- in_keyword[[1]]
-  in_object <- in_object[[1]]
-  in_control <- in_control[[1]]
-  in_locations <- in_locations[[1]]
-  in_type <- in_type[[1]]
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
   if (!is.null(in_control)) .test_batch(in_control)
   if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be object of type character.\nYou supplied an object of type {typeof(in_locations)}."))
+  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(in_type)}."))
   if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)

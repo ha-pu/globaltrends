@@ -53,8 +53,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   if (length(table) > 1) stop(glue("Error: 'table' must be object of length 1.\nYou provided an object of length {length(table)}."))
   if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
   if (length(object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(object)}."))
-  control <- control[[1]]
-  object <- object[[1]]
   if (is.character(table)) {
     if (table == "batch_keywords") {
       if (!is.null(control) & is.null(object)) {
@@ -98,7 +96,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_batch_keywords <- function(type, batch_c, batch_o) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   if (type == "control") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch_c))
     keywords_control <- filter(batch_keywords, .data$type == "control")
@@ -132,7 +130,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_batch_time <- function(type, batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   if (type == "control") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_c))
     time_control <- filter(batch_time, .data$type == "control")
@@ -160,7 +158,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_data_control <- function(batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch_c))
   message(glue("Successfully deleted control batch {batch_c} from 'data_control'."))
 
@@ -173,7 +171,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_data_object <- function(batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_object WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_object'."))
@@ -194,7 +192,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_data_score <- function(batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_score'."))
@@ -215,7 +213,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_data_doi <- function(batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
     message(glue("Successfully deleted control batch {batch_c} from 'data_doi'."))
@@ -234,7 +232,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
 #' @noRd
 
 .remove_data_global <- function(batch_c = NULL, batch_o = NULL) {
-  walk(c(batch_c, batch_o), .test_batch)
+  walk(list(batch_c, batch_o), .test_batch)
   dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch_o))
   message(glue("Successfully deleted object batch {batch_o} from 'data_global'."))
 }

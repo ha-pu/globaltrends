@@ -1,6 +1,6 @@
 # setup ------------------------------------------------------------------------
-library(DBI)
-library(dplyr)
+suppressWarnings(library(DBI))
+suppressWarnings(library(dplyr))
 
 initialize_db()
 start_db()
@@ -20,11 +20,23 @@ add_object_keyword(
 
 # add synonyms -----------------------------------------------------------------
 test_that("add_synonyms", {
-  expect_message(
+  out <- capture_messages(
     add_synonym(
       keyword = "fc bayern",
       synonym = c("bayern munich", "bayern munchen")
     )
+  )
+
+  expect_match(
+    out,
+    "Successfully added synonym | keyword: fc bayern | synonym: bayern munich",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully added synonym | keyword: fc bayern | synonym: bayern munchen",
+    all = FALSE
   )
 
   expect_equal(nrow(keyword_synonyms), 2)

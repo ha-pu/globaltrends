@@ -1,5 +1,5 @@
 # setup ------------------------------------------------------------------------
-library(dplyr)
+suppressWarnings(library(dplyr))
 
 initialize_db()
 start_db()
@@ -10,7 +10,8 @@ test_that("keywords_control1", {
     add_control_keyword(
       keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
       time = "2010-01-01 2019-12-31"
-    )
+    ),
+    "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\."
   )
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "control") %>%
     collect() %>%
@@ -24,12 +25,23 @@ test_that("keywords_control1", {
 
 # add control keywords - long vector -------------------------------------------
 test_that("keywords_control2", {
-  expect_message(
+  out <- capture_messages(
     new_batch <- add_control_keyword(
       keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
       time = "2010-01-01 2019-12-31"
     )
   )
+  expect_match(
+    out,
+    "Successfully created new control batch 2 \\(gmail, maps, news, translate, weather, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully created new control batch 3 \\(wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch > 1 & type == "control") %>%
     collect() %>%
     count(batch)
@@ -46,7 +58,7 @@ test_that("keywords_control2", {
 
 # add control keywords - list --------------------------------------------------
 test_that("keywords_control3", {
-  expect_message(
+  out <- capture_messages(
     new_batch <- add_control_keyword(
       keyword = list(
         c("gmail", "maps", "news"),
@@ -55,6 +67,17 @@ test_that("keywords_control3", {
       time = "2010-01-01 2019-12-31"
     )
   )
+  expect_match(
+    out,
+    "Successfully created new control batch 4 \\(gmail, maps, news, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully created new control batch 5 \\(translate, weather, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch > 3 & type == "control") %>%
     collect() %>%
     count(batch)
@@ -75,7 +98,8 @@ test_that("keywords_object1", {
     add_object_keyword(
       keyword = c("apple", "facebook", "google", "microsoft"),
       time = "2010-01-01 2019-12-31"
-    )
+    ),
+    "Successfully created new object batch 1 \\(apple, facebook, google, microsoft, 2010-01-01 2019-12-31\\)\\."
   )
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "object") %>%
     collect() %>%
@@ -89,12 +113,23 @@ test_that("keywords_object1", {
 
 # add object keywords - long vector --------------------------------------------
 test_that("keywords_object2", {
-  expect_message(
+  out <- capture_messages(
     new_batch <- add_object_keyword(
       keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
       time = "2010-01-01 2019-12-31"
     )
   )
+  expect_match(
+    out,
+    "Successfully created new object batch 2 \\(amazon, apple, facebook, google, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully created new object batch 3 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch > 1 & type == "object") %>%
     collect() %>%
     count(batch)
@@ -111,7 +146,7 @@ test_that("keywords_object2", {
 
 # add object keywords - list ---------------------------------------------------
 test_that("keywords_object3", {
-  expect_message(
+  out <- capture_messages(
     new_batch <- add_object_keyword(
       keyword = list(
         c("amazon", "apple", "facebook", "google"),
@@ -120,6 +155,17 @@ test_that("keywords_object3", {
       time = "2010-01-01 2019-12-31"
     )
   )
+  expect_match(
+    out,
+    "Successfully created new object batch 4 \\(amazon, apple, facebook, google, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully created new object batch 5 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch > 3 & type == "object") %>%
     collect() %>%
     count(batch)

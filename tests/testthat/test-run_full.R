@@ -1,15 +1,93 @@
 # setup ------------------------------------------------------------------------
-library(dplyr)
-library(ggplot2)
+suppressWarnings(library(dplyr))
+suppressWarnings(library(ggplot2))
 
-# initialize and start ---------------------------------------------------------
+# initialize -------------------------------------------------------------------
 test_that("initialize", {
-  expect_message(
-    initialize_db()
+  out <- capture_messages(initialize_db())
+
+  expect_match(
+    out,
+    "Successfully created database.",
+    all = FALSE
   )
-  expect_message(
-    start_db()
+
+  expect_match(
+    out,
+    "Successfully created table 'batch_keywords'.",
+    all = FALSE
   )
+
+  expect_match(
+    out,
+    "Successfully created table 'batch_time'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'keyword_synonyms'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'data_locations'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully entered data into 'data_locations'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'batch_keywords'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'data_control'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'data_score'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully created table 'data_doi'.",
+    all = FALSE
+  )
+
+  expect_match(
+    out,
+    "Successfully disconnected.",
+    all = FALSE
+  )
+})
+
+# start ------------------------------------------------------------------------
+test_that("start", {
+  out <- capture_messages(start_db())
+
+  expect_match(
+    out,
+    "Successfully connected to database.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "ccessfully exported all objects to .GlobalEnv.",
+    all = FALSE
+  )
+
   rm(
     tbl_control,
     tbl_doi,
@@ -36,28 +114,68 @@ test_that("initialize", {
 
 # run downloads ----------------------------------------------------------------
 test_that("download_control", {
-  expect_message(download_control(control = 1, locations = countries[1:3]))
+  out <- capture_messages(download_control(control = 1, locations = countries[1:3]))
+
+  expect_match(
+    out,
+    "Successfully downloaded control data | control: 1 | location: US [1/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully downloaded control data | control: 1 | location: CN [2/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully downloaded control data | control: 1 | location: JP [3/3]",
+    all = FALSE
+  )
+
   out <- filter(.tbl_control, batch == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
 
 test_that("download_control_global", {
-  expect_message(download_control_global(control = 1))
+  expect_message(
+    download_control_global(control = 1),
+    "Successfully downloaded control data | control: 1 | location: world [1/1]"
+  )
   out <- filter(.tbl_control, batch == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
 })
 
 test_that("download_object", {
-  expect_message(download_object(object = 1, locations = countries[1:3]))
+  out <- capture_messages(download_object(object = 1, locations = countries[1:3]))
+
+  expect_match(
+    out,
+    "Successfully downloaded object data | object: 1 | control: 1 | location: US [1/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully downloaded object data | object: 1 | control: 1 | location: CN [2/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully downloaded object data | object: 1 | control: 1 | location: JP [3/3]",
+    all = FALSE
+  )
+
   out <- filter(.tbl_object, batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
 
 test_that("download_object_global", {
-  expect_message(download_object_global(object = 1))
+  expect_message(
+    download_object_global(object = 1),
+    "Successfully downloaded object data | object: 1 | control: 1 | location: world [1/1]"
+  )
   out <- filter(.tbl_object, batch_o == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
@@ -65,21 +183,44 @@ test_that("download_object_global", {
 
 # compute data -----------------------------------------------------------------
 test_that("compute_scoring", {
-  expect_message(compute_score(control = 1, object = 1))
+  out <- capture_messages(compute_score(control = 1, object = 1, locations = countries[1:3]))
+
+  expect_match(
+    out,
+    "Successfully computed search score | control: 1 | object: 1 | location: US [1/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully computed search score | control: 1 | object: 1 | location: CN [2/3]",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully computed search score | control: 1 | object: 1 | location: JP [3/3]",
+    all = FALSE
+  )
+
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
 })
 
 test_that("compute_scoring_voi", {
-  expect_message(compute_voi(control = 1, object = 1))
+  expect_message(
+    compute_voi(control = 1, object = 1),
+    "Successfully computed search score | control: 1 | object: 1 | location: world [1/1]",
+  )
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 480)
 })
 
 test_that("compute_doi", {
-  expect_message(compute_doi(control = 1, object = 1, locations = "countries"))
+  expect_message(
+    compute_doi(control = 1, object = 1, locations = "countries"),
+    "Successfully computed DOI | control: 1 | object: 1 [1/1]"
+  )
   out <- filter(.tbl_doi, batch_c == 1 & batch_o == 1)
   out <- collect(out)
   expect_equal(nrow(out), 1440)
@@ -169,9 +310,39 @@ test_that("plot_voi_doi", {
 
 # remove data ------------------------------------------------------------------
 test_that("remove_control", {
-  expect_message(
-    remove_data(table = "batch_keywords", control = 1)
+  out <- capture_messages(remove_data(table = "batch_keywords", control = 1))
+
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'batch_keywords'\\.",
+    all = FALSE
   )
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'data_control'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'data_object'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'data_score'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'data_doi'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted control batch 1 from 'batch_time'\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "control")
   out_time <- filter(.tbl_time, batch == 1 & type == "control")
   out_keywords <- collect(out_keywords)
@@ -181,9 +352,34 @@ test_that("remove_control", {
 })
 
 test_that("remove_object", {
-  expect_message(
-    remove_data(table = "batch_keywords", object = 1)
+  out <- capture_messages(remove_data(table = "batch_keywords", object = 1))
+
+  expect_match(
+    out,
+    "Successfully deleted object batch 1 from 'batch_keywords'\\.",
+    all = FALSE
   )
+  expect_match(
+    out,
+    "Successfully deleted object batch 1 from 'data_object'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted object batch 1 from 'data_score'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted object batch 1 from 'data_doi'\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully deleted object batch 1 from 'batch_time'\\.",
+    all = FALSE
+  )
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "object")
   out_time <- filter(.tbl_time, batch == 1 & type == "object")
   out_keywords <- collect(out_keywords)
@@ -194,6 +390,9 @@ test_that("remove_object", {
 
 # disconnect -------------------------------------------------------------------
 test_that("disconnect", {
-  expect_message(disconnect_db())
+  expect_message(
+    disconnect_db(),
+    "Successfully disconnected."
+  )
   unlink("db", recursive = TRUE)
 })

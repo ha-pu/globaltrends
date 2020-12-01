@@ -57,6 +57,7 @@
 plot_score <- function(data_score, type = "obs") {
   if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}."))
   if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
+  if (!is.character(type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(type)}."))
   if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
 
   in_type <- type

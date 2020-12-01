@@ -75,7 +75,7 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
   if (length(object) > 1) {
     download_object(control = control, object = as.list(object), locations = locations)
   } else {
-    .test_batch(object)
+    walk(list(control, object), .test_batch)
     terms_obj <- .keywords_object$keyword[.keywords_object$batch == object]
     time <- .time_object$time[.time_object$batch == object]
 
@@ -89,23 +89,33 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
         qry_control <- filter(.tbl_control, .data$batch == control & .data$location == in_location)
         qry_control <- collect(qry_control)
         if (nrow(qry_control) > 0) {
-          terms_con <- summarise(group_by(qry_control, .data$keyword), hits = mean(.data$hits), .groups = "drop")
+          terms_con <- summarise(
+            group_by(qry_control, .data$keyword),
+            hits = mean(.data$hits),
+            .groups = "drop"
+          )
           terms_con <- terms_con$keyword[order(terms_con$hits)]
-        }
 
-        i <- 1
-        while (i <= length(terms_con)) {
-          out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
-          if (!is.null(out) & median(out$hits[out$keyword == terms_con[[i]]]) > 1) {
-            out <- mutate(out, batch_c = control, batch_o = object)
-            dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
-            break()
+          i <- 1
+          while (i <= length(terms_con)) {
+            out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
+            if (!is.null(out) & median(out$hits[out$keyword == terms_con[[i]]]) > 1) {
+              out <- mutate(
+                out,
+                batch_c = control,
+                batch_o = object
+              )
+              dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
+              break()
+            }
+            i <- i + 1
           }
-          i <- i + 1
+          message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
+            current = which(locations == .x), total = length(locations)
+          ))
+        } else {
+          message(glue("Download for objec data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
         }
-        message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)
-        ))
       }
     })
   }

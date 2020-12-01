@@ -78,8 +78,7 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   if (length(object) > 1) {
     compute_doi(control = control, object = as.list(object), locations = locations)
   } else {
-    control <- control[[1]]
-    walk(c(control, object), .test_batch)
+    walk(list(control, object), .test_batch)
     if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
       data <- collect(filter(.tbl_score, .data$batch_c == control & .data$batch_o == object))
       data <- filter(
