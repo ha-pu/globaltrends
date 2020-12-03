@@ -178,52 +178,6 @@ test_that("export_doi", {
   expect_equal(nrow(out), 480)
 })
 
-# plot data --------------------------------------------------------------------
-test_that("plot_score", {
-  out <- export_score(keyword = "fc bayern") %>%
-    filter(location %in% countries) %>%
-    plot_score(type = "sad")
-  expect_s3_class(out, "ggplot")
-})
-
-test_that("plot_doi_ts", {
-  out <- export_doi(type = "obs", locations = "countries") %>%
-    plot_doi_ts(smooth = TRUE)
-  expect_s3_class(out, "ggplot")
-})
-
-test_that("plot_voi_ts", {
-  out <- export_voi() %>%
-    plot_voi_ts(type = "obs", smooth = TRUE)
-  expect_s3_class(out, "ggplot")
-})
-
-test_that("plot_doi_box", {
-  out <- export_doi(type = "sad", locations = "countries") %>%
-    plot_doi_box(type = "sad")
-  expect_s3_class(out, "ggplot")
-})
-
-test_that("plot_voi_box", {
-  out <- export_voi() %>%
-    plot_voi_box(type = "sad")
-  expect_s3_class(out, "ggplot")
-})
-
-test_that("plot_voi_doi", {
-  data1 <- export_doi(
-    keyword = "manchester united",
-    locations = "countries",
-    type = "obs"
-  )
-  data2 <- export_voi(keyword = "manchester united")
-  out <- plot_voi_doi(
-    data_doi = data1,
-    data_voi = data2
-  )
-  expect_s3_class(out, "ggplot")
-})
-
 # remove data ------------------------------------------------------------------
 test_that("remove_control", {
   out <- capture_messages(remove_data(table = "batch_keywords", control = 1))
