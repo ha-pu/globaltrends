@@ -57,6 +57,19 @@ test_that("plot_score3", {
 })
 
 # plot score defaults ----------------------------------------------------------
+test_that("plot_score_def", {
+  data <- export_score(keyword = "fc bayern", locations = countries)
+  out1 <- plot_score(data_score = data)
+  out2 <- plot_score(data_score = data, type = "obs")
+  out3 <- plot_score(data_score = data, type = "sad")
+  out4 <- plot_score(data_score = data, type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # plot doi ts gini -------------------------------------------------------------
 test_that("plot_doi_ts1a", {
   keywords <- unique(data_doi$keyword)[1:9]
@@ -424,6 +437,20 @@ test_that("plot_voi_ts3", {
 })
 
 # plot voi ts defaults ---------------------------------------------------------
+test_that("plot_voi_ts_def", {
+  keywords <- unique(data_score$keyword)[1:9]
+  data <- map_dfr(keywords, export_voi)
+  out1 <- plot_voi_ts(data, smooth = TRUE)
+  out2 <- plot_voi_ts(data, type = "obs", smooth = TRUE)
+  out3 <- plot_voi_ts(data, type = "sad", smooth = TRUE)
+  out4 <- plot_voi_ts(data, type = "trd", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # plot voi box -----------------------------------------------------------------
 test_that("plot_voi_box1", {
   keywords <- unique(data_score$keyword)[1:9]
@@ -477,6 +504,20 @@ test_that("plot_voi_box3", {
 })
 
 # plot voi box defaults --------------------------------------------------------
+test_that("plot_voi_box_def", {
+  keywords <- unique(data_score$keyword)[1:9]
+  data <- map_dfr(keywords, export_voi)
+  out1 <- plot_voi_box(data, smooth = TRUE)
+  out2 <- plot_voi_box(data, type = "obs", smooth = TRUE)
+  out3 <- plot_voi_box(data, type = "sad", smooth = TRUE)
+  out4 <- plot_voi_box(data, type = "trd", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # plot voi doi gini ------------------------------------------------------------
 test_that("plot_voi_doi1a", {
   data1 <- export_voi(keyword = "manchester united")
