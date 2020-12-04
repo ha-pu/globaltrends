@@ -227,6 +227,62 @@ test_that("plot_doi_ts3c", {
 })
 
 # plot doi ts defaults ---------------------------------------------------------
+test_that("plot_doi_ts_def1", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_ts(data_doi = data, measure = "gini")
+  out2 <- plot_doi_ts(data_doi = data, measure = "gini", type = "obs")
+  out3 <- plot_doi_ts(data_doi = data, measure = "gini", type = "sad")
+  out4 <- plot_doi_ts(data_doi = data, measure = "gini", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_ts_def2", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_ts(data_doi = data, measure = "hhi")
+  out2 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "obs")
+  out3 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "sad")
+  out4 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_ts_def3", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_ts(data_doi = data, measure = "entropy")
+  out2 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "obs")
+  out3 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "sad")
+  out4 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_ts_def4", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, type = "obs", locations = "countries")
+  out1 <- plot_doi_ts(data_doi = data)
+  out2 <- plot_doi_ts(data_doi = data, measure = "gini")
+  out3 <- plot_doi_ts(data_doi = data, measure = "hhi")
+  out4 <- plot_doi_ts(data_doi = data, measure = "entropy")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # plot doi box gini ------------------------------------------------------------
 test_that("plot_doi_box1a", {
   keywords <- unique(data_doi$keyword)[1:9]
@@ -384,6 +440,62 @@ test_that("plot_doi_box3c", {
 })
 
 # plot doi box defaults --------------------------------------------------------
+test_that("plot_doi_box_def1", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_box(data_doi = data, measure = "gini")
+  out2 <- plot_doi_box(data_doi = data, measure = "gini", type = "obs")
+  out3 <- plot_doi_box(data_doi = data, measure = "gini", type = "sad")
+  out4 <- plot_doi_box(data_doi = data, measure = "gini", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_box_def2", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_box(data_doi = data, measure = "hhi")
+  out2 <- plot_doi_box(data_doi = data, measure = "hhi", type = "obs")
+  out3 <- plot_doi_box(data_doi = data, measure = "hhi", type = "sad")
+  out4 <- plot_doi_box(data_doi = data, measure = "hhi", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_box_def3", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_doi_box(data_doi = data, measure = "entropy")
+  out2 <- plot_doi_box(data_doi = data, measure = "entropy", type = "obs")
+  out3 <- plot_doi_box(data_doi = data, measure = "entropy", type = "sad")
+  out4 <- plot_doi_box(data_doi = data, measure = "entropy", type = "trd")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_doi_box_def4", {
+  keywords <- unique(data_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, type = "obs", locations = "countries")
+  out1 <- plot_doi_box(data_doi = data)
+  out2 <- plot_doi_box(data_doi = data, measure = "gini")
+  out3 <- plot_doi_box(data_doi = data, measure = "hhi")
+  out4 <- plot_doi_box(data_doi = data, measure = "entropy")
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # plot voi ts ------------------------------------------------------------------
 test_that("plot_voi_ts1", {
   keywords <- unique(data_score$keyword)[1:9]
@@ -523,10 +635,9 @@ test_that("plot_voi_doi1a", {
   data1 <- export_voi(keyword = "manchester united")
   data2 <- export_doi(
     keyword = "manchester united",
-    locations = "countries",
-    type = "obs"
+    locations = "countries"
   )
-  out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
@@ -536,7 +647,7 @@ test_that("plot_voi_doi1a", {
     type = "obs"
   )
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -548,10 +659,9 @@ test_that("plot_doi_ts2a", {
   data1 <- export_voi(keyword = "manchester united")
   data2 <- export_doi(
     keyword = "manchester united",
-    locations = "countries",
-    type = "sad"
+    locations = "countries"
   )
-  out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
@@ -561,7 +671,7 @@ test_that("plot_doi_ts2a", {
     type = "sad"
   )
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -573,10 +683,9 @@ test_that("plot_doi_ts3a", {
   data1 <- export_voi(keyword = "manchester united")
   data2 <- export_doi(
     keyword = "manchester united",
-    locations = "countries",
-    type = "trd"
+    locations = "countries"
   )
-  out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
@@ -586,7 +695,7 @@ test_that("plot_doi_ts3a", {
     type = "trd"
   )
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -597,22 +706,14 @@ test_that("plot_doi_ts3a", {
 # plot voi doi hhi -------------------------------------------------------------
 test_that("plot_voi_doi1a", {
   data1 <- export_voi(keyword = "manchester united")
-  data2 <- export_doi(
-    keyword = "manchester united",
-    locations = "countries",
-    type = "obs"
-  )
-  out1 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
-  data2 <- export_doi(
-    object = 1,
-    locations = "countries",
-    type = "obs"
-  )
+  data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -622,22 +723,14 @@ test_that("plot_voi_doi1a", {
 
 test_that("plot_doi_ts2a", {
   data1 <- export_voi(keyword = "manchester united")
-  data2 <- export_doi(
-    keyword = "manchester united",
-    locations = "countries",
-    type = "sad"
-  )
-  out1 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
-  data2 <- export_doi(
-    object = 1,
-    locations = "countries",
-    type = "sad"
-  )
+  data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -647,22 +740,14 @@ test_that("plot_doi_ts2a", {
 
 test_that("plot_doi_ts3a", {
   data1 <- export_voi(keyword = "manchester united")
-  data2 <- export_doi(
-    keyword = "manchester united",
-    locations = "countries",
-    type = "trd"
-  )
-  out1 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
-  data2 <- export_doi(
-    object = 1,
-    locations = "countries",
-    type = "trd"
-  )
+  data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -673,22 +758,14 @@ test_that("plot_doi_ts3a", {
 # plot voi doi entropy ---------------------------------------------------------
 test_that("plot_voi_doi1a", {
   data1 <- export_voi(keyword = "manchester united")
-  data2 <- export_doi(
-    keyword = "manchester united",
-    locations = "countries",
-    type = "obs"
-  )
-  out1 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
-  data2 <- export_doi(
-    object = 1,
-    locations = "countries",
-    type = "obs"
-  )
+  data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -700,20 +777,18 @@ test_that("plot_doi_ts2a", {
   data1 <- export_voi(keyword = "manchester united")
   data2 <- export_doi(
     keyword = "manchester united",
-    locations = "countries",
-    type = "sad"
+    locations = "countries"
   )
-  out1 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
   data2 <- export_doi(
     object = 1,
-    locations = "countries",
-    type = "sad"
+    locations = "countries"
   )
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -725,20 +800,18 @@ test_that("plot_doi_ts3a", {
   data1 <- export_voi(keyword = "manchester united")
   data2 <- export_doi(
     keyword = "manchester united",
-    locations = "countries",
-    type = "trd"
+    locations = "countries"
   )
-  out1 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
   
   data1 <- export_voi(object = 1)
   data2 <- export_doi(
     object = 1,
-    locations = "countries",
-    type = "trd"
+    locations = "countries"
   )
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -747,6 +820,62 @@ test_that("plot_doi_ts3a", {
 })
 
 # plot voi doi defaults --------------------------------------------------------
+test_that("plot_voi_doi_def1", {
+  data1 <- export_voi(keyword = "manchester united")
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
+  out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
+  out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE)
+  out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_voi_doi_def2", {
+  data1 <- export_voi(keyword = "manchester united")
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
+  out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE)
+  out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE)
+  out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_voi_doi_def3", {
+  data1 <- export_voi(keyword = "manchester united")
+  data2 <- export_doi(keyword = "manchester united", locations = "countries")
+  out1 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
+  out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE)
+  out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE)
+  out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
+test_that("plot_voi_doi_def4", {
+  data1 <- export_voi(keyword = "manchester united", type = "obs")
+  data2 <- export_doi(keyword = "manchester united", locations = "countries", type = "obs")
+  out1 <- plot_voi_doi(data1, data2, smooth = TRUE)
+  out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
+  out3 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
+  out4 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
+  
+  expect_identical(out1, out2)
+  expect_false(is.identical(out2, out3))
+  expect_false(is.identical(out2, out4))
+  expect_false(is.identical(out3, out4))
+})
+
 # disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
