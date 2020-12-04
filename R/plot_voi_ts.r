@@ -55,14 +55,12 @@ plot_voi_ts <- function(data_voi, type = "obs", smooth = TRUE) {
 
   in_type <- type
   len_keywords <- length(unique(data_voi$keyword))
-  data_voi$measure <- data_voi[paste0("score_", in_type)][[1]]
-  plot <- ggplot(data_voi, aes(x = .data$date))
-
-
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data_voi <- filter(data_voi, .data$keyword %in% unique(data_voi$keyword)[1:9])
   }
+  data_voi$measure <- data_voi[paste0("score_", in_type)][[1]]
+  plot <- ggplot(data_voi, aes(x = .data$date))
 
   if (all(is.na(data_voi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
