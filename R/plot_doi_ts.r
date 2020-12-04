@@ -70,15 +70,14 @@ plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "c
   in_type <- type
   in_locations <- locations
   len_keywords <- length(unique(data_doi$keyword))
-  data_doi$measure <- data_doi[measure][[1]]
-  data_doi <- filter(data_doi, .data$type == paste0("score_", in_type))
-  data_doi <- filter(data_doi, .data$locations == in_locations)
-  plot <- ggplot(data_doi, aes(x = .data$date))
-
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords in a grid.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data_doi <- filter(data_doi, .data$keyword %in% unique(data_doi$keyword)[1:9])
   }
+  data_doi$measure <- data_doi[measure][[1]]
+  data_doi <- filter(data_doi, .data$type == paste0("score_", in_type))
+  data_doi <- filter(data_doi, .data$locations == in_locations)
+  plot <- ggplot(data_doi, aes(x = .data$date))
 
   if (all(is.na(data_doi$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
