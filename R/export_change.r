@@ -23,6 +23,7 @@
 #' export_doi_change(keyword = "amazon", type = "obs", locations = "countries")
 #' }
 #'
+#' @rdname export_change
 #' @export
 #' @importFrom dplyr group_by
 #' @importFrom dplyr lag
@@ -49,6 +50,30 @@ export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, loc
     .data$locations, 
     .data$doi, 
     .data$doi_change, 
+    .data$quantile
+  )
+  return(data)
+}
+
+#' @rdname export_change
+#' @export
+
+export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, type = "obs") {
+  # check measure
+  data <- export_voi(keyword = keyword, object = object, control = control)
+  data$voi <- data[glue("score_{type}")][[1]]
+  data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
+  data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
+  data <- mutate(data, quantile = percent_rank(.data$voi_change))
+  data <- ungroup(data)
+  data <- select(
+    data, 
+    .data$keyword, 
+    .data$date, 
+    .data$control, 
+    .data$object, 
+    .data$voi, 
+    .data$voi_change, 
     .data$quantile
   )
   return(data)
