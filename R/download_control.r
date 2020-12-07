@@ -68,7 +68,7 @@ download_control.numeric <- function(control, locations = countries) {
   if (length(control) > 1) {
     download_control(control = as.list(control), locations = locations)
   } else {
-    .test_batch(control)
+    .check_batch(control)
     terms <- .keywords_control$keyword[.keywords_control$batch == control]
     time <- .time_control$time[.time_control$batch == control]
     walk(locations, ~ {

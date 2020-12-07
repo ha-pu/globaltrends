@@ -12,7 +12,7 @@
 #' either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.
 #'
 #' @return
-#' 
+#'
 #' @seealso
 #' * \code{\link{export_doi}}
 #' * \code{\link[purrr]{map}}
@@ -31,25 +31,27 @@
 #' @importFrom dplyr percent_rank
 #' @importFrom dplyr ungroup
 #' @importFrom rlang .data
- 
+
 export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL, measure = "gini") {
-  # check measure
   data <- export_doi(keyword = keyword, object = object, control = control, locations = locations, type = type)
+
+  .check_measure(measure)
+
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
   data <- mutate(data, doi_change = .data$doi - lag(.data$doi))
   data <- mutate(data, quantile = percent_rank(.data$doi_change))
   data <- ungroup(data)
   data <- select(
-    data, 
-    .data$keyword, 
-    .data$date, 
-    .data$type, 
-    .data$control, 
-    .data$object, 
-    .data$locations, 
-    .data$doi, 
-    .data$doi_change, 
+    data,
+    .data$keyword,
+    .data$date,
+    .data$type,
+    .data$control,
+    .data$object,
+    .data$locations,
+    .data$doi,
+    .data$doi_change,
     .data$quantile
   )
   return(data)
@@ -59,21 +61,23 @@ export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, loc
 #' @export
 
 export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, type = "obs") {
-  # check measure
   data <- export_voi(keyword = keyword, object = object, control = control)
+
+  .check_type(type)
+
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
   data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
   data <- mutate(data, quantile = percent_rank(.data$voi_change))
   data <- ungroup(data)
   data <- select(
-    data, 
-    .data$keyword, 
-    .data$date, 
-    .data$control, 
-    .data$object, 
-    .data$voi, 
-    .data$voi_change, 
+    data,
+    .data$keyword,
+    .data$date,
+    .data$control,
+    .data$object,
+    .data$voi,
+    .data$voi_change,
     .data$quantile
   )
   return(data)
