@@ -244,7 +244,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
   if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
-  .check_type(in_type)
+  if (!is.null(in_type)) .check_type(in_type)
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)

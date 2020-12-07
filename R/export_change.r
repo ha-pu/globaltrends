@@ -66,7 +66,7 @@ export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, typ
   .check_type(type)
 
   data$voi <- data[glue("score_{type}")][[1]]
-  data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
+  data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
   data <- mutate(data, quantile = percent_rank(.data$voi_change))
   data <- ungroup(data)
