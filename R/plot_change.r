@@ -8,12 +8,14 @@
 #'
 #' @inheritParams export_control
 #' @inheritParams export_doi_change
+#' @param data_chnage xxx
 #' @param limit xxx
 #'
 #' @return
 #'
 #' @seealso
 #' * \code{\link{export_doi_change}}
+#' * \code{\link{export_voi_change}}
 #' * \code{\link[purrr]{map}}
 #' * \code{\link[dplyr]{filter}}
 #'
@@ -35,39 +37,41 @@
 #' @importFrom rlang .data
 #' @importFrom stringr str_to_upper
 
-plot_doi_change <- function(keyword, control = NULL, locations = NULL, type = "obs", measure = "gini", limit = 0.95) {
-  data <- export_doi_change(keyword = keyword, control = control, locations = locations, type = type, measure = measure)
-
+plot_doi_change <- function(data_change, type = "obs", limit = 0.95) {
+  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_change)}."))
+  .check_type(type)
   .check_limit(limit)
+  
+  in_type <- type
+  data_change <- filter(data_change, .data$type == glue("score_{in_type}"))
 
-  q1 <- stats::quantile(data$doi_change, limit, na.rm = TRUE)
-  q2 <- stats::quantile(data$doi_change, 1 - limit, na.rm = TRUE)
+  q1 <- stats::quantile(data_change$doi_change, limit, na.rm = TRUE)
+  q2 <- stats::quantile(data_change$doi_change, 1 - limit, na.rm = TRUE)
 
-  ggplot(data, aes(x = .data$date, y = .data$doi_change)) +
+  ggplot(data_change, aes(x = .data$date, y = .data$doi_change)) +
     geom_hline(yintercept = 0) +
     geom_hline(yintercept = q1, colour = "blue4", linetype = "dotted") +
     geom_hline(yintercept = q2, colour = "blue4", linetype = "dotted") +
     geom_line() +
-    geom_point(data = filter(data, .data$quantile < (1 - limit) | .data$quantile > limit), colour = "firebrick") +
-    labs(x = NULL, y = "Change in degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
+    geom_point(data = filter(data_change, .data$quantile < (1 - limit) | .data$quantile > limit), colour = "firebrick") +
+    labs(x = NULL, y = "Change in degree of internationalization")
 }
 
 #' @rdname plot_change
 #' @export
 
-plot_voi_change <- function(keyword, control = NULL, type = "obs", limit = 0.95) {
-  data <- export_voi_change(keyword = keyword, control = control, type = type)
-
+plot_voi_change <- function(data_change, limit = 0.95) {
+  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_change)}."))
   .check_limit(limit)
 
-  q1 <- stats::quantile(data$voi_change, limit, na.rm = TRUE)
-  q2 <- stats::quantile(data$voi_change, 1 - limit, na.rm = TRUE)
+  q1 <- stats::quantile(data_change$voi_change, limit, na.rm = TRUE)
+  q2 <- stats::quantile(data_change$voi_change, 1 - limit, na.rm = TRUE)
 
-  ggplot(data, aes(x = .data$date, y = .data$voi_change)) +
+  ggplot(data_change, aes(x = .data$date, y = .data$voi_change)) +
     geom_hline(yintercept = 0) +
     geom_hline(yintercept = q1, colour = "blue4", linetype = "dotted") +
     geom_hline(yintercept = q2, colour = "blue4", linetype = "dotted") +
     geom_line() +
-    geom_point(data = filter(data, .data$quantile < (1 - limit) | .data$quantile > limit), colour = "firebrick") +
+    geom_point(data = filter(data_change, .data$quantile < (1 - limit) | .data$quantile > limit), colour = "firebrick") +
     labs(x = NULL, y = "Change in volume of internationalization")
 }
