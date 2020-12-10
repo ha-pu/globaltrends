@@ -265,12 +265,18 @@ start_db <- function() {
   tbl_score <- tbl(globaltrends_db, "data_score")
 
   # load files -----------------------------------------------------------------
-  countries <- filter(tbl_locations, .data$type == "countries")
-  countries <- collect(countries)
-  countries <- pull(countries, .data$location)
-  us_states <- filter(tbl_locations, .data$type == "us_states")
-  us_states <- collect(us_states)
-  us_states <- pull(us_states, .data$location)
+  locations <- distinct(tbl_locations, type)
+  locations <- collect(locations)
+  locations <- locations$type
+  
+  lst_locations <- map(locations, ~ {
+    out <- filter(tbl_locations, .data$type == .x)
+    out <- collect(out)
+    out <- pull(out, .data$location)
+    return(out)
+  })
+  
+  names(lst_locations) <- locations
 
   keywords_control <- filter(tbl_keywords, .data$type == "control")
   keywords_control <- select(keywords_control, -.data$type)
@@ -287,6 +293,8 @@ start_db <- function() {
   keyword_synonyms <- collect(tbl_synonyms)
 
   # write objects to .GlobalEnv ------------------------------------------------
+  invisible(list2env(lst_locations, envir = .GlobalEnv))
+  
   lst_object <- list(
     tbl_locations,
     tbl_keywords,
@@ -324,8 +332,6 @@ start_db <- function() {
     tbl_control,
     tbl_object,
     tbl_score,
-    countries,
-    us_states,
     keywords_control,
     time_control,
     keywords_object,
@@ -338,8 +344,6 @@ start_db <- function() {
     "tbl_control",
     "tbl_object",
     "tbl_score",
-    "countries",
-    "us_states",
     "keywords_control",
     "time_control",
     "keywords_object",
