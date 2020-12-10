@@ -9,19 +9,15 @@
 #' package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
 #' the working directory. If the folder \emph{db} does not exists in the working
 #' directory, the folder is created. If the database already exists in the
-#' working directory, the database is deleted and re-created. Within the
-#' database all tables are created and the default location sets are added to
-#' the respective table:
+#' working directory, the function exits with an error. Within the database all
+#' tables are created and the default location sets are added to the respective
+#' table:
 #' \itemize{
 #'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
 #'   in 2018.
 #'   \item \emph{us_states} - all US federal states and Washington DC.
 #' }
 #' After creating the database, the function disconnects from the database.
-#'
-#' @section Warning:
-#' Re-creating an existing database will overwrite the existing database file
-#' and leads to loss of data!
 #'
 #' @seealso
 #' * \code{\link{start_db}}
