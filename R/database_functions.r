@@ -19,6 +19,11 @@
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
+#'
 #' @seealso
 #' * \code{\link{start_db}}
 #' * \code{\link{disconnect_db}}
@@ -201,6 +206,11 @@ initialize_db <- function() {
 #' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
 #' and \emph{time_object}.
 #'
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
+#' 
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{disconnect_db}}
@@ -360,6 +370,11 @@ start_db <- function() {
 #' The function closes the connection to the database file
 #' \emph{db/globaltrends_db.sqlite} in the working directory.
 #'
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
+#' 
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{start_db}}
