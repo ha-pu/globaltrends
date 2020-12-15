@@ -56,7 +56,7 @@
 
 plot_score <- function(data_score, type = "obs") {
   if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}."))
-  
+
   .check_type(type)
   in_type <- type
   data_score$measure <- data_score[paste0("score_", in_type)][[1]]
@@ -67,7 +67,7 @@ plot_score <- function(data_score, type = "obs") {
     data_score <- filter(data_score, .data$keyword %in% unique(data_score$keyword)[[1]])
   }
   keyword <- unique(data_score$keyword)[[1]]
-  
+
   data_score <- group_by(data_score, .data$location)
   data_score <- summarise(data_score, measure = mean(.data$measure), .groups = "drop")
 

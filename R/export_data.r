@@ -76,15 +76,15 @@
 #'   locations = "us_states"
 #' ) %>%
 #'   write_xl::write_xlsx("data_doi.xlsx")
-#' 
+#'
 #' # interaction with purrr::map_dfr
 #' purrr::map_dfr(
 #'   c("coca cola", "microsoft"),
 #'   export_doi,
 #'   control = 1,
 #'   type = "obs"
-#'  )
-#' 
+#' )
+#'
 #' # interaction with dplyr::filter
 #' export_voi(
 #'   object = 1,

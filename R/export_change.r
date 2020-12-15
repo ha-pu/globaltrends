@@ -18,7 +18,7 @@
 #' are used together, \emph{keyword} overrules \emph{object}. Currently the
 #' functions do not include list inputs - users are advised to
 #' \code{purrr::map_dfr} or \code{dplyr::filter} instead.
-#' 
+#'
 #' @inheritParams export_control
 #' @param measure Object of class \code{character} indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
@@ -35,7 +35,7 @@
 #'   columns keyword, date, type, control, object, locations, doi, doi_change,
 #'   quantile.
 #' }
-#' 
+#'
 #' @seealso
 #' * \code{\link{export_doi}}
 #' * \code{\link[purrr]{map}}
@@ -47,22 +47,22 @@
 #'   keyword = "amazon",
 #'   type = "obs"
 #' )
-#' 
+#'
 #' export_doi_change(
-#'  keyword = "amazon",
+#'   keyword = "amazon",
 #'   locations = "countries",
 #'   type = "obs",
 #'   measure = "gini"
 #' )
-#' 
+#'
 #' # interaction with purrr::map_dfr
 #' purrr::map_dfr(
 #'   c("coca cola", "microsoft"),
 #'   export_voi_change,
 #'   control = 1,
 #'   type = "obs"
-#'  )
-#' 
+#' )
+#'
 #' # interaction with dplyr::filter
 #' export_doi_change(
 #'   object = 1,
@@ -85,9 +85,9 @@
 
 export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, type = "obs") {
   .check_type(type)
-  
+
   data <- export_voi(keyword = keyword, object = object, control = control)
-  
+
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
@@ -112,7 +112,7 @@ export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, typ
 export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL, measure = "gini") {
   .check_measure(measure)
   data <- export_doi(keyword = keyword, object = object, control = control, locations = locations, type = type)
-  
+
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
   data <- mutate(data, doi_change = .data$doi - lag(.data$doi))

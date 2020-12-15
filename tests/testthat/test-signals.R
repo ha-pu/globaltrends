@@ -1699,7 +1699,7 @@ test_that("plot_change3a", {
     "'ci' must be object of type double.\nYou supplied an object of type builtin."
   )
   expect_error(
-    plot_voi_change(data_change = data, ci = 1:3/10),
+    plot_voi_change(data_change = data, ci = 1:3 / 10),
     "'ci' must be object of length 1.\nYou provided an object of length 3."
   )
   expect_error(
@@ -1727,7 +1727,7 @@ test_that("plot_change3b", {
     "'ci' must be object of type double.\nYou supplied an object of type builtin."
   )
   expect_error(
-    plot_doi_change(data_change = data, ci = 1:3/10),
+    plot_doi_change(data_change = data, ci = 1:3 / 10),
     "'ci' must be object of length 1.\nYou provided an object of length 3."
   )
   expect_error(
