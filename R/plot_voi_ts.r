@@ -47,11 +47,8 @@
 
 plot_voi_ts <- function(data_voi, type = "obs", smooth = TRUE) {
   if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
-  if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
-  if (!is.character(type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(type)}."))
-  if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
-  if (length(smooth) > 1) stop(glue("Error: 'smooth' must be object of length 1.\nYou provided an object of length {length(smooth)}."))
-  if (!is.logical(smooth)) stop(glue("Error: 'smooth' must be of type 'logical'.\nYou supplied an object of type {typeof(smooth)}."))
+  .check_type(type)
+  .check_smooth(smooth)
 
   in_type <- type
   len_keywords <- length(unique(data_voi$keyword))

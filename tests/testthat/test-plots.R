@@ -15,14 +15,14 @@ test_that("plot_score1", {
   data <- export_score(keyword = "fc barcelona", locations = countries)
   out1 <- plot_score(data_score = data, type = "obs")
   expect_s3_class(out1, "ggplot")
-  
+
   data <- export_score(object = 1, locations = countries)
   expect_warning(
     out2 <- plot_score(data_score = data, type = "obs"),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -30,14 +30,14 @@ test_that("plot_score2", {
   data <- export_score(keyword = "fc barcelona", locations = countries)
   out1 <- plot_score(data_score = data, type = "sad")
   expect_s3_class(out1, "ggplot")
-  
+
   data <- export_score(object = 1, locations = countries)
   expect_warning(
     out2 <- plot_score(data_score = data, type = "sad"),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -45,14 +45,14 @@ test_that("plot_score3", {
   data <- export_score(keyword = "fc barcelona", locations = countries)
   out1 <- plot_score(data_score = data, type = "trd")
   expect_s3_class(out1, "ggplot")
-  
+
   data <- export_score(object = 1, locations = countries)
   expect_warning(
     out2 <- plot_score(data_score = data, type = "trd"),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -63,7 +63,7 @@ test_that("plot_score_def", {
   out2 <- plot_score(data_score = data, type = "obs")
   out3 <- plot_score(data_score = data, type = "sad")
   out4 <- plot_score(data_score = data, type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -76,7 +76,7 @@ test_that("plot_doi_ts1a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "obs", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -84,7 +84,7 @@ test_that("plot_doi_ts1a", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -93,7 +93,7 @@ test_that("plot_doi_ts2a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "sad", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -101,7 +101,7 @@ test_that("plot_doi_ts2a", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -110,7 +110,7 @@ test_that("plot_doi_ts3a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "trd", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -118,7 +118,7 @@ test_that("plot_doi_ts3a", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -128,7 +128,7 @@ test_that("plot_doi_ts1b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "obs", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -136,7 +136,7 @@ test_that("plot_doi_ts1b", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -145,7 +145,7 @@ test_that("plot_doi_ts2b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "sad", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -153,7 +153,7 @@ test_that("plot_doi_ts2b", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -162,7 +162,7 @@ test_that("plot_doi_ts3b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "trd", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -170,7 +170,7 @@ test_that("plot_doi_ts3b", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -180,7 +180,7 @@ test_that("plot_doi_ts1c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "obs", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -188,7 +188,7 @@ test_that("plot_doi_ts1c", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -197,7 +197,7 @@ test_that("plot_doi_ts2c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "sad", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -205,7 +205,7 @@ test_that("plot_doi_ts2c", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -214,7 +214,7 @@ test_that("plot_doi_ts3c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_ts(data, type = "trd", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -222,7 +222,7 @@ test_that("plot_doi_ts3c", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -234,7 +234,7 @@ test_that("plot_doi_ts_def1", {
   out2 <- plot_doi_ts(data_doi = data, measure = "gini", type = "obs")
   out3 <- plot_doi_ts(data_doi = data, measure = "gini", type = "sad")
   out4 <- plot_doi_ts(data_doi = data, measure = "gini", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -248,7 +248,7 @@ test_that("plot_doi_ts_def2", {
   out2 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "obs")
   out3 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "sad")
   out4 <- plot_doi_ts(data_doi = data, measure = "hhi", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -262,7 +262,7 @@ test_that("plot_doi_ts_def3", {
   out2 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "obs")
   out3 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "sad")
   out4 <- plot_doi_ts(data_doi = data, measure = "entropy", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -276,7 +276,7 @@ test_that("plot_doi_ts_def4", {
   out2 <- plot_doi_ts(data_doi = data, measure = "gini")
   out3 <- plot_doi_ts(data_doi = data, measure = "hhi")
   out4 <- plot_doi_ts(data_doi = data, measure = "entropy")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -289,7 +289,7 @@ test_that("plot_doi_box1a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "obs", measure = "gini")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -297,7 +297,7 @@ test_that("plot_doi_box1a", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -306,7 +306,7 @@ test_that("plot_doi_box2a", {
   data <- map_dfr(keywords, export_doi, type = "sad", locations = "countries")
   out1 <- plot_doi_box(data, type = "sad", measure = "gini")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -314,7 +314,7 @@ test_that("plot_doi_box2a", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -323,7 +323,7 @@ test_that("plot_doi_box3a", {
   data <- map_dfr(keywords, export_doi, type = "trd", locations = "countries")
   out1 <- plot_doi_box(data, type = "trd", measure = "gini")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -331,7 +331,7 @@ test_that("plot_doi_box3a", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -341,7 +341,7 @@ test_that("plot_doi_box1b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "obs", measure = "hhi")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -349,7 +349,7 @@ test_that("plot_doi_box1b", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -358,7 +358,7 @@ test_that("plot_doi_box2b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "sad", measure = "hhi")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -366,7 +366,7 @@ test_that("plot_doi_box2b", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -375,7 +375,7 @@ test_that("plot_doi_box3b", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "trd", measure = "hhi")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -383,7 +383,7 @@ test_that("plot_doi_box3b", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -393,7 +393,7 @@ test_that("plot_doi_box1c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "obs", measure = "entropy")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -401,7 +401,7 @@ test_that("plot_doi_box1c", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -410,7 +410,7 @@ test_that("plot_doi_box2c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "sad", measure = "entropy")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -418,7 +418,7 @@ test_that("plot_doi_box2c", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -427,7 +427,7 @@ test_that("plot_doi_box3c", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_doi_box(data, type = "trd", measure = "entropy")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -435,7 +435,7 @@ test_that("plot_doi_box3c", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -447,7 +447,7 @@ test_that("plot_doi_box_def1", {
   out2 <- plot_doi_box(data_doi = data, measure = "gini", type = "obs")
   out3 <- plot_doi_box(data_doi = data, measure = "gini", type = "sad")
   out4 <- plot_doi_box(data_doi = data, measure = "gini", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -461,7 +461,7 @@ test_that("plot_doi_box_def2", {
   out2 <- plot_doi_box(data_doi = data, measure = "hhi", type = "obs")
   out3 <- plot_doi_box(data_doi = data, measure = "hhi", type = "sad")
   out4 <- plot_doi_box(data_doi = data, measure = "hhi", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -475,7 +475,7 @@ test_that("plot_doi_box_def3", {
   out2 <- plot_doi_box(data_doi = data, measure = "entropy", type = "obs")
   out3 <- plot_doi_box(data_doi = data, measure = "entropy", type = "sad")
   out4 <- plot_doi_box(data_doi = data, measure = "entropy", type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -489,7 +489,7 @@ test_that("plot_doi_box_def4", {
   out2 <- plot_doi_box(data_doi = data, measure = "gini")
   out3 <- plot_doi_box(data_doi = data, measure = "hhi")
   out4 <- plot_doi_box(data_doi = data, measure = "entropy")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -502,7 +502,7 @@ test_that("plot_voi_ts1", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_ts(data, type = "obs", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -510,7 +510,7 @@ test_that("plot_voi_ts1", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -519,7 +519,7 @@ test_that("plot_voi_ts2", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_ts(data, type = "sad", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -527,7 +527,7 @@ test_that("plot_voi_ts2", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -536,7 +536,7 @@ test_that("plot_voi_ts3", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_ts(data, type = "trd", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -544,7 +544,7 @@ test_that("plot_voi_ts3", {
     "The plot function is limited to 9 keywords in a grid\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -556,7 +556,7 @@ test_that("plot_voi_ts_def", {
   out2 <- plot_voi_ts(data, type = "obs", smooth = TRUE)
   out3 <- plot_voi_ts(data, type = "sad", smooth = TRUE)
   out4 <- plot_voi_ts(data, type = "trd", smooth = TRUE)
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -569,7 +569,7 @@ test_that("plot_voi_box1", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -577,7 +577,7 @@ test_that("plot_voi_box1", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -586,7 +586,7 @@ test_that("plot_voi_box2", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_box(data, type = "sad")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -594,7 +594,7 @@ test_that("plot_voi_box2", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -603,7 +603,7 @@ test_that("plot_voi_box3", {
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_voi_box(data, type = "trd")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
@@ -611,7 +611,7 @@ test_that("plot_voi_box3", {
     "The plot function is limited to 9 keywords in a boxplot\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -623,7 +623,7 @@ test_that("plot_voi_box_def", {
   out2 <- plot_voi_box(data, type = "obs")
   out3 <- plot_voi_box(data, type = "sad")
   out4 <- plot_voi_box(data, type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -636,7 +636,7 @@ test_that("plot_voi_doi1a", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -644,7 +644,7 @@ test_that("plot_voi_doi1a", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -653,7 +653,7 @@ test_that("plot_voi_doi2a", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -661,7 +661,7 @@ test_that("plot_voi_doi2a", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -670,7 +670,7 @@ test_that("plot_voi_doi3a", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -678,7 +678,7 @@ test_that("plot_voi_doi3a", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -688,7 +688,7 @@ test_that("plot_voi_doi1b", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -696,7 +696,7 @@ test_that("plot_voi_doi1b", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -705,7 +705,7 @@ test_that("plot_voi_doi2b", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -713,7 +713,7 @@ test_that("plot_voi_doi2b", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -722,7 +722,7 @@ test_that("plot_voi_doi3b", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -730,7 +730,7 @@ test_that("plot_voi_doi3b", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -740,7 +740,7 @@ test_that("plot_voi_doi1c", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
@@ -748,7 +748,7 @@ test_that("plot_voi_doi1c", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -757,7 +757,7 @@ test_that("plot_voi_doi2c", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(
     object = 1,
@@ -768,7 +768,7 @@ test_that("plot_voi_doi2c", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -777,7 +777,7 @@ test_that("plot_voi_doi3c", {
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
-  
+
   data1 <- export_voi(object = 1)
   data2 <- export_doi(
     object = 1,
@@ -788,7 +788,7 @@ test_that("plot_voi_doi3c", {
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -800,7 +800,7 @@ test_that("plot_voi_doi_def1", {
   out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
   out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE)
   out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE)
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -814,7 +814,7 @@ test_that("plot_voi_doi_def2", {
   out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE)
   out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE)
   out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE)
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -828,7 +828,7 @@ test_that("plot_voi_doi_def3", {
   out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE)
   out3 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE)
   out4 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE)
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -842,7 +842,7 @@ test_that("plot_voi_doi_def4", {
   out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
   out3 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
   out4 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))

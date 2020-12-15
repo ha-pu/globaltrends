@@ -56,20 +56,18 @@
 
 plot_score <- function(data_score, type = "obs") {
   if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_score)}."))
-  if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
-  if (!is.character(type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(type)}."))
-  if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {type}."))
-
+  
+  .check_type(type)
   in_type <- type
-  len_keywords <- length(unique(data_score$keyword))
   data_score$measure <- data_score[paste0("score_", in_type)][[1]]
 
+  len_keywords <- length(unique(data_score$keyword))
   if (len_keywords > 1) {
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
     data_score <- filter(data_score, .data$keyword %in% unique(data_score$keyword)[[1]])
   }
-
   keyword <- unique(data_score$keyword)[[1]]
+  
   data_score <- group_by(data_score, .data$location)
   data_score <- summarise(data_score, measure = mean(.data$measure), .groups = "drop")
 
@@ -89,7 +87,12 @@ plot_score <- function(data_score, type = "obs") {
 
 
     plot <- plot +
-      labs(x = NULL, y = "Search score", title = keyword, caption = glue("Search score as {str_to_upper(type)} time series."))
+      labs(
+        x = NULL,
+        y = "Search score",
+        title = keyword,
+        caption = glue("Search score as {str_to_upper(type)} time series.")
+      )
 
     return(plot)
   }

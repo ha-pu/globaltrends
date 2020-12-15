@@ -104,7 +104,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
   if (length(object) > 1) {
     compute_score(control = control, object = as.list(object), locations = locations)
   } else {
-    walk(list(control, object), .test_batch)
+    walk(list(control, object), .check_batch)
     ts_control <- TRUE
     ts_object <- TRUE
     walk(locations, ~ {

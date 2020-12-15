@@ -872,6 +872,225 @@ test_that("export_data4e", {
   )
 })
 
+# export_change ------------------------------------------------------------------
+test_that("export_change1a", {
+  expect_error(
+    export_voi_change(control = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+  )
+  expect_error(
+    export_voi_change(control = "A"),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(control = TRUE),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(control = sum),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(control = 1:5),
+    "'control' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change1b", {
+  expect_error(
+    export_doi_change(control = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+  )
+  expect_error(
+    export_doi_change(control = "A"),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(control = TRUE),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(control = sum),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(control = 1:5),
+    "'control' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change2a", {
+  expect_error(
+    export_voi_change(keyword = 1),
+    "'keyword' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_voi_change(keyword = TRUE),
+    "'keyword' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_voi_change(keyword = sum),
+    "'keyword' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_voi_change(keyword = letters[1:5]),
+    "'keyword' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change2b", {
+  expect_error(
+    export_doi_change(keyword = 1),
+    "'keyword' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_doi_change(keyword = TRUE),
+    "'keyword' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_doi_change(keyword = sum),
+    "'keyword' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_doi_change(keyword = letters[1:5]),
+    "'keyword' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change3a", {
+  expect_error(
+    export_voi_change(object = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+  )
+  expect_error(
+    export_voi_change(object = "A"),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(object = TRUE),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(object = sum),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_voi_change(object = 1:5),
+    "'object' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change3b", {
+  expect_error(
+    export_doi_change(object = 1.5),
+    "Batch number must be an integer value.\nYou supplied a non-integer numeric value."
+  )
+  expect_error(
+    export_doi_change(object = "A"),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(object = TRUE),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(object = sum),
+    "Batch number must be an integer value.\nYou supplied a non-integer value."
+  )
+  expect_error(
+    export_doi_change(object = 1:5),
+    "'object' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change4a", {
+  expect_error(
+    export_voi_change(type = 1),
+    "'type' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_voi_change(type = "A"),
+    "'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied A."
+  )
+  expect_error(
+    export_doi_change(type = TRUE),
+    "'type' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_voi_change(type = sum),
+    "'type' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_voi_change(type = c("obs", "sad", "trd")),
+    "'type' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
+test_that("export_change4b", {
+  expect_error(
+    export_doi_change(type = 1),
+    "'type' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_doi_change(type = "A"),
+    "'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied A."
+  )
+  expect_error(
+    export_doi_change(type = TRUE),
+    "'type' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_doi_change(type = sum),
+    "'type' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_doi_change(type = c("obs", "sad", "trd")),
+    "'type' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
+test_that("export_change5", {
+  expect_error(
+    export_doi_change(locations = 1),
+    "'locations' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_doi_change(locations = TRUE),
+    "'locations' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_doi_change(locations = sum),
+    "'locations' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_doi_change(locations = letters[1:5]),
+    "'locations' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("export_change6", {
+  expect_error(
+    export_doi_change(measure = 1),
+    "'measure' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    export_doi_change(measure = "A"),
+    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou supplied A."
+  )
+  expect_error(
+    export_doi_change(measure = TRUE),
+    "'measure' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    export_doi_change(measure = sum),
+    "'measure' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    export_doi_change(measure = c("gini", "hhi", "entropy")),
+    "'measure' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
 # plot_score -------------------------------------------------------------------
 test_that("plot_score1", {
   expect_error(
@@ -1399,6 +1618,125 @@ test_that("plot_voi_doi7", {
   expect_warning(
     plot_voi_doi(data_voi = data1, data_doi = data2),
     "The plot function is limited to 1 keyword.\nYou use 10 keywords.\nOnly the first keyword is used."
+  )
+})
+
+# plot_change ------------------------------------------------------------------
+test_that("plot_change1a", {
+  expect_error(
+    plot_voi_change(data_change = 1),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type double."
+  )
+  expect_error(
+    plot_voi_change(data_change = "A"),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type character."
+  )
+  expect_error(
+    plot_voi_change(data_change = TRUE),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    plot_voi_change(data_change = sum),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type builtin."
+  )
+})
+
+test_that("plot_change1b", {
+  expect_error(
+    plot_voi_change(data_change = 1),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type double."
+  )
+  expect_error(
+    plot_voi_change(data_change = "A"),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type character."
+  )
+  expect_error(
+    plot_voi_change(data_change = TRUE),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    plot_voi_change(data_change = sum),
+    "'data_change' must be of type 'data.frame'.\nYou supplied an object of type builtin."
+  )
+})
+
+test_that("plot_change2", {
+  data <- export_doi_change(keyword = "fc barcelona")
+  expect_error(
+    plot_doi_change(data_change = data, type = 1),
+    "'type' must be object of type character.\nYou supplied an object of type double."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, type = "A"),
+    "'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied A."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, type = TRUE),
+    "'type' must be object of type character.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, type = sum),
+    "'type' must be object of type character.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, type = c("obs", "sad", "trd")),
+    "'type' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
+test_that("plot_change3a", {
+  data <- export_voi_change(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_change(data_change = data, ci = "A"),
+    "'ci' must be object of type double.\nYou supplied an object of type character."
+  )
+  expect_error(
+    plot_voi_change(data_change = data, ci = TRUE),
+    "'ci' must be object of type double.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    plot_voi_change(data_change = data, ci = sum),
+    "'ci' must be object of type double.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    plot_voi_change(data_change = data, ci = 1:3/10),
+    "'ci' must be object of length 1.\nYou provided an object of length 3."
+  )
+  expect_error(
+    plot_voi_change(data_change = data, ci = 0),
+    "'ci' must be greater than 0 and less than 1.\nYou supplied 0."
+  )
+  expect_error(
+    plot_voi_change(data_change = data, ci = 1),
+    "'ci' must be greater than 0 and less than 1.\nYou supplied 1."
+  )
+})
+
+test_that("plot_change3b", {
+  data <- export_doi_change(keyword = "fc barcelona")
+  expect_error(
+    plot_doi_change(data_change = data, ci = "A"),
+    "'ci' must be object of type double.\nYou supplied an object of type character."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, ci = TRUE),
+    "'ci' must be object of type double.\nYou supplied an object of type logical."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, ci = sum),
+    "'ci' must be object of type double.\nYou supplied an object of type builtin."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, ci = 1:3/10),
+    "'ci' must be object of length 1.\nYou provided an object of length 3."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, ci = 0),
+    "'ci' must be greater than 0 and less than 1.\nYou supplied 0."
+  )
+  expect_error(
+    plot_doi_change(data_change = data, ci = 1),
+    "'ci' must be greater than 0 and less than 1.\nYou supplied 1."
   )
 })
 

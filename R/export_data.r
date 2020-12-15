@@ -1,7 +1,9 @@
 #' @title Export data from database table
 #'
 #' @description
-#' The function allows to export data from database tables.
+#' The function allows to export data from database tables. In combination with
+#' various \emph{write} functions in R, the functions allow exports from the
+#' database to local files.
 #'
 #' @details
 #' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
@@ -33,7 +35,7 @@
 #' columns location, keyword, date, hits, control.
 #'   \item \code{export_object} exports data from table \emph{data_object} with
 #' columns location, keyword, date, hits, object.
-#'   \item \code{export_global} exports data from table \emph{data_score} with
+#'   \item \code{export_voi} exports data from table \emph{data_score} with
 #' columns keyword, date, hits, control, filters for
 #' \code{location == "world"}.
 #'   \item \code{export_score} exports data from table \emph{data_score} with
@@ -74,6 +76,22 @@
 #'   locations = "us_states"
 #' ) %>%
 #'   write_xl::write_xlsx("data_doi.xlsx")
+#' 
+#' # interaction with purrr::map_dfr
+#' purrr::map_dfr(
+#'   c("coca cola", "microsoft"),
+#'   export_doi,
+#'   control = 1,
+#'   type = "obs"
+#'  )
+#' 
+#' # interaction with dplyr::filter
+#' export_voi(
+#'   object = 1,
+#'   control = 1,
+#'   type = "obs"
+#' ) %>%
+#'   dplyr::filter(lubridate::year(date) == 2019)
 #' }
 #'
 #' @rdname export_data
@@ -212,13 +230,11 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_keyword) > 1) stop(glue("Error: 'keyword' must be object of length 1.\nYou provided an object of length {length(in_keyword)}."))
   if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
-  if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
+  if (!is.null(in_type)) .check_type(in_type)
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
-  if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
-  if (!is.null(in_control)) .test_batch(in_control)
-  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(in_type)}."))
-  if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
+  if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
+  if (!is.null(in_control)) .check_batch(in_control)
 
   if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
@@ -246,14 +262,12 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
   if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
-  if (length(in_type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(in_type)}."))
+  if (!is.null(in_type)) .check_type(in_type)
 
   if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
-  if (is.null(in_keyword) & !is.null(in_object)) .test_batch(in_object)
-  if (!is.null(in_control)) .test_batch(in_control)
+  if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
+  if (!is.null(in_control)) .check_batch(in_control)
   if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be object of type character.\nYou supplied an object of type {typeof(in_locations)}."))
-  if (!is.null(in_type) & !is.character(in_type)) stop(glue("Error: 'type' must be object of type character.\nYou supplied an object of type {typeof(in_type)}."))
-  if (!is.null(in_type)) if (!(in_type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou supplied {in_type}."))
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
