@@ -1,7 +1,9 @@
 #' @title Export data from database table
 #'
 #' @description
-#' The function allows to export data from database tables.
+#' The function allows to export data from database tables. In combination with
+#' various \emph{write} functions in R, the functions allow exports from the
+#' database to local files.
 #'
 #' @details
 #' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
@@ -33,7 +35,7 @@
 #' columns location, keyword, date, hits, control.
 #'   \item \code{export_object} exports data from table \emph{data_object} with
 #' columns location, keyword, date, hits, object.
-#'   \item \code{export_global} exports data from table \emph{data_score} with
+#'   \item \code{export_voi} exports data from table \emph{data_score} with
 #' columns keyword, date, hits, control, filters for
 #' \code{location == "world"}.
 #'   \item \code{export_score} exports data from table \emph{data_score} with
@@ -74,6 +76,22 @@
 #'   locations = "us_states"
 #' ) %>%
 #'   write_xl::write_xlsx("data_doi.xlsx")
+#' 
+#' # interaction with purrr::map_dfr
+#' purrr::map_dfr(
+#'   c("coca cola", "microsoft"),
+#'   export_doi,
+#'   control = 1,
+#'   type = "obs"
+#'  )
+#' 
+#' # interaction with dplyr::filter
+#' export_voi(
+#'   object = 1,
+#'   control = 1,
+#'   type = "obs"
+#' ) %>%
+#'   dplyr::filter(lubridate::year(date) == 2019)
 #' }
 #'
 #' @rdname export_data

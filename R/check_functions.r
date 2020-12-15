@@ -1,14 +1,14 @@
-#' @title Check limit
+#' @title Check confidence interval
 #'
 #' @keywords internal
 #' @noRd
 #'
 #' @importFrom glue glue
 
-.check_limit <- function(limit) {
-  if (length(limit) > 1) stop(glue("Error: 'limit' must be object of length 1.\nYou provided an object of length {length(limit)}."))
-  if (!is.double(limit)) stop(glue("Error: 'limit' must be object of type double.\nYou supplied an object of type {typeof(limit)}."))
-  if (limit <= 0 | limit >= 1) stop(glue("Error: 'limit' must be greater than 0 and less than 1.\nYou supplied {limit}."))
+.check_ci <- function(ci) {
+  if (length(ci) > 1) stop(glue("Error: 'ci' must be object of length 1.\nYou provided an object of length {length(ci)}."))
+  if (!is.double(ci)) stop(glue("Error: 'ci' must be object of type double.\nYou supplied an object of type {typeof(ci)}."))
+  if (ci <= 0 | ci >= 1) stop(glue("Error: 'ci' must be greater than 0 and less than 1.\nYou supplied {ci}."))
 }
 
 #' @title Check measure
