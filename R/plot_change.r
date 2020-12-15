@@ -56,9 +56,17 @@
 
 plot_voi_change <- function(data_change, ci = 0.95) {
   if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_change)}."))
+  
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
-  ci2 <- 1 - c1
+  ci2 <- 1 - ci1
+  
+  len_keywords <- length(unique(data_change$keyword))
+  if (len_keywords > 1) {
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
+    data_change <- filter(data_change, .data$keyword %in% unique(data_change$keyword)[[1]])
+  }
+  keyword <- unique(data_change$keyword)[[1]]
   
   q1 <- stats::quantile(data_change$voi_change, ci1, na.rm = TRUE)
   q2 <- stats::quantile(data_change$voi_change, ci2, na.rm = TRUE)
@@ -69,7 +77,11 @@ plot_voi_change <- function(data_change, ci = 0.95) {
     geom_hline(yintercept = q2, colour = "blue4", linetype = "dotted") +
     geom_line() +
     geom_point(data = filter(data_change, .data$quantile < ci1 | .data$quantile > ci2), colour = "firebrick") +
-    labs(x = NULL, y = "Change in volume of internationalization")
+    labs(
+      x = NULL,
+      y = "Change in volume of internationalization",
+      title = keyword
+    )
 }
 
 #' @rdname plot_change
@@ -80,7 +92,14 @@ plot_doi_change <- function(data_change, type = "obs", ci = 0.95) {
   .check_type(type)
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
-  ci2 <- 1 - c1
+  ci2 <- 1 - ci1
+  
+  len_keywords <- length(unique(data_change$keyword))
+  if (len_keywords > 1) {
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
+    data_change <- filter(data_change, .data$keyword %in% unique(data_change$keyword)[[1]])
+  }
+  keyword <- unique(data_change$keyword)[[1]]
   
   in_type <- type
   data_change <- filter(data_change, .data$type == glue("score_{in_type}"))
@@ -94,5 +113,9 @@ plot_doi_change <- function(data_change, type = "obs", ci = 0.95) {
     geom_hline(yintercept = q2, colour = "blue4", linetype = "dotted") +
     geom_line() +
     geom_point(data = filter(data_change, .data$quantile < ci1 | .data$quantile > ci2), colour = "firebrick") +
-    labs(x = NULL, y = "Change in degree of internationalization")
+    labs(
+      x = NULL,
+      y = "Change in degree of internationalization",
+      title = keyword
+    )
 }
