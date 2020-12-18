@@ -9,9 +9,9 @@
 #' package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
 #' the working directory. If the folder \emph{db} does not exists in the working
 #' directory, the folder is created. If the database already exists in the
-#' working directory, the database is deleted and re-created. Within the
-#' database all tables are created and the default location sets are added to
-#' the respective table:
+#' working directory, the function exits with an error. Within the database all
+#' tables are created and the default location sets are added to the respective
+#' table:
 #' \itemize{
 #'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
 #'   in 2018.
@@ -19,9 +19,10 @@
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
-#' @section Warning:
-#' Re-creating an existing database will overwrite the existing database file
-#' and leads to loss of data!
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
 #'
 #' @seealso
 #' * \code{\link{start_db}}
@@ -180,18 +181,24 @@ initialize_db <- function() {
   countries <- arrange(countries, -.data$gdp_share)
   countries <- mutate(countries, gdp_cum_share = cumsum(.data$gdp_share))
   countries <- filter(countries, .data$iso2c %in% unique(gtrendsR::countries$country_code) & .data$gdp_share >= 0.001)
-  countries <- select(countries, location = .data$iso2c, name = .data$country)
-  countries <- mutate(countries, type = "countries")
+  add_locations(
+    locations = countries$iso2c,
+    type = "countries",
+    export = FALSE,
+    db = globaltrends_db
+  )
 
   # create us_states -----------------------------------------------------------
   us_states <- gtrendsR::countries
   us_states <- mutate_all(us_states, as.character)
   us_states <- us_states[which(us_states$sub_code == "US-AL")[[1]]:which(us_states$sub_code == "US-DC")[[1]], ]
-  us_states <- select(us_states, location = .data$sub_code, .data$name)
-  us_states <- mutate(us_states, type = "us_states")
-
-  # upload data ----------------------------------------------------------------
-  dbWriteTable(conn = globaltrends_db, name = "data_locations", value = bind_rows(countries, us_states), append = TRUE)
+  add_locations(
+    locations = us_states$sub_code,
+    type = "us_states",
+    export = FALSE,
+    db = globaltrends_db
+  )
+  
   message("Successfully entered data into 'data_locations'.")
 }
 
@@ -205,6 +212,11 @@ initialize_db <- function() {
 #' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
 #' and \emph{time_object}.
 #'
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
+#' 
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{disconnect_db}}
@@ -246,6 +258,7 @@ initialize_db <- function() {
 #' @export
 #' @importFrom DBI dbConnect
 #' @importFrom dplyr collect
+#' @importFrom dplyr distinct
 #' @importFrom dplyr filter
 #' @importFrom dplyr pull
 #' @importFrom dplyr tbl
@@ -269,13 +282,6 @@ start_db <- function() {
   tbl_score <- tbl(globaltrends_db, "data_score")
 
   # load files -----------------------------------------------------------------
-  countries <- filter(tbl_locations, .data$type == "countries")
-  countries <- collect(countries)
-  countries <- pull(countries, .data$location)
-  us_states <- filter(tbl_locations, .data$type == "us_states")
-  us_states <- collect(us_states)
-  us_states <- pull(us_states, .data$location)
-
   keywords_control <- filter(tbl_keywords, .data$type == "control")
   keywords_control <- select(keywords_control, -.data$type)
   keywords_control <- collect(keywords_control)
@@ -328,8 +334,6 @@ start_db <- function() {
     tbl_control,
     tbl_object,
     tbl_score,
-    countries,
-    us_states,
     keywords_control,
     time_control,
     keywords_object,
@@ -342,8 +346,6 @@ start_db <- function() {
     "tbl_control",
     "tbl_object",
     "tbl_score",
-    "countries",
-    "us_states",
     "keywords_control",
     "time_control",
     "keywords_object",
@@ -351,6 +353,8 @@ start_db <- function() {
     "keyword_synonyms"
   )
   invisible(list2env(lst_object, envir = .GlobalEnv))
+  
+  .export_locations()
   message("Successfully exported all objects to .GlobalEnv.")
 }
 
@@ -360,6 +364,11 @@ start_db <- function() {
 #' The function closes the connection to the database file
 #' \emph{db/globaltrends_db.sqlite} in the working directory.
 #'
+#' @section Warning
+#' SQLite databases only allow one writer at any instant in time. To run
+#' parallel downloads use one database for each download client and merge them
+#' once all downloads are complete.
+#' 
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{start_db}}

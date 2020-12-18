@@ -98,7 +98,7 @@ test_that("download_object_global", {
 })
 
 # compute data -----------------------------------------------------------------
-test_that("compute_scoring", {
+test_that("compute_score", {
   out <- capture_messages(compute_score(control = 1, object = 1, locations = countries[1:3]))
 
   expect_match(
@@ -122,7 +122,7 @@ test_that("compute_scoring", {
   expect_equal(nrow(out), 1440)
 })
 
-test_that("compute_scoring_voi", {
+test_that("compute_voi", {
   expect_message(
     compute_voi(control = 1, object = 1),
     "Successfully computed search score | control: 1 | object: 1 | location: world [1/1]",
