@@ -17,6 +17,13 @@ Message that disconnection was successful.
 The function closes the connection to the database file
 \emph{db/globaltrends_db.sqlite} in the working directory.
 }
+\section{Warning}{
+
+SQLite databases only allow one writer at any instant in time. To run
+parallel downloads use one database for each download client and merge them
+once all downloads are complete.
+}
+
 \examples{
 \dontrun{
 disconnect_db()

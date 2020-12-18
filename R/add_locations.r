@@ -29,7 +29,7 @@
 #' Message that the location set has been created successfully. Location data is
 #' written to table \emph{data_locations}.
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
 #' }

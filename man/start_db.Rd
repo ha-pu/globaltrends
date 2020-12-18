@@ -42,6 +42,13 @@ database tables (through \code{dplyr::tbl}) are created. Data from the tables
 objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
 and \emph{time_object}.
 }
+\section{Warning}{
+
+SQLite databases only allow one writer at any instant in time. To run
+parallel downloads use one database for each download client and merge them
+once all downloads are complete.
+}
+
 \examples{
 \dontrun{
 start_db()
