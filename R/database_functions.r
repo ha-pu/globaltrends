@@ -198,7 +198,7 @@ initialize_db <- function() {
     export = FALSE,
     db = globaltrends_db
   )
-  
+
   message("Successfully entered data into 'data_locations'.")
 }
 
@@ -216,7 +216,7 @@ initialize_db <- function() {
 #' SQLite databases only allow one writer at any instant in time. To run
 #' parallel downloads use one database for each download client and merge them
 #' once all downloads are complete.
-#' 
+#'
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{disconnect_db}}
@@ -353,7 +353,7 @@ start_db <- function() {
     "keyword_synonyms"
   )
   invisible(list2env(lst_object, envir = .GlobalEnv))
-  
+
   .export_locations()
   message("Successfully exported all objects to .GlobalEnv.")
 }
@@ -368,7 +368,7 @@ start_db <- function() {
 #' SQLite databases only allow one writer at any instant in time. To run
 #' parallel downloads use one database for each download client and merge them
 #' once all downloads are complete.
-#' 
+#'
 #' @seealso
 #' * \code{\link{initialize_db}}
 #' * \code{\link{start_db}}
