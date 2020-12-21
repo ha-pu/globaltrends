@@ -55,7 +55,7 @@ Like country search scores, we can interpret global search scores as the proport
 As the main measure for degree of internationalization, the `globaltrends` package uses the global dispersion of country search scores. The more uniform the distribution of search scores across countries, the higher an object’s degree of internationalization. When the distribution of country search scores is highly skewed, with high search scores in the object’s country of origin and low search scores in other countries, the object has a low degree of internationalization. To compute an object’s degree of internationalization, the packages by default uses as the inverted Gini coefficient.
 
 # Case study: Analyzing firm internationalization
-We demonstrate the functionality of the `globaltrends` package based on a sample of six large U.S. firms. Measuring degree of internationalization for firms is an essential empirical task in international business research. Yet the proposed methodology can be generalized to other applications. For a more extensive academic application of the `globaltrends` package, please refer to Venger, Puhr, and Müllner (2020), available on [Github](https://github.com/ha-pu/globaltrends/blob/master/Venger_Puhr_Muellner_2020.pdf). In this brief case study, we analyze the degree of internationalization of *Alaska Air Group Inc.*, *Coca-Cola Company*, *Facebook Inc.*, *Illinois Tool Works Inc.*, *J.M. Smucker Company*, and *Microsoft Corporation*. The workflow proceeds in four major steps:
+We demonstrate the functionality of the `globaltrends` package based on a sample of six large U.S. firms. Measuring degree of internationalization for firms is an essential empirical task in international business research. Yet the proposed methodology can be generalized to other applications. In this brief case study, we analyze the degree of internationalization of *Alaska Air Group Inc.*, *Coca-Cola Company*, *Facebook Inc.*, *Illinois Tool Works Inc.*, *J.M. Smucker Company*, and *Microsoft Corporation*. The workflow proceeds in four major steps:
 
 1. Setup and start database
 2. Download data from Google Trends
@@ -428,7 +428,6 @@ The enormous detail of the data opens additional applications in research that a
 
 # References
 * Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based Uncertainty index for the United States and Australia. Economics Letters, 161: 149-153.
-* Venger, O., Puhr, H., & Müllner, J. 2020. MNE Internationalization and Resilience to the Covid-19 Pandemic, Working Paper. Vienna: Vienna University of Economics and Business. Available at https://github.com/ha-pu/globaltrends/blob/master/Venger_Puhr_Muellner_2020.pdf.
 
 # Appendix
 
