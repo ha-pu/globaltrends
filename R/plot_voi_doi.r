@@ -66,8 +66,8 @@
 #' @importFrom tidyr pivot_longer
 
 plot_voi_doi <- function(data_voi, data_doi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
-  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
-  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
+  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_doi)}."))
+  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_voi)}."))
   .check_type(type)
   .check_measure(measure)
   .check_locations(locations)

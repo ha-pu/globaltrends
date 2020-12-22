@@ -83,10 +83,10 @@ remove_data <- function(table, control = NULL, object = NULL) {
         .remove_data_doi(batch_c = control, batch_o = object)
       }
     } else {
-      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou supplied {table}."))
+      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou provided {table}."))
     }
   } else {
-    stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))
+    stop(glue("Error: 'table' must be an object of type character.\nYou provided an object of type {typeof(table)}."))
   }
 }
 

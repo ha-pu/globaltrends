@@ -24,14 +24,14 @@ assign(".keywords_object", .keywords_object, envir = .GlobalEnv)
 test_that("score1", {
   expect_warning(
     compute_score(control = 1, object = 1),
-    "You supplied object data for less than 24 months.\nNo time series adjustments possible."
+    "You provided object data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 
 test_that("score2", {
   expect_warning(
     compute_voi(control = 1, object = 1),
-    "You supplied object data for less than 24 months.\nNo time series adjustments possible."
+    "You provided object data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 
@@ -46,14 +46,14 @@ dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 test_that("score3", {
   expect_warning(
     compute_score(control = 1, object = 1),
-    "You supplied control data for less than 24 months.\nNo time series adjustments possible."
+    "You provided control data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 
 test_that("score4", {
   expect_warning(
     compute_voi(control = 1, object = 1),
-    "You supplied control data for less than 24 months.\nNo time series adjustments possible."
+    "You provided control data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 
@@ -68,14 +68,14 @@ dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 test_that("score5", {
   expect_warning(
     compute_score(control = 1, object = 1),
-    "You supplied control and object data for less than 24 months.\nNo time series adjustments possible."
+    "You provided control and object data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 
 test_that("score6", {
   expect_warning(
     compute_voi(control = 1, object = 1),
-    "You supplied control and object data for less than 24 months.\nNo time series adjustments possible."
+    "You provided control and object data for less than 24 months.\nNo time series adjustments possible."
   )
 })
 

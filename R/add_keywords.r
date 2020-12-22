@@ -186,7 +186,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
     message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
-    stop("Error: 'type' allows only 'control' or 'object'.\nYou supplied another value.")
+    stop("Error: 'type' allows only 'control' or 'object'.\nYou provided another value.")
   }
 }
 
@@ -236,12 +236,12 @@ add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
 #' @export
 
 add_synonym.character <- function(keyword, synonym) {
-  if (length(keyword) > 1) stop(glue("Error:'keyword' must be input of length 1.\nYou supplied an input of length {length(keyword)}."))
-  if (!is.character(keyword)) stop(glue("Error:'keyword' must of type 'character'.\nYou supplied an input of type {typeof(keyword)}."))
+  if (length(keyword) > 1) stop(glue("Error:'keyword' must be input of length 1.\nYou provided an object of length {length(keyword)}."))
+  if (!is.character(keyword)) stop(glue("Error:'keyword' must of type 'character'.\nYou provided an object of type {typeof(keyword)}."))
   if (length(synonym) > 1) {
     add_synonym(keyword = keyword, synonym = as.list(synonym))
   } else {
-    if (!is.character(synonym)) stop(glue("Error:'synonym' must of type 'character'.\nYou supplied an input of type {typeof(synonym)}."))
+    if (!is.character(synonym)) stop(glue("Error:'synonym' must of type 'character'.\nYou provided an object of type {typeof(synonym)}."))
     out <- tibble(keyword, synonym)
     dbWriteTable(
       conn = globaltrends_db,

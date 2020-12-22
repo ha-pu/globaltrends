@@ -41,7 +41,7 @@
 #' @importFrom rlang .data
 
 plot_voi_box <- function(data_voi, type = "obs") {
-  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
+  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_voi)}."))
   .check_type(type)
 
   in_type <- type

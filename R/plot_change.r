@@ -55,7 +55,7 @@
 #' @importFrom stringr str_to_upper
 
 plot_voi_change <- function(data_change, ci = 0.95) {
-  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_change)}."))
+  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_change)}."))
 
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
@@ -88,7 +88,7 @@ plot_voi_change <- function(data_change, ci = 0.95) {
 #' @export
 
 plot_doi_change <- function(data_change, type = "obs", ci = 0.95) {
-  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_change)}."))
+  if (!is.data.frame(data_change)) stop(glue("Error: 'data_change' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_change)}."))
   .check_type(type)
   .check_ci(ci)
   ci1 <- (1 - ci) / 2

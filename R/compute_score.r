@@ -274,7 +274,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
         first(!c(ts_control, ts_object)) ~ "control",
         last(!c(ts_control, ts_object)) ~ "object"
       )
-      warning(glue("You supplied {text} data for less than 24 months.\nNo time series adjustments possible."))
+      warning(glue("You provided {text} data for less than 24 months.\nNo time series adjustments possible."))
     }
   }
 }

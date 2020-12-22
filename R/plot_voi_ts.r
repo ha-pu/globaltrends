@@ -46,7 +46,7 @@
 #' @importFrom rlang .data
 
 plot_voi_ts <- function(data_voi, type = "obs", smooth = TRUE) {
-  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_voi)}."))
+  if (!is.data.frame(data_voi)) stop(glue("Error: 'data_voi' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_voi)}."))
   .check_type(type)
   .check_smooth(smooth)
 

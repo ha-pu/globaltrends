@@ -232,7 +232,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
   if (!is.null(in_type)) .check_type(in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
+  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou provided an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
 
@@ -264,10 +264,10 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
   if (!is.null(in_type)) .check_type(in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
+  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou provided an object of type {typeof(in_keyword)}."))
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
-  if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be object of type character.\nYou supplied an object of type {typeof(in_locations)}."))
+  if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(in_locations)}."))
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)

@@ -57,7 +57,7 @@ add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) 
   codes <- unique(codes)
   codes <- na.omit(codes)
   walk(locations, ~ {
-    if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou supplied {.x}."))
+    if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided {.x}."))
   })
 
   data <- tibble(location = locations, type = type)
