@@ -99,8 +99,8 @@ compute_score <- function(object, control = 1, locations = countries) UseMethod(
 #' @export
 
 compute_score.numeric <- function(object, control = 1, locations = countries) {
-  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
+  .check_length(control, 1)
+  .check_input(locations, "character")
   if (length(object) > 1) {
     compute_score(control = control, object = as.list(object), locations = locations)
   } else {
