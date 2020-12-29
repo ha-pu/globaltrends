@@ -43,6 +43,7 @@
 #' @importFrom purrr map
 #' @importFrom purrr walk
 #' @importFrom rlang .data
+#' @importFrom stats na.omit
 #' @importFrom tibble tibble
 
 add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) {
