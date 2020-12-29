@@ -236,8 +236,8 @@ add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
 #' @export
 
 add_synonym.character <- function(keyword, synonym) {
-  if (length(keyword) > 1) stop(glue("Error:'keyword' must be input of length 1.\nYou provided an object of length {length(keyword)}."))
-  if (!is.character(keyword)) stop(glue("Error:'keyword' must of type 'character'.\nYou provided an object of type {typeof(keyword)}."))
+  .check_length(keyword, 1)
+  .check_input(keyword, "character")
   if (length(synonym) > 1) {
     add_synonym(keyword = keyword, synonym = as.list(synonym))
   } else {
