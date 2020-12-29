@@ -6,7 +6,7 @@
 #' @importFrom glue glue
 #' @importFrom rlang as_name
 #' @importFrom rlang enquo
- 
+
 .check_input <- function(input, type) {
   name_input <- as_name(enquo(input))
   check <- do.call(glue("is.{type}"), list(input))
