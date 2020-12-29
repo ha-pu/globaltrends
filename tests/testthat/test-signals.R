@@ -88,12 +88,12 @@ test_that("add_batch4", {
 test_that("add_batch5", {
   expect_error(
     add_control_keyword(keyword = list(letters[1:6])),
-    "Length of list objects must not exceed 5.\nYou provided a list object with length 6."
+    "'keyword' must be object of length 5.\nYou provided an object of length 6."
   )
-
+  
   expect_error(
     add_object_keyword(keyword = list(letters[1:5])),
-    "Length of list objects must not exceed 4.\nYou provided a list object with length 5."
+    "'keyword' must be object of length 4.\nYou provided an object of length 5."
   )
 })
 
@@ -101,22 +101,22 @@ test_that("add_batch5", {
 test_that("add_synonym1", {
   expect_error(
     add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]),
-    "'keyword' must be input of length 1.\nYou provided an object of length 2."
+    "'keyword' must be object of length 1.\nYou provided an object of length 2."
   )
 })
 
 test_that("add_synonym2", {
   expect_error(
     add_synonym(keyword = 1, synonym = "A"),
-    "'keyword' must of type 'character'.\nYou provided an object of type double."
+    "'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     add_synonym(keyword = TRUE, synonym = "A"),
-    "'keyword' must of type 'character'.\nYou provided an object of type logical."
+    "'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     add_synonym(keyword = sum, synonym = "A"),
-    "'keyword' must of type 'character'.\nYou provided an object of type builtin."
+    "'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -454,7 +454,7 @@ test_that("compute_doi3", {
 test_that("compute_doi4", {
   expect_error(
     compute_doi(object = 1, locations = letters[1:2]),
-    "Length object 'locations' must not exeed 1.\nYou provided an object with length 2."
+    "'locations' must be object of length 1.\nYou provided an object of length 2."
   )
 })
 
@@ -1095,19 +1095,19 @@ test_that("export_change6", {
 test_that("plot_score1", {
   expect_error(
     plot_score(data_score = 1),
-    "'data_score' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_score' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_score(data_score = "A"),
-    "'data_score' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_score' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_score(data_score = TRUE),
-    "'data_score' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_score' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_score(data_score = sum),
-    "'data_score' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_score' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1147,19 +1147,19 @@ test_that("plot_score3", {
 test_that("plot_doi_ts1", {
   expect_error(
     plot_doi_ts(data_doi = 1),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_doi_ts(data_doi = "A"),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_doi_ts(data_doi = TRUE),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_doi_ts(data_doi = sum),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1215,15 +1215,15 @@ test_that("plot_doi_ts4", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
     plot_doi_ts(data_doi = data, locations = 1),
-    "'locations' must be object of type 'character'.\nYou provided an object of type double."
+    "'locations' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     plot_doi_ts(data_doi = data, locations = TRUE),
-    "'locations' must be object of type 'character'.\nYou provided an object of type logical."
+    "'locations' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     plot_doi_ts(data_doi = data, locations = sum),
-    "'locations' must be object of type 'character'.\nYou provided an object of type builtin."
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_doi_ts(data_doi = data, locations = letters[1:5]),
@@ -1235,15 +1235,15 @@ test_that("plot_doi_ts5", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
     plot_doi_ts(data_doi = data, smooth = 1),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type double."
+    "'smooth' must be object of type logical.\nYou provided an object of type double."
   )
   expect_error(
     plot_doi_ts(data_doi = data, smooth = "A"),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type character."
+    "'smooth' must be object of type logical.\nYou provided an object of type character."
   )
   expect_error(
     plot_doi_ts(data_doi = data, smooth = sum),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type builtin."
+    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_doi_ts(data_doi = data, smooth = c(TRUE, TRUE)),
@@ -1263,19 +1263,19 @@ test_that("plot_doi_ts6", {
 test_that("plot_voi_ts1", {
   expect_error(
     plot_voi_ts(data_voi = 1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_ts(data_voi = "A"),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_ts(data_voi = TRUE),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_ts(data_voi = sum),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1307,15 +1307,15 @@ test_that("plot_voi_ts3", {
   data <- export_voi(keyword = "fc barcelona")
   expect_error(
     plot_voi_ts(data_voi = data, smooth = 1),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type double."
+    "'smooth' must be object of type logical.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_ts(data_voi = data, smooth = "A"),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type character."
+    "'smooth' must be object of type logical.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_ts(data_voi = data, smooth = sum),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type builtin."
+    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_voi_ts(data_voi = data, smooth = c(TRUE, TRUE)),
@@ -1335,19 +1335,19 @@ test_that("plot_voi_ts4", {
 test_that("plot_doi_box1", {
   expect_error(
     plot_doi_box(data_doi = 1),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_doi_box(data_doi = "A"),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_doi_box(data_doi = TRUE),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_doi_box(data_doi = sum),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1403,15 +1403,15 @@ test_that("plot_doi_box4", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
     plot_doi_box(data_doi = data, locations = 1),
-    "'locations' must be object of type 'character'.\nYou provided an object of type double."
+    "'locations' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     plot_doi_box(data_doi = data, locations = TRUE),
-    "'locations' must be object of type 'character'.\nYou provided an object of type logical."
+    "'locations' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     plot_doi_box(data_doi = data, locations = sum),
-    "'locations' must be object of type 'character'.\nYou provided an object of type builtin."
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_doi_box(data_doi = data, locations = letters[1:5]),
@@ -1431,19 +1431,19 @@ test_that("plot_doi_box5", {
 test_that("plot_voi_box1", {
   expect_error(
     plot_voi_box(data_voi = 1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_box(data_voi = "A"),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_box(data_voi = TRUE),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_box(data_voi = sum),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1484,19 +1484,19 @@ test_that("plot_voi_doi1", {
   data2 <- export_voi(keyword = "fc barcelona")
   expect_error(
     plot_voi_doi(data_doi = 1, data_voi = data2),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_doi(data_doi = "A", data_voi = data2),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_doi(data_doi = TRUE, data_voi = data2),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_doi(data_doi = sum, data_voi = data2),
-    "'data_doi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1504,19 +1504,19 @@ test_that("plot_voi_doi2", {
   data1 <- export_doi(keyword = "fc barcelona")
   expect_error(
     plot_voi_doi(data_voi = 1, data_doi = data1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_doi(data_voi = "A", data_doi = data1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_doi(data_voi = TRUE, data_doi = data1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_doi(data_voi = sum, data_doi = data1),
-    "'data_voi' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1575,15 +1575,15 @@ test_that("plot_voi_doi5", {
   data2 <- export_voi(keyword = "fc barcelona")
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, locations = 1),
-    "'locations' must be object of type 'character'.\nYou provided an object of type double."
+    "'locations' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, locations = TRUE),
-    "'locations' must be object of type 'character'.\nYou provided an object of type logical."
+    "'locations' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, locations = sum),
-    "'locations' must be object of type 'character'.\nYou provided an object of type builtin."
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, locations = letters[1:5]),
@@ -1596,15 +1596,15 @@ test_that("plot_voi_doi6", {
   data2 <- export_voi(keyword = "fc barcelona")
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = 1),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type double."
+    "'smooth' must be object of type logical.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = "A"),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type character."
+    "'smooth' must be object of type logical.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = sum),
-    "'smooth' must be object of type 'logical'.\nYou provided an object of type builtin."
+    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
   )
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)),
@@ -1625,38 +1625,38 @@ test_that("plot_voi_doi7", {
 test_that("plot_change1a", {
   expect_error(
     plot_voi_change(data_change = 1),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_change(data_change = "A"),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_change(data_change = TRUE),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_change(data_change = sum),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
 test_that("plot_change1b", {
   expect_error(
     plot_voi_change(data_change = 1),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type double."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type double."
   )
   expect_error(
     plot_voi_change(data_change = "A"),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type character."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type character."
   )
   expect_error(
     plot_voi_change(data_change = TRUE),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type logical."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type logical."
   )
   expect_error(
     plot_voi_change(data_change = sum),
-    "'data_change' must be object of type 'data.frame'.\nYou provided an object of type builtin."
+    "'data_change' must be object of type data.frame.\nYou provided an object of type builtin."
   )
 })
 
@@ -1744,7 +1744,7 @@ test_that("plot_change3b", {
 test_that("remove_data1", {
   expect_error(
     remove_data(table = 1),
-    "'table' must be an object of type character.\nYou provided an object of type double."
+    "'table' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     remove_data(table = "A"),
@@ -1752,11 +1752,11 @@ test_that("remove_data1", {
   )
   expect_error(
     remove_data(table = TRUE),
-    "'table' must be an object of type character.\nYou provided an object of type logical."
+    "'table' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     remove_data(table = sum),
-    "'table' must be an object of type character.\nYou provided an object of type builtin."
+    "'table' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     remove_data(table = c("data_object", "data_control")),
