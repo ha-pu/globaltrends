@@ -23,7 +23,7 @@
 .check_length <- function(input, max) {
   name_input <- as_name(enquo(input))
   if (length(input) > max) {
-    stop(glue("Error: '{name_input}' must be object of length 1.\nYou provided an object of length {length(input)}."))
+    stop(glue("Error: '{name_input}' must be object of length {max}.\nYou provided an object of length {length(input)}."))
   }
 }
 
