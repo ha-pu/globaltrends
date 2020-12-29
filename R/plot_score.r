@@ -55,8 +55,7 @@
 #' @importFrom stringr str_to_upper
 
 plot_score <- function(data_score, type = "obs") {
-  if (!is.data.frame(data_score)) stop(glue("Error: 'data_score' must be object of type 'data.frame'.\nYou provided an object of type {typeof(data_score)}."))
-
+  .check_input(data_score, "data.frame")
   .check_type(type)
   in_type <- type
   data_score$measure <- data_score[paste0("score_", in_type)][[1]]
