@@ -227,12 +227,15 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom lubridate as_date
 
 .export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_type = NULL) {
-  if (length(in_keyword) > 1) stop(glue("Error: 'keyword' must be object of length 1.\nYou provided an object of length {length(in_keyword)}."))
-  if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
-  if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
+  keyword <- in_keyword
+  object <- in_object
+  control <- in_control
+  .check_length(keyword, 1)
+  .check_length(object, 1)
+  .check_length(control, 1)
   if (!is.null(in_type)) .check_type(in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
+  if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
 
@@ -258,16 +261,20 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom lubridate as_date
 
 .export_data_double <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL, in_type = NULL) {
-  if (length(in_keyword) > 1) stop(glue("Error: 'keyword' must be object of length 1.\nYou provided an object of length {length(in_keyword)}."))
-  if (length(in_object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(in_object)}."))
-  if (length(in_control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(in_control)}."))
-  if (length(in_locations) > 1) stop(glue("Error: 'locations' must be object of length 1.\nYou provided an object of length {length(in_locations)}."))
+  keyword <- in_keyword
+  object <- in_object
+  control <- in_control
+  locations <- in_locations
+  .check_length(keyword, 1)
+  .check_length(object, 1)
+  .check_length(control, 1)
+  .check_length(locations, 1)
   if (!is.null(in_type)) .check_type(in_type)
 
-  if (!is.null(in_keyword) & !is.character(in_keyword)) stop(glue("Error: 'keyword' must be object of type character.\nYou supplied an object of type {typeof(in_keyword)}."))
+  if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
-  if (!is.null(in_locations) & !is.character(in_locations)) stop(glue("Error: 'locations' must be object of type character.\nYou supplied an object of type {typeof(in_locations)}."))
+  if (!is.null(in_locations)) .check_input(locations, "character")
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)

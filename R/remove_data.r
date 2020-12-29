@@ -50,47 +50,43 @@
 #' @importFrom rlang .data
 
 remove_data <- function(table, control = NULL, object = NULL) {
-  if (length(table) > 1) stop(glue("Error: 'table' must be object of length 1.\nYou provided an object of length {length(table)}."))
-  if (length(control) > 1) stop(glue("Error: 'control' must be object of length 1.\nYou provided an object of length {length(control)}."))
-  if (length(object) > 1) stop(glue("Error: 'object' must be object of length 1.\nYou provided an object of length {length(object)}."))
-  if (is.character(table)) {
-    if (table == "batch_keywords") {
-      if (!is.null(control) & is.null(object)) {
-        .remove_batch_keywords(type = "control", batch_c = control, batch_o = object)
-      } else if (!is.null(object) & is.null(control)) {
-        .remove_batch_keywords(type = "object", batch_c = control, batch_o = object)
-      }
-    } else if (table == "batch_time") {
-      if (!is.null(control) & is.null(object)) {
-        .remove_batch_time(type = "control", batch_c = control, batch_o = object)
-      } else if (!is.null(object) & is.null(control)) {
-        .remove_batch_time(type = "object", batch_c = control, batch_o = object)
-      }
-    } else if (table == "data_control") {
-      if (!is.null(control)) {
-        .remove_data_control(batch_c = control, batch_o = object)
-      }
-    } else if (table == "data_object") {
-      if (!is.null(object) | !is.null(control)) {
-        .remove_data_object(batch_c = control, batch_o = object)
-      }
-    } else if (table == "data_score") {
-      if (!is.null(control) | !is.null(object)) {
-        .remove_data_score(batch_c = control, batch_o = object)
-      }
-    } else if (table == "data_doi") {
-      if (!is.null(control) | !is.null(object)) {
-        .remove_data_doi(batch_c = control, batch_o = object)
-      }
-    } else {
-      stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou supplied {table}."))
+  .check_length(table, 1)
+  .check_length(control, 1)
+  .check_length(object, 1)
+  .check_input(table, "character")
+  if (table == "batch_keywords") {
+    if (!is.null(control) & is.null(object)) {
+      .remove_batch_keywords(type = "control", batch_c = control, batch_o = object)
+    } else if (!is.null(object) & is.null(control)) {
+      .remove_batch_keywords(type = "object", batch_c = control, batch_o = object)
+    }
+  } else if (table == "batch_time") {
+    if (!is.null(control) & is.null(object)) {
+      .remove_batch_time(type = "control", batch_c = control, batch_o = object)
+    } else if (!is.null(object) & is.null(control)) {
+      .remove_batch_time(type = "object", batch_c = control, batch_o = object)
+    }
+  } else if (table == "data_control") {
+    if (!is.null(control)) {
+      .remove_data_control(batch_c = control, batch_o = object)
+    }
+  } else if (table == "data_object") {
+    if (!is.null(object) | !is.null(control)) {
+      .remove_data_object(batch_c = control, batch_o = object)
+    }
+  } else if (table == "data_score") {
+    if (!is.null(control) | !is.null(object)) {
+      .remove_data_score(batch_c = control, batch_o = object)
+    }
+  } else if (table == "data_doi") {
+    if (!is.null(control) | !is.null(object)) {
+      .remove_data_doi(batch_c = control, batch_o = object)
     }
   } else {
-    stop(glue("Error: 'table' must be an object of type character.\nYou supplied an object of type {typeof(table)}."))
+    stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou provided {table}."))
   }
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from batch_keywords
 #' @keywords internal
 #' @noRd
@@ -124,7 +120,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_batch_time(type = type, batch_c = batch_c, batch_o = batch_o)
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from batch_time
 #' @keywords internal
 #' @noRd
@@ -152,7 +147,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from data_control
 #' @keywords internal
 #' @noRd
@@ -165,7 +159,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_object(batch_c = batch_c)
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from data_object
 #' @keywords internal
 #' @noRd
@@ -186,7 +179,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from data_score
 #' @keywords internal
 #' @noRd
@@ -207,7 +199,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .remove_data_doi(batch_c = batch_c, batch_o = batch_o)
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from data_doi
 #' @keywords internal
 #' @noRd
@@ -226,7 +217,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
   }
 }
 
-#' @rdname dot-remove_data
 #' @title Remove from data_global
 #' @keywords internal
 #' @noRd

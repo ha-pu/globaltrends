@@ -55,7 +55,7 @@
 #' @importFrom stringr str_to_upper
 
 plot_doi_ts <- function(data_doi, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
-  if (!is.data.frame(data_doi)) stop(glue("Error: 'data_doi' must be of type 'data.frame'.\nYou supplied an object of type {typeof(data_doi)}."))
+  .check_input(data_doi, "data.frame")
   .check_type(type)
   .check_measure(measure)
   .check_locations(locations)

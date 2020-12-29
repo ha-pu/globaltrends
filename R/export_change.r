@@ -85,9 +85,7 @@
 
 export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, type = "obs") {
   .check_type(type)
-
   data <- export_voi(keyword = keyword, object = object, control = control)
-
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
@@ -112,7 +110,6 @@ export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, typ
 export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL, measure = "gini") {
   .check_measure(measure)
   data <- export_doi(keyword = keyword, object = object, control = control, locations = locations, type = type)
-
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
   data <- mutate(data, doi_change = .data$doi - lag(.data$doi))

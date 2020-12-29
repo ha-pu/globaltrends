@@ -64,7 +64,7 @@ download_control <- function(control, locations = countries) UseMethod("download
 #' @export
 
 download_control.numeric <- function(control, locations = countries) {
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
+  .check_input(locations, "character")
   if (length(control) > 1) {
     download_control(control = as.list(control), locations = locations)
   } else {
