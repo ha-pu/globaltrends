@@ -46,12 +46,12 @@
 #' @importFrom tibble tibble
 
 add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) {
-  if (!is.character(locations)) stop(glue("Error: 'locations' must be object of type character.\nYou provided an object of type {typeof(locations)}."))
-  if (length(type) > 1) stop(glue("Error: 'type' must be object of length 1.\nYou provided an object of length {length(type)}."))
-  if (!is.character(type)) stop(glue("Error: 'type' must be object of type character.\nYou provided an object of type {typeof(type)}."))
-  if (length(export) > 1) stop(glue("Error: 'export' must be object of length 1.\nYou provided an object of length {length(export)}."))
-  if (!is.logical(export)) stop(glue("Error: 'export' must be object of type logical.\nYou provided an object of type {typeof(export)}."))
-
+  .check_input(locations, "character")
+  .check_input(type, "character")
+  .check_length(type, 1)
+  .check_input(export, "logical")
+  .check_length(export, 1)
+  
   # check new locations
   codes <- c(gtrendsR::countries$country_code, gtrendsR::countries$sub_code)
   codes <- unique(codes)
