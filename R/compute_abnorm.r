@@ -69,7 +69,6 @@
 #' compute_doi(data, measure = "gini")
 #' }
 #'
-#' @rdname export_change
 #' @export
 #' @importFrom dplyr group_by
 #' @importFrom dplyr lag
@@ -83,6 +82,10 @@ compute_abnorm <- function(data, train_win = 12, train_break = 0, ...) UseMethod
 
 #' @method compute_abnorm exp_score
 compute_abnorm.exp_score <- function(data, train_win, train_break, type = "obs") {
+  .check_length(train_win, 1)
+  .check_input(train_win, "numeric")
+  .check_length(train_break, 1)
+  .check_input(train_break, "numeric")
   .check_type(type)
   data$score <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control, .data$location)
@@ -107,6 +110,10 @@ compute_abnorm.exp_score <- function(data, train_win, train_break, type = "obs")
 
 #' @method compute_abnorm exp_voi
 compute_abnorm.exp_voi <- function(data, train_win, train_break, type = "obs") {
+  .check_length(train_win, 1)
+  .check_input(train_win, "numeric")
+  .check_length(train_break, 1)
+  .check_input(train_break, "numeric")
   .check_type(type)
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control)
@@ -130,6 +137,10 @@ compute_abnorm.exp_voi <- function(data, train_win, train_break, type = "obs") {
 
 #' @method compute_abnorm exp_doi
 compute_abnorm.exp_doi <- function(data, train_win, train_break, measure = "gini") {
+  .check_length(train_win, 1)
+  .check_input(train_win, "numeric")
+  .check_length(train_break, 1)
+  .check_input(train_break, "numeric")
   .check_measure(measure)
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
