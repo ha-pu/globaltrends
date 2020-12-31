@@ -1,24 +1,39 @@
-#' @title Export changes in data
+#' @title Compute abnormal changes in data
 #'
+#' @aliases
+#' compute_abnorm
+#' compute_abnorm.exp_score
+#' compute_abnorm.exp_voi
+#' compute_abnorm.exp_doi
+#' 
 #' @description
-#' The function allows to export changes in search scores, voi, and doi and
+#' The function allows to compute changes in search scores, voi, and doi and
 #' shows percentile of changes to identify abnormal changes. In combination with
 #' various \emph{write} functions in R, the functions allow exports from the
 #' database to local files.
 #'
 #' @details
-#' The function computes changes in VOI or DOI between dates. To identify
-#' abnormal changes, the function computes the percentile rank for each change
-#' within the distribution of changes. Low percentile rank signify abnormally
-#' high negative changes. High percentile ranks signify abnormally high positive
-#' changes.
-#' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
-#' \emph{locations}, \emph{type}, or \emph{measure}. Not all filters are
-#' applicable for all functions. When filter \emph{keyword} and \emph{object}
-#' are used together, \emph{keyword} overrules \emph{object}. Currently the
-#' functions do not include list inputs - users are advised to
-#' \code{purrr::map_dfr} or \code{dplyr::filter} instead.
+#' The function computes abnormal changes in search scores, VOI, or DOI for each
+#' date. We define "abnormal" in terms of deviation from a baseline value. To
+#' compute the baseline value, the function computes a moving average. Users can
+#' specify the window for moving average training \code{train_win} and a break
+#' between training and the given date \code{train_break}. Abnormal changes are
+#' the difference between the moving average and the respective search score,
+#' VOI, or DOI. To highlight abnormal changes, the function computes a historic
+#' percentile rank for each abnormal change within the distribution of abnormal
+#' changes. Low percentile ranks signify abnormally high negative changes. High
+#' percentile ranks signify abnormally high positive changes.
+#' The function uses the output from \code{export_...} functions as input. As
+#' \code{compute_abnorm} offers no additional filters, users are advised to use
+#' filters in the \code{export_...} functions or to pre-process data before
+#' using \code{compute_abnorm}.
 #'
+#' @param data Object of class \code{exp_score}, \code{exp_voi} or
+#' \code{exp_doi} generated through \code{export_...} functions.
+#' @param train_win Object of class \code{numeric}. Length of rolling average
+#' training window in months. Defaults to 12.
+#' @param train_break Object of class \code{numeric}. Length of break between 
+#' rolling average training window and date in months. Defaults to 1.
 #' @inheritParams export_control
 #' @param measure Object of class \code{character} indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
@@ -37,41 +52,21 @@
 #' }
 #'
 #' @seealso
+#' * \code{\link{export_score}}
+#' * \code{\link{export_voi}}
 #' * \code{\link{export_doi}}
-#' * \code{\link[purrr]{map}}
 #' * \code{\link[dplyr]{filter}}
 #'
 #' @examples
 #' \dontrun{
-#' export_voi_change(
-#'   keyword = "amazon",
-#'   type = "obs"
-#' )
+#' data <- export_score(keyword = "amazon")
+#' compute_score(data, type = "obs")
+#' 
+#' data <- export_voi(keyword = "amazon")
+#' compute_voi(data, type = "obs")
 #'
-#' export_doi_change(
-#'   keyword = "amazon",
-#'   locations = "countries",
-#'   type = "obs",
-#'   measure = "gini"
-#' )
-#'
-#' # interaction with purrr::map_dfr
-#' purrr::map_dfr(
-#'   c("coca cola", "microsoft"),
-#'   export_voi_change,
-#'   control = 1,
-#'   type = "obs"
-#' )
-#'
-#' # interaction with dplyr::filter
-#' export_doi_change(
-#'   object = 1,
-#'   control = 1,
-#'   locations = "countries",
-#'   type = "obs",
-#'   measure = "gini"
-#' ) %>%
-#'   dplyr::filter(lubridate::year(date) == 2019)
+#' data <- export_doi(keyword = "amazon", type = "obs")
+#' compute_doi(data, measure = "gini")
 #' }
 #'
 #' @rdname export_change
@@ -82,14 +77,43 @@
 #' @importFrom dplyr percent_rank
 #' @importFrom dplyr ungroup
 #' @importFrom rlang .data
+#' @importFrom zoo rollmean
 
-export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, type = "obs") {
+compute_abnorm <- function(data, train_win = 12, train_break = 0, ...) UseMethod("compute_abnorm", data)
+
+#' @method compute_abnorm exp_score
+compute_abnorm.exp_score <- function(data, train_win, train_break, type = "obs") {
   .check_type(type)
-  data <- export_voi(keyword = keyword, object = object, control = control)
+  data$score <- data[glue("score_{type}")][[1]]
+  data <- group_by(data, .data$keyword, .data$control, .data$location)
+  data <- mutate(data, base = rollmean(.data$score, k = train_win, align = "right", fill = NA))
+  data <- mutate(data, base = lag(.data$base, n = train_break + 1))
+  data <- mutate(data, score_abnorm = .data$score - .data$base)
+  data <- mutate(data, quantile = percent_rank(.data$score_abnorm))
+  data <- ungroup(data)
+  data <- select(
+    data,
+    .data$keyword,
+    .data$location,
+    .data$date,
+    .data$control,
+    .data$object,
+    .data$score,
+    .data$score_abnorm,
+    .data$quantile
+  )
+  return(data)
+}
+
+#' @method compute_abnorm exp_voi
+compute_abnorm.exp_voi <- function(data, train_win, train_break, type = "obs") {
+  .check_type(type)
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control)
-  data <- mutate(data, voi_change = .data$voi - lag(.data$voi))
-  data <- mutate(data, quantile = percent_rank(.data$voi_change))
+  data <- mutate(data, base = rollmean(.data$voi, k = train_win, align = "right", fill = NA))
+  data <- mutate(data, base = lag(.data$base, n = train_break + 1))
+  data <- mutate(data, voi_abnorm = .data$voi - .data$base)
+  data <- mutate(data, quantile = percent_rank(.data$voi_abnorm))
   data <- ungroup(data)
   data <- select(
     data,
@@ -98,22 +122,21 @@ export_voi_change <- function(keyword = NULL, object = NULL, control = NULL, typ
     .data$control,
     .data$object,
     .data$voi,
-    .data$voi_change,
+    .data$voi_abnorm,
     .data$quantile
   )
   return(data)
 }
 
-#' @rdname export_change
-#' @export
-
-export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL, measure = "gini") {
+#' @method compute_abnorm exp_doi
+compute_abnorm.exp_doi <- function(data, train_win, train_break, measure = "gini") {
   .check_measure(measure)
-  data <- export_doi(keyword = keyword, object = object, control = control, locations = locations, type = type)
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
-  data <- mutate(data, doi_change = .data$doi - lag(.data$doi))
-  data <- mutate(data, quantile = percent_rank(.data$doi_change))
+  data <- mutate(data, base = rollmean(.data$doi, k = train_win, align = "right", fill = NA))
+  data <- mutate(data, base = lag(.data$base, n = train_break + 1))
+  data <- mutate(data, doi_abnorm = .data$doi - .data$base)
+  data <- mutate(data, quantile = percent_rank(.data$doi_abnorm))
   data <- ungroup(data)
   data <- select(
     data,
@@ -124,7 +147,7 @@ export_doi_change <- function(keyword = NULL, object = NULL, control = NULL, loc
     .data$object,
     .data$locations,
     .data$doi,
-    .data$doi_change,
+    .data$doi_abnorm,
     .data$quantile
   )
   return(data)
