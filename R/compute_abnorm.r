@@ -81,7 +81,7 @@
 compute_abnorm <- function(data, train_win = 12, train_break = 0, ...) UseMethod("compute_abnorm", data)
 
 #' @method compute_abnorm exp_score
-compute_abnorm.exp_score <- function(data, train_win, train_break, type = "obs") {
+compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -109,7 +109,7 @@ compute_abnorm.exp_score <- function(data, train_win, train_break, type = "obs")
 }
 
 #' @method compute_abnorm exp_voi
-compute_abnorm.exp_voi <- function(data, train_win, train_break, type = "obs") {
+compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -136,7 +136,7 @@ compute_abnorm.exp_voi <- function(data, train_win, train_break, type = "obs") {
 }
 
 #' @method compute_abnorm exp_doi
-compute_abnorm.exp_doi <- function(data, train_win, train_break, measure = "gini") {
+compute_abnorm.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
