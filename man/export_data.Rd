@@ -57,14 +57,16 @@ objects of class \code{"tbl_df", "tbl", "data.frame"}.
 columns location, keyword, date, hits, control.
   \item \code{export_object} exports data from table \emph{data_object} with
 columns location, keyword, date, hits, object.
-  \item \code{export_voi} exports data from table \emph{data_score} with
-columns keyword, date, hits, control, filters for
-\code{location == "world"}.
   \item \code{export_score} exports data from table \emph{data_score} with
 columns location, keyword, date, score_obs, score_sad, score_trd, control,
-object.
+object. Object of class \code{c("exp_score", "data.frame")}.
+  \item \code{export_voi} exports data from table \emph{data_score} with
+columns keyword, date, hits, control, filters for
+\code{location == "world"}. Object of class
+\code{c("exp_voi", "data.frame")}.
   \item \code{export_doi} exports data from table \emph{data_doi} with columns
-keyword, date, type, gini, hhi, entropy, control, object, locations.
+keyword, date, type, gini, hhi, entropy, control, object, locations. Object
+of class \code{c("exp_doi", "data.frame")}.
 }
 }
 \description{
