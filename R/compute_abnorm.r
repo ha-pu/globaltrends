@@ -43,12 +43,16 @@
 #' The functions export and filter the respective database tables and return
 #' objects of class \code{"tbl_df", "tbl", "data.frame"}.
 #' \itemize{
-#'   \item \code{export_voi_change} exports data from table \emph{data_score}
-#'   with columns keyword, date, control, object, voi, voi_change, quantile,
-#'   filters for \code{location == "world"}.
-#'   \item \code{export_doi_change} exports data from table \emph{data_doi} with
-#'   columns keyword, date, type, control, object, locations, doi, doi_change,
-#'   quantile.
+#'   \item Input class \code{exp_score} computes abnormal changes in search
+#'   scores with columns keyword, location, date, control, object, score,
+#'   score_abnorm, quantile. Object of class
+#'   \code{c("abnorm_score", "data.frame")}.
+#'   \item Input class \code{exp_voi} computes abnormal changes in VOI with
+#'   columns keyword, date, control, object, voi, voi_abnorm, quantile. Object
+#'   of class \code{c("abnorm_voi", "data.frame")}.
+#'   \item Input class \code{exp_doi} computes abnormal changes in DOI with
+#'   columns keyword, locations, date, control, object, doi, doi_abnorm,
+#'   quantile. Object of class \code{c("abnorm_doi", "data.frame")}.
 #' }
 #'
 #' @seealso
@@ -105,6 +109,7 @@ compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type
     .data$score_abnorm,
     .data$quantile
   )
+  class(data) <- c("abnorm_score", class(data))
   return(data)
 }
 
@@ -132,6 +137,7 @@ compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type =
     .data$voi_abnorm,
     .data$quantile
   )
+  class(data) <- c("abnorm_voi", class(data))
   return(data)
 }
 
@@ -161,5 +167,6 @@ compute_abnorm.exp_doi <- function(data, train_win = 12, train_break = 0, measur
     .data$doi_abnorm,
     .data$quantile
   )
+  class(data) <- c("abnorm_doi", class(data))
   return(data)
 }
