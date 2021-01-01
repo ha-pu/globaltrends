@@ -82,9 +82,12 @@
 #' @importFrom rlang .data
 #' @importFrom zoo rollmean
 
-compute_abnorm <- function(data, train_win = 12, train_break = 0, ...) UseMethod("compute_abnorm", data)
+compute_abnorm <- function(data, ...) UseMethod("compute_abnorm", data)
 
+#' @rdname compute_abnorm
 #' @method compute_abnorm exp_score
+#' @export
+
 compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
@@ -113,7 +116,10 @@ compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type
   return(data)
 }
 
+#' @rdname compute_abnorm
 #' @method compute_abnorm exp_voi
+#' @export
+
 compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
@@ -141,7 +147,10 @@ compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type =
   return(data)
 }
 
+#' @rdname compute_abnorm
 #' @method compute_abnorm exp_doi
+#' @export
+
 compute_abnorm.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
