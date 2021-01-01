@@ -70,6 +70,37 @@ plot_abnorm.abnorm_score <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
+  
+  len_keywords <- length(unique(data$keyword))
+  keyword <- unique(data$keyword)[[1]]
+  if (len_keywords > 1) {
+    data <- filter(data, .data$keyword == !!keyword)
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+  }
+  
+  len_location <- length(unique(data$location))
+  location <- unique(data$location)[[1]]
+  if (len_location > 1) {
+    data <- filter(data, .data$location == !!location)
+    warning(glue("The plot function is limited to 1 location.\nYou use {len_location} locations.\nOnly '{location}' is used."))
+  }
+  
+  data <- na.omit(data)
+  
+  q1 <- quantile(data$score_abnorm, ci1)
+  q2 <- quantile(data$score_abnorm, ci2)
+  
+  ggplot(data, aes(x = .data$date, y = .data$score_abnorm)) +
+    geom_hline(yintercept = 0) +
+    geom_hline(yintercept = q1, colour = "blue4", linetype = "dotted") +
+    geom_hline(yintercept = q2, colour = "blue4", linetype = "dotted") +
+    geom_line() +
+    geom_point(data = filter(data, .data$quantile < ci1 | .data$quantile > ci2), colour = "firebrick") +
+    labs(
+      x = NULL,
+      y = glue("Abnormal changes in search score for {location}"),
+      title = keyword
+    )
 }
 
 #' @rdname plot_abnorm
@@ -82,11 +113,11 @@ plot_abnorm.abnorm_voi <- function(data, ci = 0.95) {
   ci2 <- 1 - ci1
   
   len_keywords <- length(unique(data$keyword))
-  if (len_keywords > 1) {
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
-    data_change <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
-  }
   keyword <- unique(data$keyword)[[1]]
+  if (len_keywords > 1) {
+    data <- filter(data, .data$keyword == !!keyword)
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+  }
   
   data <- na.omit(data)
   
@@ -117,20 +148,21 @@ plot_abnorm.abnorm_doi <- function(data, type = "obs", ci = 0.95) {
   ci2 <- 1 - ci1
   
   len_keywords <- length(unique(data$keyword))
-  if (len_keywords > 1) {
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly the first keyword is used."))
-    data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
-  }
-  
   keyword <- unique(data$keyword)[[1]]
-  len_locations <- length(unique(data$locations))
-  if (len_locations > 1) {
-    warning(glue("The plot function is limited to 1 set of locations.\nYou use {len_locations} sets of locations.\nOnly the first set of locations is used."))
-    data <- filter(data, .data$locations %in% unique(data$locations)[[1]])
+  if (len_keywords > 1) {
+    data <- filter(data, .data$keyword == !!keyword)
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
   
-  type <- glue("score_{type}")
-  data <- filter(data, .data$type == get("type"))
+  len_locations <- length(unique(data$locations))
+  locations <- unique(data$locations)[[1]]
+  if (len_locations > 1) {
+    data <- filter(data, .data$locations == !!locations)
+    warning(glue("The plot function is limited to 1 set of locations\nYou use {len_locations} sets of locations.\nOnly '{locations}' is used."))
+  }
+  
+  score_type <- glue("score_{type}")
+  data <- filter(data, .data$type == score_type)
   data <- na.omit(data)
   q1 <- quantile(data$doi_abnorm, ci1)
   q2 <- quantile(data$doi_abnorm, ci2)
