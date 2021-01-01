@@ -99,7 +99,7 @@ test_that("exp_score6", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_win = 12)
   out3 <- compute_abnorm(data, train_win = 10)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -108,7 +108,7 @@ test_that("exp_score7", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_break = 0)
   out3 <- compute_abnorm(data, train_break = 1)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -118,7 +118,7 @@ test_that("exp_score8", {
   out2 <- compute_abnorm(data, type = "obs")
   out3 <- compute_abnorm(data, type = "sad")
   out4 <- compute_abnorm(data, type = "trd")
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -208,7 +208,7 @@ test_that("exp_voi6", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_win = 12)
   out3 <- compute_abnorm(data, train_win = 10)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -217,7 +217,7 @@ test_that("exp_voi7", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_break = 0)
   out3 <- compute_abnorm(data, train_break = 1)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -227,7 +227,7 @@ test_that("exp_voi8", {
   out2 <- compute_abnorm(data, type = "obs")
   out3 <- compute_abnorm(data, type = "sad")
   out4 <- compute_abnorm(data, type = "trd")
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -317,7 +317,7 @@ test_that("exp_doi6", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_win = 12)
   out3 <- compute_abnorm(data, train_win = 10)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -326,7 +326,7 @@ test_that("exp_doi7", {
   out1 <- compute_abnorm(data)
   out2 <- compute_abnorm(data, train_break = 0)
   out3 <- compute_abnorm(data, train_break = 1)
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
 })
@@ -336,7 +336,7 @@ test_that("exp_doi8", {
   out2 <- compute_abnorm(data, measure = "gini")
   out3 <- compute_abnorm(data, measure = "hhi")
   out4 <- compute_abnorm(data, measure = "entropy")
-  
+
   expect_identical(out1, out2)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))

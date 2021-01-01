@@ -5,7 +5,7 @@
 #' compute_abnorm.exp_score
 #' compute_abnorm.exp_voi
 #' compute_abnorm.exp_doi
-#' 
+#'
 #' @description
 #' The function allows to compute changes in search scores, voi, and doi and
 #' shows percentile of changes to identify abnormal changes. In combination with
@@ -32,7 +32,7 @@
 #' \code{exp_doi} generated through \code{export_...} functions.
 #' @param train_win Object of class \code{numeric}. Length of rolling average
 #' training window in months. Defaults to 12.
-#' @param train_break Object of class \code{numeric}. Length of break between 
+#' @param train_break Object of class \code{numeric}. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
 #' @inheritParams export_control
 #' @param measure Object of class \code{character} indicating the measure used
@@ -65,7 +65,7 @@
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
 #' compute_score(data, type = "obs")
-#' 
+#'
 #' data <- export_voi(keyword = "amazon")
 #' compute_voi(data, type = "obs")
 #'

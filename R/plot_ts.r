@@ -8,7 +8,7 @@
 #' plot_ts.abnorm_voi
 #' plot_ts.exp_doi
 #' plot_ts.abnorm_doi
-#' 
+#'
 #' @description
 #'
 #' @param data Data exported from \code{export_...} or \code{compute_abnorm}
@@ -56,23 +56,23 @@ plot_ts <- function(data, ...) UseMethod("plot_ts", data)
 plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
   .check_type(type)
   .check_smooth(smooth)
-  
+
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
     data <- filter(data, .data$keyword %in% unique(data$keyword)[1:9])
   }
-  
+
   len_location <- length(unique(data$location))
   location <- unique(data$location)[[1]]
   if (len_location > 1) {
     data <- filter(data, .data$location == !!location)
     warning(glue("The plot function is limited to 1 location.\nYou use {len_location} locations.\nOnly '{location}' is used."))
   }
-  
+
   data$measure <- data[paste0("score_", type)][[1]]
   plot <- ggplot(data, aes(x = .data$date))
-  
+
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -83,15 +83,15 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
     plot <- plot +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$measure))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = glue("Search score for {location}"))
-    
+
     return(plot)
   }
 }
@@ -104,26 +104,26 @@ plot_ts.abnorm_score <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
-  
+
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
-  
+
   len_location <- length(unique(data$location))
   location <- unique(data$location)[[1]]
   if (len_location > 1) {
     data <- filter(data, .data$location == !!location)
     warning(glue("The plot function is limited to 1 location.\nYou use {len_location} locations.\nOnly '{location}' is used."))
   }
-  
+
   data <- na.omit(data)
-  
+
   q1 <- quantile(data$score_abnorm, ci1)
   q2 <- quantile(data$score_abnorm, ci2)
-  
+
   ggplot(data, aes(x = .data$date, y = .data$score_abnorm)) +
     geom_hline(yintercept = 0) +
     geom_hline(yintercept = q1, colour = "blue4", linetype = "dotted") +
@@ -144,7 +144,7 @@ plot_ts.abnorm_score <- function(data, ci = 0.95) {
 plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
   .check_type(type)
   .check_smooth(smooth)
-  
+
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
@@ -152,7 +152,7 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
   }
   data$measure <- data[paste0("score_", type)][[1]]
   plot <- ggplot(data, aes(x = .data$date))
-  
+
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -163,15 +163,15 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
     plot <- plot +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$measure))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = "Volume of internationalization")
-    
+
     return(plot)
   }
 }
@@ -184,19 +184,19 @@ plot_ts.abnorm_voi <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
-  
+
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
-  
+
   data <- na.omit(data)
-  
+
   q1 <- quantile(data$voi_abnorm, ci1)
   q2 <- quantile(data$voi_abnorm, ci2)
-  
+
   ggplot(data, aes(x = .data$date, y = .data$voi_abnorm)) +
     geom_hline(yintercept = 0) +
     geom_hline(yintercept = q1, colour = "blue4", linetype = "dotted") +
@@ -219,7 +219,7 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
   .check_measure(measure)
   .check_locations(locations)
   .check_smooth(smooth)
-  
+
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
     warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
@@ -229,7 +229,7 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
   data <- filter(data, .data$type == paste0("score_", !!type))
   data <- filter(data, .data$locations == !!locations)
   plot <- ggplot(data, aes(x = .data$date))
-  
+
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -240,15 +240,15 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
     plot <- plot +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
-    
+
     if (smooth) {
       plot <- plot +
         geom_smooth(aes(y = .data$measure))
     }
-    
+
     plot <- plot +
       labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
-    
+
     return(plot)
   }
 }
@@ -263,21 +263,21 @@ plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci =
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
-  
+
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
-  
+
   data <- filter(data, .data$locations == !!locations)
-  
+
   data <- filter(data, .data$type == paste0("score_", !!type))
   data <- na.omit(data)
   q1 <- quantile(data$doi_abnorm, ci1)
   q2 <- quantile(data$doi_abnorm, ci2)
-  
+
   if (all(is.na(data$doi_abnorm))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
