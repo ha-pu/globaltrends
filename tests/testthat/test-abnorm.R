@@ -344,7 +344,7 @@ test_that("exp_doi8", {
 })
 
 # compute_abnorm methods -------------------------------------------------------
-test_that("methods", {
+test_that("compute_abnorm.methods", {
   data <- export_control(control = 1)
   expect_error(
     compute_abnorm(data),
