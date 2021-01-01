@@ -7,7 +7,13 @@
 \alias{compute_abnorm.exp_doi}
 \title{Compute abnormal changes in data}
 \usage{
-compute_abnorm(data, train_win = 12, train_break = 0, ...)
+compute_abnorm(data, ...)
+
+\method{compute_abnorm}{exp_score}(data, train_win = 12, train_break = 0, type = "obs")
+
+\method{compute_abnorm}{exp_voi}(data, train_win = 12, train_break = 0, type = "obs")
+
+\method{compute_abnorm}{exp_doi}(data, train_win = 12, train_break = 0, measure = "gini")
 }
 \arguments{
 \item{data}{Object of class \code{exp_score}, \code{exp_voi} or
@@ -19,6 +25,12 @@ training window in months. Defaults to 12.}
 \item{train_break}{Object of class \code{numeric}. Length of break between 
 rolling average training window and date in months. Defaults to 1.}
 
+\item{type}{Type of time series for which data should be exported. Element
+of class \code{character}. Relevant only for \code{export_global} and
+\code{export_doi}. Takes one of the following values: \emph{obs} - observed
+search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
+trend only search scores.}
+
 \item{measure}{Object of class \code{character} indicating the measure used
 for DOI computation for which abnormal changes should be analyzed. Takes
 either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.}
@@ -27,12 +39,16 @@ either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.}
 The functions export and filter the respective database tables and return
 objects of class \code{"tbl_df", "tbl", "data.frame"}.
 \itemize{
-  \item \code{export_voi_change} exports data from table \emph{data_score}
-  with columns keyword, date, control, object, voi, voi_change, quantile,
-  filters for \code{location == "world"}.
-  \item \code{export_doi_change} exports data from table \emph{data_doi} with
-  columns keyword, date, type, control, object, locations, doi, doi_change,
-  quantile.
+  \item Input class \code{exp_score} computes abnormal changes in search
+  scores with columns keyword, location, date, control, object, score,
+  score_abnorm, quantile. Object of class
+  \code{c("abnorm_score", "data.frame")}.
+  \item Input class \code{exp_voi} computes abnormal changes in VOI with
+  columns keyword, date, control, object, voi, voi_abnorm, quantile. Object
+  of class \code{c("abnorm_voi", "data.frame")}.
+  \item Input class \code{exp_doi} computes abnormal changes in DOI with
+  columns keyword, locations, date, control, object, doi, doi_abnorm,
+  quantile. Object of class \code{c("abnorm_doi", "data.frame")}.
 }
 }
 \description{
