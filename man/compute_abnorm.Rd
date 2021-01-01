@@ -22,7 +22,7 @@ compute_abnorm(data, ...)
 \item{train_win}{Object of class \code{numeric}. Length of rolling average
 training window in months. Defaults to 12.}
 
-\item{train_break}{Object of class \code{numeric}. Length of break between 
+\item{train_break}{Object of class \code{numeric}. Length of break between
 rolling average training window and date in months. Defaults to 1.}
 
 \item{type}{Type of time series for which data should be exported. Element

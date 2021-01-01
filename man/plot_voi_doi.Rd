@@ -28,10 +28,6 @@ used for DOI computation, takes either \emph{gini}, \emph{hhi}, or
 
 \item{locations}{Object of class \code{character} indicating for which
 set of locations should be filtered. Defaults to \emph{"countries"}.}
-
-\item{smooth}{Object of class \code{logical} indicating whether the
-\code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
-\code{TRUE}.}
 }
 \value{
 Line plot of VOI and DOI time series as \code{ggplot2} object.
