@@ -1,4 +1,4 @@
-#' @title Plot boxplot for time series of globaltrends data
+#' @title Create boxplot for time series of globaltrends data
 #'
 #' @aliases
 #' plot_box
