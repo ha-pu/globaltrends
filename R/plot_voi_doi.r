@@ -6,8 +6,7 @@
 #' internationalization values. When the output includes more than one keyword,
 #' only the first keyword is used.
 #'
-#' @inheritParams plot_doi_box
-#' @inheritParams plot_doi_ts
+#' @inheritParams plot_ts
 #' @param data_voi Data exported from \code{export_voi} function.
 #'
 #' @return Line plot of VOI and DOI time series as \code{ggplot2} object.
