@@ -16,18 +16,20 @@ plot_voi_doi(
 \arguments{
 \item{data_voi}{Data exported from \code{export_voi} function.}
 
-\item{data_doi}{Data exported from \code{export_doi} function.}
-
 \item{type}{Object of class \code{character} indicating the type of time
-series-column from data_score that is used for DOI computation, takes
-either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults to \emph{"obs"}.}
+series-column from data_score, takes either \emph{obs}, \emph{sad}, or
+\emph{trd}. Defaults to \emph{"obs"}.}
 
-\item{measure}{Object of class \code{character} indicating the measure
-used for DOI computation, takes either \emph{gini}, \emph{hhi}, or
-\emph{entropy}. Defaults to \emph{"gini"}.}
+\item{measure}{Object of class \code{character} indicating the DOI measure,
+takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to
+\emph{"gini"}.}
 
 \item{locations}{Object of class \code{character} indicating for which
 set of locations should be filtered. Defaults to \emph{"countries"}.}
+
+\item{smooth}{Object of class \code{logical} indicating whether the
+\code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
+\code{TRUE}.}
 }
 \value{
 Line plot of VOI and DOI time series as \code{ggplot2} object.
