@@ -71,7 +71,6 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
   }
 
   data$measure <- data[paste0("score_", type)][[1]]
-  plot <- ggplot(data, aes(x = .data$date))
 
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
@@ -80,7 +79,7 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
     }
     warning(text)
   } else {
-    plot <- plot +
+    plot <- ggplot(data, aes(x = .data$date)) +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
 
@@ -151,7 +150,6 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
     data <- filter(data, .data$keyword %in% unique(data$keyword)[1:9])
   }
   data$measure <- data[paste0("score_", type)][[1]]
-  plot <- ggplot(data, aes(x = .data$date))
 
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
@@ -160,7 +158,7 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
     }
     warning(text)
   } else {
-    plot <- plot +
+    plot <- ggplot(data, aes(x = .data$date)) +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
 
@@ -228,7 +226,6 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
   data$measure <- data[measure][[1]]
   data <- filter(data, .data$type == paste0("score_", !!type))
   data <- filter(data, .data$locations == !!locations)
-  plot <- ggplot(data, aes(x = .data$date))
 
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
@@ -237,7 +234,7 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
     }
     warning(text)
   } else {
-    plot <- plot +
+    plot <- ggplot(data, aes(x = .data$date)) +
       geom_line(aes(y = .data$measure)) +
       facet_wrap(~ .data$keyword)
 
