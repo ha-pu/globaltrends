@@ -8,7 +8,7 @@
 \alias{plot_box.abnorm_voi}
 \alias{plot_box.exp_doi}
 \alias{plot_box.abnorm_doi}
-\title{Plot boxplot for time series of globaltrends data}
+\title{Create boxplot for time series of globaltrends data}
 \usage{
 plot_box(data, ...)
 
