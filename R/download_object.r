@@ -27,9 +27,9 @@
 #' before it retries the download.
 #'
 #' @param object Object batch for which the data is downloaded. Object
-#' of class \code{numeric} or object of class \code{list} containing single
-#' object of class \code{numeric}.
-#' @param control Control batch that is used for mapping. Object of class
+#' of type \code{numeric} or object of type \code{list} containing single
+#' object of type \code{numeric}.
+#' @param control Control batch that is used for mapping. Object of type
 #' \code{numeric}. Defaults to \code{1}.
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in \code{start_db}. Defaults to

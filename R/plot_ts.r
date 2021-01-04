@@ -4,19 +4,19 @@
 #'
 #' @param data Data exported from \code{export_...} or \code{compute_abnorm}
 #' functions.
-#' @param type Object of class \code{character} indicating the type of time
+#' @param type Object of type \code{character} indicating the type of time
 #' series-column from data_score, takes either \emph{obs}, \emph{sad}, or
 #' \emph{trd}. Defaults to \emph{"obs"}.
-#' @param measure Object of class \code{character} indicating the DOI measure,
+#' @param measure Object of type \code{character} indicating the DOI measure,
 #' takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to
 #' \emph{"gini"}.
-#' @param locations Object of class \code{character} indicating for which
+#' @param locations Object of type \code{character} indicating for which
 #' set of locations should be filtered. Defaults to \emph{"countries"}.
-#' @param smooth Object of class \code{logical} indicating whether the
+#' @param smooth Object of type \code{logical} indicating whether the
 #' \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
 #' \code{TRUE}.
 #' @param ci Confidence interval within which changes are assumed to be normal.
-#' Object of class \code{double, 0 < ci < 1}. Defaults to \emph{0.95}.
+#' Object of type \code{double, 0 < ci < 1}. Defaults to \emph{0.95}.
 #'
 #' @return
 #' Line plot of time series as \code{ggplot2} object. For objects of class

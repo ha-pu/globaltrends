@@ -12,11 +12,11 @@
 #' \emph{data_score} -> \emph{data_doi}.
 #'
 #' @param table Database table from which the batch should be removed.  Object
-#' of class \code{character}.
+#' of type \code{character}.
 #' @param control Control batch for which the data is removed Object
-#' of class \code{numeric}.
+#' of type \code{numeric}.
 #' @param object Object batch for which the data is removed Object
-#' of class \code{numeric}.
+#' of type \code{numeric}.
 #'
 #' @seealso
 #' * \code{\link{batch_keywords}}

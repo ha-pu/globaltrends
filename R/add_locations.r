@@ -16,11 +16,11 @@
 #' another set.
 #'
 #' @param locations Locations that should be added as set of locations. Vector of
-#' class \code{character}.
-#' @param type Name of the location set that should be added. Object of class
+#' type \code{character}.
+#' @param type Name of the location set that should be added. Object of type
 #' \code{character} of length 1.
 #' @param export Indicator whether the new location set should be directly
-#' exported to .GlobalEnv. Object of class \code{logical}, defaults to
+#' exported to .GlobalEnv. Object of type \code{logical}, defaults to
 #' \code{TRUE}.
 #' @param db Connection to database file that should be closed. Defaults
 #' to \code{globaltrends_db}.

@@ -24,12 +24,12 @@
 #'
 #' @param data Object of class \code{exp_score}, \code{exp_voi} or
 #' \code{exp_doi} generated through \code{export_...} functions.
-#' @param train_win Object of class \code{numeric}. Length of rolling average
+#' @param train_win Object of type \code{numeric}. Length of rolling average
 #' training window in months. Defaults to 12.
-#' @param train_break Object of class \code{numeric}. Length of break between
+#' @param train_break Object of type \code{numeric}. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
 #' @inheritParams export_control
-#' @param measure Object of class \code{character} indicating the measure used
+#' @param measure Object of type \code{character} indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
 #' either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.
 #'

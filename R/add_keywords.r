@@ -16,10 +16,10 @@
 #' period for which data will be downloaded. To change the time period for an
 #' existing batch, all downloads and computations must be rerun.
 #'
-#' @param keyword Keywords that should be added as batch. Vector of class
+#' @param keyword Keywords that should be added as batch. Vector of type
 #' \code{character} or a \code{list} of \code{character} vectors.
 #' @param time Time frame for which the batch data should be downloaded. Object
-#' of class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
+#' of type \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
 #' Defaults to \emph{"2010-01-01 2019-12-31"}.
 #'
 #' @return
