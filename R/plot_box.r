@@ -1,14 +1,5 @@
 #' @title Create boxplot for time series of globaltrends data
 #'
-#' @aliases
-#' plot_box
-#' plot_box.exp_score
-#' plot_box.abnorm_score
-#' plot_box.exp_voi
-#' plot_box.abnorm_voi
-#' plot_box.exp_doi
-#' plot_box.abnorm_doi
-#'
 #' @description
 #'
 #' @inheritParams plot_ts
@@ -34,7 +25,6 @@
 plot_box <- function(data, ...) UseMethod("plot_box", data)
 
 #' @rdname plot_box
-#' @method plot_box exp_score
 #' @export
 
 plot_box.exp_score <- function(data, type = "obs") {
@@ -71,7 +61,6 @@ plot_box.exp_score <- function(data, type = "obs") {
 }
 
 #' @rdname plot_box
-#' @method plot_box abnorm_score
 #' @export
 
 plot_box.abnorm_score <- function(data, ci = 0.95) {
@@ -109,7 +98,6 @@ plot_box.abnorm_score <- function(data, ci = 0.95) {
 }
 
 #' @rdname plot_box
-#' @method plot_box exp_voi
 #' @export
 
 plot_box.exp_voi <- function(data, type = "obs") {
@@ -139,7 +127,6 @@ plot_box.exp_voi <- function(data, type = "obs") {
 }
 
 #' @rdname plot_box
-#' @method plot_box abnorm_voi
 #' @export
 
 plot_box.abnorm_voi <- function(data, ci = 0.95) {
@@ -170,7 +157,6 @@ plot_box.abnorm_voi <- function(data, ci = 0.95) {
 }
 
 #' @rdname plot_box
-#' @method plot_box exp_doi
 #' @export
 
 plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
@@ -203,7 +189,6 @@ plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "
 }
 
 #' @rdname plot_box
-#' @method plot_box abnorm_doi
 #' @export
 
 plot_box.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95) {

@@ -88,11 +88,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @keywords internal
 #' @noRd
 #'
-#' @aliases
-#' .add_batch
-#' .add_batch.character
-#' .add_batch.list
-#'
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
@@ -101,11 +96,10 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @importFrom rlang .data
 #' @importFrom tibble tibble
 
-.add_batch <- function(type, keyword, time = "2010-01-01 2019-12-31", max) UseMethod(".add_batch", keyword)
+.add_batch <- function(type, keyword, time, max) UseMethod(".add_batch", keyword)
 
 #' @keywords internal
 #' @noRd
-#' @method .add_batch character
 
 .add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
   if (length(keyword) > max) {
@@ -120,7 +114,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 #' @keywords internal
 #' @noRd
-#' @method .add_batch list
 
 .add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
   new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
@@ -192,11 +185,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 #' Add synonyms for object keywords
 #'
-#' @aliases
-#' add_synonym
-#' add_synonym.character
-#' add_synonym.list
-#'
 #' @description
 #' The function allows to add synonyms for object keywords. Sometimes, objects
 #' of interest can be searched with different keywords on Google, e.g. FC Bayern
@@ -231,8 +219,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 
 add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
 
-#' @rdname add_synonym
-#' @method add_synonym character
 #' @export
 
 add_synonym.character <- function(keyword, synonym) {
@@ -257,8 +243,6 @@ add_synonym.character <- function(keyword, synonym) {
   }
 }
 
-#' @rdname add_synonym
-#' @method add_synonym list
 #' @export
 
 add_synonym.list <- function(keyword, synonym) {

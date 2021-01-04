@@ -1,10 +1,5 @@
 #' @title Create barplot for cross-sectional globaltrends data
 #'
-#' @aliases
-#' plot_bar
-#' plot_bar.exp_score
-#' plot_bar.abnorm_score
-#'
 #' @description
 #' The function uses the output of \code{export_score} to prepare a bar plot of
 #' search scores for the top 10 countries. For objects of class
@@ -34,11 +29,12 @@
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @importFrom stringr str_to_upper
+#' @importFrom utils head
+#' @importFrom utils tail
 
 plot_bar <- function(data, ...) UseMethod("plot_bar", data)
 
 #' @rdname plot_bar
-#' @method plot_bar exp_score
 #' @export
 
 plot_bar.exp_score <- function(data, type = "obs") {
@@ -80,7 +76,6 @@ plot_bar.exp_score <- function(data, type = "obs") {
 }
 
 #' @rdname plot_bar
-#' @method plot_bar abnorm_score
 #' @export
 
 plot_bar.abnorm_score <- function(data) {

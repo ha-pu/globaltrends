@@ -39,7 +39,8 @@ Imports:
     tibble (>= 3.0.3),
     tidyr (>= 1.0.0),
     utils (>= 4.0.2),
-    WDI (>= 2.7.1)
+    WDI (>= 2.7.1),
+	zoo (>= 1.8.8)
 RoxygenNote: 7.1.1
 Suggests: 
     knitr (>= 1.29),

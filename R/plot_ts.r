@@ -1,14 +1,5 @@
 #' @title Plot time series of globaltrends data
 #'
-#' @aliases
-#' plot_ts
-#' plot_ts.exp_score
-#' plot_ts.abnorm_score
-#' plot_ts.exp_voi
-#' plot_ts.abnorm_voi
-#' plot_ts.exp_doi
-#' plot_ts.abnorm_doi
-#'
 #' @description
 #'
 #' @param data Data exported from \code{export_...} or \code{compute_abnorm}
@@ -50,7 +41,6 @@
 plot_ts <- function(data, ...) UseMethod("plot_ts", data)
 
 #' @rdname plot_ts
-#' @method plot_ts exp_score
 #' @export
 
 plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
@@ -96,7 +86,6 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
 }
 
 #' @rdname plot_ts
-#' @method plot_ts abnorm_score
 #' @export
 
 plot_ts.abnorm_score <- function(data, ci = 0.95) {
@@ -137,7 +126,6 @@ plot_ts.abnorm_score <- function(data, ci = 0.95) {
 }
 
 #' @rdname plot_ts
-#' @method plot_ts exp_voi
 #' @export
 
 plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
@@ -175,7 +163,6 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
 }
 
 #' @rdname plot_ts
-#' @method plot_ts abnorm_voi
 #' @export
 
 plot_ts.abnorm_voi <- function(data, ci = 0.95) {
@@ -209,7 +196,6 @@ plot_ts.abnorm_voi <- function(data, ci = 0.95) {
 }
 
 #' @rdname plot_ts
-#' @method plot_ts exp_doi
 #' @export
 
 plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
@@ -251,7 +237,6 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
 }
 
 #' @rdname plot_ts
-#' @method plot_ts abnorm_doi
 #' @export
 
 plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95) {

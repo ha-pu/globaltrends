@@ -2,15 +2,9 @@
 % Please edit documentation in R/add_keywords.r
 \name{add_synonym}
 \alias{add_synonym}
-\alias{add_synonym.character}
-\alias{add_synonym.list}
 \title{Add synonyms for object keywords}
 \usage{
 add_synonym(keyword, synonym)
-
-\method{add_synonym}{character}(keyword, synonym)
-
-\method{add_synonym}{list}(keyword, synonym)
 }
 \arguments{
 \item{keyword}{Keyword of type \code{character} and length 1 for which the

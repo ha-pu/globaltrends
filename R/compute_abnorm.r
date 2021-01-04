@@ -1,11 +1,5 @@
 #' @title Compute abnormal changes in data
 #'
-#' @aliases
-#' compute_abnorm
-#' compute_abnorm.exp_score
-#' compute_abnorm.exp_voi
-#' compute_abnorm.exp_doi
-#'
 #' @description
 #' The function allows to compute changes in search scores, voi, and doi and
 #' shows percentile of changes to identify abnormal changes. In combination with
@@ -73,6 +67,7 @@
 #' compute_doi(data, measure = "gini")
 #' }
 #'
+#' @rdname compute_abnorm
 #' @export
 #' @importFrom dplyr group_by
 #' @importFrom dplyr lag
@@ -85,7 +80,6 @@
 compute_abnorm <- function(data, ...) UseMethod("compute_abnorm", data)
 
 #' @rdname compute_abnorm
-#' @method compute_abnorm exp_score
 #' @export
 
 compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
@@ -117,7 +111,6 @@ compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type
 }
 
 #' @rdname compute_abnorm
-#' @method compute_abnorm exp_voi
 #' @export
 
 compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
@@ -148,7 +141,6 @@ compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type =
 }
 
 #' @rdname compute_abnorm
-#' @method compute_abnorm exp_doi
 #' @export
 
 compute_abnorm.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
