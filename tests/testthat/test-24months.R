@@ -88,25 +88,49 @@ test_that("doi1", {
 })
 
 # plot_score -------------------------------------------------------------------
-data <- export_score(keyword = "fc barcelona", control = 1)
+data <- export_score(keyword = "fc barcelona", control = 1, locations = "US")
 
 test_that("plot_score1", {
   expect_s3_class(
-    plot_score(data_score = data, type = "obs"),
+    plot_bar(data, type = "obs"),
+    "ggplot"
+  )
+  expect_s3_class(
+    plot_ts(data, type = "obs"),
+    "ggplot"
+  )
+  expect_s3_class(
+    plot_box(data, type = "obs"),
     "ggplot"
   )
 })
 
 test_that("plot_score2", {
   expect_warning(
-    plot_score(data_score = data, type = "sad"),
+    plot_bar(data, type = "sad"),
+    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_ts(data, type = "sad"),
+    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_box(data, type = "sad"),
     "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })
 
 test_that("plot_score3", {
   expect_warning(
-    plot_score(data_score = data, type = "trd"),
+    plot_bar(data, type = "trd"),
+    "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_ts(data, type = "trd"),
+    "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_box(data, type = "trd"),
     "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })
@@ -114,44 +138,35 @@ test_that("plot_score3", {
 # plot_voi ---------------------------------------------------------------------
 data <- export_voi(keyword = "fc barcelona", control = 1)
 
-test_that("plot_voi1a", {
+test_that("plot_voi1", {
   expect_s3_class(
-    plot_voi_box(data_voi = data, type = "obs"),
+    plot_box(data, type = "obs"),
+    "ggplot"
+  )
+  expect_s3_class(
+    plot_ts(data, type = "obs"),
     "ggplot"
   )
 })
 
-test_that("plot_voi1b", {
-  expect_s3_class(
-    plot_voi_ts(data_voi = data, type = "obs"),
-    "ggplot"
-  )
-})
-
-test_that("plot_voi2a", {
+test_that("plot_voi2", {
   expect_warning(
-    plot_voi_box(data_voi = data, type = "sad"),
+    plot_box(data, type = "sad"),
+    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_ts(data, type = "sad"),
     "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })
 
-test_that("plot_voi2b", {
+test_that("plot_voi3", {
   expect_warning(
-    plot_voi_ts(data_voi = data, type = "sad"),
-    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
-  )
-})
-
-test_that("plot_voi3a", {
-  expect_warning(
-    plot_voi_box(data_voi = data, type = "trd"),
+    plot_box(data, type = "trd"),
     "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
-})
-
-test_that("plot_voi3b", {
   expect_warning(
-    plot_voi_ts(data_voi = data, type = "trd"),
+    plot_ts(data, type = "trd"),
     "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })
@@ -159,44 +174,35 @@ test_that("plot_voi3b", {
 # plot_doi ---------------------------------------------------------------------
 data <- export_doi(keyword = "fc barcelona", control = 1)
 
-test_that("plot_doi1a", {
+test_that("plot_doi1", {
   expect_s3_class(
-    plot_doi_box(data_doi = data, type = "obs"),
+    plot_box(data, type = "obs"),
+    "ggplot"
+  )
+  expect_s3_class(
+    plot_ts(data, type = "obs"),
     "ggplot"
   )
 })
 
-test_that("plot_doi1b", {
-  expect_s3_class(
-    plot_doi_ts(data_doi = data, type = "obs"),
-    "ggplot"
-  )
-})
-
-test_that("plot_doi2a", {
+test_that("plot_doi2", {
   expect_warning(
-    plot_doi_box(data_doi = data, type = "sad"),
+    plot_box(data, type = "sad"),
+    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
+  )
+  expect_warning(
+    plot_ts(data, type = "sad"),
     "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })
 
-test_that("plot_doi2b", {
+test_that("plot_doi3", {
   expect_warning(
-    plot_doi_ts(data_doi = data, type = "sad"),
-    "Plot cannot be created.\nThere is no non-missing data for score_sad.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
-  )
-})
-
-test_that("plot_doi3a", {
-  expect_warning(
-    plot_doi_box(data_doi = data, type = "trd"),
+    plot_box(data, type = "trd"),
     "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
-})
-
-test_that("plot_doi3b", {
   expect_warning(
-    plot_doi_ts(data_doi = data, type = "trd"),
+    plot_ts(data, type = "trd"),
     "Plot cannot be created.\nThere is no non-missing data for score_trd.\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data."
   )
 })

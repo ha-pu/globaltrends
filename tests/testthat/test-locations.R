@@ -167,20 +167,19 @@ test_that("export_doi", {
   expect_false(all(out1$entropy == out2$entropy))
 })
 
-# plot doi ts ------------------------------------------------------------------
-test_that("plot_doi_ts", {
+# plot -------------------------------------------------------------------------
+test_that("plot_ts", {
   out <- export_doi(object = 1)
-  plot1 <- plot_doi_ts(out, locations = "asia")
-  plot2 <- plot_doi_ts(out, locations = "countries")
+  plot1 <- plot_ts(out, locations = "asia")
+  plot2 <- plot_ts(out, locations = "countries")
 
   expect_false(identical(plot1, plot2))
 })
 
-# plot doi box -----------------------------------------------------------------
-test_that("plot_doi_box", {
+test_that("plot_box", {
   out <- export_doi(object = 1)
-  plot1 <- plot_doi_box(out, locations = "asia")
-  plot2 <- plot_doi_box(out, locations = "countries")
+  plot1 <- plot_box(out, locations = "asia")
+  plot2 <- plot_box(out, locations = "countries")
 
   expect_false(identical(plot1, plot2))
 })

@@ -11,19 +11,19 @@ start_db()
 dbWriteTable(globaltrends_db, "data_score", data_score, append = TRUE)
 dbWriteTable(globaltrends_db, "data_doi", data_doi, append = TRUE)
 
-# plot_ts.exp_score ------------------------------------------------------------
-test_that("plot_ts.exp_score1", {
+# plot_box.exp_score ------------------------------------------------------------
+test_that("plot_box.exp_score1", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
-  out1 <- plot_ts(data, type = "obs", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
   
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -31,18 +31,18 @@ test_that("plot_ts.exp_score1", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_score2", {
+test_that("plot_box.exp_score2", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
-  out1 <- plot_ts(data, type = "sad", smooth = TRUE)
+  out1 <- plot_box(data, type = "sad")
   expect_s3_class(out1, "ggplot")
   
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
-    out2 <- plot_ts(data, type = "sad", smooth = TRUE),
+    out2 <- plot_box(data, type = "sad"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -50,18 +50,18 @@ test_that("plot_ts.exp_score2", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_score3", {
+test_that("plot_box.exp_score3", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
-  out1 <- plot_ts(data, type = "trd", smooth = TRUE)
+  out1 <- plot_box(data, type = "trd")
   expect_s3_class(out1, "ggplot")
   
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
-    out2 <- plot_ts(data, type = "trd", smooth = TRUE),
+    out2 <- plot_box(data, type = "trd"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -69,15 +69,15 @@ test_that("plot_ts.exp_score3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_score4", {
+test_that("plot_box.exp_score4", {
   data <- export_score(keyword = data_score$keyword[[1]]) %>%
     filter(location == "CN")
-  out1 <- plot_ts(data, type = "obs", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
   
   data <- export_score(keyword = data_score$keyword[[1]])
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs"),
     "The plot function is limited to 1 location\\.\nYou use 3 locations\\.\nOnly 'CN' is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -85,15 +85,15 @@ test_that("plot_ts.exp_score4", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_score defaults ---------------------------------------------------
-test_that("plot_ts.exp_score5", {
+# plot_box.exp_score defaults ---------------------------------------------------
+test_that("plot_box.exp_score5", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "CN")
-  out1 <- plot_ts(data, smooth = TRUE)
-  out2 <- plot_ts(data, type = "obs", smooth = TRUE)
-  out3 <- plot_ts(data, type = "sad", smooth = TRUE)
-  out4 <- plot_ts(data, type = "trd", smooth = TRUE)
+  out1 <- plot_box(data)
+  out2 <- plot_box(data, type = "obs")
+  out3 <- plot_box(data, type = "sad")
+  out4 <- plot_box(data, type = "trd")
   
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -101,92 +101,72 @@ test_that("plot_ts.exp_score5", {
   expect_false(identical(out3, out4))
 })
 
-# plot_ts.exp_score signals ----------------------------------------------------
-test_that("plot_ts.exp_scoreS1", {
+# plot_box.exp_score signals ----------------------------------------------------
+test_that("plot_box.exp_scoreS1", {
   data <- export_score(keyword = "fc barcelona")
   expect_error(
-    plot_ts(data, type = 1),
+    plot_box(data, type = 1),
     "'type' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
-    plot_ts(data, type = "A"),
+    plot_box(data, type = "A"),
     "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
   )
   expect_error(
-    plot_ts(data, type = TRUE),
+    plot_box(data, type = TRUE),
     "'type' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, type = sum),
+    plot_box(data, type = sum),
     "'type' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, type = c("obs", "sad", "trd")),
+    plot_box(data, type = c("obs", "sad", "trd")),
     "'type' must be object of length 1.\nYou provided an object of length 3."
   )
 })
 
-test_that("plot_ts.exp_scoreS2", {
-  data <- export_score(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, smooth = c(TRUE, TRUE)),
-    "'smooth' must be object of length 1.\nYou provided an object of length 2."
-  )
-})
-
-# plot_ts.abnorm_score ---------------------------------------------------------
-test_that("plot_ts.abnorm_score1", {
+# plot_box.abnorm_score ---------------------------------------------------------
+test_that("plot_box.abnorm_score1", {
   data <- export_score(keyword = "fc barcelona")
   data <- compute_abnorm(data)
   expect_error(
-    plot_ts(data, ci = "A"),
+    plot_box(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
   )
   expect_error(
-    plot_ts(data, ci = TRUE),
+    plot_box(data, ci = TRUE),
     "'ci' must be object of type double.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, ci = sum),
+    plot_box(data, ci = sum),
     "'ci' must be object of type double.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, ci = 1:3 / 10),
+    plot_box(data, ci = 1:3 / 10),
     "'ci' must be object of length 1.\nYou provided an object of length 3."
   )
   expect_error(
-    plot_ts(data, ci = 0),
+    plot_box(data, ci = 0),
     "'ci' must be greater than 0 and less than 1.\nYou provided 0."
   )
   expect_error(
-    plot_ts(data, ci = 1),
+    plot_box(data, ci = 1),
     "'ci' must be greater than 0 and less than 1.\nYou provided 1."
   )
 })
 
-test_that("plot_ts.abnorm_score2", {
+test_that("plot_box.abnorm_score2", {
   data <- export_score(keyword = unique(data_score$keyword)[[1]], location = "US")
   data <- compute_abnorm(data)
-  out1 <- plot_ts(data)
+  out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score, location = "US")
   data <- compute_abnorm(data)
   expect_warning(
-    out2 <- plot_ts(data),
+    out2 <- plot_box(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -194,16 +174,16 @@ test_that("plot_ts.abnorm_score2", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.abnorm_score3", {
+test_that("plot_box.abnorm_score3", {
   data <- export_score(keyword = unique(data_score$keyword)[[1]], location = "CN")
   data <- compute_abnorm(data)
-  out1 <- plot_ts(data)
+  out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
 
   data <- export_score(keyword = unique(data_score$keyword)[[1]])
   data <- compute_abnorm(data)
   expect_warning(
-    out2 <- plot_ts(data),
+    out2 <- plot_box(data),
     "The plot function is limited to 1 location\\.\nYou use 3 locations\\.\nOnly 'CN' is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -211,17 +191,17 @@ test_that("plot_ts.abnorm_score3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_voi --------------------------------------------------------------
-test_that("plot_ts.exp_voi1", {
+# plot_box.exp_voi --------------------------------------------------------------
+test_that("plot_box.exp_voi1", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_voi)
-  out1 <- plot_ts(data, type = "obs", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -229,16 +209,16 @@ test_that("plot_ts.exp_voi1", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_voi2", {
+test_that("plot_box.exp_voi2", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_voi)
-  out1 <- plot_ts(data, type = "sad", smooth = TRUE)
+  out1 <- plot_box(data, type = "sad")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
-    out2 <- plot_ts(data, type = "sad", smooth = TRUE),
+    out2 <- plot_box(data, type = "sad"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -246,16 +226,16 @@ test_that("plot_ts.exp_voi2", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_voi3", {
+test_that("plot_box.exp_voi3", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_voi)
-  out1 <- plot_ts(data, type = "trd", smooth = TRUE)
+  out1 <- plot_box(data, type = "trd")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_voi)
   expect_warning(
-    out2 <- plot_ts(data, type = "trd", smooth = TRUE),
+    out2 <- plot_box(data, type = "trd"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -263,14 +243,14 @@ test_that("plot_ts.exp_voi3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_voi defaults -----------------------------------------------------
-test_that("plot_ts.exp_voi4", {
+# plot_box.exp_voi defaults -----------------------------------------------------
+test_that("plot_box.exp_voi4", {
   keywords <- unique(data_score$keyword)[1:9]
   data <- map_dfr(keywords, export_voi)
-  out1 <- plot_ts(data, smooth = TRUE)
-  out2 <- plot_ts(data, type = "obs", smooth = TRUE)
-  out3 <- plot_ts(data, type = "sad", smooth = TRUE)
-  out4 <- plot_ts(data, type = "trd", smooth = TRUE)
+  out1 <- plot_box(data)
+  out2 <- plot_box(data, type = "obs")
+  out3 <- plot_box(data, type = "sad")
+  out4 <- plot_box(data, type = "trd")
 
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -278,92 +258,72 @@ test_that("plot_ts.exp_voi4", {
   expect_false(identical(out3, out4))
 })
 
-# plot_ts.exp_voi signals ------------------------------------------------------
-test_that("plot_ts.exp_voiS1", {
+# plot_box.exp_voi signals ------------------------------------------------------
+test_that("plot_box.exp_voiS1", {
   data <- export_voi(keyword = "fc barcelona")
   expect_error(
-    plot_ts(data, type = 1),
+    plot_box(data, type = 1),
     "'type' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
-    plot_ts(data, type = "A"),
+    plot_box(data, type = "A"),
     "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
   )
   expect_error(
-    plot_ts(data, type = TRUE),
+    plot_box(data, type = TRUE),
     "'type' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, type = sum),
+    plot_box(data, type = sum),
     "'type' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, type = c("obs", "sad", "trd")),
+    plot_box(data, type = c("obs", "sad", "trd")),
     "'type' must be object of length 1.\nYou provided an object of length 3."
   )
 })
 
-test_that("plot_ts.exp_voiS2", {
-  data <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, smooth = c(TRUE, TRUE)),
-    "'smooth' must be object of length 1.\nYou provided an object of length 2."
-  )
-})
-
-# plot_ts.abnorm_voi -----------------------------------------------------------
-test_that("plot_ts.abnorm_voi1", {
+# plot_box.abnorm_voi -----------------------------------------------------------
+test_that("plot_box.abnorm_voi1", {
   data <- export_voi(keyword = "fc barcelona")
   data <- compute_abnorm(data)
   expect_error(
-    plot_ts(data, ci = "A"),
+    plot_box(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
   )
   expect_error(
-    plot_ts(data, ci = TRUE),
+    plot_box(data, ci = TRUE),
     "'ci' must be object of type double.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, ci = sum),
+    plot_box(data, ci = sum),
     "'ci' must be object of type double.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, ci = 1:3 / 10),
+    plot_box(data, ci = 1:3 / 10),
     "'ci' must be object of length 1.\nYou provided an object of length 3."
   )
   expect_error(
-    plot_ts(data, ci = 0),
+    plot_box(data, ci = 0),
     "'ci' must be greater than 0 and less than 1.\nYou provided 0."
   )
   expect_error(
-    plot_ts(data, ci = 1),
+    plot_box(data, ci = 1),
     "'ci' must be greater than 0 and less than 1.\nYou provided 1."
   )
 })
 
-test_that("plot_ts.abnorm_voi2", {
+test_that("plot_box.abnorm_voi2", {
   data <- export_voi(keyword = unique(data_score$keyword)[[1]])
   data <- compute_abnorm(data)
-  out1 <- plot_ts(data)
+  out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_voi)
   data <- compute_abnorm(data)
   expect_warning(
-    out2 <- plot_ts(data),
+    out2 <- plot_box(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -371,17 +331,17 @@ test_that("plot_ts.abnorm_voi2", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_doi gini ---------------------------------------------------------
-test_that("plot_ts.exp_doi1a", {
+# plot_box.exp_doi gini ---------------------------------------------------------
+test_that("plot_box.exp_doi1a", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "obs", measure = "gini", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs", measure = "gini")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", measure = "gini", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs", measure = "gini"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -389,16 +349,16 @@ test_that("plot_ts.exp_doi1a", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_doi2a", {
+test_that("plot_box.exp_doi2a", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "sad", measure = "gini", smooth = TRUE)
+  out1 <- plot_box(data, type = "sad", measure = "gini")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "sad", measure = "gini", smooth = TRUE),
+    out2 <- plot_box(data, type = "sad", measure = "gini"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -406,16 +366,16 @@ test_that("plot_ts.exp_doi2a", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_doi3a", {
+test_that("plot_box.exp_doi3a", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "trd", measure = "gini", smooth = TRUE)
+  out1 <- plot_box(data, type = "trd", measure = "gini")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "trd", measure = "gini", smooth = TRUE),
+    out2 <- plot_box(data, type = "trd", measure = "gini"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -423,17 +383,17 @@ test_that("plot_ts.exp_doi3a", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_doi hhi ----------------------------------------------------------
-test_that("plot_ts.exp_doi1b", {
+# plot_box.exp_doi hhi ----------------------------------------------------------
+test_that("plot_box.exp_doi1b", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "obs", measure = "hhi", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs", measure = "hhi")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", measure = "hhi", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs", measure = "hhi"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -441,16 +401,16 @@ test_that("plot_ts.exp_doi1b", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_doi2b", {
+test_that("plot_box.exp_doi2b", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "sad", measure = "hhi", smooth = TRUE)
+  out1 <- plot_box(data, type = "sad", measure = "hhi")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "sad", measure = "hhi", smooth = TRUE),
+    out2 <- plot_box(data, type = "sad", measure = "hhi"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -458,16 +418,16 @@ test_that("plot_ts.exp_doi2b", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_doi3b", {
+test_that("plot_box.exp_doi3b", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "trd", measure = "hhi", smooth = TRUE)
+  out1 <- plot_box(data, type = "trd", measure = "hhi")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "trd", measure = "hhi", smooth = TRUE),
+    out2 <- plot_box(data, type = "trd", measure = "hhi"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -475,17 +435,17 @@ test_that("plot_ts.exp_doi3b", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_doi entropy ------------------------------------------------------
-test_that("plot_ts.exp_doi1c", {
+# plot_box.exp_doi entropy ------------------------------------------------------
+test_that("plot_box.exp_doi1c", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "obs", measure = "entropy", smooth = TRUE)
+  out1 <- plot_box(data, type = "obs", measure = "entropy")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "obs", measure = "entropy", smooth = TRUE),
+    out2 <- plot_box(data, type = "obs", measure = "entropy"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -493,16 +453,16 @@ test_that("plot_ts.exp_doi1c", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_doi2c", {
+test_that("plot_box.exp_doi2c", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "sad", measure = "entropy", smooth = TRUE)
+  out1 <- plot_box(data, type = "sad", measure = "entropy")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "sad", measure = "entropy", smooth = TRUE),
+    out2 <- plot_box(data, type = "sad", measure = "entropy"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -510,16 +470,16 @@ test_that("plot_ts.exp_doi2c", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts3c", {
+test_that("plot_box3c", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data, type = "trd", measure = "entropy", smooth = TRUE)
+  out1 <- plot_box(data, type = "trd", measure = "entropy")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
-    out2 <- plot_ts(data, type = "trd", measure = "entropy", smooth = TRUE),
+    out2 <- plot_box(data, type = "trd", measure = "entropy"),
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -527,14 +487,14 @@ test_that("plot_ts3c", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts.exp_doi defaults -----------------------------------------------------
-test_that("plot_ts.exp_doi4a", {
+# plot_box.exp_doi defaults -----------------------------------------------------
+test_that("plot_box.exp_doi4a", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data = data, measure = "gini")
-  out2 <- plot_ts(data = data, measure = "gini", type = "obs")
-  out3 <- plot_ts(data = data, measure = "gini", type = "sad")
-  out4 <- plot_ts(data = data, measure = "gini", type = "trd")
+  out1 <- plot_box(data = data, measure = "gini")
+  out2 <- plot_box(data = data, measure = "gini", type = "obs")
+  out3 <- plot_box(data = data, measure = "gini", type = "sad")
+  out4 <- plot_box(data = data, measure = "gini", type = "trd")
 
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -542,13 +502,13 @@ test_that("plot_ts.exp_doi4a", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_ts.exp_doi4b", {
+test_that("plot_box.exp_doi4b", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data = data, measure = "hhi")
-  out2 <- plot_ts(data = data, measure = "hhi", type = "obs")
-  out3 <- plot_ts(data = data, measure = "hhi", type = "sad")
-  out4 <- plot_ts(data = data, measure = "hhi", type = "trd")
+  out1 <- plot_box(data = data, measure = "hhi")
+  out2 <- plot_box(data = data, measure = "hhi", type = "obs")
+  out3 <- plot_box(data = data, measure = "hhi", type = "sad")
+  out4 <- plot_box(data = data, measure = "hhi", type = "trd")
 
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -556,13 +516,13 @@ test_that("plot_ts.exp_doi4b", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_ts.exp_doi4c", {
+test_that("plot_box.exp_doi4c", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  out1 <- plot_ts(data = data, measure = "entropy")
-  out2 <- plot_ts(data = data, measure = "entropy", type = "obs")
-  out3 <- plot_ts(data = data, measure = "entropy", type = "sad")
-  out4 <- plot_ts(data = data, measure = "entropy", type = "trd")
+  out1 <- plot_box(data = data, measure = "entropy")
+  out2 <- plot_box(data = data, measure = "entropy", type = "obs")
+  out3 <- plot_box(data = data, measure = "entropy", type = "sad")
+  out4 <- plot_box(data = data, measure = "entropy", type = "trd")
 
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -570,13 +530,13 @@ test_that("plot_ts.exp_doi4c", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_ts.exp_doi4d", {
+test_that("plot_box.exp_doi4d", {
   keywords <- unique(data_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, type = "obs", locations = "countries")
-  out1 <- plot_ts(data = data)
-  out2 <- plot_ts(data = data, measure = "gini")
-  out3 <- plot_ts(data = data, measure = "hhi")
-  out4 <- plot_ts(data = data, measure = "entropy")
+  out1 <- plot_box(data = data)
+  out2 <- plot_box(data = data, measure = "gini")
+  out3 <- plot_box(data = data, measure = "hhi")
+  out4 <- plot_box(data = data, measure = "entropy")
 
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
@@ -584,136 +544,116 @@ test_that("plot_ts.exp_doi4d", {
   expect_false(identical(out3, out4))
 })
 
-# plot_ts.exp_doi signals ------------------------------------------------------
-test_that("plot_ts.exp_doiS1", {
+# plot_box.exp_doi signals ------------------------------------------------------
+test_that("plot_box.exp_doiS1", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
-    plot_ts(data, type = 1),
+    plot_box(data, type = 1),
     "'type' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
-    plot_ts(data, type = "A"),
+    plot_box(data, type = "A"),
     "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
   )
   expect_error(
-    plot_ts(data, type = TRUE),
+    plot_box(data, type = TRUE),
     "'type' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, type = sum),
+    plot_box(data, type = sum),
     "'type' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, type = c("obs", "sad", "trd")),
+    plot_box(data, type = c("obs", "sad", "trd")),
     "'type' must be object of length 1.\nYou provided an object of length 3."
   )
 })
 
-test_that("plot_ts.exp_doiS2", {
+test_that("plot_box.exp_doiS2", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
-    plot_ts(data, measure = 1),
+    plot_box(data, measure = 1),
     "'measure' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
-    plot_ts(data, measure = "A"),
+    plot_box(data, measure = "A"),
     "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
   )
   expect_error(
-    plot_ts(data, measure = TRUE),
+    plot_box(data, measure = TRUE),
     "'measure' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, measure = sum),
+    plot_box(data, measure = sum),
     "'measure' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, measure = c("gini", "hhi", "entropy")),
+    plot_box(data, measure = c("gini", "hhi", "entropy")),
     "'measure' must be object of length 1.\nYou provided an object of length 3."
   )
 })
 
-test_that("plot_ts.exp_doiS3", {
+test_that("plot_box.exp_doiS3", {
   data <- export_doi(keyword = "fc barcelona")
   expect_error(
-    plot_ts(data, locations = 1),
+    plot_box(data, locations = 1),
     "'locations' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
-    plot_ts(data, locations = TRUE),
+    plot_box(data, locations = TRUE),
     "'locations' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, locations = sum),
+    plot_box(data, locations = sum),
     "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, locations = letters[1:5]),
+    plot_box(data, locations = letters[1:5]),
     "'locations' must be object of length 1.\nYou provided an object of length 5."
   )
 })
 
-test_that("plot_ts.exp_doiS4", {
-  data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, smooth = c(TRUE, TRUE)),
-    "'smooth' must be object of length 1.\nYou provided an object of length 2."
-  )
-})
-
-# plot_ts.abnorm_doi -----------------------------------------------------------
-test_that("plot_ts.abnorm_doi1", {
+# plot_box.abnorm_doi -----------------------------------------------------------
+test_that("plot_box.abnorm_doi1", {
   data <- export_doi(keyword = "fc barcelona")
   data <- compute_abnorm(data)
   expect_error(
-    plot_ts(data, ci = "A"),
+    plot_box(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
   )
   expect_error(
-    plot_ts(data, ci = TRUE),
+    plot_box(data, ci = TRUE),
     "'ci' must be object of type double.\nYou provided an object of type logical."
   )
   expect_error(
-    plot_ts(data, ci = sum),
+    plot_box(data, ci = sum),
     "'ci' must be object of type double.\nYou provided an object of type builtin."
   )
   expect_error(
-    plot_ts(data, ci = 1:3 / 10),
+    plot_box(data, ci = 1:3 / 10),
     "'ci' must be object of length 1.\nYou provided an object of length 3."
   )
   expect_error(
-    plot_ts(data, ci = 0),
+    plot_box(data, ci = 0),
     "'ci' must be greater than 0 and less than 1.\nYou provided 0."
   )
   expect_error(
-    plot_ts(data, ci = 1),
+    plot_box(data, ci = 1),
     "'ci' must be greater than 0 and less than 1.\nYou provided 1."
   )
 })
 
-test_that("plot_ts.abnorm_doi2", {
+test_that("plot_box.abnorm_doi2", {
   data <- export_doi(keyword = unique(data_doi$keyword)[[1]], locations = "countries")
   data <- compute_abnorm(data)
-  out1 <- plot_ts(data)
+  out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:2]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   data <- compute_abnorm(data)
   expect_warning(
-    out2 <- plot_ts(data),
+    out2 <- plot_box(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
@@ -721,16 +661,16 @@ test_that("plot_ts.abnorm_doi2", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_ts methods --------------------------------------------------------------
-test_that("plot_ts.methods", {
+# plot_box methods --------------------------------------------------------------
+test_that("plot_box.methods", {
   data <- export_control(control = 1)
   expect_error(
-    plot_ts(data),
+    plot_box(data),
     "no applicable method"
   )
   data <- export_object(object = 1)
   expect_error(
-    plot_ts(data),
+    plot_box(data),
     "no applicable method"
   )
 })
