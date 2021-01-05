@@ -19,19 +19,19 @@ compute_abnorm(data, ...)
 \item{data}{Object of class \code{exp_score}, \code{exp_voi} or
 \code{exp_doi} generated through \code{export_...} functions.}
 
-\item{train_win}{Object of class \code{numeric}. Length of rolling average
+\item{train_win}{Object of type \code{numeric}. Length of rolling average
 training window in months. Defaults to 12.}
 
-\item{train_break}{Object of class \code{numeric}. Length of break between
+\item{train_break}{Object of type \code{numeric}. Length of break between
 rolling average training window and date in months. Defaults to 1.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. Relevant only for \code{export_global} and
+of type \code{character}. Relevant only for \code{export_global} and
 \code{export_doi}. Takes one of the following values: \emph{obs} - observed
 search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
 trend only search scores.}
 
-\item{measure}{Object of class \code{character} indicating the measure used
+\item{measure}{Object of type \code{character} indicating the measure used
 for DOI computation for which abnormal changes should be analyzed. Takes
 either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.}
 }

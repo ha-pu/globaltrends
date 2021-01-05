@@ -10,11 +10,11 @@ add_control_keyword(keyword, time = "2010-01-01 2019-12-31")
 add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
 }
 \arguments{
-\item{keyword}{Keywords that should be added as batch. Vector of class
+\item{keyword}{Keywords that should be added as batch. Vector of type
 \code{character} or a \code{list} of \code{character} vectors.}
 
 \item{time}{Time frame for which the batch data should be downloaded. Object
-of class \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
+of type \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
 Defaults to \emph{"2010-01-01 2019-12-31"}.}
 }
 \value{

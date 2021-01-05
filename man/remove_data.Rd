@@ -8,13 +8,13 @@ remove_data(table, control = NULL, object = NULL)
 }
 \arguments{
 \item{table}{Database table from which the batch should be removed.  Object
-of class \code{character}.}
+of type \code{character}.}
 
 \item{control}{Control batch for which the data is removed Object
-of class \code{numeric}.}
+of type \code{numeric}.}
 
 \item{object}{Object batch for which the data is removed Object
-of class \code{numeric}.}
+of type \code{numeric}.}
 }
 \value{
 Message that data has been removed successfully. Data is removed

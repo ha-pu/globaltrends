@@ -17,11 +17,11 @@ compute_voi(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
-of class \code{numeric} or object of class \code{list} containing single
-objects of class \code{numeric}.}
+of type \code{numeric} or object of type \code{list} containing single
+objects of type \code{numeric}.}
 
 \item{control}{Control batch for which the data is downloaded. Object
-of class \code{numeric}. Defaults to 1.}
+of type \code{numeric}. Defaults to 1.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to

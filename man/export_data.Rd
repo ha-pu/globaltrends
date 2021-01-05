@@ -36,27 +36,28 @@ export_doi(
 \item{locations}{List of locations for which the search score is used.
 For \code{export_control}, \code{export_object}, or \code{export_score}
 refers to lists generated in \code{start_db}. For \code{export_doi}
-object of class \code{character}.}
+object of type \code{character}.}
 
 \item{keyword}{Object keywords for which data should be exported. Object of
-class \code{character}.}
+type \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. Relevant only for \code{export_global} and
+of type \code{character}. Relevant only for \code{export_global} and
 \code{export_doi}. Takes one of the following values: \emph{obs} - observed
 search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
 trend only search scores.}
 }
 \value{
-The functions export and filter the respective database tables and return
-objects of class \code{"tbl_df", "tbl", "data.frame"}.
+The functions export and filter the respective database tables.
 \itemize{
   \item \code{export_control} exports data from table \emph{data_control} with
-columns location, keyword, date, hits, control.
+columns location, keyword, date, hits, control. Object of class
+\code{"data.frame"}.
   \item \code{export_object} exports data from table \emph{data_object} with
-columns location, keyword, date, hits, object.
+columns location, keyword, date, hits, object.Object of class
+\code{"data.frame"}. 
   \item \code{export_score} exports data from table \emph{data_score} with
 columns location, keyword, date, score_obs, score_sad, score_trd, control,
 object. Object of class \code{c("exp_score", "data.frame")}.

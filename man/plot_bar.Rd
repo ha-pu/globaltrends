@@ -16,7 +16,7 @@ plot_bar(data, ...)
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm}
 functions.}
 
-\item{type}{Object of class \code{character} indicating the type of time
+\item{type}{Object of type \code{character} indicating the type of time
 series-column from data_score, takes either \emph{obs}, \emph{sad}, or
 \emph{trd}. Defaults to \emph{"obs"}.}
 }

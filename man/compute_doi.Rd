@@ -14,13 +14,13 @@ compute_doi(object, control = 1, locations = "countries")
 }
 \arguments{
 \item{object}{Object batch for which the keyword-country data
-is aggregated and DOI is computed.  Object of class \code{numeric}.}
+is aggregated and DOI is computed.  Object of type \code{numeric}.}
 
 \item{control}{Control batch for which the search score is used. Object
-of class \code{numeric}.}
+of type \code{numeric}.}
 
 \item{locations}{List of locations for which the search score is used.
-Object of class \code{character}. Defaults to \emph{"countries"}.}
+Object of type \code{character}. Defaults to \emph{"countries"}.}
 }
 \value{
 Message that data was aggregated successfully. Data is written to table

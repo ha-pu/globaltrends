@@ -17,10 +17,10 @@ download_object_global(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
-of class \code{numeric} or object of class \code{list} containing single
-object of class \code{numeric}.}
+of type \code{numeric} or object of type \code{list} containing single
+object of type \code{numeric}.}
 
-\item{control}{Control batch that is used for mapping. Object of class
+\item{control}{Control batch that is used for mapping. Object of type
 \code{numeric}. Defaults to \code{1}.}
 
 \item{locations}{List of countries or regions for which the data is

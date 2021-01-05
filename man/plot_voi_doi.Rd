@@ -16,18 +16,18 @@ plot_voi_doi(
 \arguments{
 \item{data_voi}{Data exported from \code{export_voi} function.}
 
-\item{type}{Object of class \code{character} indicating the type of time
+\item{type}{Object of type \code{character} indicating the type of time
 series-column from data_score, takes either \emph{obs}, \emph{sad}, or
 \emph{trd}. Defaults to \emph{"obs"}.}
 
-\item{measure}{Object of class \code{character} indicating the DOI measure,
+\item{measure}{Object of type \code{character} indicating the DOI measure,
 takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to
 \emph{"gini"}.}
 
-\item{locations}{Object of class \code{character} indicating for which
+\item{locations}{Object of type \code{character} indicating for which
 set of locations should be filtered. Defaults to \emph{"countries"}.}
 
-\item{smooth}{Object of class \code{logical} indicating whether the
+\item{smooth}{Object of type \code{logical} indicating whether the
 \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
 \code{TRUE}.}
 }
