@@ -1,4 +1,4 @@
-#' @title Compute abnormal changes in data
+#' @title Compute abnormal changes in data - historic baseline
 #'
 #' @description
 #' The function allows to compute changes in search scores, voi, and doi and
@@ -8,19 +8,20 @@
 #'
 #' @details
 #' The function computes abnormal changes in search scores, VOI, or DOI for each
-#' date. We define "abnormal" in terms of deviation from a baseline value. To
-#' compute the baseline value, the function computes a moving average. Users can
-#' specify the window for moving average training \code{train_win} and a break
-#' between training and the given date \code{train_break}. Abnormal changes are
-#' the difference between the moving average and the respective search score,
-#' VOI, or DOI. To highlight abnormal changes, the function computes a historic
-#' percentile rank for each abnormal change within the distribution of abnormal
-#' changes. Low percentile ranks signify abnormally high negative changes. High
-#' percentile ranks signify abnormally high positive changes.
+#' date. We define "abnormal" in terms of deviation from a historic baseline
+#' value. To compute the historic baseline value, the function computes a moving
+#' average. Users can specify the window for moving average training
+#' \code{train_win} and a break between training and the given date
+#' \code{train_break}. Abnormal changes are the difference between the moving
+#' average and the respective search score, VOI, or DOI. To highlight abnormal
+#' changes, the function computes a historic percentile rank for each abnormal
+#' change within the distribution of abnormal changes. Low percentile ranks
+#' signify abnormally high negative changes. High percentile ranks signify
+#' abnormally high positive changes.
 #' The function uses the output from \code{export_...} functions as input. As
-#' \code{compute_abnorm} offers no additional filters, users are advised to use
+#' \code{get_abnorm_hist} offers no additional filters, users are advised to use
 #' filters in the \code{export_...} functions or to pre-process data before
-#' using \code{compute_abnorm}.
+#' using \code{get_abnorm_hist}.
 #'
 #' @param data Object of class \code{exp_score}, \code{exp_voi} or
 #' \code{exp_doi} generated through \code{export_...} functions.
@@ -58,16 +59,16 @@
 #' @examples
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
-#' compute_score(data, type = "obs")
+#' get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
 #'
 #' data <- export_voi(keyword = "amazon")
-#' compute_voi(data, type = "obs")
+#' get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
 #'
-#' data <- export_doi(keyword = "amazon", type = "obs")
-#' compute_doi(data, measure = "gini")
+#' data <- export_score(keyword = "amazon")
+#' get_abnorm_hist(data, train_win = 12, train_break = 0, measure = "gini")
 #' }
 #'
-#' @rdname compute_abnorm
+#' @rdname get_abnorm_hist
 #' @export
 #' @importFrom dplyr group_by
 #' @importFrom dplyr lag
@@ -77,12 +78,12 @@
 #' @importFrom rlang .data
 #' @importFrom zoo rollmean
 
-compute_abnorm <- function(data, ...) UseMethod("compute_abnorm", data)
+get_abnorm_hist <- function(data, ...) UseMethod("get_abnorm_hist", data)
 
-#' @rdname compute_abnorm
+#' @rdname get_abnorm_hist
 #' @export
 
-compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
+get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -110,10 +111,10 @@ compute_abnorm.exp_score <- function(data, train_win = 12, train_break = 0, type
   return(data)
 }
 
-#' @rdname compute_abnorm
+#' @rdname get_abnorm_hist
 #' @export
 
-compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
+get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -140,10 +141,10 @@ compute_abnorm.exp_voi <- function(data, train_win = 12, train_break = 0, type =
   return(data)
 }
 
-#' @rdname compute_abnorm
+#' @rdname get_abnorm_hist
 #' @export
 
-compute_abnorm.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
+get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
