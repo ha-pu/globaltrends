@@ -17,7 +17,7 @@ test_that("plot_bar.exp_score1", {
     filter(location == "US")
   out1 <- plot_bar(data, type = "obs")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -26,7 +26,7 @@ test_that("plot_bar.exp_score1", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -36,7 +36,7 @@ test_that("plot_bar.exp_score2", {
     filter(location == "US")
   out1 <- plot_bar(data, type = "sad")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -45,7 +45,7 @@ test_that("plot_bar.exp_score2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -55,7 +55,7 @@ test_that("plot_bar.exp_score3", {
     filter(location == "US")
   out1 <- plot_bar(data, type = "trd")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -64,7 +64,7 @@ test_that("plot_bar.exp_score3", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -77,7 +77,7 @@ test_that("plot_bar.exp_score4", {
   out2 <- plot_bar(data, type = "obs")
   out3 <- plot_bar(data, type = "sad")
   out4 <- plot_bar(data, type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
@@ -115,7 +115,7 @@ test_that("plot_bar.abnorm_score1", {
   data <- compute_abnorm(data)
   out1 <- plot_bar(data)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score, location = "US")
   data <- compute_abnorm(data)
@@ -124,7 +124,7 @@ test_that("plot_bar.abnorm_score1", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 

@@ -35,7 +35,7 @@
 #' \code{"data.frame"}.
 #'   \item \code{export_object} exports data from table \emph{data_object} with
 #' columns location, keyword, date, hits, object.Object of class
-#' \code{"data.frame"}. 
+#' \code{"data.frame"}.
 #'   \item \code{export_score} exports data from table \emph{data_score} with
 #' columns location, keyword, date, score_obs, score_sad, score_trd, control,
 #' object. Object of class \code{c("exp_score", "data.frame")}.
@@ -78,7 +78,7 @@
 #'   type = "sad",
 #'   locations = "us_states"
 #' ) %>%
-#'   write_xl::write_xlsx("data_doi.xlsx")
+#'   writexl::write_xlsx("data_doi.xlsx")
 #'
 #' # interaction with purrr::map_dfr
 #' purrr::map_dfr(

@@ -18,7 +18,7 @@ test_that("plot_box.exp_score1", {
     filter(location == "US")
   out1 <- plot_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -27,7 +27,7 @@ test_that("plot_box.exp_score1", {
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -37,7 +37,7 @@ test_that("plot_box.exp_score2", {
     filter(location == "US")
   out1 <- plot_box(data, type = "sad")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -46,7 +46,7 @@ test_that("plot_box.exp_score2", {
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -56,7 +56,7 @@ test_that("plot_box.exp_score3", {
     filter(location == "US")
   out1 <- plot_box(data, type = "trd")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(data_score$keyword)[1:10]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
@@ -65,7 +65,7 @@ test_that("plot_box.exp_score3", {
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -74,14 +74,14 @@ test_that("plot_box.exp_score4", {
     filter(location == "CN")
   out1 <- plot_box(data, type = "obs")
   expect_s3_class(out1, "ggplot")
-  
+
   data <- export_score(keyword = data_score$keyword[[1]])
   expect_warning(
     out2 <- plot_box(data, type = "obs"),
     "The plot function is limited to 1 location\\.\nYou use 3 locations\\.\nOnly 'CN' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -94,7 +94,7 @@ test_that("plot_box.exp_score5", {
   out2 <- plot_box(data, type = "obs")
   out3 <- plot_box(data, type = "sad")
   out4 <- plot_box(data, type = "trd")
-  
+
   expect_identical(out1$labels, out2$labels)
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
