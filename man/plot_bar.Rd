@@ -24,9 +24,20 @@ series-column from data_score, takes either \emph{obs}, \emph{sad}, or
 Barplot of cross-sectional data as \code{ggplot2} object.
 }
 \description{
-The function uses the output of \code{export_score} to prepare a bar plot of
-search scores for the top 10 countries. For objects of class
-\code{abnorm_...} the plot shows five locations with the highest and lowest
-abnormal changes each. When the output includes more than one keyword, only
-the first keyword is used.
+The function creates barplots for cross-sectional search score data. It uses
+the output of \code{export_score} to prepare a bar plot of search scores for
+the top 10 countries. For output from \code{get_abnorm_hist} the plot shows
+five locations with the highest and lowest abnormal changes each. When the
+output includes more than one keyword, only the first keyword is used.
+}
+\examples{
+\dontrun{
+data <- export_score(keyword = "amazon")
+plot_bar(data, type = "obs")
+
+data <- export_score(keyword = "amazon")
+data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
+plot_bar(data)
+}
+
 }
