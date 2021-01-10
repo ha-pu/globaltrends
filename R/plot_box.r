@@ -1,12 +1,36 @@
 #' @title Create boxplot for time series of globaltrends data
 #'
 #' @description
+#' The function creates boxplots for time series globaltrends data. It uses
+#' the output of \code{export_...} or \code{get_abnorm_hist} to prepare boxplots
+#' for up to nine keywords.
+#'
+#' @details
+#' For output of \code{export_score}, only data for a single location is shown.
+#' When date for more than one location is provided, the function selects only
+#' the first location.
+#' For output of \code{get_abnorm_hist}, users can specify confidence intervals
+#' to highlight abnormal changes in the data.
 #'
 #' @inheritParams plot_ts
 #'
 #' @return
-#' Boxplot of time series as \code{ggplot2} object. For objects of class
-#' \code{abnorm_...} the provided confidence interval is indicated by red dots.
+#' Boxplot of time series as \code{ggplot2} object. For plots for output from
+#' \code{get_abnorm_hist} the provided confidence interval is indicated by red
+#' dots.
+#'
+#' \dontrun{
+#' data <- export_score(keyword = "amazon")
+#' plot_box(data, type = "obs")
+#'
+#' data <- export_voi(keyword = "amazon")
+#' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
+#' plot_box(data)
+#'
+#' data <- export_doi(keyword = "amazon")
+#' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, measure = "gini")
+#' plot_box(data, ci = 0.9)
+#' }
 #'
 #' @rdname plot_box
 #' @export
