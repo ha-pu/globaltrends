@@ -30,6 +30,9 @@
 #' @param train_break Object of type \code{numeric}. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
 #' @inheritParams export_control
+#' @param type Object of type \code{character} indicating the type of time
+#' series-column from data_score, takes either \emph{obs}, \emph{sad}, or
+#' \emph{trd}. Defaults to \emph{"obs"}.
 #' @param measure Object of type \code{character} indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
 #' either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.
