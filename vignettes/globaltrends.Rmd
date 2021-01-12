@@ -29,7 +29,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.4'
+#> [1] '0.0.5'
 ```
 
 # Google Trends
@@ -63,7 +63,7 @@ We demonstrate the functionality of the `globaltrends` package based on a sample
 4. Exports and plots
 
 ## Setup and start database
-Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a [SQLite database]( https://www.sqlite.org/index.html) to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.  
+Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a [SQLite database](https://www.sqlite.org/index.html) to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.  
 
 Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates a SQLite database file named *globaltrends_db.sqlite* within this folder. The command also creates all necessary tables within the database. For more information on database tables, please refer to their built-in documentation, e.g. `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
@@ -298,32 +298,32 @@ export_doi(object = 1, control = 1, type = "obs") %>%
 #> 3 microsoft 0.682
 ```
 
-Exports from `globaltrends` also serve as input for plot functions implemented in the package. The function `plot_score` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
+Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. With the exception of `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
 
 ```{r, eval = FALSE}
 # plot_score -------------------------------------------------------------------
 library(dplyr)
 export_score(keyword = "coca cola", control = 1) %>%
   filter(lubridate::year(date) == 2019) %>%
-  plot_score()
+  plot_bar()
 ```
 
 ![](plot002.png){width=100%}
 
-The functions `plot_voi_ts`, `plot_doi_ts`, `plot_voi_box`, and `plot_doi_box` use output from `export_voi` and `export_doi`, respectively. The two time series plots `plot_voi_ts` and `plot_doi_ts` show how volume and degree of internationalization for objects of interest develops over time. The functions `plot_voi_box` and `plot_doi_box` generate boxplots of volume and degree of internationalization distribution. The four plots below compare volume and degree of internationalization for the six companies in our sample. At first glance, we see that Coca-Cola, Facebook, and Microsoft have higher degrees of internationalization than Alaska Air Group, Illinois Tool Works, and J.M. Smucker. It seems as if the degree of internationalization of Facebook and Microsoft increased slightly from 2010 to 2015. Although the overall trend remains stable, Coca-Cola shows greater variation than the other companies.
+The functions `plot_box` and `plot_ts` have methods for classes of output from `export_score`, `export_voi`, and `export_doi`. The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest develops over time. The function `plot_box` generates boxplots of search score and volume or degree of internationalization distributions. The four plots below compare volume and degree of internationalization for the six companies in our sample. At first glance, we see that Coca-Cola, Facebook, and Microsoft have higher degrees of internationalization than Alaska Air Group, Illinois Tool Works, and J.M. Smucker. It seems as if the degree of internationalization of Facebook and Microsoft increased slightly from 2010 to 2015. Although the overall trend remains stable, Coca-Cola shows greater variation than the other companies.
 
 ```{r, eval = FALSE}
 # plot_doi_ts and plot_doi_box -------------------------------------------------
 data <- purrr::map_dfr(1:2, export_doi, keyword = NULL, control = 1, type = "obs")
-plot_doi_ts(data_doi = data)
-plot_doi_box(data_doi = data)
+plot_ts(data)
+plot_box(data)
 ```
 
 ![](plot003.png){width=100%}
 
 ![](plot004.png){width=100%}
 
-With the function `plot_voi_doi`, users can compare the volume of internationalization for an object of interest to its degree of internationalization. Like `plot_score`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s volume of internationalization to its degree of internationalization. While volume of internationalization indicates the level of global search scores, degree of internationalization relates to the global distribution of search scores. We see that Facebook’s volume of internationalization constantly decreased after its peak in 2013. At the same time, we observe that its degree of internationalization grew from 2010 before peaking in 2013.
+With the function `plot_voi_doi`, users can compare the volume of internationalization for an object of interest to its degree of internationalization. Like `plot_bar`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s volume of internationalization to its degree of internationalization. While volume of internationalization indicates the level of global search scores, degree of internationalization relates to the global distribution of search scores. We see that Facebook’s volume of internationalization constantly decreased after its peak in 2013. At the same time, we observe that its degree of internationalization grew from 2010 before peaking in 2013.
 
 ```{r, eval = FALSE}
 # plot_voi_doi -----------------------------------------------------------------
@@ -333,6 +333,30 @@ plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
 ```
 
 ![](plot005.png){width=100%}
+
+## Abnormal changes in internationalization
+A unique feature of internationalization data from `globaltrends` is that it allows time series analysis. For a better understanding of changes in the data, the function provides the `get_abnorm_hist` function that implements functionality used in financial event studies (MacKinlay, 1997; McWilliams & Siegel, 1997). The function compares search scores and volume or degree of internationalization to a historic baseline. By default, the historic baseline is the average from the preceding twelve months. Users can specify the window of the baseline period (`train_win`) and a can use a break between baseline and date of interest (`train_break`). The `get_abnorm_hist` function has methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. For each month in the dataset, the deviation from the historic baseline is computed. To identify abnormal changes, the function provides the percentile rank for each change within the distribution of changes.
+
+```{r}
+# TO DO
+```
+
+
+The functions `plot_bar`, `plot_box`, and `plot_ts` have methods for classes of output from `get_abnorm_hist`. This allows seamless plotting of changes in internationalization. The function `plot_bar` shows the five locations with the highest and lowest changes in search scores for a given object keyword. The function uses only the first keyword in the dataset and averages changes in search scores for the input dataset – we therefore suggest filtering the output from ` get_abnorm_hist` to a specific period.
+
+```{r}
+# TO DO
+```
+
+![](plot006.png){width=100%}
+
+The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest changed over time. The function `plot_box` generates boxplots of changes in search score and volume or degree of internationalization distributions. The input `ci` allows users to set a confidence interval for plotting. Changes with percentile ranks outside this two-tailed confidence interval are highlighted with red dots.
+
+```{r}
+# TO DO
+```
+
+![](plot007.png){width=100%}
 
 ## Additional options
 The `globaltrends` package offers several options that allow robustness checks and adjustments for default computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, or change the set of locations.
@@ -354,18 +378,24 @@ seasad <- forecast::seasadj(fit)
 Column `score_sad` corrects the time series for seasonal patterns. In general, outcomes for all three types of time series are similar. Column `score_trd` applies the greatest smoothing, while `score_sad` reduces some noise.
 
 <center>
-![](plot006.png){height=45%, width=45%}
-![](plot007.png){height=45%, width=45%}
+![](plot008.png){height=45%, width=45%}
+![](plot009.png){height=45%, width=45%}
 </center>
 
-The `export_doi`, `plot_voi_ts`, `plot_doi_ts`, `plot_voi_box`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of time series through the `type` input.
+The `export_doi`, `get_abnorm_hist`, `plot_bar`, `plot_ts`, `plot_box`, and `plot_voi_doi` functions allow filtering for the type of time series through the `type` input.
 
 ```{r, eval = FALSE}
 # adapt export and plot options ------------------------------------------------
-export_doi(keyword, type = "obs")
-plot_ts(data_doi, type = "sad")
+data_score <- export_score(keyword)
+data_voi <- export_voi(keyword)
+data_doi <- export_doi(keyword, type = "obs")
+
+plot_bar(data_score, type = "obs")
+plot_ts(data_voi, type = "sad")
 plot_box(data_doi, type = "trd")
-plot_trend(data_doi, data_global, type = "obs")
+plot_voi_doi(data_voi, data_doi, type = "obs")
+
+get_abnorm_hist(data_voi, type = "obs")
 ```
 
 ### Alternative dispersion measures
@@ -381,22 +411,26 @@ dplyr::coalesce(-1 * ineq::ineq(search_score, parameter = 1, type = "entropy"), 
 ```
 
 <center>
-![](plot008.png){height=45%, width=45%}
-![](plot009.png){height=45%, width=45%}
+![](plot010.png){height=45%, width=45%}
+![](plot011.png){height=45%, width=45%}
 </center>
 
-The `export_doi`, `plot_doi_ts`, `plot_doi_box`, and `plot_voi_doi` functions allow filtering for the type of dispersion measures through the `measure` input.
+The `export_doi`, `get_abnorm_hist`, `plot_ts`, `plot_box`, and `plot_voi_doi` functions allow filtering for the type of dispersion measures through the `measure` input.
 
 ```{r, eval = FALSE}
 # adapt export and plot options ------------------------------------------------
-export_doi(keyword, measure = "gini")
-plot_ts(data_doi, measure = "hhi")
-plot_box(data_doi, measure = "entropy")
-plot_trend(data_doi, data_global, measure = "gini")
+data_voi <- export_voi(keyword)
+data_doi <- export_doi(keyword, measure = "gini")
+
+plot_ts(data_doi, measure = "gini")
+plot_box(data_doi, measure = "hhi")
+plot_voi_doi(data_voi, data_doi, measure = "entropy")
+
+get_abnorm_hist(data_doi, measure = "hhi")
 ```
 
 ### Alternative sets of locations
-By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input `locations` to *us_states*, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from `compute_doi`, all functions use either *countries* or *us_states* as inputs for `locations`. The function `start_db` exports these vectors of ISO2 codes to the global environment. Function `compute_doi`, however does not directly refer to these objects, but to their names: `locations = “countries”` or `locations = “us_states”`. Using state or district level locations allows users to analyze within-country dispersion of firms.
+By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input `locations` to *us_states*, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from `compute_doi`, all functions use the name of the variable that contains the location vector as inputs for `locations` (e.g., *countries*, *us_states*). The function `start_db` exports these vectors of ISO2 codes to the global environment. Function `compute_doi`, however does not directly refer to these objects, but to their names (e.g., “countries”, “us_states”). Using state or district level locations allows users to analyze within-country dispersion of firms.
 
 ```{r, eval = FALSE}
 # change locations -------------------------------------------------------------
@@ -407,27 +441,36 @@ compute_score(control = 1, object = 2, locations = us_states)
 compute_doi(control = 1, object = list(1,2), locations = "us_states")
 ```
 
-![](plot010.png){width=100%}
+![](plot012.png){width=100%}
+
+Users can add individual sets of locations through the function `add_locations`. In the variable `locations`, users specify the location codes (e.g., “AT”, “CH”, “DE”) and `type` takes the name of the location set (e.g., “DACH”). The new location set can be used in all functions. Since all functions check whether data on a location already exists, `globaltrends` does not duplicate data for new location sets.
+
+```{r}
+# TO DO
+```
+
 
 # Further applications
 To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g. *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
 
-![](plot011.png){width=100%}
+![](plot013.png){width=100%}
 
 The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, social trends or scandals.
 
-![](plot012.png){width=100%}
-
-***
-
-![](plot013.png){width=100%}
-
-***
-
 ![](plot014.png){width=100%}
 
+***
+
+![](plot015.png){width=100%}
+
+***
+
+![](plot016.png){width=100%}
+
 # References
-* Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based Uncertainty index for the United States and Australia. Economics Letters, 161: 149-153.
+* Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based uncertainty index for the United States and Australia. *Economics Letters*, 161: 149-153.
+* MacKinlay, A. C. 1997. Event studies in economics and finance. *Journal of Economic Literature*, 35(1): 13-39.
+* McWilliams, A. & Siegel, D. 1997. Event studies in management research: Theoretical and empirical issues. *Academy of Management Journal*, 40(3): 626-657.
 
 # Appendix
 
