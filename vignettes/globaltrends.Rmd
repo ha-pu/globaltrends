@@ -335,28 +335,71 @@ plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
 ![](plot005.png){width=100%}
 
 ## Abnormal changes in internationalization
-A unique feature of internationalization data from `globaltrends` is that it allows time series analysis. For a better understanding of changes in the data, the function provides the `get_abnorm_hist` function that implements functionality used in financial event studies (MacKinlay, 1997; McWilliams & Siegel, 1997). The function compares search scores and volume or degree of internationalization to a historic baseline. By default, the historic baseline is the average from the preceding twelve months. Users can specify the window of the baseline period (`train_win`) and a can use a break between baseline and date of interest (`train_break`). The `get_abnorm_hist` function has methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. For each month in the dataset, the deviation from the historic baseline is computed. To identify abnormal changes, the function provides the percentile rank for each change within the distribution of changes.
+A unique feature of internationalization data from `globaltrends` is that it allows time series analysis. For a better understanding of changes in the data, the function provides the `get_abnorm_hist` function that implements functionality used in financial event studies (MacKinlay, 1997; McWilliams & Siegel, 1997). The function compares search scores and volume or degree of internationalization to a historic baseline. By default, the historic baseline is the average from the preceding twelve months. Users can specify the window of the baseline period (`train_win`) and a can use a break between baseline and date of interest (`train_break`). Since they are used as baseline, the first `train_win + train_break` abnormal changes are `NA`. The `get_abnorm_hist` function has methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. For each month in the dataset, the deviation from the historic baseline is computed. To identify abnormal changes, the function provides the percentile rank for each change within the distribution of changes.
 
-```{r}
-# TO DO
+```{r, eval = FALSE}
+data <- export_score(keyword = "facebook", locations = countries)
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 7,590 x 8
+#>   keyword  location date       control object score score_abnorm quantile
+#>   <chr>    <chr>    <date>       <int>  <int> <dbl>        <dbl>    <dbl>
+#>  1 facebook US       2011-01-01       1      1  1.19      0.0220     0.728
+#>  ...
+#> 10 facebook US       2011-10-01       1      1  1.32     -0.0669     0.456
+#> # ... with 7,580 more rows
+
+data <- export_voi(object = 1)
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 345 x 7
+#>    keyword   date       control object     voi voi_abnorm quantile
+#>    <chr>     <date>       <int>  <int>   <dbl>      <dbl>    <dbl>
+#>  1 coca cola 2011-01-01       1      1 0.00320  -0.000299    0.316
+#>  ...
+#> 10 coca cola 2011-10-01       1      1 0.00274  -0.000458    0.193
+#> # ... with 335 more rows
+
+data <- export_doi(keyword = "microsoft", locations = "us_states")
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 345 x 9
+#>    keyword   date       type      control object locations   doi doi_abnorm quantile
+#>    <chr>     <date>     <chr>       <int>  <int> <chr>     <dbl>      <dbl>    <dbl>
+#>  1 microsoft 2011-01-01 score_obs       1      1 us_states 0.919    0.0330     0.991
+#>  ...
+#> 10 microsoft 2011-04-01 score_obs       1      1 us_states 0.909    0.0171     0.886
+#> # ... with 335 more rows
 ```
-
 
 The functions `plot_bar`, `plot_box`, and `plot_ts` have methods for classes of output from `get_abnorm_hist`. This allows seamless plotting of changes in internationalization. The function `plot_bar` shows the five locations with the highest and lowest changes in search scores for a given object keyword. The function uses only the first keyword in the dataset and averages changes in search scores for the input dataset – we therefore suggest filtering the output from ` get_abnorm_hist` to a specific period.
 
-```{r}
-# TO DO
+```{r, eval = FALSE}
+data <- export_score(object = 2, locations = countries)
+data <- dplyr::filter(data, keyword == "facebook" & lubridate::year(date) >= 2018)
+# use 2018 as baseline to compute abnormal changes in 2019
+out <- get_abnorm_hist(data)
+plot_bar(out)
 ```
 
 ![](plot006.png){width=100%}
 
 The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest changed over time. The function `plot_box` generates boxplots of changes in search score and volume or degree of internationalization distributions. The input `ci` allows users to set a confidence interval for plotting. Changes with percentile ranks outside this two-tailed confidence interval are highlighted with red dots.
 
-```{r}
-# TO DO
+```{r, eval = FALSE}
+data <- export_score(keyword = "facebook", locations = "DE")
+out <- get_abnorm_hist(data)
+plot_ts(out)
+
+data <- export_doi(keyword = "coca cola", locations = "countries")
+out <- get_abnorm_hist(data)
+plot_box(out)
 ```
 
-![](plot007.png){width=100%}
+<center>
+![](plot007.png){height=45%, width=45%}
+![](plot008.png){height=45%, width=45%}
+</center>
 
 ## Additional options
 The `globaltrends` package offers several options that allow robustness checks and adjustments for default computations. Users can compute global trend dispersion based on different types of time series, use other measures than the inverted Gini-coefficient, or change the set of locations.
@@ -378,8 +421,8 @@ seasad <- forecast::seasadj(fit)
 Column `score_sad` corrects the time series for seasonal patterns. In general, outcomes for all three types of time series are similar. Column `score_trd` applies the greatest smoothing, while `score_sad` reduces some noise.
 
 <center>
-![](plot008.png){height=45%, width=45%}
 ![](plot009.png){height=45%, width=45%}
+![](plot010.png){height=45%, width=45%}
 </center>
 
 The `export_doi`, `get_abnorm_hist`, `plot_bar`, `plot_ts`, `plot_box`, and `plot_voi_doi` functions allow filtering for the type of time series through the `type` input.
@@ -411,8 +454,8 @@ dplyr::coalesce(-1 * ineq::ineq(search_score, parameter = 1, type = "entropy"), 
 ```
 
 <center>
-![](plot010.png){height=45%, width=45%}
 ![](plot011.png){height=45%, width=45%}
+![](plot012.png){height=45%, width=45%}
 </center>
 
 The `export_doi`, `get_abnorm_hist`, `plot_ts`, `plot_box`, and `plot_voi_doi` functions allow filtering for the type of dispersion measures through the `measure` input.
@@ -441,31 +484,39 @@ compute_score(control = 1, object = 2, locations = us_states)
 compute_doi(control = 1, object = list(1,2), locations = "us_states")
 ```
 
-![](plot012.png){width=100%}
+![](plot013.png){width=100%}
 
 Users can add individual sets of locations through the function `add_locations`. In the variable `locations`, users specify the location codes (e.g., “AT”, “CH”, “DE”) and `type` takes the name of the location set (e.g., “DACH”). The new location set can be used in all functions. Since all functions check whether data on a location already exists, `globaltrends` does not duplicate data for new location sets.
 
-```{r}
-# TO DO
+```{r, eval = FALSE}
+add_locations(c("AT", "CH", "DE"), type = "dach")
+#> Successfully created new location set dach (AT, CH, DE).
+data <- export_score(keyword = "coca cola", locations = dach)
+dplyr::count(data, location)
+#> # A tibble: 3 x 2
+#>   location     n
+#>   <chr>    <int>
+#> 1 AT         127
+#> 2 CH         127
+#> 3 DE         127
 ```
-
 
 # Further applications
 To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g. *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
 
-![](plot013.png){width=100%}
-
-The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, social trends or scandals.
-
 ![](plot014.png){width=100%}
 
-***
+The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, social trends or scandals.
 
 ![](plot015.png){width=100%}
 
 ***
 
 ![](plot016.png){width=100%}
+
+***
+
+![](plot017.png){width=100%}
 
 # References
 * Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based uncertainty index for the United States and Australia. *Economics Letters*, 161: 149-153.
