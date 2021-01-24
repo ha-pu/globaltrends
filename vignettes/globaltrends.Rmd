@@ -372,10 +372,10 @@ na.omit(out) # to drop baseline NA values
 #> # ... with 335 more rows
 ```
 
-The functions `plot_bar`, `plot_box`, and `plot_ts` have methods for classes of output from `get_abnorm_hist`. This allows seamless plotting of changes in internationalization. The function `plot_bar` shows the five locations with the highest and lowest changes in search scores for a given object keyword. The function uses only the first keyword in the dataset and averages changes in search scores for the input dataset – we therefore suggest filtering the output from ` get_abnorm_hist` to a specific period.
+The functions `plot_bar`, `plot_box`, and `plot_ts` have methods for classes of output from `get_abnorm_hist`. This allows seamless plotting of changes in internationalization. The function `plot_bar` shows the five locations with the highest and lowest changes in search scores for a given object keyword. The function uses only the first keyword in the dataset and averages changes in search scores for the input dataset – we therefore suggest filtering the output from ` get_abnorm_hist` to a specific period. The plot shows that while positive abnormal changes in search scores for Facebook were greatest in Ecuador and Myanmar, negative abnormal changes were greatest in Italy and Argentina.
 
 ```{r, eval = FALSE}
-data <- export_score(object = 2, locations = countries)
+data <- export_score(object = 1, locations = countries)
 data <- dplyr::filter(data, keyword == "facebook" & lubridate::year(date) >= 2018)
 # use 2018 as baseline to compute abnormal changes in 2019
 out <- get_abnorm_hist(data)
@@ -384,7 +384,7 @@ plot_bar(out)
 
 ![](plot006.png){width=100%}
 
-The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest changed over time. The function `plot_box` generates boxplots of changes in search score and volume or degree of internationalization distributions. The input `ci` allows users to set a confidence interval for plotting. Changes with percentile ranks outside this two-tailed confidence interval are highlighted with red dots.
+The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest changed over time. The function `plot_box` generates boxplots of changes in search score and volume or degree of internationalization distributions. The input `ci` allows users to set a confidence interval for plotting. Changes with percentile ranks outside this two-tailed confidence interval are highlighted with red dots. The left-hand plot shows abnormal changes in Facebook’s search score for Germany. Search scores increased “abnormally” (i.e., compared to the historic average) in 2012 and decreased abnormally in 2014. The right-hand plot shows the distribution for Coca Cola’s degree of internationalization and indicates abnormal changes.
 
 ```{r, eval = FALSE}
 data <- export_score(keyword = "facebook", locations = "DE")
