@@ -9,29 +9,29 @@ start_db()
 \value{
 The function exports the following objects to .GlobalEnv:
 \itemize{
-  \item globaltrends_db A DBIConnection object, as returned by
-  \code{DBI::dbConnect()}, connecting to the SQLite database in the working
-  directory
-  \item tbl_doi A remote data source pointing to the table \emph{data_doi} in
-  the connected SQLite database
-  \item tbl_control A remote data source pointing to the table
-  \emph{data_control} in the connected SQLite database
-  \item tbl_mapping A remote data source pointing to the table
-  \emph{data_mapping} in the connected SQLite database
-  \item tbl_object A remote data source pointing to the table
-  \emph{data_object} in the connected SQLite database
-  \item tbl_score A remote data source pointing to the table
-  \emph{data_score} in the connected SQLite database
-  \item countries A \code{character} vector containing ISO2 country codes of
-  countries that add at least 0.1\% to global GDP
-  \item us_states A \code{character} vector containing ISO2 regional codes of
-  US states
-  \item keywords_control A \code{tibble} containing keywords of control
-  batches
-  \item time_control A \code{tibble} containing times of control batches
-  \item keywords_object A \code{tibble} containing keywords of object batches
-  \item time_object A \code{tibble} containing times of control batches
-  \item keyword_synonyms A \code{tibble} containing synonymous keywords
+\item globaltrends_db A DBIConnection object, as returned by
+\code{DBI::dbConnect()}, connecting to the SQLite database in the working
+directory
+\item tbl_doi A remote data source pointing to the table \emph{data_doi} in
+the connected SQLite database
+\item tbl_control A remote data source pointing to the table
+\emph{data_control} in the connected SQLite database
+\item tbl_mapping A remote data source pointing to the table
+\emph{data_mapping} in the connected SQLite database
+\item tbl_object A remote data source pointing to the table
+\emph{data_object} in the connected SQLite database
+\item tbl_score A remote data source pointing to the table
+\emph{data_score} in the connected SQLite database
+\item countries A \code{character} vector containing ISO2 country codes of
+countries that add at least 0.1\\% to global GDP
+\item us_states A \code{character} vector containing ISO2 regional codes of
+US states
+\item keywords_control A \code{tibble} containing keywords of control
+batches
+\item time_control A \code{tibble} containing times of control batches
+\item keywords_object A \code{tibble} containing keywords of object batches
+\item time_object A \code{tibble} containing times of control batches
+\item keyword_synonyms A \code{tibble} containing synonymous keywords
 }
 }
 \description{
@@ -56,7 +56,9 @@ start_db()
 
 }
 \seealso{
-* \code{\link{initialize_db}}
-* \code{\link{disconnect_db}}
-* \code{\link[dplyr]{tbl}}
+\itemize{
+\item \code{\link[=initialize_db]{initialize_db()}}
+\item \code{\link[=disconnect_db]{disconnect_db()}}
+\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
+}
 }

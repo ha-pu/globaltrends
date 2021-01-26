@@ -17,8 +17,8 @@ download_control_global(control)
 }
 \arguments{
 \item{control}{Control batch for which the data is downloaded. Object
-of class \code{numeric} or object of class \code{list} containing single
-objects of class \code{numeric}.}
+of type \code{numeric} or object of type \code{list} containing single
+objects of type \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to
@@ -59,6 +59,8 @@ download_control(
 
 }
 \seealso{
-* \code{\link{data_control}}
-* \code{\link[gtrendsR]{gtrends}}
+\itemize{
+\item \code{\link[=data_control]{data_control()}}
+\item \code{\link[gtrendsR:gtrends]{gtrendsR::gtrends()}}
+}
 }

@@ -2,56 +2,59 @@
 #'
 #' @description
 #' The function allows to export data from database tables. In combination with
-#' various \emph{write} functions in R, the functions allow exports from the
+#' various *write* functions in R, the functions allow exports from the
 #' database to local files.
 #'
 #' @details
-#' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
-#' \emph{locations}, or \emph{type}. Not all filters are applicable for all
-#' functions. When filter \emph{keyword} and \emph{object} are used together,
-#' \emph{keyword} overrules \emph{object}. Currently the functions do not
-#' include list inputs - users are advised to \code{purrr::map_dfr} or
-#' \code{dplyr::filter} instead.
+#' Exports can be filtered by *keyword*, *object*, *control*,
+#' *locations*, or *type*. Not all filters are applicable for all
+#' functions. When filter *keyword* and *object* are used together,
+#' *keyword* overrules *object*. Currently the functions do not
+#' include list inputs - users are advised to `purrr::map_dfr` or
+#' `dplyr::filter` instead.
 #'
 #' @param keyword Object keywords for which data should be exported. Object of
-#' class \code{character}.
+#' type `character`.
 #' @param object Object batch number for which data should be exported.
 #' @param control Control batch number for which data should be exported.
 #' @param locations List of locations for which the search score is used.
-#' For \code{export_control}, \code{export_object}, or \code{export_score}
-#' refers to lists generated in \code{start_db}. For \code{export_doi}
-#' object of class \code{character}.
+#' For `export_control`, `export_object`, or `export_score`
+#' refers to lists generated in `start_db`. For `export_doi`
+#' object of type `character`.
 #' @param type Type of time series for which data should be exported. Element
-#' of class \code{character}. Relevant only for \code{export_global} and
-#' \code{export_doi}. Takes one of the following values: \emph{obs} - observed
-#' search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
+#' of type `character`. Relevant only for `export_global` and
+#' `export_doi`. Takes one of the following values: *obs` - observed
+#' search scores, *sad* - seasonally adjusted search scores, *trd* -
 #' trend only search scores.
 #'
 #' @return
-#' The functions export and filter the respective database tables and return
-#' objects of class \code{"tbl_df", "tbl", "data.frame"}.
+#' The functions export and filter the respective database tables.
 #' \itemize{
-#'   \item \code{export_control} exports data from table \emph{data_control} with
-#' columns location, keyword, date, hits, control.
-#'   \item \code{export_object} exports data from table \emph{data_object} with
-#' columns location, keyword, date, hits, object.
-#'   \item \code{export_voi} exports data from table \emph{data_score} with
-#' columns keyword, date, hits, control, filters for
-#' \code{location == "world"}.
-#'   \item \code{export_score} exports data from table \emph{data_score} with
+#'   \item `export_control` exports data from table *data_control` with
+#' columns location, keyword, date, hits, control. Object of class
+#' `"data.frame"`.
+#'   \item `export_object` exports data from table *data_object` with
+#' columns location, keyword, date, hits, object.Object of class
+#' `"data.frame"`.
+#'   \item `export_score` exports data from table *data_score` with
 #' columns location, keyword, date, score_obs, score_sad, score_trd, control,
-#' object.
-#'   \item \code{export_doi} exports data from table \emph{data_doi} with columns
-#' keyword, date, type, gini, hhi, entropy, control, object, locations.
+#' object. Object of class `c("exp_score", "data.frame")`.
+#'   \item `export_voi` exports data from table *data_score` with
+#' columns keyword, date, hits, control, filters for
+#' `location == "world"`. Object of class
+#' `c("exp_voi", "data.frame")`.
+#'   \item `export_doi` exports data from table *data_doi` with columns
+#' keyword, date, type, gini, hhi, entropy, control, object, locations. Object
+#' of class `c("exp_doi", "data.frame")`.
 #' }
 #'
 #' @seealso
-#' * \code{\link{data_control}}
-#' * \code{\link{data_object}}
-#' * \code{\link{data_score}}
-#' * \code{\link{data_doi}}
-#' * \code{\link[purrr]{map}}
-#' * \code{\link[dplyr]{filter}}
+#' * [data_control()]
+#' * [data_object()]
+#' * [data_score()]
+#' * [data_doi()]
+#' * [purrr::map()]
+#' * [dplyr::filter()]
 #'
 #' @examples
 #' \dontrun{
@@ -75,7 +78,7 @@
 #'   type = "sad",
 #'   locations = "us_states"
 #' ) %>%
-#'   write_xl::write_xlsx("data_doi.xlsx")
+#'   writexl::write_xlsx("data_doi.xlsx")
 #'
 #' # interaction with purrr::map_dfr
 #' purrr::map_dfr(
@@ -179,6 +182,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   out <- filter(out, .data$location != "world")
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   out <- select(out, -.data$synonym)
+  class(out) <- c("exp_score", class(out))
   return(out)
 }
 
@@ -195,6 +199,7 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- filter(out, .data$location == "world")
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   out <- select(out, -.data$synonym)
+  class(out) <- c("exp_voi", class(out))
   return(out)
 }
 
@@ -211,6 +216,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
     in_type = type
   )
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  class(out) <- c("exp_doi", class(out))
   return(out)
 }
 

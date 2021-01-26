@@ -1,21 +1,21 @@
 #' @title Initialize database
 #'
 #' @description
-#' The function creates a new database for the \code{globaltrends} package and
+#' The function creates a new database for the `globaltrends` package and
 #' creates all necessary tables within the database.
 #'
 #' @details
-#' The function creates a new SQLite database for the \code{globaltrends}
-#' package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
-#' the working directory. If the folder \emph{db} does not exists in the working
+#' The function creates a new SQLite database for the `globaltrends`
+#' package. The database is saved as file *db/globaltrends_db.sqlite* in
+#' the working directory. If the folder *db* does not exists in the working
 #' directory, the folder is created. If the database already exists in the
 #' working directory, the function exits with an error. Within the database all
 #' tables are created and the default location sets are added to the respective
 #' table:
 #' \itemize{
-#'   \item \emph{countries} - all countries with a share in global GDP >= 0.1\%
+#'   \item *countries* - all countries with a share in global GDP >= 0.1\%
 #'   in 2018.
-#'   \item \emph{us_states} - all US federal states and Washington DC.
+#'   \item *us_states* - all US federal states and Washington DC.
 #' }
 #' After creating the database, the function disconnects from the database.
 #'
@@ -25,15 +25,15 @@
 #' once all downloads are complete.
 #'
 #' @seealso
-#' * \code{\link{start_db}}
-#' * \code{\link{disconnect_db}}
-#' * \code{\link{batch_keywords}}
-#' * \code{\link{batch_time}}
-#' * \code{\link{data_control}}
-#' * \code{\link{data_object}}
-#' * \code{\link{data_score}}
-#' * \code{\link{data_doi}}
-#' * \url{https://www.sqlite.org/index.html}
+#' * [start_db()]
+#' * [disconnect_db()]
+#' * [batch_keywords()]
+#' * [batch_time()]
+#' * [data_control()]
+#' * [data_object()]
+#' * [data_score()]
+#' * [data_doi()]
+#' * <https://www.sqlite.org/index.html>
 #'
 #' @return Database is created.
 #'
@@ -205,12 +205,12 @@ initialize_db <- function() {
 #' @title Load globaltrends database and tables
 #'
 #' @description
-#' The function connects to the database file \emph{db/globaltrends_db.sqlite}
+#' The function connects to the database file *db/globaltrends_db.sqlite*
 #' in the working directory. After connecting to the database connections to the
-#' database tables (through \code{dplyr::tbl}) are created. Data from the tables
-#' \emph{batch_keywords} and \emph{batch_time} are exported to the \code{tibble}
-#' objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
-#' and \emph{time_object}.
+#' database tables (through `dplyr::tbl`) are created. Data from the tables
+#' *batch_keywords* and *batch_time* are exported to the `tibble`
+#' objects *keywords_control*, *keywords_object*, *time_control*,
+#' and *time_object*.
 #'
 #' @section Warning:
 #' SQLite databases only allow one writer at any instant in time. To run
@@ -218,36 +218,36 @@ initialize_db <- function() {
 #' once all downloads are complete.
 #'
 #' @seealso
-#' * \code{\link{initialize_db}}
-#' * \code{\link{disconnect_db}}
-#' * \code{\link[dplyr]{tbl}}
+#' * [initialize_db()]
+#' * [disconnect_db()]
+#' * [dplyr::tbl()]
 #'
 #' @return
 #' The function exports the following objects to .GlobalEnv:
 #' \itemize{
 #'   \item globaltrends_db A DBIConnection object, as returned by
-#'   \code{DBI::dbConnect()}, connecting to the SQLite database in the working
+#'   `DBI::dbConnect()`, connecting to the SQLite database in the working
 #'   directory
-#'   \item tbl_doi A remote data source pointing to the table \emph{data_doi} in
+#'   \item tbl_doi A remote data source pointing to the table *data_doi* in
 #'   the connected SQLite database
 #'   \item tbl_control A remote data source pointing to the table
-#'   \emph{data_control} in the connected SQLite database
+#'   *data_control* in the connected SQLite database
 #'   \item tbl_mapping A remote data source pointing to the table
-#'   \emph{data_mapping} in the connected SQLite database
+#'   *data_mapping* in the connected SQLite database
 #'   \item tbl_object A remote data source pointing to the table
-#'   \emph{data_object} in the connected SQLite database
+#'   *data_object* in the connected SQLite database
 #'   \item tbl_score A remote data source pointing to the table
-#'   \emph{data_score} in the connected SQLite database
-#'   \item countries A \code{character} vector containing ISO2 country codes of
+#'   *data_score* in the connected SQLite database
+#'   \item countries A `character` vector containing ISO2 country codes of
 #'   countries that add at least 0.1\% to global GDP
-#'   \item us_states A \code{character} vector containing ISO2 regional codes of
+#'   \item us_states A `character` vector containing ISO2 regional codes of
 #'   US states
-#'   \item keywords_control A \code{tibble} containing keywords of control
+#'   \item keywords_control A `tibble` containing keywords of control
 #'   batches
-#'   \item time_control A \code{tibble} containing times of control batches
-#'   \item keywords_object A \code{tibble} containing keywords of object batches
-#'   \item time_object A \code{tibble} containing times of control batches
-#'   \item keyword_synonyms A \code{tibble} containing synonymous keywords
+#'   \item time_control A `tibble` containing times of control batches
+#'   \item keywords_object A `tibble` containing keywords of object batches
+#'   \item time_object A `tibble` containing times of control batches
+#'   \item keyword_synonyms A `tibble` containing synonymous keywords
 #' }
 #'
 #' @examples
@@ -362,7 +362,7 @@ start_db <- function() {
 #'
 #' @description
 #' The function closes the connection to the database file
-#' \emph{db/globaltrends_db.sqlite} in the working directory.
+#' *db/globaltrends_db.sqlite* in the working directory.
 #'
 #' @section Warning:
 #' SQLite databases only allow one writer at any instant in time. To run
@@ -370,11 +370,11 @@ start_db <- function() {
 #' once all downloads are complete.
 #'
 #' @seealso
-#' * \code{\link{initialize_db}}
-#' * \code{\link{start_db}}
+#' * [initialize_db()]
+#' * [start_db()]
 #'
 #' @param db Connection to database file that should be closed. Defaults
-#' to \code{globaltrends_db}.
+#' to `globaltrends_db`.
 #'
 #' @return
 #' Message that disconnection was successful.

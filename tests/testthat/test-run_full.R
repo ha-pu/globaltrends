@@ -142,42 +142,6 @@ test_that("compute_doi", {
   expect_equal(nrow(out), 1440)
 })
 
-# export data ------------------------------------------------------------------
-test_that("export_control", {
-  out <- export_control(control = 1)
-  expect_equal(nrow(out), 1800)
-})
-
-test_that("export_control_global", {
-  out <- export_control_global(control = 1)
-  expect_equal(nrow(out), 600)
-})
-
-test_that("export_object", {
-  out <- export_object(keyword = "manchester united")
-  expect_equal(nrow(out), 360)
-})
-
-test_that("export_object_global", {
-  out <- export_object_global(keyword = "manchester united")
-  expect_equal(nrow(out), 120)
-})
-
-test_that("export_score", {
-  out <- export_score(keyword = "real madrid")
-  expect_equal(nrow(out), 360)
-})
-
-test_that("export_voi", {
-  out <- export_voi(keyword = "real madrid")
-  expect_equal(nrow(out), 120)
-})
-
-test_that("export_doi", {
-  out <- export_doi(control = 1, object = 1, type = "trd", locations = "countries")
-  expect_equal(nrow(out), 480)
-})
-
 # remove data ------------------------------------------------------------------
 test_that("remove_control", {
   out <- capture_messages(remove_data(table = "batch_keywords", control = 1))

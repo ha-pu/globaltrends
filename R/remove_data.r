@@ -5,26 +5,25 @@
 #'
 #' @details
 #' The function removes data "greedily": all data that builds on the deleted
-#' data is removed. For example, when data from \emph{data_control} is removed
-#' data in \emph{data_object} that maps to this control batch is also removed.
-#' The dependency structure works as follows: \emph{batch_keyword} /
-#' \emph{batch_time} -> \emph{data_control} -> \emph{data_object} ->
-#' \emph{data_score} -> \emph{data_doi}.
+#' data is removed. For example, when data from *data_control* is removed
+#' data in *data_object* that maps to this control batch is also removed.
+#' The dependency structure works as follows: *batch_keyword* / *batch_time* ->
+#' *data_control* -> *data_object* -> *data_score* -> *data_doi*.
 #'
 #' @param table Database table from which the batch should be removed.  Object
-#' of class \code{character}.
+#' of type `character`.
 #' @param control Control batch for which the data is removed Object
-#' of class \code{numeric}.
+#' of type `numeric`.
 #' @param object Object batch for which the data is removed Object
-#' of class \code{numeric}.
+#' of type `numeric`.
 #'
 #' @seealso
-#' * \code{\link{batch_keywords}}
-#' * \code{\link{batch_time}}
-#' * \code{\link{data_control}}
-#' * \code{\link{data_object}}
-#' * \code{\link{data_score}}
-#' * \code{\link{data_doi}}
+#' * [batch_keywords()]
+#' * [batch_time()]
+#' * [data_control()]
+#' * [data_object()]
+#' * [data_score()]
+#' * [data_doi()]
 #'
 #' @return Message that data has been removed successfully. Data is removed
 #' from database tables.

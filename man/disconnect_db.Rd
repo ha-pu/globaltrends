@@ -30,6 +30,8 @@ disconnect_db()
 }
 }
 \seealso{
-* \code{\link{initialize_db}}
-* \code{\link{start_db}}
+\itemize{
+\item \code{\link[=initialize_db]{initialize_db()}}
+\item \code{\link[=start_db]{start_db()}}
+}
 }

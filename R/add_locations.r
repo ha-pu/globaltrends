@@ -8,7 +8,7 @@
 #' @details
 #' Location sets control the loations for which data is downloaded or to which
 #' computations are applied. By adding new location sets, the default sets
-#' \emph{countries} and \emph{us_states} can be expanded by additional sets.
+#' *countries* and *us_states* can be expanded by additional sets.
 #' Thereby, users can compute DOI within a region (e.g. adding EU countries as
 #' a set) or single countries (e.g. adding regions of France as a set). Download
 #' and computation functions check whether data for a location already exists.
@@ -16,18 +16,18 @@
 #' another set.
 #'
 #' @param locations Locations that should be added as set of locations. Vector of
-#' class \code{character}.
-#' @param type Name of the location set that should be added. Object of class
-#' \code{character} of length 1.
+#' type `character`.
+#' @param type Name of the location set that should be added. Object of type
+#' `character` of length 1.
 #' @param export Indicator whether the new location set should be directly
-#' exported to .GlobalEnv. Object of class \code{logical}, defaults to
-#' \code{TRUE}.
+#' exported to .GlobalEnv. Object of type `logical`, defaults to
+#' `TRUE`.
 #' @param db Connection to database file that should be closed. Defaults
-#' to \code{globaltrends_db}.
+#' to `globaltrends_db`.
 #'
 #' @return
 #' Message that the location set has been created successfully. Location data is
-#' written to table \emph{data_locations}.
+#' written to table *data_locations*.
 #'
 #' @examples
 #' \dontrun{

@@ -36,35 +36,30 @@ export_doi(
 \item{locations}{List of locations for which the search score is used.
 For \code{export_control}, \code{export_object}, or \code{export_score}
 refers to lists generated in \code{start_db}. For \code{export_doi}
-object of class \code{character}.}
+object of type \code{character}.}
 
 \item{keyword}{Object keywords for which data should be exported. Object of
-class \code{character}.}
+type \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
 
 \item{type}{Type of time series for which data should be exported. Element
-of class \code{character}. Relevant only for \code{export_global} and
-\code{export_doi}. Takes one of the following values: \emph{obs} - observed
+of type \code{character}. Relevant only for \code{export_global} and
+\code{export_doi}. Takes one of the following values: *obs` - observed
 search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
 trend only search scores.}
 }
 \value{
-The functions export and filter the respective database tables and return
-objects of class \code{"tbl_df", "tbl", "data.frame"}.
+The functions export and filter the respective database tables.
 \itemize{
-  \item \code{export_control} exports data from table \emph{data_control} with
-columns location, keyword, date, hits, control.
-  \item \code{export_object} exports data from table \emph{data_object} with
-columns location, keyword, date, hits, object.
-  \item \code{export_voi} exports data from table \emph{data_score} with
+\item \code{export_control} exports data from table *data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. \\item }export_object\verb{ exports data from table *data_object} with
+columns location, keyword, date, hits, object.Object of class
+\code{"data.frame"}.
+\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. \\item }export_voi\verb{ exports data from table *data_score} with
 columns keyword, date, hits, control, filters for
-\code{location == "world"}.
-  \item \code{export_score} exports data from table \emph{data_score} with
-columns location, keyword, date, score_obs, score_sad, score_trd, control,
-object.
-  \item \code{export_doi} exports data from table \emph{data_doi} with columns
-keyword, date, type, gini, hhi, entropy, control, object, locations.
+\code{location == "world"}. Object of class
+\code{c("exp_voi", "data.frame")}.
+\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`.
 }
 }
 \description{
@@ -102,7 +97,7 @@ export_doi(
   type = "sad",
   locations = "us_states"
 ) \%>\%
-  write_xl::write_xlsx("data_doi.xlsx")
+  writexl::write_xlsx("data_doi.xlsx")
 
 # interaction with purrr::map_dfr
 purrr::map_dfr(
@@ -123,10 +118,12 @@ export_voi(
 
 }
 \seealso{
-* \code{\link{data_control}}
-* \code{\link{data_object}}
-* \code{\link{data_score}}
-* \code{\link{data_doi}}
-* \code{\link[purrr]{map}}
-* \code{\link[dplyr]{filter}}
+\itemize{
+\item \code{\link[=data_control]{data_control()}}
+\item \code{\link[=data_object]{data_object()}}
+\item \code{\link[=data_score]{data_score()}}
+\item \code{\link[=data_doi]{data_doi()}}
+\item \code{\link[purrr:map]{purrr::map()}}
+\item \code{\link[dplyr:filter]{dplyr::filter()}}
+}
 }

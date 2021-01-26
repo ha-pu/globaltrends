@@ -1,7 +1,7 @@
 Package: globaltrends
 Type: Package
-Title: Download and measure global trends through Google searche volumes
-Version: 0.0.4
+Title: Download and measure global trends through Google search volumes
+Version: 0.0.5
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
     person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
@@ -39,8 +39,10 @@ Imports:
     tibble (>= 3.0.3),
     tidyr (>= 1.0.0),
     utils (>= 4.0.2),
-    WDI (>= 2.7.1)
+    WDI (>= 2.7.1),
+	zoo (>= 1.8.8)
 RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr (>= 1.29),
     rmarkdown (>= 2.3),

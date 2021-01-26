@@ -6,36 +6,36 @@
 #' download_control.list
 #'
 #' @description
-#' The function downloads search volumes from Google Trends for a \emph{control}
-#' batch in a set of \emph{locations}. Data is automatically written to table
-#' \emph{data_control}. For \code{download_control_global} the input
-#' \emph{location} is automatically set to \emph{world}.
+#' The function downloads search volumes from Google Trends for a *control*
+#' batch in a set of *locations*. Data is automatically written to table
+#' *data_control*. For `download_control_global` the input
+#' *location* is automatically set to *world*.
 #'
 #' @details
 #' Downloads through the Google Trends API are made through
-#' \code{gtrendsR::gtrends}. Each control batch can consist of up to five
-#' keywords and is predefined in tables \emph{batch_keywords} and
-#' \emph{batch_time} through \code{add_keywords}. The download for a single
+#' `gtrendsR::gtrends`. Each control batch can consist of up to five
+#' keywords and is predefined in tables *batch_keywords* and
+#' *batch_time* through `add_keywords`. The download for a single
 #' keyword batch for a single location takes about 30 seconds. This includes a
 #' randomized waiting period of 20-30 seconds between downloads. Depending on
 #' the frequency of downloads, Google Trends might block users for some time. In
-#' this case, \code{download_control} waits 60 minutes before it retries the
+#' this case, `download_control` waits 60 minutes before it retries the
 #' download.
 #'
 #' @param control Control batch for which the data is downloaded. Object
-#' of class \code{numeric} or object of class \code{list} containing single
-#' objects of class \code{numeric}.
+#' of type `numeric` or object of type `list` containing single
+#' objects of type `numeric`.
 #' @param locations List of countries or regions for which the data is
-#' downloaded. Refers to lists generated in \code{start_db}. Defaults to
-#' \code{countries}.
+#' downloaded. Refers to lists generated in `start_db`. Defaults to
+#' `countries`.
 #'
 #' @seealso
-#' * \code{\link{data_control}}
-#' * \code{\link[gtrendsR]{gtrends}}
+#' * [data_control()]
+#' * [gtrendsR::gtrends()]
 #'
 #' @return
 #' Message that data has been downloaded successfully. Data is written
-#' to table \emph{data_control}.
+#' to table *data_control*.
 #'
 #' @examples
 #' \dontrun{

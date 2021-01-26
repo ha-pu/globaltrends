@@ -17,11 +17,11 @@ compute_voi(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
-of class \code{numeric} or object of class \code{list} containing single
-objects of class \code{numeric}.}
+of type \code{numeric} or object of type \code{list} containing single
+objects of type \code{numeric}.}
 
 \item{control}{Control batch for which the data is downloaded. Object
-of class \code{numeric}. Defaults to 1.}
+of type \code{numeric}. Defaults to 1.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to
@@ -41,8 +41,8 @@ internationalization (VOI) as global search scores.
 \details{
 The search score computation proceeds in four steps. First, the function
 aggregates all search volumes to monthly data. Then, it applies some optional
-time series adjustments: seasonally adjusted [\code{forecast::seasadj}] and
-trend only [\code{stats::stl}]. Next, it follows the procedure outlined by
+time series adjustments: seasonally adjusted \code{\link[forecast:seasadj]{forecast::seasadj}} and
+trend only \code{\link[stats:stl]{stats::stl}}. Next, it follows the procedure outlined by
 Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
 the mapping, object search volumes are divided by the sum of control search
 volumes in the respective control batch. We use the sum of search volumes for
@@ -75,8 +75,10 @@ compute_score(
 
 }
 \seealso{
-* \code{\link{data_score}}
-* \code{\link{add_synonym}}
-* \code{\link[stats]{stl}}
-* \code{\link[forecast]{seasadj}}
+\itemize{
+\item \code{\link[=data_score]{data_score()}}
+\item \code{\link[=add_synonym]{add_synonym()}}
+\item \code{\link[stats:stl]{stats::stl()}}
+\item \code{\link[forecast:seasadj]{forecast::seasadj()}}
+}
 }

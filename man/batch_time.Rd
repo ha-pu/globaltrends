@@ -7,11 +7,11 @@
 \format{
 A tibble with 5 rows and 3 variables:
 \describe{
-  \item{type}{Column of type \code{character} showing the type of each batch,
-  takes "control" for control batches and "object" for object batches.}
-  \item{batch}{Column of type \code{integer} showing number of each batch.}
-  \item{time}{Column of type \code{character} showing the time period for
-  each batch as "YYYY-MM-DD YYYY-MM-DD".}
+\item{type}{Column of type \code{character} showing the type of each batch,
+takes "control" for control batches and "object" for object batches.}
+\item{batch}{Column of type \code{integer} showing number of each batch.}
+\item{time}{Column of type \code{character} showing the time period for
+each batch as "YYYY-MM-DD YYYY-MM-DD".}
 }
 }
 \usage{
@@ -28,6 +28,8 @@ table \emph{batch_time} as objects \code{time_control} and \code{time_object}
 to \code{.GlobalEnv}.
 }
 \seealso{
-* \code{\link[globaltrends]{add_keyword}}
+\itemize{
+\item \code{\link[=add_keyword]{add_keyword()}}
+}
 }
 \keyword{datasets}

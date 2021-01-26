@@ -8,13 +8,13 @@ add_locations(locations, type, export = TRUE, db = globaltrends_db)
 }
 \arguments{
 \item{locations}{Locations that should be added as set of locations. Vector of
-class \code{character}.}
+type \code{character}.}
 
-\item{type}{Name of the location set that should be added. Object of class
+\item{type}{Name of the location set that should be added. Object of type
 \code{character} of length 1.}
 
 \item{export}{Indicator whether the new location set should be directly
-exported to .GlobalEnv. Object of class \code{logical}, defaults to
+exported to .GlobalEnv. Object of type \code{logical}, defaults to
 \code{TRUE}.}
 
 \item{db}{Connection to database file that should be closed. Defaults

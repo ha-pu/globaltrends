@@ -10,7 +10,7 @@ To measure degree of internationalization, `globaltrends` offers a wide array of
 
 The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level allows researchers to **study proliferation within a country** and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as **data on global interest in products, persons, events, fads or scandals, even academic authors and papers**. 
 
-`globaltrends` provides user-friendly access to Google Trends. The [package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf) offers additonal technical details and a basic tutorial.
+`globaltrends` provides user-friendly access to Google Trends. The [package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf) offers additonal technical details and a basic tutorial. Please, refer to the [package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md) for change log.
 
 ````
 # install ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ download_control_global(control = new_control)
 
 # run object download ----------------------------------------------------------
 download_object(object = new_object)
-download_object_global(control = new_control)
+download_object_global(object = new_object)
 
 # compute search score ---------------------------------------------------------
 compute_score(control = new_control, object = new_object)
@@ -51,12 +51,28 @@ out_voi <- export_voi(keyword = "manchester united")
 out_doi <- export_doi(type = "obs", locations = "countries")
 
 # plot data --------------------------------------------------------------------
-plot_score(data_score = out_score)
-plot_voi_ts(data_voi = out_voi)
-plot_voi_box(data_voi = out_voi)
-plot_doi_ts(data_doi = out_doi)
-plot_doi_box(data_doi = out_doi)
+plot_bar(data = out_score)
+plot_ts(data = out_score)
+plot_box(data = out_score)
+plot_ts(data = out_voi)
+plot_box(data = out_voi)
+plot_ts(data = out_doi)
+plot_box(data = out_doi)
 plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
+
+# get abnormal internationalization --------------------------------------------
+abnorm_score <- get_abnorm_hist(data = out_score)
+plot_bar(data = abnorm_score)
+plot_ts(data = abnorm_score)
+plot_box(data = abnorm_score)
+
+abnorm_voi <- get_abnorm_hist(data = out_voi)
+plot_ts(data = abnorm_voi)
+plot_box(data = abnorm_voi)
+
+abnorm_doi <- get_abnorm_hist(data = out_doi)
+plot_ts(data = abnorm_doi)
+plot_box(data = abnorm_doi)
 
 # disconnect from db -----------------------------------------------------------
 disconnect_db()
