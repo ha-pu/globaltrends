@@ -3,7 +3,7 @@
 #' @description
 #' The function allows to compute changes in search scores, voi, and doi and
 #' shows percentile of changes to identify abnormal changes. In combination with
-#' various \emph{write} functions in R, the functions allow exports from the
+#' various *write* functions in R, the functions allow exports from the
 #' database to local files.
 #'
 #' @details
@@ -11,53 +11,53 @@
 #' date. We define "abnormal" in terms of deviation from a historic baseline
 #' value. To compute the historic baseline value, the function computes a moving
 #' average. Users can specify the window for moving average training
-#' \code{train_win} and a break between training and the given date
-#' \code{train_break}. Abnormal changes are the difference between the moving
+#' `train_win` and a break between training and the given date
+#' `train_break`. Abnormal changes are the difference between the moving
 #' average and the respective search score, VOI, or DOI. To highlight abnormal
 #' changes, the function computes a historic percentile rank for each abnormal
 #' change within the distribution of abnormal changes. Low percentile ranks
 #' signify abnormally high negative changes. High percentile ranks signify
 #' abnormally high positive changes.
-#' The function uses the output from \code{export_...} functions as input. As
-#' \code{get_abnorm_hist} offers no additional filters, users are advised to use
-#' filters in the \code{export_...} functions or to pre-process data before
-#' using \code{get_abnorm_hist}.
+#' The function uses the output from `export_...` functions as input. As
+#' `get_abnorm_hist` offers no additional filters, users are advised to use
+#' filters in the `export_...` functions or to pre-process data before
+#' using `get_abnorm_hist`.
 #'
-#' @param data Object of class \code{exp_score}, \code{exp_voi} or
-#' \code{exp_doi} generated through \code{export_...} functions.
-#' @param train_win Object of type \code{numeric}. Length of rolling average
+#' @param data Object of class `exp_score`, `exp_voi` or
+#' `exp_doi` generated through `export_...` functions.
+#' @param train_win Object of type `numeric`. Length of rolling average
 #' training window in months. Defaults to 12.
-#' @param train_break Object of type \code{numeric}. Length of break between
+#' @param train_break Object of type `numeric`. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
 #' @inheritParams export_control
-#' @param type Object of type \code{character} indicating the type of time
-#' series-column from data_score, takes either \emph{obs}, \emph{sad}, or
-#' \emph{trd}. Defaults to \emph{"obs"}.
-#' @param measure Object of type \code{character} indicating the measure used
+#' @param type Object of type `character` indicating the type of time
+#' series-column from data_score, takes either *obs*, *sad*, or
+#' *trd*. Defaults to *"obs"*.
+#' @param measure Object of type `character` indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
-#' either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.
+#' either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
 #'
 #' @return
 #' The functions export and filter the respective database tables and return
-#' objects of class \code{"tbl_df", "tbl", "data.frame"}.
+#' objects of class `"tbl_df", "tbl", "data.frame"`.
 #' \itemize{
-#'   \item Input class \code{exp_score} computes abnormal changes in search
+#'   \item Input class `exp_score` computes abnormal changes in search
 #'   scores with columns keyword, location, date, control, object, score,
 #'   score_abnorm, quantile. Object of class
-#'   \code{c("abnorm_score", "data.frame")}.
-#'   \item Input class \code{exp_voi} computes abnormal changes in VOI with
+#'   `c("abnorm_score", "data.frame")`.
+#'   \item Input class `exp_voi` computes abnormal changes in VOI with
 #'   columns keyword, date, control, object, voi, voi_abnorm, quantile. Object
-#'   of class \code{c("abnorm_voi", "data.frame")}.
-#'   \item Input class \code{exp_doi} computes abnormal changes in DOI with
+#'   of class `c("abnorm_voi", "data.frame")`.
+#'   \item Input class `exp_doi` computes abnormal changes in DOI with
 #'   columns keyword, locations, date, control, object, doi, doi_abnorm,
-#'   quantile. Object of class \code{c("abnorm_doi", "data.frame")}.
+#'   quantile. Object of class `c("abnorm_doi", "data.frame")`.
 #' }
 #'
 #' @seealso
-#' * \code{\link{export_score}}
-#' * \code{\link{export_voi}}
-#' * \code{\link{export_doi}}
-#' * \code{\link[dplyr]{filter}}
+#' * [export_score()]
+#' * [export_voi()]
+#' * [export_doi()]
+#' * [dplyr::filter()]
 #'
 #' @examples
 #' \dontrun{

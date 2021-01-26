@@ -9,44 +9,44 @@
 #' The function computes search scores for object keywords. Search volumes for
 #' control and object batches are mapped to the same base. Next, search volumes
 #' for object batches are divided by the sum of search volumes for the
-#' respective control batch. \code{compute_voi} computes volume of
+#' respective control batch. `compute_voi` computes volume of
 #' internationalization (VOI) as global search scores.
 #'
 #' @details
 #' The search score computation proceeds in four steps. First, the function
 #' aggregates all search volumes to monthly data. Then, it applies some optional
-#' time series adjustments: seasonally adjusted [\code{forecast::seasadj}] and
-#' trend only [\code{stats::stl}]. Next, it follows the procedure outlined by
+#' time series adjustments: seasonally adjusted [`forecast::seasadj`] and
+#' trend only [`stats::stl`]. Next, it follows the procedure outlined by
 #' Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
 #' the mapping, object search volumes are divided by the sum of control search
 #' volumes in the respective control batch. We use the sum of search volumes for
 #' a set of control keywords, rather than the search volumes for a single
 #' control keyword, to smooth-out variation in the underlying control data. When
-#' synonyms were specified through \code{add_synonym}, search scores for
+#' synonyms were specified through `add_synonym`, search scores for
 #' synonyms are added to the main keyword.
 #'
-#' \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
+#' *Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 #' Uncertainty index for the United States and Australia. Economics Letters,
-#' 161: 149-153.}
+#' 161: 149-153.*
 #'
 #'
 #' @param control Control batch for which the data is downloaded. Object
-#' of type \code{numeric}. Defaults to 1.
+#' of type `numeric`. Defaults to 1.
 #' @param object Object batch for which the data is downloaded. Object
-#' of type \code{numeric} or object of type \code{list} containing single
-#' objects of type \code{numeric}.
+#' of type `numeric` or object of type `list` containing single
+#' objects of type `numeric`.
 #' @param locations List of countries or regions for which the data is
-#' downloaded. Refers to lists generated in \code{start_db}. Defaults to
-#' \code{countries}.
+#' downloaded. Refers to lists generated in `start_db`. Defaults to
+#' `countries`.
 #'
 #' @seealso
-#' * \code{\link{data_score}}
-#' * \code{\link{add_synonym}}
-#' * \code{\link[stats]{stl}}
-#' * \code{\link[forecast]{seasadj}}
+#' * [data_score()]
+#' * [add_synonym()]
+#' * [stats::stl()]
+#' * [forecast::seasadj()]
 #'
 #' @return Message that data has been computed successfully. Data is written to
-#' table \emph{data_score}.
+#' table *data_score*.
 #'
 #' @examples
 #' \dontrun{

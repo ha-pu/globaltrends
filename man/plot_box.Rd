@@ -31,32 +31,41 @@ plot_box(data, ...)
 \method{plot_box}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95)
 }
 \arguments{
-\item{data}{Data exported from \code{export_...} or \code{compute_abnorm}
-functions.}
+\item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
 
 \item{type}{Object of type \code{character} indicating the type of time
-series-column from data_score, takes either \emph{obs}, \emph{sad}, or
-\emph{trd}. Defaults to \emph{"obs"}.}
+series-column from data_score, takes either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults
+to \emph{"obs"}.}
 
 \item{ci}{Confidence interval within which changes are assumed to be normal.
-Object of type \code{double, 0 < ci < 1}. Defaults to \emph{0.95}.}
+Object of type \verb{double, 0 < ci < 1}. Defaults to \emph{0.95}.}
 
 \item{measure}{Object of type \code{character} indicating the DOI measure,
-takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to
-\emph{"gini"}.}
+takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.}
 
 \item{locations}{Object of type \code{character} indicating for which
 set of locations should be filtered. Defaults to \emph{"countries"}.}
 
-\item{smooth}{Object of type \code{logical} indicating whether the
-\code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
-\code{TRUE}.}
+\item{smooth}{Object of type \code{logical} indicating whether the \code{geom_smooth}
+function of \code{ggplot2} should be used. Defaults to \code{TRUE}.}
 }
 \value{
 Boxplot of time series as \code{ggplot2} object. For plots for output from
-\code{get_abnorm_hist} the provided confidence interval is indicated by red
-dots.
-
+\code{get_abnorm_hist} the provided confidence interval is indicated by red dots.
+}
+\description{
+The function creates boxplots for time series globaltrends data. It uses
+the output of \code{export_...} or \code{get_abnorm_hist} to prepare boxplots for up to
+nine keywords.
+}
+\details{
+For output of \code{export_score}, only data for a single location is shown.
+When date for more than one location is provided, the function selects only
+the first location.
+For output of \code{get_abnorm_hist}, users can specify confidence intervals
+to highlight abnormal changes in the data.
+}
+\examples{
 \dontrun{
 data <- export_score(keyword = "amazon")
 plot_box(data, type = "obs")
@@ -69,16 +78,5 @@ data <- export_doi(keyword = "amazon")
 data <- get_abnorm_hist(data, train_win = 12, train_break = 0, measure = "gini")
 plot_box(data, ci = 0.9)
 }
-}
-\description{
-The function creates boxplots for time series globaltrends data. It uses
-the output of \code{export_...} or \code{get_abnorm_hist} to prepare boxplots
-for up to nine keywords.
-}
-\details{
-For output of \code{export_score}, only data for a single location is shown.
-When date for more than one location is provided, the function selects only
-the first location.
-For output of \code{get_abnorm_hist}, users can specify confidence intervals
-to highlight abnormal changes in the data.
+
 }

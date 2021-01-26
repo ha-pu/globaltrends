@@ -2,15 +2,15 @@
 #'
 #' @description
 #' The function creates barplots for cross-sectional search score data. It uses
-#' the output of \code{export_score} to prepare a bar plot of search scores for
-#' the top 10 countries. For output from \code{get_abnorm_hist} the plot shows
+#' the output of `export_score` to prepare a bar plot of search scores for
+#' the top 10 countries. For output from `get_abnorm_hist` the plot shows
 #' five locations with the highest and lowest abnormal changes each. When the
 #' output includes more than one keyword, only the first keyword is used.
 #'
 #' @inheritParams plot_ts
 #'
 #' @return
-#' Barplot of cross-sectional data as \code{ggplot2} object.
+#' Barplot of cross-sectional data as `ggplot2` object.
 #'
 #' @examples
 #' \dontrun{

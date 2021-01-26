@@ -13,12 +13,11 @@ plot_bar(data, ...)
 \method{plot_bar}{abnorm_score}(data)
 }
 \arguments{
-\item{data}{Data exported from \code{export_...} or \code{compute_abnorm}
-functions.}
+\item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
 
 \item{type}{Object of type \code{character} indicating the type of time
-series-column from data_score, takes either \emph{obs}, \emph{sad}, or
-\emph{trd}. Defaults to \emph{"obs"}.}
+series-column from data_score, takes either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults
+to \emph{"obs"}.}
 }
 \value{
 Barplot of cross-sectional data as \code{ggplot2} object.

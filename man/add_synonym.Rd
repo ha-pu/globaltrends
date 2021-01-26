@@ -33,5 +33,7 @@ add_synonym(
 
 }
 \seealso{
-* \code{\link{compute_score}}
+\itemize{
+\item \code{\link[=compute_score]{compute_score()}}
+}
 }

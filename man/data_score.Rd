@@ -7,26 +7,26 @@
 \format{
 A tibble with 6,000 rows and 8 variables:
 \describe{
-  \item{location}{Column of type \code{character} showing the ISO2 code of
-  the country or region for which the data was computed.}
-  \item{keyword}{Column of type \code{character} showing the keyword for
-  which the data was downloaded.}
-  \item{date}{Column of type \code{integer} showing the date for which the
-  data was computed Can be transformed into date format with
-  \code{lubridate::as_date}.}
-  \item{score_obs}{Column of type \code{double} showing search score for the
-  respective location-keyword-date combination - no time series adjustment.}
-  \item{score_sad}{Column of type \code{double} showing the search score for
-  the respective location-keyword-date combination - seasonally adjusted time
-  series.}
-  \item{score_trd}{Column of type \code{double} showing the search score for
-  the respective location-keyword-date combination - trend-only time series.}
-  \item{batch_c}{Column of type \code{integer} showing the number of each
-  control batch.}
-  \item{batch_o}{Column of type \code{integer} showing the number of each
-  object batch.}
-  \item{synonym}{Column of type \code{integer} showing whether the line will
-  be aggregated as synonym.}
+\item{location}{Column of type \code{character} showing the ISO2 code of
+the country or region for which the data was computed.}
+\item{keyword}{Column of type \code{character} showing the keyword for
+which the data was downloaded.}
+\item{date}{Column of type \code{integer} showing the date for which the
+data was computed Can be transformed into date format with
+\code{lubridate::as_date}.}
+\item{score_obs}{Column of type \code{double} showing search score for the
+respective location-keyword-date combination - no time series adjustment.}
+\item{score_sad}{Column of type \code{double} showing the search score for
+the respective location-keyword-date combination - seasonally adjusted time
+series.}
+\item{score_trd}{Column of type \code{double} showing the search score for
+the respective location-keyword-date combination - trend-only time series.}
+\item{batch_c}{Column of type \code{integer} showing the number of each
+control batch.}
+\item{batch_o}{Column of type \code{integer} showing the number of each
+object batch.}
+\item{synonym}{Column of type \code{integer} showing whether the line will
+be aggregated as synonym.}
 }
 }
 \usage{
@@ -45,13 +45,14 @@ scores are computed and automatically written to the table with the function
 \emph{data_score} as database connection \code{tbl_score} to
 \code{.GlobalEnv}. Users can access the database table through
 \code{dplyr::tbl}.
-}
-\details{
 The sample data included in \code{data_score} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-* \code{\link{compute_score}}
-* \code{\link[dplyr]{tbl}}
+\itemize{
+\item \code{\link[=compute_score]{compute_score()}}
+\item \code{\link[=compute_voi]{compute_voi()}}
+\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
+}
 }
 \keyword{datasets}

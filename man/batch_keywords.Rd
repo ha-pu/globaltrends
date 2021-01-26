@@ -7,12 +7,12 @@
 \format{
 A tibble with 19 rows and 3 variables:
 \describe{
-  \item{type}{Column of type \code{character} showing the type of each batch,
-  takes "control" for control batches and "object" for object batches.}
-  \item{batch}{Column of type \code{integer} showing the number of each
-  batch.}
-  \item{keyword}{Column of type \code{character} showing the keywords
-  included in each batch.}
+\item{type}{Column of type \code{character} showing the type of each batch,
+takes "control" for control batches and "object" for object batches.}
+\item{batch}{Column of type \code{integer} showing the number of each
+batch.}
+\item{keyword}{Column of type \code{character} showing the keywords
+included in each batch.}
 }
 }
 \usage{
@@ -27,6 +27,8 @@ Keywords can be added with the function \code{add_keywords}. The function
 \code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
 }
 \seealso{
-* \code{\link[globaltrends]{add_keyword}}
+\itemize{
+\item \code{\link[=add_keyword]{add_keyword()}}
+}
 }
 \keyword{datasets}

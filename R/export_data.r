@@ -2,59 +2,59 @@
 #'
 #' @description
 #' The function allows to export data from database tables. In combination with
-#' various \emph{write} functions in R, the functions allow exports from the
+#' various *write* functions in R, the functions allow exports from the
 #' database to local files.
 #'
 #' @details
-#' Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
-#' \emph{locations}, or \emph{type}. Not all filters are applicable for all
-#' functions. When filter \emph{keyword} and \emph{object} are used together,
-#' \emph{keyword} overrules \emph{object}. Currently the functions do not
-#' include list inputs - users are advised to \code{purrr::map_dfr} or
-#' \code{dplyr::filter} instead.
+#' Exports can be filtered by *keyword*, *object*, *control*,
+#' *locations*, or *type*. Not all filters are applicable for all
+#' functions. When filter *keyword* and *object* are used together,
+#' *keyword* overrules *object*. Currently the functions do not
+#' include list inputs - users are advised to `purrr::map_dfr` or
+#' `dplyr::filter` instead.
 #'
 #' @param keyword Object keywords for which data should be exported. Object of
-#' type \code{character}.
+#' type `character`.
 #' @param object Object batch number for which data should be exported.
 #' @param control Control batch number for which data should be exported.
 #' @param locations List of locations for which the search score is used.
-#' For \code{export_control}, \code{export_object}, or \code{export_score}
-#' refers to lists generated in \code{start_db}. For \code{export_doi}
-#' object of type \code{character}.
+#' For `export_control`, `export_object`, or `export_score`
+#' refers to lists generated in `start_db`. For `export_doi`
+#' object of type `character`.
 #' @param type Type of time series for which data should be exported. Element
-#' of type \code{character}. Relevant only for \code{export_global} and
-#' \code{export_doi}. Takes one of the following values: \emph{obs} - observed
-#' search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
+#' of type `character`. Relevant only for `export_global` and
+#' `export_doi`. Takes one of the following values: *obs` - observed
+#' search scores, *sad* - seasonally adjusted search scores, *trd* -
 #' trend only search scores.
 #'
 #' @return
 #' The functions export and filter the respective database tables.
 #' \itemize{
-#'   \item \code{export_control} exports data from table \emph{data_control} with
+#'   \item `export_control` exports data from table *data_control` with
 #' columns location, keyword, date, hits, control. Object of class
-#' \code{"data.frame"}.
-#'   \item \code{export_object} exports data from table \emph{data_object} with
+#' `"data.frame"`.
+#'   \item `export_object` exports data from table *data_object` with
 #' columns location, keyword, date, hits, object.Object of class
-#' \code{"data.frame"}.
-#'   \item \code{export_score} exports data from table \emph{data_score} with
+#' `"data.frame"`.
+#'   \item `export_score` exports data from table *data_score` with
 #' columns location, keyword, date, score_obs, score_sad, score_trd, control,
-#' object. Object of class \code{c("exp_score", "data.frame")}.
-#'   \item \code{export_voi} exports data from table \emph{data_score} with
+#' object. Object of class `c("exp_score", "data.frame")`.
+#'   \item `export_voi` exports data from table *data_score` with
 #' columns keyword, date, hits, control, filters for
-#' \code{location == "world"}. Object of class
-#' \code{c("exp_voi", "data.frame")}.
-#'   \item \code{export_doi} exports data from table \emph{data_doi} with columns
+#' `location == "world"`. Object of class
+#' `c("exp_voi", "data.frame")`.
+#'   \item `export_doi` exports data from table *data_doi` with columns
 #' keyword, date, type, gini, hhi, entropy, control, object, locations. Object
-#' of class \code{c("exp_doi", "data.frame")}.
+#' of class `c("exp_doi", "data.frame")`.
 #' }
 #'
 #' @seealso
-#' * \code{\link{data_control}}
-#' * \code{\link{data_object}}
-#' * \code{\link{data_score}}
-#' * \code{\link{data_doi}}
-#' * \code{\link[purrr]{map}}
-#' * \code{\link[dplyr]{filter}}
+#' * [data_control()]
+#' * [data_object()]
+#' * [data_score()]
+#' * [data_doi()]
+#' * [purrr::map()]
+#' * [dplyr::filter()]
 #'
 #' @examples
 #' \dontrun{

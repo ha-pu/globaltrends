@@ -7,19 +7,19 @@
 \format{
 A tibble with 8,640 rows and 6 variables:
 \describe{
-  \item{location}{Column of type \code{character} showing the ISO2 code of
-  the country or region for which the data was downloaded.}
-  \item{keyword}{Column of type \code{character} showing the keyword for
-  which the data was downloaded.}
-  \item{date}{Column of type \code{integer} showing the date for which the
-  data was downloaded. Can be transformed into date format with
-  \code{lubridate::as_date}.}
-  \item{hits}{Column of type \code{double} showing search volumes for the
-  respective location-keyword-date combination.}
-  \item{batch_c}{Column of type \code{integer} showing the number of each
-  control batch.}
-  \item{batch_o}{Column of type \code{integer} showing the number of each
-  object batch.}
+\item{location}{Column of type \code{character} showing the ISO2 code of
+the country or region for which the data was downloaded.}
+\item{keyword}{Column of type \code{character} showing the keyword for
+which the data was downloaded.}
+\item{date}{Column of type \code{integer} showing the date for which the
+data was downloaded. Can be transformed into date format with
+\code{lubridate::as_date}.}
+\item{hits}{Column of type \code{double} showing search volumes for the
+respective location-keyword-date combination.}
+\item{batch_c}{Column of type \code{integer} showing the number of each
+control batch.}
+\item{batch_o}{Column of type \code{integer} showing the number of each
+object batch.}
 }
 }
 \source{
@@ -39,13 +39,13 @@ downloaded and automatically written to the table through the function
 \emph{data_object} as database connection \code{tbl_object} to
 \code{.GlobalEnv}. Users can access the database table through
 \code{dplyr::tbl}.
-}
-\details{
 The sample data included in \code{data_object} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-* \code{\link{download_object}}
-* \code{\link[dplyr]{tbl}}
+\itemize{
+\item \code{\link[=download_object]{download_object()}}
+\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
+}
 }
 \keyword{datasets}

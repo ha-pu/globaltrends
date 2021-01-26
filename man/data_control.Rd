@@ -7,17 +7,14 @@
 \format{
 A tibble with 2,400 rows and 5 variables:
 \describe{
-  \item{location}{Column of type \code{character} showing the ISO2 code of
-  the country or region for which the data was downloaded.}
-  \item{keyword}{Column of type \code{character} showing the keyword for
-  which the data was downloaded.}
-  \item{date}{Column of type \code{integer} showing the date for which the
-  data was downloaded. Can be transformed into date format with
-  \code{lubridate::as_date}.}
-  \item{hits}{Column of type \code{double} showing search volumes for the
-  respective location-keyword-date combination.}
-  \item{batch}{Column of type \code{integer} showing the number of each
-  batch.}
+\item{location}{Column of type \code{character} showing the ISO2 code of
+the country or region for which the data was downloaded.}
+\item{keyword}{Column of type \code{character} showing the keyword for
+which the data was downloaded.}
+\item{date}{Column of type \code{integer} showing the date for which the
+data was downloaded. Can be transformed into date format with
+\code{lubridate::as_date}.\verb{\\item\{hits\}\{Column of type}double\verb{showing search volumes for the respective location-keyword-date combination.\} \\item\{batch\}\{Column of type}integer` showing the number of each
+batch.}
 }
 }
 \source{
@@ -35,13 +32,13 @@ written to the table through the function \code{download_control}. The
 function \code{start_db} exports the table \emph{data_control} as database
 connection \code{tbl_control} to \code{.GlobalEnv}. Users can access the
 database table through \code{dplyr::tbl}.
-}
-\details{
 The sample data included in \code{data_control} was simulated based on actual
 Google Trends data.
 }
 \seealso{
-* \code{\link{download_control}}
-* \code{\link[dplyr]{tbl}}
+\itemize{
+\item \code{\link[=download_control]{download_control()}}
+\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
+}
 }
 \keyword{datasets}

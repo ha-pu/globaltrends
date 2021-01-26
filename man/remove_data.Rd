@@ -27,9 +27,8 @@ The function removes data from database tables for control or object batches.
 The function removes data "greedily": all data that builds on the deleted
 data is removed. For example, when data from \emph{data_control} is removed
 data in \emph{data_object} that maps to this control batch is also removed.
-The dependency structure works as follows: \emph{batch_keyword} /
-\emph{batch_time} -> \emph{data_control} -> \emph{data_object} ->
-\emph{data_score} -> \emph{data_doi}.
+The dependency structure works as follows: \emph{batch_keyword} / \emph{batch_time} ->
+\emph{data_control} -> \emph{data_object} -> \emph{data_score} -> \emph{data_doi}.
 }
 \examples{
 \dontrun{
@@ -46,10 +45,12 @@ remove_data(
 
 }
 \seealso{
-* \code{\link{batch_keywords}}
-* \code{\link{batch_time}}
-* \code{\link{data_control}}
-* \code{\link{data_object}}
-* \code{\link{data_score}}
-* \code{\link{data_doi}}
+\itemize{
+\item \code{\link[=batch_keywords]{batch_keywords()}}
+\item \code{\link[=batch_time]{batch_time()}}
+\item \code{\link[=data_control]{data_control()}}
+\item \code{\link[=data_object]{data_object()}}
+\item \code{\link[=data_score]{data_score()}}
+\item \code{\link[=data_doi]{data_doi()}}
+}
 }

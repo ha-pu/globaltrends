@@ -2,36 +2,32 @@
 #'
 #' @description
 #' The function creates line plots for time series globaltrends data. It uses
-#' the output of \code{export_...} or \code{get_abnorm_hist} to prepare line
-#' plots for up to nine keywords.
+#' the output of `export_...` or `get_abnorm_hist` to prepare line plots for up
+#' to nine keywords.
 #'
 #' @details
-#' For output of \code{export_score}, only data for a single location is shown.
+#' For output of `export_score`, only data for a single location is shown.
 #' When date for more than one location is provided, the function selects only
 #' the first location.
-#' For output of \code{get_abnorm_hist}, users can specify confidence intervals
+#' For output of `get_abnorm_hist`, users can specify confidence intervals
 #' to highlight abnormal changes in the data.
 #'
-#' @param data Data exported from \code{export_...} or \code{compute_abnorm}
-#' functions.
-#' @param type Object of type \code{character} indicating the type of time
-#' series-column from data_score, takes either \emph{obs}, \emph{sad}, or
-#' \emph{trd}. Defaults to \emph{"obs"}.
-#' @param measure Object of type \code{character} indicating the DOI measure,
-#' takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to
-#' \emph{"gini"}.
-#' @param locations Object of type \code{character} indicating for which
-#' set of locations should be filtered. Defaults to \emph{"countries"}.
-#' @param smooth Object of type \code{logical} indicating whether the
-#' \code{geom_smooth} function of \code{ggplot2} should be used. Defaults to
-#' \code{TRUE}.
+#' @param data Data exported from `export_...` or `compute_abnorm` functions.
+#' @param type Object of type `character` indicating the type of time
+#' series-column from data_score, takes either *obs*, *sad*, or *trd*. Defaults
+#' to *"obs"*.
+#' @param measure Object of type `character` indicating the DOI measure,
+#' takes either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
+#' @param locations Object of type `character` indicating for which
+#' set of locations should be filtered. Defaults to *"countries"*.
+#' @param smooth Object of type `logical` indicating whether the `geom_smooth`
+#' function of `ggplot2` should be used. Defaults to `TRUE`.
 #' @param ci Confidence interval within which changes are assumed to be normal.
-#' Object of type \code{double, 0 < ci < 1}. Defaults to \emph{0.95}.
+#' Object of type `double, 0 < ci < 1`. Defaults to *0.95*.
 #'
 #' @return
-#' Line plot of time series as \code{ggplot2} object. For plots for output from
-#' \code{get_abnorm_hist} the provided confidence interval is indicated by red
-#' dots
+#' Line plot of time series as `ggplot2` object. For plots for output from
+#' `get_abnorm_hist` the provided confidence interval is indicated by red dots.
 #'
 #' @examples
 #' \dontrun{

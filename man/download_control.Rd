@@ -59,6 +59,8 @@ download_control(
 
 }
 \seealso{
-* \code{\link{data_control}}
-* \code{\link[gtrendsR]{gtrends}}
+\itemize{
+\item \code{\link[=data_control]{data_control()}}
+\item \code{\link[gtrendsR:gtrends]{gtrendsR::gtrends()}}
+}
 }

@@ -33,13 +33,13 @@ distribution of country search scores.
 }
 \details{
 The function uses an inverted Gini-coefficient
-[\code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}]
+\code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}
 as measure for the degree of internationalization. The more uniform the
 distribution of search scores across all countries, the higher the inverted
 Gini-coefficient and the greater the degree of internationalization. In
 addition to the Gini-coefficient, the package uses inverted Herfindahl index
-[\code{coalesce(1 - sum((series / sum(series))^2), 0)}] and inverted Entropy
-[\code{dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)}]
+\code{coalesce(1 - sum((series / sum(series))^2), 0)} and inverted Entropy
+\code{dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)}
 as measures for internationalization.
 }
 \examples{
@@ -58,6 +58,8 @@ compute_doi(
 
 }
 \seealso{
-* \code{\link{data_doi}}
-* \code{\link[ineq]{ineq}}
+\itemize{
+\item \code{\link[=data_doi]{data_doi()}}
+\item \code{\link[ineq:ineq]{ineq::ineq()}}
+}
 }
