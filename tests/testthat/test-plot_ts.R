@@ -149,7 +149,7 @@ test_that("plot_ts.exp_scoreS2", {
 # plot_ts.abnorm_score ---------------------------------------------------------
 test_that("plot_ts.abnorm_score1", {
   data <- export_score(keyword = "fc barcelona")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_error(
     plot_ts(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
@@ -178,13 +178,13 @@ test_that("plot_ts.abnorm_score1", {
 
 test_that("plot_ts.abnorm_score2", {
   data <- export_score(keyword = unique(data_score$keyword)[[1]], location = "US")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   out1 <- plot_ts(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score, location = "US")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_warning(
     out2 <- plot_ts(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
@@ -196,12 +196,12 @@ test_that("plot_ts.abnorm_score2", {
 
 test_that("plot_ts.abnorm_score3", {
   data <- export_score(keyword = unique(data_score$keyword)[[1]], location = "CN")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   out1 <- plot_ts(data)
   expect_s3_class(out1, "ggplot")
 
   data <- export_score(keyword = unique(data_score$keyword)[[1]])
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_warning(
     out2 <- plot_ts(data),
     "The plot function is limited to 1 location\\.\nYou use 3 locations\\.\nOnly 'CN' is used\\."
@@ -326,7 +326,7 @@ test_that("plot_ts.exp_voiS2", {
 # plot_ts.abnorm_voi -----------------------------------------------------------
 test_that("plot_ts.abnorm_voi1", {
   data <- export_voi(keyword = "fc barcelona")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_error(
     plot_ts(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
@@ -355,13 +355,13 @@ test_that("plot_ts.abnorm_voi1", {
 
 test_that("plot_ts.abnorm_voi2", {
   data <- export_voi(keyword = unique(data_score$keyword)[[1]])
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   out1 <- plot_ts(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_score$keyword)[1:2]
   data <- map_dfr(keywords, export_voi)
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_warning(
     out2 <- plot_ts(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
@@ -676,7 +676,7 @@ test_that("plot_ts.exp_doiS4", {
 # plot_ts.abnorm_doi -----------------------------------------------------------
 test_that("plot_ts.abnorm_doi1", {
   data <- export_doi(keyword = "fc barcelona")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_error(
     plot_ts(data, ci = "A"),
     "'ci' must be object of type double.\nYou provided an object of type character."
@@ -705,13 +705,13 @@ test_that("plot_ts.abnorm_doi1", {
 
 test_that("plot_ts.abnorm_doi2", {
   data <- export_doi(keyword = unique(data_doi$keyword)[[1]], locations = "countries")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   out1 <- plot_ts(data)
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(data_doi$keyword)[1:2]
   data <- map_dfr(keywords, export_doi, locations = "countries")
-  data <- compute_abnorm(data)
+  data <- get_abnorm_hist(data)
   expect_warning(
     out2 <- plot_ts(data),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
