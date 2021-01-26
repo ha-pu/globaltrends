@@ -42,6 +42,7 @@ Imports:
     WDI (>= 2.7.1),
 	zoo (>= 1.8.8)
 RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr (>= 1.29),
     rmarkdown (>= 2.3),
