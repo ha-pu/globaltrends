@@ -36,7 +36,7 @@ download_control_global(control = new_control)
 
 # run object download ----------------------------------------------------------
 download_object(object = new_object)
-download_object_global(control = new_control)
+download_object_global(object = new_object)
 
 # compute search score ---------------------------------------------------------
 compute_score(control = new_control, object = new_object)
