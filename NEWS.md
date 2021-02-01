@@ -1,3 +1,11 @@
+# globaltrends v.0.0.6
+* batch_keywords -> xxx
+* batch_time -> xxx
+* data_control -> xxx
+* data_doi -> xxx
+* data_object -> xxx
+* data_score -> xxx
+
 # globaltrends v.0.0.5
 * Added classes for output from `export_xxx`
 	* `export_score` -> class("exp_score")
