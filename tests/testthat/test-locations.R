@@ -53,8 +53,8 @@ test_that("add_loc2", {
 })
 
 # enter data -------------------------------------------------------------------
-dbWriteTable(globaltrends_db, "data_control", data_control, append = TRUE)
-dbWriteTable(globaltrends_db, "data_object", data_object, append = TRUE)
+dbWriteTable(globaltrends_db, "data_control", example_control, append = TRUE)
+dbWriteTable(globaltrends_db, "data_object", example_object, append = TRUE)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
@@ -106,7 +106,10 @@ test_that("compute_score2", {
 
 # compute doi ------------------------------------------------------------------
 test_that("compute_doi", {
-  compute_doi(object = 1, control = 1, locations = "countries")
+  expect_warning(
+    compute_doi(object = 1, control = 1, locations = "countries"),
+	"no non-missing arguments to max; returning -Inf"
+  )
 
   expect_message(
     compute_doi(object = 1, control = 1, locations = "asia"),

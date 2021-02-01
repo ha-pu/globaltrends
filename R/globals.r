@@ -14,9 +14,9 @@ utils::globalVariables(
     ".tbl_time",
     ".time_control",
     ".time_object",
-    "batch_keywords",
-    "batch_time",
     "countries",
+	"example_keywords",
+	"example_time",
     "globaltrends_db",
     "location",
     "type"

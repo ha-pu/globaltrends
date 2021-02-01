@@ -30,7 +30,7 @@
 #' `countries`.
 #'
 #' @seealso
-#' * [data_control()]
+#' * [example_control()]
 #' * [gtrendsR::gtrends()]
 #'
 #' @return

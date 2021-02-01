@@ -75,7 +75,7 @@ add_control_keyword(
 }
 \seealso{
 \itemize{
-\item \code{\link[=batch_keywords]{batch_keywords()}}
-\item \code{\link[=batch_time]{batch_time()}}
+\item \code{\link[=example_keywords]{example_keywords()}}
+\item \code{\link[=example_time]{example_time()}}
 }
 }

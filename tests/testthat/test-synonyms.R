@@ -43,17 +43,17 @@ test_that("add_synonyms", {
 })
 
 # enter data -------------------------------------------------------------------
-data <- filter(data_control, batch == 1 & location %in% countries[1:3])
+data <- filter(example_control, batch == 1 & location %in% countries[1:3])
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(
-  data_object,
+  example_object,
   batch_c == 1 & batch_o == 1 &
     location %in% countries[1:2]
 ) %>%
   mutate(batch_o = 1)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 data <- filter(
-  data_object,
+  example_object,
   batch_c == 1 & batch_o == 2 &
     location %in% countries[2:3]
 ) %>%

@@ -1,4 +1,4 @@
-#' batch_keywords
+#' example_keywords
 #'
 #' @description
 #' The table *batch_keywords* contains the keywords for each batch. Each
@@ -20,9 +20,9 @@
 #'
 #' @seealso
 #' * [globaltrends::add_keyword()]
-"batch_keywords"
+"example_keywords"
 
-#' batch_time
+#' example_time
 #'
 #' @description
 #' The table *batch_time* contains the time period for which data is
@@ -45,9 +45,9 @@
 #'
 #' @seealso
 #' * [globaltrends::add_keyword()]
-"batch_time"
+"example_time"
 
-#' data_control
+#' example_control
 #'
 #' @description
 #' The table *data_control* contains the downloaded data for each control
@@ -79,9 +79,9 @@
 #' @seealso
 #' * [download_control()]
 #' * [dplyr::tbl()]
-"data_control"
+"example_control"
 
-#' data_object
+#' example_object
 #'
 #' @description
 #' The table *data_object* contains the downloaded data for each object
@@ -117,9 +117,9 @@
 #' @seealso
 #' * [download_object()]
 #' * [dplyr::tbl()]
-"data_object"
+"example_object"
 
-#' data_score
+#' example_score
 #'
 #' @description
 #' The table *data_score* contains the search scores for each object batch.
@@ -164,9 +164,9 @@
 #' * [compute_score()]
 #' * [compute_voi()]
 #' * [dplyr::tbl()]
-"data_score"
+"example_score"
 
-#' data_doi
+#' example_doi
 #'
 #' @description
 #' The table *data_doi* contains the degree of internationalization (DOI)
@@ -213,4 +213,4 @@
 #' @seealso
 #' * [compute_doi()]
 #' * [dplyr::tbl()]
-"data_doi"
+"example_doi"
