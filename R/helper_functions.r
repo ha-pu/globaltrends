@@ -29,7 +29,7 @@
       date = as_date(.data$date)
     )
     out <- select(out, location = .data$geo, .data$keyword, .data$date, .data$hits)
-    Sys.sleep(stats::runif(1, min = 20, max = 30))
+    Sys.sleep(stats::runif(1, min = 5, max = 10))
     return(out)
   }
 }

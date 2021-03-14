@@ -8,6 +8,7 @@
 	* `data_doi` -> `example_doi`
 	* `data_object` -> `example_object`
 	* `data_score` -> `example_score`
+* Waiting period between downloads reduced from 20-30 seconds to 5-10 seconds.
 
 # globaltrends v.0.0.5
 * Added classes for output from `export_xxx`

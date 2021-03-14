@@ -17,7 +17,7 @@
 #' keywords and is predefined in tables *batch_keywords* and
 #' *batch_time* through `add_keywords`. The download for a single
 #' keyword batch for a single location takes about 30 seconds. This includes a
-#' randomized waiting period of 20-30 seconds between downloads. Depending on
+#' randomized waiting period of 5-10 seconds between downloads. Depending on
 #' the frequency of downloads, Google Trends might block users for some time. In
 #' this case, `download_control` waits 60 minutes before it retries the
 #' download.
