@@ -14,7 +14,7 @@ trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
   }
 }
 
-# batch_keywords ---------------------------------------------------------------
+# example_keywords -------------------------------------------------------------
 kw_control <- tibble(
   type = "control",
   batch = 1,
@@ -33,10 +33,10 @@ kw_object <- tibble(
 ) %>%
   unnest(cols = keyword)
 
-batch_keywords <- bind_rows(kw_control, kw_object)
-usethis::use_data(batch_keywords, overwrite = TRUE)
+example_keywords <- bind_rows(kw_control, kw_object)
+usethis::use_data(example_keywords, overwrite = TRUE)
 
-# batch_time -------------------------------------------------------------------
+# example_time -----------------------------------------------------------------
 ti_control <- tibble(
   type = "control",
   batch = 1,
@@ -49,10 +49,10 @@ ti_object <- tibble(
   time = "2010-01-01 2019-12-31"
 )
 
-batch_time <- bind_rows(ti_control, ti_object)
-usethis::use_data(batch_time, overwrite = TRUE)
+example_time <- bind_rows(ti_control, ti_object)
+usethis::use_data(example_time, overwrite = TRUE)
 
-# data_control -----------------------------------------------------------------
+# example_control --------------------------------------------------------------
 stat_control <- read_rds("stat_control.rds")
 
 out <- map(
@@ -63,7 +63,7 @@ out <- map(
   )
 )
 
-data_control <- stat_control %>%
+example_control <- stat_control %>%
   select(location, keyword) %>%
   mutate(
     hits = out,
@@ -76,9 +76,9 @@ data_control <- stat_control %>%
     date = as.integer(date)
   )
 
-usethis::use_data(data_control, overwrite = TRUE)
+usethis::use_data(example_control, overwrite = TRUE)
 
-# data_object ------------------------------------------------------------------
+# example_object ------------------------------------------------------------------
 stat_object <- read_rds("stat_object.rds")
 
 out <- map(
@@ -89,7 +89,7 @@ out <- map(
   )
 )
 
-data_object <- stat_object %>%
+example_object <- stat_object %>%
   select(location, keyword, batch_o) %>%
   mutate(
     hits = out,
@@ -102,9 +102,9 @@ data_object <- stat_object %>%
     date = as.integer(date)
   )
 
-usethis::use_data(data_object, overwrite = TRUE)
+usethis::use_data(example_object, overwrite = TRUE)
 
-# data_score -------------------------------------------------------------------
+# example_score ----------------------------------------------------------------
 stat_score <- read_rds("stat_score.rds")
 
 out <- map(
@@ -115,9 +115,9 @@ out <- map(
   )
 )
 
-data_score <- stat_score %>%
+example_score <- stat_score %>%
   select(location, keyword, type) %>%
-  left_join(batch_keywords, by = "keyword") %>%
+  left_join(example_keywords, by = "keyword") %>%
   select(-type.y, type = type.x, batch_o = batch) %>%
   mutate(
     score = out,
@@ -128,9 +128,9 @@ data_score <- stat_score %>%
   mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = type, values_from = score)
 
-usethis::use_data(data_score, overwrite = TRUE)
+usethis::use_data(example_score, overwrite = TRUE)
 
-# data_doi ---------------------------------------------------------------------
+# example_doi ------------------------------------------------------------------
 stat_doi <- read_rds("stat_doi.rds")
 
 out <- map(
@@ -141,9 +141,9 @@ out <- map(
   )
 )
 
-data_doi <- stat_doi %>%
+example_doi <- stat_doi %>%
   select(keyword, type, measure) %>%
-  left_join(batch_keywords, by = "keyword") %>%
+  left_join(example_keywords, by = "keyword") %>%
   select(-type.y, type = type.x, batch_o = batch) %>%
   mutate(
     doi = out,
@@ -155,4 +155,4 @@ data_doi <- stat_doi %>%
   mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = measure, values_from = doi)
 
-usethis::use_data(data_doi, overwrite = TRUE)
+usethis::use_data(example_doi, overwrite = TRUE)

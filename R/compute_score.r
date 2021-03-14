@@ -40,7 +40,7 @@
 #' `countries`.
 #'
 #' @seealso
-#' * [data_score()]
+#' * [example_score()]
 #' * [add_synonym()]
 #' * [stats::stl()]
 #' * [forecast::seasadj()]

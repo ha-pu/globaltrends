@@ -67,7 +67,7 @@ download_object(
 }
 \seealso{
 \itemize{
-\item \code{\link[=data_object]{data_object()}}
+\item \code{\link[=example_object]{example_object()}}
 \item \code{\link[gtrendsR:gtrends]{gtrendsR::gtrends()}}
 }
 }

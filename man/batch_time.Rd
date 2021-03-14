@@ -3,6 +3,7 @@
 \docType{data}
 \name{batch_time}
 \alias{batch_time}
+\alias{example_time}
 \title{batch_time}
 \format{
 A tibble with 5 rows and 3 variables:
@@ -15,7 +16,7 @@ each batch as "YYYY-MM-DD YYYY-MM-DD".}
 }
 }
 \usage{
-batch_time
+example_time
 }
 \description{
 The table \emph{batch_time} contains the time period for which data is
@@ -26,6 +27,9 @@ downloaded for each batch. Each line contains one \emph{time} period, the
 the function \code{add_keywords}. The function \code{start_db} exports the
 table \emph{batch_time} as objects \code{time_control} and \code{time_object}
 to \code{.GlobalEnv}.
+
+Example data for the table \emph{batch_time} is available as R object
+\code{example_time}.
 }
 \seealso{
 \itemize{

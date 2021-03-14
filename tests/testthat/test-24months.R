@@ -9,9 +9,9 @@ start_db()
 # compute_score object = 12 ----------------------------------------------------
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
-data <- filter(data_control, batch == 1)
+data <- filter(example_control, batch == 1)
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(data_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
+data <- filter(example_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 .keywords_object <- data %>%
   select(
@@ -38,9 +38,9 @@ test_that("score2", {
 # compute_score control = 12 ----------------------------------------------------
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
-data <- filter(data_control, batch == 1 & year(as_date(date)) == 2019)
+data <- filter(example_control, batch == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(data_object, batch_c == 1 & batch_o == 1)
+data <- filter(example_object, batch_c == 1 & batch_o == 1)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 
 test_that("score3", {
@@ -60,9 +60,9 @@ test_that("score4", {
 # compute_score control = 12, object = 12 --------------------------------------
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
-data <- filter(data_control, batch == 1 & year(as_date(date)) == 2019)
+data <- filter(example_control, batch == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(data_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
+data <- filter(example_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
 dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 
 test_that("score5", {

@@ -3,6 +3,7 @@
 \docType{data}
 \name{data_score}
 \alias{data_score}
+\alias{example_score}
 \title{data_score}
 \format{
 A tibble with 6,000 rows and 8 variables:
@@ -30,7 +31,7 @@ be aggregated as synonym.}
 }
 }
 \usage{
-data_score
+example_score
 }
 \description{
 The table \emph{data_score} contains the search scores for each object batch.
@@ -47,6 +48,9 @@ scores are computed and automatically written to the table with the function
 \code{dplyr::tbl}.
 The sample data included in \code{data_score} was simulated based on actual
 Google Trends data.
+
+Example data for the table \emph{data_score} is available as R object
+\code{example_score}.
 }
 \seealso{
 \itemize{

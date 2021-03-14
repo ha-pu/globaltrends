@@ -119,10 +119,10 @@ export_voi(
 }
 \seealso{
 \itemize{
-\item \code{\link[=data_control]{data_control()}}
-\item \code{\link[=data_object]{data_object()}}
-\item \code{\link[=data_score]{data_score()}}
-\item \code{\link[=data_doi]{data_doi()}}
+\item \code{\link[=example_control]{example_control()}}
+\item \code{\link[=example_object]{example_object()}}
+\item \code{\link[=example_score]{example_score()}}
+\item \code{\link[=example_doi]{example_doi()}}
 \item \code{\link[purrr:map]{purrr::map()}}
 \item \code{\link[dplyr:filter]{dplyr::filter()}}
 }

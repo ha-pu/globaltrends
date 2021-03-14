@@ -18,12 +18,12 @@
 #' of type `numeric`.
 #'
 #' @seealso
-#' * [batch_keywords()]
-#' * [batch_time()]
-#' * [data_control()]
-#' * [data_object()]
-#' * [data_score()]
-#' * [data_doi()]
+#' * [example_keywords()]
+#' * [example_time()]
+#' * [example_control()]
+#' * [example_object()]
+#' * [example_score()]
+#' * [example_doi()]
 #'
 #' @return Message that data has been removed successfully. Data is removed
 #' from database tables.
@@ -94,7 +94,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   walk(list(batch_c, batch_o), .check_batch)
   if (type == "control") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch_c))
-    keywords_control <- filter(batch_keywords, .data$type == "control")
+    keywords_control <- filter(.tbl_keywords, .data$type == "control")
     keywords_control <- select(keywords_control, -.data$type)
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
@@ -105,7 +105,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     .remove_data_control(batch_c = batch_c)
   } else if (type == "object") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch_o))
-    keywords_object <- filter(batch_keywords, .data$type == "object")
+    keywords_object <- filter(.tbl_keywords, .data$type == "object")
     keywords_object <- select(keywords_object, -.data$type)
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
@@ -127,7 +127,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
   walk(list(batch_c, batch_o), .check_batch)
   if (type == "control") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_c))
-    time_control <- filter(batch_time, .data$type == "control")
+    time_control <- filter(.tbl_time, .data$type == "control")
     time_control <- select(time_control, -.data$type)
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
@@ -136,7 +136,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     message(glue("Successfully deleted control batch {batch_c} from 'batch_time'."))
   } else if (type == "object") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_o))
-    time_object <- filter(batch_time, .data$type == "object")
+    time_object <- filter(.tbl_time, .data$type == "object")
     time_object <- select(time_object, -.data$type)
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)

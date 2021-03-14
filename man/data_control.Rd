@@ -3,6 +3,7 @@
 \docType{data}
 \name{data_control}
 \alias{data_control}
+\alias{example_control}
 \title{data_control}
 \format{
 A tibble with 2,400 rows and 5 variables:
@@ -21,7 +22,7 @@ batch.}
 \url{https://trends.google.com/trends/}
 }
 \usage{
-data_control
+example_control
 }
 \description{
 The table \emph{data_control} contains the downloaded data for each control
@@ -34,6 +35,9 @@ connection \code{tbl_control} to \code{.GlobalEnv}. Users can access the
 database table through \code{dplyr::tbl}.
 The sample data included in \code{data_control} was simulated based on actual
 Google Trends data.
+
+Example data for the table \emph{data_control} is available as R object
+\code{example_control}.
 }
 \seealso{
 \itemize{

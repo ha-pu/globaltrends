@@ -76,7 +76,7 @@ compute_score(
 }
 \seealso{
 \itemize{
-\item \code{\link[=data_score]{data_score()}}
+\item \code{\link[=example_score]{example_score()}}
 \item \code{\link[=add_synonym]{add_synonym()}}
 \item \code{\link[stats:stl]{stats::stl()}}
 \item \code{\link[forecast:seasadj]{forecast::seasadj()}}

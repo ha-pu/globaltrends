@@ -3,6 +3,7 @@
 \docType{data}
 \name{data_doi}
 \alias{data_doi}
+\alias{example_doi}
 \title{data_doi}
 \format{
 A tibble with 4,320 rows and 9 variables:
@@ -33,7 +34,7 @@ locations for which the search score distribution is used.}
 }
 }
 \usage{
-data_doi
+example_doi
 }
 \description{
 The table \emph{data_doi} contains the degree of internationalization (DOI)

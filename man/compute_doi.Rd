@@ -59,7 +59,7 @@ compute_doi(
 }
 \seealso{
 \itemize{
-\item \code{\link[=data_doi]{data_doi()}}
+\item \code{\link[=example_doi]{example_doi()}}
 \item \code{\link[ineq:ineq]{ineq::ineq()}}
 }
 }

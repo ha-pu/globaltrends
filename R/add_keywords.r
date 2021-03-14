@@ -62,8 +62,8 @@
 #' )
 #' }
 #' @seealso
-#' * [batch_keywords()]
-#' * [batch_time()]
+#' * [example_keywords()]
+#' * [example_time()]
 #'
 #' @rdname add_keyword
 #' @export
