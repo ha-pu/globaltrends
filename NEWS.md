@@ -1,10 +1,13 @@
 # globaltrends v.0.0.6
-* batch_keywords -> xxx
-* batch_time -> xxx
-* data_control -> xxx
-* data_doi -> xxx
-* data_object -> xxx
-* data_score -> xxx
+* To distinguish them from the actual database tables, names of the example data
+  object were adapted. Documentation is still available for the respective database
+  table.
+	* `batch_keywords` -> `example_keywords`
+	* `batch_time` -> `example_time`
+	* `data_control` -> `example_control`
+	* `data_doi` -> `example_doi`
+	* `data_object` -> `example_object`
+	* `data_score` -> `example_score`
 
 # globaltrends v.0.0.5
 * Added classes for output from `export_xxx`

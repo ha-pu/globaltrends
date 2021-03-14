@@ -1,4 +1,4 @@
-#' example_keywords
+#' batch_keywords
 #'
 #' @description
 #' The table *batch_keywords* contains the keywords for each batch. Each
@@ -7,6 +7,9 @@
 #' Keywords can be added with the function `add_keywords`. The function
 #' `start_db` exports the table *batch_keywords* as objects
 #' `keywords_control` and `keywords_object` to `.GlobalEnv`.
+#'
+#' Example data for the table *batch_keywords* is available as R object
+#' `example_keywords`.
 #'
 #' @format A tibble with 19 rows and 3 variables:
 #' \describe{
@@ -20,9 +23,10 @@
 #'
 #' @seealso
 #' * [globaltrends::add_keyword()]
+#' @name batch_keywords
 "example_keywords"
 
-#' example_time
+#' batch_time
 #'
 #' @description
 #' The table *batch_time* contains the time period for which data is
@@ -33,6 +37,9 @@
 #' the function `add_keywords`. The function `start_db` exports the
 #' table *batch_time* as objects `time_control` and `time_object`
 #' to `.GlobalEnv`.
+#'
+#' Example data for the table *batch_time* is available as R object
+#' `example_time`.
 #'
 #' @format A tibble with 5 rows and 3 variables:
 #' \describe{
@@ -45,9 +52,10 @@
 #'
 #' @seealso
 #' * [globaltrends::add_keyword()]
+#' @name batch_time
 "example_time"
 
-#' example_control
+#' data_control
 #'
 #' @description
 #' The table *data_control* contains the downloaded data for each control
@@ -60,6 +68,9 @@
 #' database table through `dplyr::tbl`.
 #' The sample data included in `data_control` was simulated based on actual
 #' Google Trends data.
+#'
+#' Example data for the table *data_control* is available as R object
+#' `example_control`.
 #'
 #' @format A tibble with 2,400 rows and 5 variables:
 #' \describe{
@@ -79,9 +90,10 @@
 #' @seealso
 #' * [download_control()]
 #' * [dplyr::tbl()]
+#' @name data_control
 "example_control"
 
-#' example_object
+#' data_object
 #'
 #' @description
 #' The table *data_object* contains the downloaded data for each object
@@ -96,6 +108,9 @@
 #' `dplyr::tbl`.
 #' The sample data included in `data_object` was simulated based on actual
 #' Google Trends data.
+#'
+#' Example data for the table *data_object* is available as R object
+#' `example_object`.
 #'
 #' @format A tibble with 8,640 rows and 6 variables:
 #' \describe{
@@ -117,9 +132,10 @@
 #' @seealso
 #' * [download_object()]
 #' * [dplyr::tbl()]
+#' @name data_object
 "example_object"
 
-#' example_score
+#' data_score
 #'
 #' @description
 #' The table *data_score* contains the search scores for each object batch.
@@ -136,6 +152,9 @@
 #' `dplyr::tbl`.
 #' The sample data included in `data_score` was simulated based on actual
 #' Google Trends data.
+#'
+#' Example data for the table *data_score* is available as R object
+#' `example_score`.
 #'
 #' @format A tibble with 6,000 rows and 8 variables:
 #' \describe{
@@ -164,9 +183,10 @@
 #' * [compute_score()]
 #' * [compute_voi()]
 #' * [dplyr::tbl()]
+#' @name data_score
 "example_score"
 
-#' example_doi
+#' data_doi
 #'
 #' @description
 #' The table *data_doi* contains the degree of internationalization (DOI)
@@ -213,4 +233,5 @@
 #' @seealso
 #' * [compute_doi()]
 #' * [dplyr::tbl()]
+#' @name data_doi
 "example_doi"
