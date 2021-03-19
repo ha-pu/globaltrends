@@ -20,7 +20,7 @@
 #' `character` or a `list` of `character` vectors.
 #' @param time Time frame for which the batch data should be downloaded. Object
 #' of type `character` that takes the from "YYYY-MM-DD YYYY-MM-DD".
-#' Defaults to *"2010-01-01 2019-12-31"*.
+#' Defaults to *"2010-01-01 2020-12-31"*.
 #'
 #' @return
 #' Message that the batch has been created successfully. Batch data is
@@ -68,7 +68,7 @@
 #' @rdname add_keyword
 #' @export
 
-add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
+add_control_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
   out <- .add_batch(type = "control", keyword = keyword, time = time, max = 5)
   return(out)
 }
@@ -78,7 +78,7 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @rdname add_keyword
 #' @export
 
-add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
+add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
   out <- .add_batch(type = "object", keyword = keyword, time = time, max = 4)
   return(out)
 }
@@ -101,7 +101,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @keywords internal
 #' @noRd
 
-.add_batch.character <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
+.add_batch.character <- function(type, keyword, time, max) {
   if (length(keyword) > max) {
     keyword <- split(keyword, ceiling(seq_along(keyword) / max))
   } else {
@@ -115,7 +115,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #' @keywords internal
 #' @noRd
 
-.add_batch.list <- function(type, keyword, time = "2010-01-01 2019-12-31", max) {
+.add_batch.list <- function(type, keyword, time, max) {
   new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
@@ -187,7 +187,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2019-12-31") {
 #'
 #' @description
 #' The function allows to add synonyms for object keywords. Sometimes, objects
-#' of interest can be searched with different keywords on Google, e.g. FC Bayern
+#' of interest can be searched with different keywords on Google e.g., FC Bayern
 #' for Bayern Munich. Search scores for keywords that are added as synonyms are
 #' aggregated when running `compute_score`. The function allows to add
 #' synonyms for a single keyword at a time.
