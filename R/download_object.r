@@ -111,12 +111,14 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
             i <- i + 1
           }
           message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
-            current = which(locations == .x), total = length(locations)
-          ))
+            current = which(locations == .x), total = length(locations)))
         } else {
           message(glue("Download for object data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
         }
-      }
+      } else {
+	    message(glue("Object data already available | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
+          current = which(locations == .x), total = length(locations)))
+	  }
     })
   }
 }
