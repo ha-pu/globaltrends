@@ -1,6 +1,8 @@
 # setup ------------------------------------------------------------------------
 suppressWarnings(library(dplyr))
 
+Sys.setenv("LANGUAGE" = "EN")
+
 initialize_db()
 start_db()
 
@@ -180,6 +182,88 @@ test_that("keywords_object3", {
   expect_equal(out_time$n[[2]], 1)
 })
 
+# add_control / add_keyword signals --------------------------------------------
+test_that("add_batch1", {
+  expect_error(
+    add_control_keyword(keyword = 1),
+    "no applicable method"
+  )
+  expect_error(
+    add_control_keyword(keyword = TRUE),
+    "no applicable method"
+  )
+  expect_error(
+    add_control_keyword(keyword = sum),
+    "no applicable method"
+  )
+})
+
+test_that("add_batch2", {
+  expect_error(
+    add_control_keyword(time = 1),
+    '"keyword"'
+  )
+  expect_error(
+    add_control_keyword(time = TRUE),
+    '"keyword"'
+  )
+  expect_error(
+    add_control_keyword(time = sum),
+    '"keyword"'
+  )
+  expect_error(
+    add_control_keyword(time = letters[1:5]),
+    '"keyword"'
+  )
+})
+
+test_that("add_batch3", {
+  expect_error(
+    add_object_keyword(keyword = 1),
+    "no applicable method"
+  )
+  expect_error(
+    add_object_keyword(keyword = TRUE),
+    "no applicable method"
+  )
+  expect_error(
+    add_object_keyword(keyword = sum),
+    "no applicable method"
+  )
+})
+
+test_that("add_batch4", {
+  expect_error(
+    add_object_keyword(time = 1),
+    '"keyword"'
+  )
+  expect_error(
+    add_object_keyword(time = TRUE),
+    '"keyword"'
+  )
+  expect_error(
+    add_object_keyword(time = sum),
+    '"keyword"'
+  )
+  expect_error(
+    add_object_keyword(time = letters[1:5]),
+    '"keyword"'
+  )
+})
+
+test_that("add_batch5", {
+  expect_error(
+    add_control_keyword(keyword = list(letters[1:6])),
+    "'keyword' must be object of length 5.\nYou provided an object of length 6."
+  )
+  
+  expect_error(
+    add_object_keyword(keyword = list(letters[1:5])),
+    "'keyword' must be object of length 4.\nYou provided an object of length 5."
+  )
+})
+
 # disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
+Sys.unsetenv("LANGUAGE")

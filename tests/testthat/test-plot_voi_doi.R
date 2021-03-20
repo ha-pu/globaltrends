@@ -11,7 +11,7 @@ dbWriteTable(globaltrends_db, "data_score", example_score, append = TRUE)
 dbWriteTable(globaltrends_db, "data_doi", example_doi, append = TRUE)
 
 # plot voi doi gini ------------------------------------------------------------
-test_that("plot_voi_doi1a", {
+test_that("plot_voi_doi-gini1", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
@@ -28,7 +28,7 @@ test_that("plot_voi_doi1a", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi2a", {
+test_that("plot_voi_doi-gini2", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "gini", smooth = TRUE)
@@ -45,7 +45,7 @@ test_that("plot_voi_doi2a", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi3a", {
+test_that("plot_voi_doi-gini3", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "gini", smooth = TRUE)
@@ -63,7 +63,7 @@ test_that("plot_voi_doi3a", {
 })
 
 # plot voi doi hhi -------------------------------------------------------------
-test_that("plot_voi_doi1b", {
+test_that("plot_voi_doi-hhi1", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "hhi", smooth = TRUE)
@@ -80,7 +80,7 @@ test_that("plot_voi_doi1b", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi2b", {
+test_that("plot_voi_doi-hhi2", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "hhi", smooth = TRUE)
@@ -97,7 +97,7 @@ test_that("plot_voi_doi2b", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi3b", {
+test_that("plot_voi_doi-hhi3", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "hhi", smooth = TRUE)
@@ -115,7 +115,7 @@ test_that("plot_voi_doi3b", {
 })
 
 # plot voi doi entropy ---------------------------------------------------------
-test_that("plot_voi_doi1c", {
+test_that("plot_voi_doi-entropy1", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "entropy", smooth = TRUE)
@@ -132,7 +132,7 @@ test_that("plot_voi_doi1c", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi2c", {
+test_that("plot_voi_doi-entropy2", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "sad", measure = "entropy", smooth = TRUE)
@@ -152,7 +152,7 @@ test_that("plot_voi_doi2c", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_voi_doi3c", {
+test_that("plot_voi_doi-entropy3", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, type = "trd", measure = "entropy", smooth = TRUE)
@@ -173,7 +173,7 @@ test_that("plot_voi_doi3c", {
 })
 
 # plot voi doi defaults --------------------------------------------------------
-test_that("plot_voi_doi_def1", {
+test_that("plot_voi_doi-def1", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
@@ -187,7 +187,7 @@ test_that("plot_voi_doi_def1", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_voi_doi_def2", {
+test_that("plot_voi_doi-def2", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, measure = "hhi", smooth = TRUE)
@@ -201,7 +201,7 @@ test_that("plot_voi_doi_def2", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_voi_doi_def3", {
+test_that("plot_voi_doi-def3", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, measure = "entropy", smooth = TRUE)
@@ -215,7 +215,7 @@ test_that("plot_voi_doi_def3", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_voi_doi_def4", {
+test_that("plot_voi_doi-def4", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
   out1 <- plot_voi_doi(data1, data2, smooth = TRUE)
@@ -227,6 +227,148 @@ test_that("plot_voi_doi_def4", {
   expect_false(identical(out2, out3))
   expect_false(identical(out2, out4))
   expect_false(identical(out3, out4))
+})
+
+# plot_voi_doi signals ---------------------------------------------------------
+test_that("plot_voi_doi-sig1", {
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_doi = 1, data_voi = data2),
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = "A", data_voi = data2),
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type character."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = TRUE, data_voi = data2),
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type logical."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = sum, data_voi = data2),
+    "'data_doi' must be object of type data.frame.\nYou provided an object of type builtin."
+  )
+})
+
+test_that("plot_voi_doi-sig2", {
+  data1 <- export_doi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_voi = 1, data_doi = data1),
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_voi = "A", data_doi = data1),
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type character."
+  )
+  expect_error(
+    plot_voi_doi(data_voi = TRUE, data_doi = data1),
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type logical."
+  )
+  expect_error(
+    plot_voi_doi(data_voi = sum, data_doi = data1),
+    "'data_voi' must be object of type data.frame.\nYou provided an object of type builtin."
+  )
+})
+
+test_that("plot_voi_doi-sig3", {
+  data1 <- export_doi(keyword = "fc barcelona")
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, type = 1),
+    "'type' must be object of type character.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, type = "A"),
+    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, type = TRUE),
+    "'type' must be object of type character.\nYou provided an object of type logical."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, type = sum),
+    "'type' must be object of type character.\nYou provided an object of type builtin."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, type = c("obs", "sad", "trd")),
+    "'type' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
+test_that("plot_voi_doi-sig4", {
+  data1 <- export_doi(keyword = "fc barcelona")
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, measure = 1),
+    "'measure' must be object of type character.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, measure = "A"),
+    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, measure = TRUE),
+    "'measure' must be object of type character.\nYou provided an object of type logical."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, measure = sum),
+    "'measure' must be object of type character.\nYou provided an object of type builtin."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, measure = c("gini", "hhi", "entropy")),
+    "'measure' must be object of length 1.\nYou provided an object of length 3."
+  )
+})
+
+test_that("plot_voi_doi-sig5", {
+  data1 <- export_doi(keyword = "fc barcelona")
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, locations = 1),
+    "'locations' must be object of type character.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, locations = TRUE),
+    "'locations' must be object of type character.\nYou provided an object of type logical."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, locations = sum),
+    "'locations' must be object of type character.\nYou provided an object of type builtin."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, locations = letters[1:5]),
+    "'locations' must be object of length 1.\nYou provided an object of length 5."
+  )
+})
+
+test_that("plot_voi_doi-sig6", {
+  data1 <- export_doi(keyword = "fc barcelona")
+  data2 <- export_voi(keyword = "fc barcelona")
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = 1),
+    "'smooth' must be object of type logical.\nYou provided an object of type double."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = "A"),
+    "'smooth' must be object of type logical.\nYou provided an object of type character."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = sum),
+    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
+  )
+  expect_error(
+    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)),
+    "'smooth' must be object of length 1.\nYou provided an object of length 2."
+  )
+})
+
+test_that("plot_voi_doi-sig7", {
+  data1 <- export_voi()
+  data2 <- export_doi()
+  expect_warning(
+    plot_voi_doi(data_voi = data1, data_doi = data2),
+    "The plot function is limited to 1 keyword.\nYou use 14 keywords.\nOnly the first keyword is used."
+  )
 })
 
 # disconnect -------------------------------------------------------------------

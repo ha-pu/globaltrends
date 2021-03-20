@@ -19,7 +19,7 @@ add_object_keyword(
 )
 
 # add synonyms -----------------------------------------------------------------
-test_that("add_synonyms", {
+test_that("add_synonyms1", {
   out <- capture_messages(
     add_synonym(
       keyword = "fc bayern",
@@ -93,6 +93,44 @@ test_that("keyword_synonym", {
     summarise(synonym = mean(synonym), .groups = "drop")
 
   expect_equal(out2_jp$synonym, 1)
+})
+
+# add synonyms signals ---------------------------------------------------------
+test_that("add_synonyms2", {
+  expect_error(
+    add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]),
+    "'keyword' must be object of length 1.\nYou provided an object of length 2."
+  )
+})
+
+test_that("add_synonyms4", {
+  expect_error(
+    add_synonym(keyword = 1, synonym = "A"),
+    "'keyword' must be object of type character.\nYou provided an object of type double."
+  )
+  expect_error(
+    add_synonym(keyword = TRUE, synonym = "A"),
+    "'keyword' must be object of type character.\nYou provided an object of type logical."
+  )
+  expect_error(
+    add_synonym(keyword = sum, synonym = "A"),
+    "'keyword' must be object of type character.\nYou provided an object of type builtin."
+  )
+})
+
+test_that("add_synonyms5", {
+  expect_error(
+    add_synonym(keyword = "A", synonym = 1),
+    "no applicable method"
+  )
+  expect_error(
+    add_synonym(keyword = "A", synonym = TRUE),
+    "no applicable method"
+  )
+  expect_error(
+    add_synonym(keyword = "A", synonym = sum),
+    "no applicable method"
+  )
 })
 
 # disconnect -------------------------------------------------------------------
