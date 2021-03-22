@@ -47,7 +47,7 @@ keyword is added to each object batch. The control keyword then allows a
 mapping between search volumes for control keywords stored in
 \emph{data_control} and search volumes for object keywords. The download for
 a single keyword batch for a single location takes about 30 seconds. This
-includes a randomized waiting period of 20-30 seconds between downloads.
+includes a randomized waiting period of 5-10 seconds between downloads.
 Depending on the frequency of downloads, Google Trends might block users
 for some time. In this case, \code{download_object} waits 60 minutes
 before it retries the download.
