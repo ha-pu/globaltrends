@@ -18,7 +18,7 @@ written to table \emph{keyword_synonyms}.
 }
 \description{
 The function allows to add synonyms for object keywords. Sometimes, objects
-of interest can be searched with different keywords on Google, e.g. FC Bayern
+of interest can be searched with different keywords on Google e.g., FC Bayern
 for Bayern Munich. Search scores for keywords that are added as synonyms are
 aggregated when running \code{compute_score}. The function allows to add
 synonyms for a single keyword at a time.

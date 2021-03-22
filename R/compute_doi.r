@@ -29,7 +29,7 @@
 #' Object of type `character`. Defaults to *"countries"*.
 #'
 #' @seealso
-#' * [data_doi()]
+#' * [example_doi()]
 #' * [ineq::ineq()]
 #'
 #' @return

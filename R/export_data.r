@@ -49,10 +49,10 @@
 #' }
 #'
 #' @seealso
-#' * [data_control()]
-#' * [data_object()]
-#' * [data_score()]
-#' * [data_doi()]
+#' * [example_control()]
+#' * [example_object()]
+#' * [example_score()]
+#' * [example_doi()]
 #' * [purrr::map()]
 #' * [dplyr::filter()]
 #'

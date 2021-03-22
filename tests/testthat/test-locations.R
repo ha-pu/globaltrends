@@ -53,8 +53,18 @@ test_that("add_loc2", {
 })
 
 # enter data -------------------------------------------------------------------
-dbWriteTable(globaltrends_db, "data_control", data_control, append = TRUE)
-dbWriteTable(globaltrends_db, "data_object", data_object, append = TRUE)
+add_control_keyword(
+  keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
+  time = "2010-01-01 2019-12-31"
+)
+
+add_object_keyword(
+  keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
+  time = "2010-01-01 2019-12-31"
+)
+
+dbWriteTable(globaltrends_db, "data_control", example_control, append = TRUE)
+dbWriteTable(globaltrends_db, "data_object", example_object, append = TRUE)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {

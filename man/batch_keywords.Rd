@@ -3,6 +3,7 @@
 \docType{data}
 \name{batch_keywords}
 \alias{batch_keywords}
+\alias{example_keywords}
 \title{batch_keywords}
 \format{
 A tibble with 19 rows and 3 variables:
@@ -16,7 +17,7 @@ included in each batch.}
 }
 }
 \usage{
-batch_keywords
+example_keywords
 }
 \description{
 The table \emph{batch_keywords} contains the keywords for each batch. Each
@@ -25,6 +26,9 @@ or object) and the id of the \emph{batch} to which the keyword is assigned.
 Keywords can be added with the function \code{add_keywords}. The function
 \code{start_db} exports the table \emph{batch_keywords} as objects
 \code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
+
+Example data for the table \emph{batch_keywords} is available as R object
+\code{example_keywords}.
 }
 \seealso{
 \itemize{

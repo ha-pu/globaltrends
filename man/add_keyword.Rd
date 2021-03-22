@@ -5,9 +5,9 @@
 \alias{add_object_keyword}
 \title{Add batches of control or object keywords}
 \usage{
-add_control_keyword(keyword, time = "2010-01-01 2019-12-31")
+add_control_keyword(keyword, time = "2010-01-01 2020-12-31")
 
-add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
+add_object_keyword(keyword, time = "2010-01-01 2020-12-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of type
@@ -15,7 +15,7 @@ add_object_keyword(keyword, time = "2010-01-01 2019-12-31")
 
 \item{time}{Time frame for which the batch data should be downloaded. Object
 of type \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
-Defaults to \emph{"2010-01-01 2019-12-31"}.}
+Defaults to \emph{"2010-01-01 2020-12-31"}.}
 }
 \value{
 Message that the batch has been created successfully. Batch data is
@@ -75,7 +75,7 @@ add_control_keyword(
 }
 \seealso{
 \itemize{
-\item \code{\link[=batch_keywords]{batch_keywords()}}
-\item \code{\link[=batch_time]{batch_time()}}
+\item \code{\link[=example_keywords]{example_keywords()}}
+\item \code{\link[=example_time]{example_time()}}
 }
 }

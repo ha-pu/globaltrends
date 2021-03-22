@@ -1,3 +1,15 @@
+# globaltrends v.0.0.6
+* To distinguish them from the actual database tables, names of the example data
+  object were adapted. Documentation is still available for the respective database
+  table.
+	* `batch_keywords` -> `example_keywords`
+	* `batch_time` -> `example_time`
+	* `data_control` -> `example_control`
+	* `data_doi` -> `example_doi`
+	* `data_object` -> `example_object`
+	* `data_score` -> `example_score`
+* Waiting period between downloads reduced from 20-30 seconds to 5-10 seconds.
+
 # globaltrends v.0.0.5
 * Added classes for output from `export_xxx`
 	* `export_score` -> class("exp_score")

@@ -27,12 +27,12 @@
 #' @seealso
 #' * [start_db()]
 #' * [disconnect_db()]
-#' * [batch_keywords()]
-#' * [batch_time()]
-#' * [data_control()]
-#' * [data_object()]
-#' * [data_score()]
-#' * [data_doi()]
+#' * [example_keywords()]
+#' * [example_time()]
+#' * [example_control()]
+#' * [example_object()]
+#' * [example_score()]
+#' * [example_doi()]
 #' * <https://www.sqlite.org/index.html>
 #'
 #' @return Database is created.

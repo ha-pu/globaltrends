@@ -29,7 +29,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.5'
+#> [1] '0.0.6'
 ```
 
 # Google Trends
@@ -44,7 +44,7 @@ The `globaltrends` package computes two conceptually distinct measures of intern
 
 In the `globaltrends` package, we provide a tailor-made operationalization of internationalization that relies on the global recognition of objects of interest. This complements traditional approaches in international business research that approximate the configuration of a firm’s international operations. Our package allows users to download time series of Google search volumes from 2004 onwards. Because Google Trends organizes its data output as single-country keyword batches, the package uses batched downloads. Within these batches, Google Trends normalizes search volumes to values between 0 and 100. We devise a mapping algorithm to transform Google Trends output to a more general data structure. For each country, `globaltrends` downloads a set of control keywords that captures “standard” search volumes in the country. Then, the package downloads batches of company names, including synonyms and alternative spellings, for each country. We follow Castelnuovo and Tran (2017) to implement a mapping of search volumes for firms to search volumes for control keywords in each country. The package then uses these time series to compute search scores as the ratio between search volumes for a firm in comparison to search volumes for control keywords in each country. We offer a detailed outline of this approach in the [Appendix](#appendix).  
 
-Search scores are interpretable as the proportion of search volumes for an object of interest compared to search volumes for control keywords within a country. Search scores therefore allow comparison across different types of objects (e.g. firms, persons, products…), time periods, and countries and provide insights into the local relevance of objects and their exposure to the respective countries.
+Search scores are interpretable as the proportion of search volumes for an object of interest compared to search volumes for control keywords within a country. Search scores therefore allow comparison across different types of objects (e.g., firms, persons, products…), time periods, and countries and provide insights into the local relevance of objects and their exposure to the respective countries.
 
 ## Volume of internationalization (VOI)
 Country search scores focus on search volumes for objects in single countries. To compute an object’s volume of internationalization, we focus on global search volumes instead of country search volumes. Using the same approach as outlined above, `globaltrends` first downloads global search volumes for each control keyword and firm. Next, the package runs the control-object mapping and computes global search scores as the ratio of global search volumes for each object and global control search volumes.  
@@ -65,7 +65,7 @@ We demonstrate the functionality of the `globaltrends` package based on a sample
 ## Setup and start database
 Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a [SQLite database](https://www.sqlite.org/index.html) to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.  
 
-Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates a SQLite database file named *globaltrends_db.sqlite* within this folder. The command also creates all necessary tables within the database. For more information on database tables, please refer to their built-in documentation, e.g. `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
+Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates a SQLite database file named *globaltrends_db.sqlite* within this folder. The command also creates all necessary tables within the database. For more information on database tables, please refer to their built-in documentation e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
 ```{r, eval = FALSE}
 # initialize_db ----------------------------------------------------------------
@@ -103,9 +103,9 @@ disconnect_db()
 ```
 
 ## Download data from Google Trends
-The next step in the `globaltrends` workflow is data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include keywords indicating baseline search activity and **object** batches that include keywords relating to the objects of interest (e.g. firms, persons, products…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC, see [below](#changing-locations) for further details.   
+The next step in the `globaltrends` workflow is data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include keywords indicating baseline search activity and **object** batches that include keywords relating to the objects of interest (e.g., firms, persons, products…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC, see [below](#changing-locations) for further details.   
 
-The download for a single keyword batch for a single location takes about 30 seconds. This includes a randomized waiting period of 20-30 seconds between downloads. Depending on download frequency, Google Trends might block users for some time. In this case, `globaltrends` waits 60 minutes before it retries the download.
+The download for a single keyword batch for a single location takes about 10 seconds. This includes a randomized waiting period of 5-10 seconds between downloads. Depending on download frequency, Google Trends might block users for some time. Unfortunately, the exact download limits are unknown ([Issue #140](https://github.com/PMassicotte/gtrendsR/issues/140), [Issue #255](https://github.com/PMassicotte/gtrendsR/issues/255)). In this case, `globaltrends` waits 60 minutes before it retries the download.
 
 ### Download control data
 First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](http://www.google.com/trends) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
@@ -114,7 +114,7 @@ First, we add a batch of control keywords to the database using `add_control_key
 # add_control_keyword ----------------------------------------------------------
 new_control <- add_control_keyword(
   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  time = "2010-01-01 2020-12-31"
 )
 #> Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).
 ```
@@ -158,10 +158,10 @@ new_object <- add_object_keyword(
     c("coca cola", "facebook", "microsoft"),
     c("alaska air group", "illinois tool works", "jm smucker")
   ),
-  time = "2010-01-01 2019-12-31"
+  time = "2010-01-01 2020-12-31"
 )
-#> Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2019-12-31).
-#> Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2019-12-31).
+#> Successfully created new object batch 1 (coca cola ... microsoft, 2010-01-01 2020-12-31).
+#> Successfully created new object batch 2 (alaska air group ... jm smucker, 2010-01-01 2020-12-31).
 ```
 
 As for control keywords, the function `add_object_keyword` also updates the object `keywords_object` in the global environment. This `tibble` can be used for batch lookup.
@@ -298,7 +298,7 @@ export_doi(object = 1, control = 1, type = "obs") %>%
 #> 3 microsoft 0.682
 ```
 
-Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. With the exception of `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
+Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. Except for `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
 
 ```{r, eval = FALSE}
 # plot_score -------------------------------------------------------------------
@@ -502,11 +502,11 @@ dplyr::count(data, location)
 ```
 
 # Further applications
-To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g. *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
+To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g., *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
 
 ![](plot014.png){width=100%}
 
-The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g. `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, social trends or scandals.
+The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level (e.g., `locations = us_states`) allows researchers to study proliferation within a country and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as data on global interest in products, persons, events, social trends or scandals.
 
 ![](plot015.png){width=100%}
 

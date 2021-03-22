@@ -3,6 +3,7 @@
 \docType{data}
 \name{data_object}
 \alias{data_object}
+\alias{example_object}
 \title{data_object}
 \format{
 A tibble with 8,640 rows and 6 variables:
@@ -26,7 +27,7 @@ object batch.}
 \url{https://trends.google.com/trends/}
 }
 \usage{
-data_object
+example_object
 }
 \description{
 The table \emph{data_object} contains the downloaded data for each object
@@ -41,6 +42,9 @@ downloaded and automatically written to the table through the function
 \code{dplyr::tbl}.
 The sample data included in \code{data_object} was simulated based on actual
 Google Trends data.
+
+Example data for the table \emph{data_object} is available as R object
+\code{example_object}.
 }
 \seealso{
 \itemize{

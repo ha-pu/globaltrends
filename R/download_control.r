@@ -17,7 +17,7 @@
 #' keywords and is predefined in tables *batch_keywords* and
 #' *batch_time* through `add_keywords`. The download for a single
 #' keyword batch for a single location takes about 30 seconds. This includes a
-#' randomized waiting period of 20-30 seconds between downloads. Depending on
+#' randomized waiting period of 5-10 seconds between downloads. Depending on
 #' the frequency of downloads, Google Trends might block users for some time. In
 #' this case, `download_control` waits 60 minutes before it retries the
 #' download.
@@ -30,7 +30,7 @@
 #' `countries`.
 #'
 #' @seealso
-#' * [data_control()]
+#' * [example_control()]
 #' * [gtrendsR::gtrends()]
 #'
 #' @return
@@ -83,10 +83,14 @@ download_control.numeric <- function(control, locations = countries) {
           out <- mutate(out, batch = control)
           dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
+        message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
+          current = which(locations == .x), total = length(locations)
+        ))
+      } else {
+        message(glue("Control data already available | control: {control} | location: {in_location} [{current}/{total}]",
+          current = which(locations == .x), total = length(locations)
+        ))
       }
-      message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
-        current = which(locations == .x), total = length(locations)
-      ))
     })
   }
 }

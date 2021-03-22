@@ -46,11 +46,11 @@ remove_data(
 }
 \seealso{
 \itemize{
-\item \code{\link[=batch_keywords]{batch_keywords()}}
-\item \code{\link[=batch_time]{batch_time()}}
-\item \code{\link[=data_control]{data_control()}}
-\item \code{\link[=data_object]{data_object()}}
-\item \code{\link[=data_score]{data_score()}}
-\item \code{\link[=data_doi]{data_doi()}}
+\item \code{\link[=example_keywords]{example_keywords()}}
+\item \code{\link[=example_time]{example_time()}}
+\item \code{\link[=example_control]{example_control()}}
+\item \code{\link[=example_object]{example_object()}}
+\item \code{\link[=example_score]{example_score()}}
+\item \code{\link[=example_doi]{example_doi()}}
 }
 }

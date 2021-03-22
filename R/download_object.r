@@ -21,7 +21,7 @@
 #' mapping between search volumes for control keywords stored in
 #' *data_control* and search volumes for object keywords. The download for
 #' a single keyword batch for a single location takes about 30 seconds. This
-#' includes a randomized waiting period of 20-30 seconds between downloads.
+#' includes a randomized waiting period of 5-10 seconds between downloads.
 #' Depending on the frequency of downloads, Google Trends might block users
 #' for some time. In this case, `download_object` waits 60 minutes
 #' before it retries the download.
@@ -36,7 +36,7 @@
 #' `countries`.
 #'
 #' @seealso
-#' * [data_object()]
+#' * [example_object()]
 #' * [gtrendsR::gtrends()]
 #'
 #' @return
@@ -114,8 +114,12 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
             current = which(locations == .x), total = length(locations)
           ))
         } else {
-          message(glue("Download for objec data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
+          message(glue("Download for object data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
         }
+      } else {
+        message(glue("Object data already available | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
+          current = which(locations == .x), total = length(locations)
+        ))
       }
     })
   }

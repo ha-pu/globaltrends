@@ -8,17 +8,17 @@ initialize_db()
 start_db()
 
 # enter data -------------------------------------------------------------------
-dbWriteTable(globaltrends_db, "data_score", data_score, append = TRUE)
+dbWriteTable(globaltrends_db, "data_score", example_score, append = TRUE)
 
 # plot_bar.exp_score ------------------------------------------------------------
 test_that("plot_bar.exp_score1", {
-  keywords <- unique(data_score$keyword)[1]
+  keywords <- unique(example_score$keyword)[1]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   out1 <- plot_bar(data, type = "obs")
   expect_s3_class(out1, "ggplot")
 
-  keywords <- unique(data_score$keyword)[1:2]
+  keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
@@ -31,13 +31,13 @@ test_that("plot_bar.exp_score1", {
 })
 
 test_that("plot_bar.exp_score2", {
-  keywords <- unique(data_score$keyword)[1]
+  keywords <- unique(example_score$keyword)[1]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   out1 <- plot_bar(data, type = "sad")
   expect_s3_class(out1, "ggplot")
 
-  keywords <- unique(data_score$keyword)[1:2]
+  keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
@@ -50,13 +50,13 @@ test_that("plot_bar.exp_score2", {
 })
 
 test_that("plot_bar.exp_score3", {
-  keywords <- unique(data_score$keyword)[1]
+  keywords <- unique(example_score$keyword)[1]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   out1 <- plot_bar(data, type = "trd")
   expect_s3_class(out1, "ggplot")
 
-  keywords <- unique(data_score$keyword)[1:2]
+  keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "US")
   expect_warning(
@@ -70,7 +70,7 @@ test_that("plot_bar.exp_score3", {
 
 # plot_bar.exp_score defaults ---------------------------------------------------
 test_that("plot_bar.exp_score4", {
-  keywords <- unique(data_score$keyword)[1]
+  keywords <- unique(example_score$keyword)[1]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "CN")
   out1 <- plot_bar(data)
@@ -111,12 +111,12 @@ test_that("plot_bar.exp_scoreS1", {
 
 # plot_bar.abnorm_score ---------------------------------------------------------
 test_that("plot_bar.abnorm_score1", {
-  data <- export_score(keyword = unique(data_score$keyword)[[1]], location = "US")
+  data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "US")
   data <- get_abnorm_hist(data)
   out1 <- plot_bar(data)
   expect_s3_class(out1, "ggplot")
 
-  keywords <- unique(data_score$keyword)[1:2]
+  keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_score, location = "US")
   data <- get_abnorm_hist(data)
   expect_warning(
