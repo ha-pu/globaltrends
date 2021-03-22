@@ -256,7 +256,7 @@ test_that("add_batch5", {
     add_control_keyword(keyword = list(letters[1:6])),
     "'keyword' must be object of length 5.\nYou provided an object of length 6."
   )
-  
+
   expect_error(
     add_object_keyword(keyword = list(letters[1:5])),
     "'keyword' must be object of length 4.\nYou provided an object of length 5."

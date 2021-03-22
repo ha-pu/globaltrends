@@ -15,8 +15,8 @@ utils::globalVariables(
     ".time_control",
     ".time_object",
     "countries",
-	"example_keywords",
-	"example_time",
+    "example_keywords",
+    "example_time",
     "globaltrends_db",
     "location",
     "type"

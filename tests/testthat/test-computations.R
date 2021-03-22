@@ -25,7 +25,7 @@ dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
   out <- capture_messages(compute_score(control = 1, object = 1, locations = countries[1:3]))
-  
+
   expect_match(
     out,
     "Successfully computed search score | control: 1 | object: 1 | location: US [1/3]",
@@ -41,7 +41,7 @@ test_that("compute_score1", {
     "Successfully computed search score | control: 1 | object: 1 | location: JP [3/3]",
     all = FALSE
   )
-  
+
   out <- filter(.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
@@ -238,7 +238,7 @@ test_that("compute_doi5", {
 # remove data ------------------------------------------------------------------
 test_that("remove_data1", {
   out <- capture_messages(remove_data(table = "batch_keywords", control = 1))
-  
+
   expect_match(
     out,
     "Successfully deleted control batch 1 from 'batch_keywords'\\.",
@@ -269,7 +269,7 @@ test_that("remove_data1", {
     "Successfully deleted control batch 1 from 'batch_time'\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "control")
   out_time <- filter(.tbl_time, batch == 1 & type == "control")
   out_keywords <- collect(out_keywords)
@@ -280,7 +280,7 @@ test_that("remove_data1", {
 
 test_that("remove_data2", {
   out <- capture_messages(remove_data(table = "batch_keywords", object = 1))
-  
+
   expect_match(
     out,
     "Successfully deleted object batch 1 from 'batch_keywords'\\.",
@@ -306,7 +306,7 @@ test_that("remove_data2", {
     "Successfully deleted object batch 1 from 'batch_time'\\.",
     all = FALSE
   )
-  
+
   out_keywords <- filter(.tbl_keywords, batch == 1 & type == "object")
   out_time <- filter(.tbl_time, batch == 1 & type == "object")
   out_keywords <- collect(out_keywords)

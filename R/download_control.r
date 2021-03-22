@@ -84,11 +84,13 @@ download_control.numeric <- function(control, locations = countries) {
           dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
         message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)))
-	  } else {
-	    message(glue("Control data already available | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)))
-	  }
+          current = which(locations == .x), total = length(locations)
+        ))
+      } else {
+        message(glue("Control data already available | control: {control} | location: {in_location} [{current}/{total}]",
+          current = which(locations == .x), total = length(locations)
+        ))
+      }
     })
   }
 }

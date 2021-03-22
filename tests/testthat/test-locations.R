@@ -117,7 +117,7 @@ test_that("compute_score2", {
 # compute doi ------------------------------------------------------------------
 test_that("compute_doi", {
   compute_doi(object = 1, control = 1, locations = "countries")
-  
+
   expect_message(
     compute_doi(object = 1, control = 1, locations = "asia"),
     "Successfully computed DOI | control: 1 | object: 1 [1/1]"
