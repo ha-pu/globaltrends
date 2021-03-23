@@ -26,6 +26,9 @@
 \alias{export_voi.NULL}
 \alias{export_voi.list}
 \alias{export_doi}
+\alias{export_doi.character}
+\alias{export_doi.NULL}
+\alias{export_doi.list}
 \title{Export data from database table}
 \usage{
 export_control(control = NULL, locations = NULL)
@@ -77,6 +80,30 @@ export_voi(keyword = NULL, object = NULL, control = NULL)
 \method{export_voi}{list}(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL,
+  type = NULL
+)
+
+\method{export_doi}{character}(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL,
+  type = NULL
+)
+
+\method{export_doi}{`NULL`}(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL,
+  type = NULL
+)
+
+\method{export_doi}{list}(
   keyword = NULL,
   object = NULL,
   control = NULL,

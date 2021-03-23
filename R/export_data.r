@@ -430,7 +430,35 @@ export_voi.list <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
+export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) UseMethod("export_doi", keyword)
+
+#' @rdname export_data
+#' @method export_doi character
+#' @export
+
+export_doi.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
+  if (length(keyword) > 1) {
+    export_doi(keyword = as.list(keyword), object = object, control = control, locations = locations, type = type)
+  } else {
+    out <- .export_data_double(
+      table = .tbl_doi,
+      in_keyword = keyword,
+      in_object = object,
+      in_control = control,
+      in_locations = locations,
+      in_type = type
+    )
+    out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+    class(out) <- c("exp_doi", class(out))
+  }
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_doi NULL
+#' @export
+
+export_doi.NULL <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
   out <- .export_data_double(
     table = .tbl_doi,
     in_keyword = keyword,
@@ -443,6 +471,16 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   class(out) <- c("exp_doi", class(out))
   return(out)
 }
+
+#' @rdname export_data
+#' @method export_doi list
+#' @export
+
+export_doi.list <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
+  out <- map_dfr(keyword, export_doi, object = object, control = control, locations = locations, type = type)
+  return(out)
+}
+
 
 #' @title Run export data from database tables
 #'
