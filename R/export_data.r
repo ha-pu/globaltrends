@@ -105,18 +105,58 @@
 #' @importFrom rlang .data
 #' @importFrom glue glue
 
-export_control <- function(control = NULL, locations = NULL) {
-  out <- .export_data_single(
-    table = .tbl_control,
-    in_control = control
-  )
-  if (!is.null(locations)) {
-    in_location <- locations
-    out <- filter(out, .data$location %in% in_location)
+export_control <- function(control = NULL, locations = NULL) UseMethod("export_control", control)
+
+#' @rdname export_data
+#' @method export_control numeric
+#' @export
+
+export_control.numeric <- function(control = NULL, locations = NULL) {
+  if (length(control) > 1) {
+    export_control(control = as.list(control), locations = locations)
+  } else {
+    out <- .export_data_single(
+      table = .tbl_control,
+      in_control = control
+    )
+    if (!is.null(locations)) {
+      in_location <- locations
+      out <- filter(out, .data$location %in% in_location)
+    }
+    out <- filter(out, .data$location != "world")
+    out <- rename(out, control = .data$batch)
   }
-  out <- filter(out, .data$location != "world")
-  out <- rename(out, control = .data$batch)
   return(out)
+}
+
+#' @rdname export_data
+#' @method export_control NULL
+#' @export
+
+export_control.NULL <- function(control = NULL, locations = NULL) {
+  if (length(control) > 1) {
+    export_control(control = as.list(control), locations = locations)
+  } else {
+    out <- .export_data_single(
+      table = .tbl_control,
+      in_control = control
+    )
+    if (!is.null(locations)) {
+      in_location <- locations
+      out <- filter(out, .data$location %in% in_location)
+    }
+    out <- filter(out, .data$location != "world")
+    out <- rename(out, control = .data$batch)
+  }
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_control list
+#' @export
+
+export_control.list <- function(control = NULL, locations = NULL) {
+  walk(control, export_control, locations = locations)
 }
 
 #' @rdname export_data

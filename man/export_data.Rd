@@ -2,6 +2,9 @@
 % Please edit documentation in R/export_data.r
 \name{export_control}
 \alias{export_control}
+\alias{export_control.numeric}
+\alias{export_control.NULL}
+\alias{export_control.list}
 \alias{export_control_global}
 \alias{export_object}
 \alias{export_object_global}
@@ -11,6 +14,12 @@
 \title{Export data from database table}
 \usage{
 export_control(control = NULL, locations = NULL)
+
+\method{export_control}{numeric}(control, locations = NULL)
+
+\method{export_control}{`NULL`}(control, locations = NULL)
+
+\method{export_control}{list}(control, locations = NULL)
 
 export_control_global(control = NULL)
 
