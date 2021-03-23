@@ -14,6 +14,9 @@
 \alias{export_object.NULL}
 \alias{export_object.list}
 \alias{export_object_global}
+\alias{export_object_global.character}
+\alias{export_object_global.NULL}
+\alias{export_object_global.list}
 \alias{export_score}
 \alias{export_voi}
 \alias{export_doi}
@@ -44,6 +47,12 @@ export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 \method{export_object}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_object_global(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_object_global}{character}(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_object_global}{`NULL`}(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_object}{list}(keyword = NULL, object = NULL, control = NULL)
 
 export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
