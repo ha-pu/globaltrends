@@ -22,6 +22,9 @@
 \alias{export_score.NULL}
 \alias{export_score.list}
 \alias{export_voi}
+\alias{export_voi.character}
+\alias{export_voi.NULL}
+\alias{export_voi.list}
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
@@ -66,6 +69,12 @@ export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 \method{export_score}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_voi}{character}(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_voi}{`NULL`}(keyword = NULL, object = NULL, control = NULL)
+
+\method{export_voi}{list}(keyword = NULL, object = NULL, control = NULL)
 
 export_doi(
   keyword = NULL,
