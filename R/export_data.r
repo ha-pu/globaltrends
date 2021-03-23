@@ -9,9 +9,8 @@
 #' Exports can be filtered by *keyword*, *object*, *control*,
 #' *locations*, or *type*. Not all filters are applicable for all
 #' functions. When filter *keyword* and *object* are used together,
-#' *keyword* overrules *object*. Currently the functions do not
-#' include list inputs - users are advised to `purrr::map_dfr` or
-#' `dplyr::filter` instead.
+#' *keyword* overrules *object*. When supplying `NULL` as input, no filter is
+#' applied to the variable.
 #'
 #' @param keyword Object keywords for which data should be exported. Object of
 #' type `character`.
@@ -30,22 +29,24 @@
 #' @return
 #' The functions export and filter the respective database tables.
 #' \itemize{
-#'   \item `export_control` exports data from table *data_control` with
-#' columns location, keyword, date, hits, control. Object of class
-#' `"data.frame"`.
-#'   \item `export_object` exports data from table *data_object` with
-#' columns location, keyword, date, hits, object.Object of class
-#' `"data.frame"`.
+#'   \item `export_control` and `export_control_global` export data from table
+#'   *data_control` with columns location, keyword, date, hits, control. Object
+#'   of class `"data.frame"`. Methods are applied based on input *control*.
+#'   \item `export_object` and `export_object_global` export data from table
+#'   *data_object` with columns location, keyword, date, hits, object. Object of
+#'   class `"data.frame"`. Methods are applied based on input *object*.
 #'   \item `export_score` exports data from table *data_score` with
-#' columns location, keyword, date, score_obs, score_sad, score_trd, control,
-#' object. Object of class `c("exp_score", "data.frame")`.
+#'   columns location, keyword, date, score_obs, score_sad, score_trd, control,
+#'   object. Object of class `c("exp_score", "data.frame")`. Methods are
+#'   applied based on input *keyword*.
 #'   \item `export_voi` exports data from table *data_score` with
-#' columns keyword, date, hits, control, filters for
-#' `location == "world"`. Object of class
-#' `c("exp_voi", "data.frame")`.
+#'   columns keyword, date, hits, control, filters for
+#'   `location == "world"`. Object of class `c("exp_voi", "data.frame")`.
+#'   Methods are applied based on input *keyword*.
 #'   \item `export_doi` exports data from table *data_doi` with columns
-#' keyword, date, type, gini, hhi, entropy, control, object, locations. Object
-#' of class `c("exp_doi", "data.frame")`.
+#'   keyword, date, type, gini, hhi, entropy, control, object, locations. Object
+#'   of class `c("exp_doi", "data.frame")`. Methods are applied based on input
+#'   *keyword*.
 #' }
 #'
 #' @seealso
@@ -53,8 +54,6 @@
 #' * [example_object()]
 #' * [example_score()]
 #' * [example_doi()]
-#' * [purrr::map()]
-#' * [dplyr::filter()]
 #'
 #' @examples
 #' \dontrun{

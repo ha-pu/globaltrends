@@ -133,14 +133,15 @@ trend only search scores.}
 \value{
 The functions export and filter the respective database tables.
 \itemize{
-\item \code{export_control} exports data from table *data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. \\item }export_object\verb{ exports data from table *data_object} with
-columns location, keyword, date, hits, object.Object of class
-\code{"data.frame"}.
-\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. \\item }export_voi\verb{ exports data from table *data_score} with
+\item \code{export_control} and \code{export_control_global} export data from table
+*data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. Methods are applied based on input *control*. \\item }export_object\code{and}export_object_global\verb{ export data from table *data_object} with columns location, keyword, date, hits, object. Object of
+class \code{"data.frame"}. Methods are applied based on input \emph{object}.
+\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
 columns keyword, date, hits, control, filters for
-\code{location == "world"}. Object of class
-\code{c("exp_voi", "data.frame")}.
-\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`.
+\code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
+Methods are applied based on input \emph{keyword}.
+\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`. Methods are applied based on input
+\emph{keyword}.
 }
 }
 \description{
@@ -152,9 +153,8 @@ database to local files.
 Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
 \emph{locations}, or \emph{type}. Not all filters are applicable for all
 functions. When filter \emph{keyword} and \emph{object} are used together,
-\emph{keyword} overrules \emph{object}. Currently the functions do not
-include list inputs - users are advised to \code{purrr::map_dfr} or
-\code{dplyr::filter} instead.
+\emph{keyword} overrules \emph{object}. When supplying \code{NULL} as input, no filter is
+applied to the variable.
 }
 \examples{
 \dontrun{
@@ -204,7 +204,5 @@ export_voi(
 \item \code{\link[=example_object]{example_object()}}
 \item \code{\link[=example_score]{example_score()}}
 \item \code{\link[=example_doi]{example_doi()}}
-\item \code{\link[purrr:map]{purrr::map()}}
-\item \code{\link[dplyr:filter]{dplyr::filter()}}
 }
 }
