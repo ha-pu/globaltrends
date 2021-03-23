@@ -206,7 +206,37 @@ export_control_global.list <- function(control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_object <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_object <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) UseMethod("export_object", keyword)
+
+#' @rdname export_data
+#' @method export_object character
+#' @export
+
+export_object.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+  if (length(keyword) > 1) {
+    export_object(keyword = as.list(keyword), object = object, control = control, locations = locations)
+  } else {
+    out <- .export_data_double(
+      table = .tbl_object,
+      in_keyword = keyword,
+      in_object = object,
+      in_control = control
+    )
+    if (!is.null(locations)) {
+      in_location <- locations
+      out <- filter(out, .data$location %in% in_location)
+    }
+    out <- filter(out, .data$location != "world")
+    out <- rename(out, object = .data$batch_o, control = .data$batch_c)
+  }
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_object NULL
+#' @export
+
+export_object.NULL <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   out <- .export_data_double(
     table = .tbl_object,
     in_keyword = keyword,
@@ -219,6 +249,16 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
   }
   out <- filter(out, .data$location != "world")
   out <- rename(out, object = .data$batch_o, control = .data$batch_c)
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_object list
+#' @export
+
+export_object.list <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+  out <- map_dfr(keyword, export_object, object = object, control = control, locations = locations)
+  return(out)
 }
 
 #' @rdname export_data

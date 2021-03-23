@@ -10,6 +10,9 @@
 \alias{export_control_global.NULL}
 \alias{export_control_global.list}
 \alias{export_object}
+\alias{export_object.character}
+\alias{export_object.NULL}
+\alias{export_object.list}
 \alias{export_object_global}
 \alias{export_score}
 \alias{export_voi}
@@ -33,6 +36,12 @@ export_control_global(control = NULL)
 \method{export_control_global}{list}(control = NULL)
 
 export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_object}{character}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_object}{`NULL`}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_object}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_object_global(keyword = NULL, object = NULL, control = NULL)
 
