@@ -22,7 +22,7 @@
 #' object of type `character`.
 #' @param type Type of time series for which data should be exported. Element
 #' of type `character`. Relevant only for `export_global` and
-#' `export_doi`. Takes one of the following values: *obs` - observed
+#' `export_doi`. Takes one of the following values: *obs* - observed
 #' search scores, *sad* - seasonally adjusted search scores, *trd* -
 #' trend only search scores.
 #'
@@ -34,7 +34,7 @@
 #'   of class `"data.frame"`. Methods are applied based on input *control*.
 #'   \item `export_object` and `export_object_global` export data from table
 #'   *data_object` with columns location, keyword, date, hits, object. Object of
-#'   class `"data.frame"`. Methods are applied based on input *object*.
+#'   class `"data.frame"`. Methods are applied based on input *keyword*.
 #'   \item `export_score` exports data from table *data_score` with
 #'   columns location, keyword, date, score_obs, score_sad, score_trd, control,
 #'   object. Object of class `c("exp_score", "data.frame")`. Methods are
@@ -78,24 +78,7 @@
 #'   locations = "us_states"
 #' ) %>%
 #'   writexl::write_xlsx("data_doi.xlsx")
-#'
-#' # interaction with purrr::map_dfr
-#' purrr::map_dfr(
-#'   c("coca cola", "microsoft"),
-#'   export_doi,
-#'   control = 1,
-#'   type = "obs"
-#' )
-#'
-#' # interaction with dplyr::filter
-#' export_voi(
-#'   object = 1,
-#'   control = 1,
-#'   type = "obs"
-#' ) %>%
-#'   dplyr::filter(lubridate::year(date) == 2019)
 #' }
-#'
 #' @rdname export_data
 #' @export
 #' @importFrom dplyr filter
@@ -113,7 +96,7 @@ export_control <- function(control = NULL, locations = NULL) UseMethod("export_c
 
 export_control.numeric <- function(control = NULL, locations = NULL) {
   if (length(control) > 1) {
-    export_control(control = as.list(control), locations = locations)
+    out <- export_control(control = as.list(control), locations = locations)
   } else {
     out <- .export_data_single(
       table = .tbl_control,
@@ -167,7 +150,7 @@ export_control_global <- function(control = NULL) UseMethod("export_control_glob
 
 export_control_global.numeric <- function(control = NULL) {
   if (length(control) > 1) {
-    export_control_global(control = as.list(control))
+    out <- export_control_global(control = as.list(control))
   } else {
     out <- .export_data_single(
       table = .tbl_control,
@@ -213,7 +196,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
 
 export_object.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   if (length(keyword) > 1) {
-    export_object(keyword = as.list(keyword), object = object, control = control, locations = locations)
+    out <- export_object(keyword = as.list(keyword), object = object, control = control, locations = locations)
   } else {
     out <- .export_data_double(
       table = .tbl_object,
@@ -271,7 +254,7 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 
 export_object_global.character <- function(keyword = NULL, object = NULL, control = NULL) {
   if (length(keyword) > 1) {
-    export_object_global(keyword = as.list(keyword), object = object, control = control)
+    out <- export_object_global(keyword = as.list(keyword), object = object, control = control)
   } else {
     out <- .export_data_double(
       table = .tbl_object,
@@ -321,7 +304,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
 
 export_score.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   if (length(keyword) > 1) {
-    export_score(keyword = as.list(keyword), object = object, control = control, locations = locations)
+    out <- export_score(keyword = as.list(keyword), object = object, control = control, locations = locations)
   } else {
     out <- .export_data_double(
       table = .tbl_score,
@@ -383,7 +366,7 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) UseMethod(
 
 export_voi.character <- function(keyword = NULL, object = NULL, control = NULL) {
   if (length(keyword) > 1) {
-    export_voi(keyword = as.list(keyword), object = object, control = control)
+    out <- export_voi(keyword = as.list(keyword), object = object, control = control)
   } else {
     out <- .export_data_double(
       table = .tbl_score,
@@ -437,7 +420,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 
 export_doi.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
   if (length(keyword) > 1) {
-    export_doi(keyword = as.list(keyword), object = object, control = control, locations = locations, type = type)
+    out <- export_doi(keyword = as.list(keyword), object = object, control = control, locations = locations, type = type)
   } else {
     out <- .export_data_double(
       table = .tbl_doi,

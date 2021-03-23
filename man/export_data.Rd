@@ -126,7 +126,7 @@ type \code{character}.}
 
 \item{type}{Type of time series for which data should be exported. Element
 of type \code{character}. Relevant only for \code{export_global} and
-\code{export_doi}. Takes one of the following values: *obs` - observed
+\code{export_doi}. Takes one of the following values: \emph{obs} - observed
 search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
 trend only search scores.}
 }
@@ -135,7 +135,7 @@ The functions export and filter the respective database tables.
 \itemize{
 \item \code{export_control} and \code{export_control_global} export data from table
 *data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. Methods are applied based on input *control*. \\item }export_object\code{and}export_object_global\verb{ export data from table *data_object} with columns location, keyword, date, hits, object. Object of
-class \code{"data.frame"}. Methods are applied based on input \emph{object}.
+class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
 \item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
 columns keyword, date, hits, control, filters for
 \code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
@@ -179,24 +179,7 @@ export_doi(
   locations = "us_states"
 ) \%>\%
   writexl::write_xlsx("data_doi.xlsx")
-
-# interaction with purrr::map_dfr
-purrr::map_dfr(
-  c("coca cola", "microsoft"),
-  export_doi,
-  control = 1,
-  type = "obs"
-)
-
-# interaction with dplyr::filter
-export_voi(
-  object = 1,
-  control = 1,
-  type = "obs"
-) \%>\%
-  dplyr::filter(lubridate::year(date) == 2019)
 }
-
 }
 \seealso{
 \itemize{
