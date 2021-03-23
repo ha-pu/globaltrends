@@ -314,7 +314,39 @@ export_object_global.list <- function(keyword = NULL, object = NULL, control = N
 #' @rdname export_data
 #' @export
 
-export_score <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_score <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) UseMethod("export_score", keyword)
+
+#' @rdname export_data
+#' @method export_score character
+#' @export
+
+export_score.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+  if (length(keyword) > 1) {
+    export_score(keyword = as.list(keyword), object = object, control = control, locations = locations)
+  } else {
+    out <- .export_data_double(
+      table = .tbl_score,
+      in_keyword = keyword,
+      in_object = object,
+      in_control = control
+    )
+    if (!is.null(locations)) {
+      in_location <- locations
+      out <- filter(out, .data$location %in% in_location)
+    }
+    out <- filter(out, .data$location != "world")
+    out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+    out <- select(out, -.data$synonym)
+    class(out) <- c("exp_score", class(out))
+  }
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_score NULL
+#' @export
+
+export_score.NULL <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
   out <- .export_data_double(
     table = .tbl_score,
     in_keyword = keyword,
@@ -331,6 +363,16 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   class(out) <- c("exp_score", class(out))
   return(out)
 }
+
+#' @rdname export_data
+#' @method export_score list
+#' @export
+
+export_score.list <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+  out <- map_dfr(keyword, export_score, object = object, control = control, locations = locations)
+  return(out)
+}
+
 
 #' @rdname export_data
 #' @export

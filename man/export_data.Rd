@@ -18,6 +18,9 @@
 \alias{export_object_global.NULL}
 \alias{export_object_global.list}
 \alias{export_score}
+\alias{export_score.character}
+\alias{export_score.NULL}
+\alias{export_score.list}
 \alias{export_voi}
 \alias{export_doi}
 \title{Export data from database table}
@@ -55,6 +58,12 @@ export_object_global(keyword = NULL, object = NULL, control = NULL)
 \method{export_object}{list}(keyword = NULL, object = NULL, control = NULL)
 
 export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_score}{character}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_score}{`NULL`}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+
+\method{export_score}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
 
