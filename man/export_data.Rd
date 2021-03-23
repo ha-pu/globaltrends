@@ -6,6 +6,9 @@
 \alias{export_control.NULL}
 \alias{export_control.list}
 \alias{export_control_global}
+\alias{export_control_global.numeric}
+\alias{export_control_global.NULL}
+\alias{export_control_global.list}
 \alias{export_object}
 \alias{export_object_global}
 \alias{export_score}
@@ -15,13 +18,19 @@
 \usage{
 export_control(control = NULL, locations = NULL)
 
-\method{export_control}{numeric}(control, locations = NULL)
+\method{export_control}{numeric}(control = NULL, locations = NULL)
 
-\method{export_control}{`NULL`}(control, locations = NULL)
+\method{export_control}{`NULL`}(control = NULL, locations = NULL)
 
-\method{export_control}{list}(control, locations = NULL)
+\method{export_control}{list}(control = NULL, locations = NULL)
 
 export_control_global(control = NULL)
+
+\method{export_control_global}{numeric}(control = NULL)
+
+\method{export_control_global}{`NULL`}(control = NULL)
+
+\method{export_control_global}{list}(control = NULL)
 
 export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 

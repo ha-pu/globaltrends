@@ -104,6 +104,7 @@
 #' @importFrom dplyr select
 #' @importFrom rlang .data
 #' @importFrom glue glue
+#' @importFrom purrr map_dfr
 
 export_control <- function(control = NULL, locations = NULL) UseMethod("export_control", control)
 
@@ -134,20 +135,16 @@ export_control.numeric <- function(control = NULL, locations = NULL) {
 #' @export
 
 export_control.NULL <- function(control = NULL, locations = NULL) {
-  if (length(control) > 1) {
-    export_control(control = as.list(control), locations = locations)
-  } else {
-    out <- .export_data_single(
-      table = .tbl_control,
-      in_control = control
-    )
-    if (!is.null(locations)) {
-      in_location <- locations
-      out <- filter(out, .data$location %in% in_location)
-    }
-    out <- filter(out, .data$location != "world")
-    out <- rename(out, control = .data$batch)
+  out <- .export_data_single(
+    table = .tbl_control,
+    in_control = control
+  )
+  if (!is.null(locations)) {
+    in_location <- locations
+    out <- filter(out, .data$location %in% in_location)
   }
+  out <- filter(out, .data$location != "world")
+  out <- rename(out, control = .data$batch)
   return(out)
 }
 
@@ -156,19 +153,53 @@ export_control.NULL <- function(control = NULL, locations = NULL) {
 #' @export
 
 export_control.list <- function(control = NULL, locations = NULL) {
-  walk(control, export_control, locations = locations)
+  out <- map_dfr(control, export_control, locations = locations)
+  return(out)
 }
 
 #' @rdname export_data
 #' @export
 
-export_control_global <- function(control = NULL) {
+export_control_global <- function(control = NULL) UseMethod("export_control_global", control)
+
+#' @rdname export_data
+#' @method export_control_global numeric
+#' @export
+
+export_control_global.numeric <- function(control = NULL) {
+  if (length(control) > 1) {
+    export_control_global(control = as.list(control))
+  } else {
+    out <- .export_data_single(
+      table = .tbl_control,
+      in_control = control
+    )
+    out <- filter(out, .data$location == "world")
+    out <- rename(out, control = .data$batch)
+  }
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_control_global NULL
+#' @export
+
+export_control_global.NULL <- function(control = NULL) {
   out <- .export_data_single(
     table = .tbl_control,
     in_control = control
   )
   out <- filter(out, .data$location == "world")
   out <- rename(out, control = .data$batch)
+  return(out)
+}
+
+#' @rdname export_data
+#' @method export_control_global list
+#' @export
+
+export_control_global.list <- function(control = NULL) {
+  out <- map_dfr(control, export_control_global)
   return(out)
 }
 
