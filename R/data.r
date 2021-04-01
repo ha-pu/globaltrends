@@ -22,7 +22,7 @@
 #' }
 #'
 #' @seealso
-#' * [globaltrends::add_keyword()]
+#' * [globaltrends::add_control_keyword()]
 #' @name batch_keywords
 "example_keywords"
 
@@ -51,7 +51,7 @@
 #' }
 #'
 #' @seealso
-#' * [globaltrends::add_keyword()]
+#' * [globaltrends::add_control_keyword()]
 #' @name batch_time
 "example_time"
 
