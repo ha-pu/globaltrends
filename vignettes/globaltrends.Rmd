@@ -29,7 +29,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.6'
+#> [1] '0.0.7'
 ```
 
 # Google Trends
@@ -105,7 +105,7 @@ disconnect_db()
 ## Download data from Google Trends
 The next step in the `globaltrends` workflow is data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include keywords indicating baseline search activity and **object** batches that include keywords relating to the objects of interest (e.g., firms, persons, products…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC, see [below](#changing-locations) for further details.   
 
-The download for a single keyword batch for a single location takes about 10 seconds. This includes a randomized waiting period of 5-10 seconds between downloads. Depending on download frequency, Google Trends might block users for some time. Unfortunately, the exact download limits are unknown ([Issue #140](https://github.com/PMassicotte/gtrendsR/issues/140), [Issue #255](https://github.com/PMassicotte/gtrendsR/issues/255)). In this case, `globaltrends` waits 60 minutes before it retries the download.
+The download for a single keyword batch for a single location takes about 10 seconds. This includes a randomized waiting period of 5-10 seconds between downloads. Depending on download frequency, Google Trends might block users for some time. Unfortunately, the exact download limits are unknown ([Issue #140](https://github.com/PMassicotte/gtrendsR/issues/140), [Issue #255](https://github.com/PMassicotte/gtrendsR/issues/255)). In this case, `globaltrends` waits 1 minute before it retries the download.
 
 ### Download control data
 First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](http://www.google.com/trends) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
