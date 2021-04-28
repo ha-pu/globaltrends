@@ -8,6 +8,7 @@
 #' @importFrom gtrendsR gtrends
 #' @importFrom lubridate as_date
 #' @importFrom rlang .data
+#' @importFrom stringr str_detect
 #' @importFrom stringr str_replace
 
 .get_trend <- function(location, term, time = "all") {
