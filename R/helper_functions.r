@@ -8,13 +8,16 @@
 #' @importFrom gtrendsR gtrends
 #' @importFrom lubridate as_date
 #' @importFrom rlang .data
+#' @importFrom stringr str_detect
 #' @importFrom stringr str_replace
 
 .get_trend <- function(location, term, time = "all") {
   out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   while (inherits(out, "try-error")) {
-    if (attr(out, "condition")$message == "widget$status_code == 200 is not TRUE") {
-      Sys.sleep(3600)
+    if (str_detect(attr(out, "condition")$message, "^<simpleError in get_widget(comparison_item, category, gprop, hl, cookie_url, tz): widget$status_code == 200")) {
+      Sys.sleep(60)
+    } else if (str_detect(attr(out, "condition")$message, "Status code was not 200. Returned status code:500")) {
+      Sys.sleep(1)
     } else {
       Sys.sleep(60)
     }

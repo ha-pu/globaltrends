@@ -1,3 +1,8 @@
+# globaltrends v.0.0.7
+* Change waiting times for errors
+	* Status Code != 200/Limit exceeded -> 60 seconds wait
+	* Status Code == 500 -> 1 second wait
+
 # globaltrends v.0.0.6
 * To distinguish them from the actual database tables, names of the example data
   object were adapted. Documentation is still available for the respective database
