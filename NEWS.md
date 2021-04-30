@@ -1,3 +1,7 @@
+# globaltrends v.0.0.8
+* Create `export_xxx` method for type `list`
+* Check whether "db/globaltrends_db.sqlite" file exists in working directory
+
 # globaltrends v.0.0.7
 * Change waiting times for errors
 	* Status Code != 200/Limit exceeded -> 60 seconds wait
