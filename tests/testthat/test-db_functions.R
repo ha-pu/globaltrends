@@ -88,7 +88,7 @@ test_that("start1", {
 
 test_that("start2", {
   current_wd <- getwd()
-  setwd(temp.dir())
+  setwd(tempdir())
   expect_error(
     start_db(),
 	"File 'db/globaltrends_db.sqlite' does not exist in working directory\\.\nSet working directory to correct path\\."
