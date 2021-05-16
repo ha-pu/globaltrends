@@ -68,8 +68,17 @@ test_that("plot_bar.exp_score3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_bar.exp_score defaults ---------------------------------------------------
 test_that("plot_bar.exp_score4", {
+  keywords <- unique(example_score$keyword)[1]
+  data <- map_dfr(keywords, export_score) %>%
+    filter(location == "US")
+  out1 <- plot_bar(data)
+  out2 <- plot_score_bar(data)
+  expect_identical(out1$labels, out2$labels)
+})
+
+# plot_bar.exp_score defaults ---------------------------------------------------
+test_that("plot_bar.exp_score5", {
   keywords <- unique(example_score$keyword)[1]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "CN")
@@ -125,6 +134,14 @@ test_that("plot_bar.abnorm_score1", {
   )
   expect_s3_class(out2, "ggplot")
 
+  expect_identical(out1$labels, out2$labels)
+})
+
+test_that("plot_bar.abnorm_score2", {
+  data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "US")
+  data <- get_abnorm_hist(data)
+  out1 <- plot_bar(data)
+  out2 <- plot_abnorm_score_bar(data)
   expect_identical(out1$labels, out2$labels)
 })
 

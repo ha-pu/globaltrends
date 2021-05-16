@@ -85,8 +85,17 @@ test_that("plot_box.exp_score4", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_box.exp_score defaults ---------------------------------------------------
 test_that("plot_box.exp_score5", {
+  keywords <- unique(example_score$keyword)[1]
+  data <- map_dfr(keywords, export_score) %>%
+    filter(location == "US")
+  out1 <- plot_box(data)
+  out2 <- plot_score_box(data)
+  expect_identical(out1$labels, out2$labels)
+})
+
+# plot_box.exp_score defaults ---------------------------------------------------
+test_that("plot_box.exp_score6", {
   keywords <- unique(example_score$keyword)[1:9]
   data <- map_dfr(keywords, export_score) %>%
     filter(location == "CN")
@@ -191,6 +200,15 @@ test_that("plot_box.abnorm_score3", {
   expect_identical(out1$labels, out2$labels)
 })
 
+test_that("plot_box.abnorm_score4", {
+  data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "CN")
+  data <- get_abnorm_hist(data)
+  out1 <- plot_box(data)
+  out2 <- plot_abnorm_score_box(data)
+  
+  expect_identical(out1$labels, out2$labels)
+})
+
 # plot_box.exp_voi --------------------------------------------------------------
 test_that("plot_box.exp_voi1", {
   keywords <- unique(example_score$keyword)[1:9]
@@ -243,8 +261,16 @@ test_that("plot_box.exp_voi3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_box.exp_voi defaults -----------------------------------------------------
 test_that("plot_box.exp_voi4", {
+  keywords <- unique(example_score$keyword)[1]
+  data <- map_dfr(keywords, export_voi)
+  out1 <- plot_box(data)
+  out2 <- plot_voi_box(data)
+  expect_identical(out1$labels, out2$labels)
+})
+
+# plot_box.exp_voi defaults -----------------------------------------------------
+test_that("plot_box.exp_voi5", {
   keywords <- unique(example_score$keyword)[1:9]
   data <- map_dfr(keywords, export_voi)
   out1 <- plot_box(data)
@@ -318,7 +344,7 @@ test_that("plot_box.abnorm_voi2", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
-
+  
   keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_voi)
   data <- get_abnorm_hist(data)
@@ -327,7 +353,16 @@ test_that("plot_box.abnorm_voi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
+  
+  expect_identical(out1$labels, out2$labels)
+})
 
+test_that("plot_box.abnorm_voi3", {
+  data <- export_voi(keyword = unique(example_score$keyword)[[1]])
+  data <- get_abnorm_hist(data)
+  out1 <- plot_box(data)
+  out2 <- plot_abnorm_voi_box(data)
+  
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -371,7 +406,7 @@ test_that("plot_box.exp_doi3a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data, type = "trd", measure = "gini")
   expect_s3_class(out1, "ggplot")
-
+  
   keywords <- unique(example_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -379,7 +414,16 @@ test_that("plot_box.exp_doi3a", {
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
+  
+  expect_identical(out1$labels, out2$labels)
+})
 
+test_that("plot_box.exp_doi4a", {
+  keywords <- unique(example_doi$keyword)[1:9]
+  data <- map_dfr(keywords, export_doi, locations = "countries")
+  out1 <- plot_box(data)
+  out2 <- plot_doi_box(data)
+  
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -488,7 +532,7 @@ test_that("plot_box3c", {
 })
 
 # plot_box.exp_doi defaults -----------------------------------------------------
-test_that("plot_box.exp_doi4a", {
+test_that("plot_box.exp_doi5a", {
   keywords <- unique(example_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data = data, measure = "gini")
@@ -502,7 +546,7 @@ test_that("plot_box.exp_doi4a", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_box.exp_doi4b", {
+test_that("plot_box.exp_doi5b", {
   keywords <- unique(example_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data = data, measure = "hhi")
@@ -516,7 +560,7 @@ test_that("plot_box.exp_doi4b", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_box.exp_doi4c", {
+test_that("plot_box.exp_doi5c", {
   keywords <- unique(example_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data = data, measure = "entropy")
@@ -530,7 +574,7 @@ test_that("plot_box.exp_doi4c", {
   expect_false(identical(out3, out4))
 })
 
-test_that("plot_box.exp_doi4d", {
+test_that("plot_box.exp_doi5d", {
   keywords <- unique(example_doi$keyword)[1:9]
   data <- map_dfr(keywords, export_doi, type = "obs", locations = "countries")
   out1 <- plot_box(data = data)
@@ -648,7 +692,7 @@ test_that("plot_box.abnorm_doi2", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
-
+  
   keywords <- unique(example_doi$keyword)[1:2]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   data <- get_abnorm_hist(data)
@@ -657,7 +701,16 @@ test_that("plot_box.abnorm_doi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
+  
+  expect_identical(out1$labels, out2$labels)
+})
 
+test_that("plot_box.abnorm_doi3", {
+  data <- export_doi(keyword = unique(example_doi$keyword)[[1]], locations = "countries")
+  data <- get_abnorm_hist(data)
+  out1 <- plot_box(data)
+  out2 <- plot_abnorm_doi_box(data)
+  
   expect_identical(out1$labels, out2$labels)
 })
 
