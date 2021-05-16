@@ -267,7 +267,7 @@ initialize_db <- function() {
 
 start_db <- function() {
   # connect to db --------------------------------------------------------------
-  if(file.exists("db/globaltrends_db.sqlite") {
+  if(file.exists("db/globaltrends_db.sqlite")) {
     globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
     message("Successfully connected to database.")
   } else {
