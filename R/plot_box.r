@@ -11,6 +11,8 @@
 #' the first location.
 #' For output of `get_abnorm_hist`, users can specify confidence intervals
 #' to highlight abnormal changes in the data.
+#' The `plot_xxx_box` functions allow to call `plot_box` on a data object that
+#' lost its respective class (e.g., due to a join).
 #'
 #' @inheritParams plot_ts
 #'
@@ -87,6 +89,14 @@ plot_box.exp_score <- function(data, type = "obs") {
 #' @rdname plot_box
 #' @export
 
+plot_score_box <- function(data, type = "obs") {
+  class(data) <- c("exp_score", class(data))
+  plot_box(data, type = type)
+}
+
+#' @rdname plot_box
+#' @export
+
 plot_box.abnorm_score <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
@@ -124,6 +134,14 @@ plot_box.abnorm_score <- function(data, ci = 0.95) {
 #' @rdname plot_box
 #' @export
 
+plot_abnorm_score_box <- function(data, ci = 0.95) {
+  class(data) <- c("abnorm_score", class(data))
+  plot_box(data, ci = ci)
+}
+
+#' @rdname plot_box
+#' @export
+
 plot_box.exp_voi <- function(data, type = "obs") {
   .check_type(type)
 
@@ -148,6 +166,14 @@ plot_box.exp_voi <- function(data, type = "obs") {
 
     return(plot)
   }
+}
+
+#' @rdname plot_box
+#' @export
+
+plot_voi_box <- function(data, type = "obs") {
+  class(data) <- c("exp_voi", class(data))
+  plot_box(data, type = type)
 }
 
 #' @rdname plot_box
@@ -183,6 +209,14 @@ plot_box.abnorm_voi <- function(data, ci = 0.95) {
 #' @rdname plot_box
 #' @export
 
+plot_abnorm_voi_box <- function(data, ci = 0.95) {
+  class(data) <- c("abnorm_voi", class(data))
+  plot_box(data, ci = ci)
+}
+
+#' @rdname plot_box
+#' @export
+
 plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
   .check_type(type)
   .check_measure(measure)
@@ -210,6 +244,14 @@ plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "
 
     return(plot)
   }
+}
+
+#' @rdname plot_box
+#' @export
+
+plot_doi_box <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
+  class(data) <- c("exp_doi", class(data))
+  plot_box(data, type = type, measure = measure, locations = locations, smooth = smooth)
 }
 
 #' @rdname plot_box
@@ -252,4 +294,12 @@ plot_box.abnorm_doi <- function(data, type = "obs", locations = "countries", ci 
         title = keyword
       )
   }
+}
+
+#' @rdname plot_box
+#' @export
+
+plot_abnorm_doi_box <- function(data, type = "obs", locations = "countries", ci = 0.95) {
+  class(data) <- c("abnorm_doi", class(data))
+  plot_box(data, type = type, locations = locations, ci = ci)
 }

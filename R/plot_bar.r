@@ -6,6 +6,10 @@
 #' the top 10 countries. For output from `get_abnorm_hist` the plot shows
 #' five locations with the highest and lowest abnormal changes each. When the
 #' output includes more than one keyword, only the first keyword is used.
+#' 
+#' @details
+#' The `plot_xxx_bar` functions allow to call `plot_bar` on a data object that
+#' lost its respective class (e.g., due to a join).
 #'
 #' @inheritParams plot_ts
 #'
@@ -88,6 +92,14 @@ plot_bar.exp_score <- function(data, type = "obs") {
 #' @rdname plot_bar
 #' @export
 
+plot_score_bar <- function(data, type = "obs") {
+  class(data) <- c("exp_score", class(data))
+  plot_bar(data, type = type)
+}
+
+#' @rdname plot_bar
+#' @export
+
 plot_bar.abnorm_score <- function(data) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
@@ -115,4 +127,12 @@ plot_bar.abnorm_score <- function(data) {
     )
 
   return(plot)
+}
+
+#' @rdname plot_bar
+#' @export
+
+plot_abnorm_score_bar <- function(data) {
+  class(data) <- c("abnorm_score", class(data))
+  plot_bar(data)
 }

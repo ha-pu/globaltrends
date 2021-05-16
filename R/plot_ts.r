@@ -11,6 +11,8 @@
 #' the first location.
 #' For output of `get_abnorm_hist`, users can specify confidence intervals
 #' to highlight abnormal changes in the data.
+#' The `plot_xxx_ts` functions allow to call `plot_ts` on a data object that
+#' lost its respective class (e.g., due to a join).
 #'
 #' @param data Data exported from `export_...` or `compute_abnorm` functions.
 #' @param type Object of type `character` indicating the type of time
@@ -108,6 +110,14 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
 #' @rdname plot_ts
 #' @export
 
+plot_score_ts <- function(data, type = "obs", smooth = TRUE) {
+  class(data) <- c("exp_score", class(data))
+  plot_ts(data, type = type, smooth = smooth)
+}
+
+#' @rdname plot_ts
+#' @export
+
 plot_ts.abnorm_score <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
@@ -143,6 +153,14 @@ plot_ts.abnorm_score <- function(data, ci = 0.95) {
       y = glue("Abnormal changes in search score for {location}"),
       title = keyword
     )
+}
+
+#' @rdname plot_ts
+#' @export
+
+plot_abnorm_score_ts <- function(data, ci = 0.95) {
+  class(data) <- c("abnorm_score", class(data))
+  plot_ts(data, ci = ci)
 }
 
 #' @rdname plot_ts
@@ -185,6 +203,14 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
 #' @rdname plot_ts
 #' @export
 
+plot_voi_ts <- function(data, type = "obs", smooth = TRUE) {
+  class(data) <- c("exp_voi", class(data))
+  plot_ts(data, type = type, smooth = smooth)
+}
+
+#' @rdname plot_ts
+#' @export
+
 plot_ts.abnorm_voi <- function(data, ci = 0.95) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
@@ -213,6 +239,14 @@ plot_ts.abnorm_voi <- function(data, ci = 0.95) {
       y = "Abnormal changes in volume of internationalization",
       title = keyword
     )
+}
+
+#' @rdname plot_ts
+#' @export
+
+plot_abnorm_voi_ts <- function(data, ci = 0.95) {
+  class(data) <- c("abnorm_voi", class(data))
+  plot_ts(data, ci = ci)
 }
 
 #' @rdname plot_ts
@@ -259,6 +293,14 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
 #' @rdname plot_ts
 #' @export
 
+plot_doi_ts <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
+  class(data) <- c("exp_doi", class(data))
+  plot_ts(data, type = type, measure = measure, locations = locations, smooth = smooth)
+}
+
+#' @rdname plot_ts
+#' @export
+
 plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95) {
   .check_type(type)
   .check_locations(locations)
@@ -299,4 +341,12 @@ plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci =
         title = keyword
       )
   }
+}
+
+#' @rdname plot_ts
+#' @export
+
+plot_abnorm_doi_ts <- function(data, type = "obs", locations = "countries", ci = 0.95) {
+  class(data) <- c("abnorm_doi", class(data))
+  plot_ts(data, type = type, locations = locations, ci = ci)
 }
