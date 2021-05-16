@@ -1,6 +1,10 @@
 # globaltrends v.0.0.8
 * Create `export_xxx` method for type `list`
 * Check whether "db/globaltrends_db.sqlite" file exists in working directory
+* Inclusion of "workaround" plot functions that set class `xxx` automatically:
+	* `plot_xxx_box`
+	* `plot_xxx_bar`
+	* `plot_xxx_ts`
 
 # globaltrends v.0.0.7
 * Change waiting times for errors
