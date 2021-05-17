@@ -12,14 +12,16 @@
 #' *keyword* overrules *object*. When supplying `NULL` as input, no filter is
 #' applied to the variable.
 #'
-#' @param keyword Object keywords for which data should be exported. Object of
-#' type `character`.
+#' @param keyword Object keywords for which data should be exported. Object or
+#' list of objects of type `character`.
 #' @param object Object batch number for which data should be exported.
-#' @param control Control batch number for which data should be exported.
+#' @param control Control batch number for which data should be exported. Only
+#' for `export_control` and `export_control_global`, input is also possible as
+#' list.
 #' @param locations List of locations for which the search score is used.
-#' For `export_control`, `export_object`, or `export_score`
-#' refers to lists generated in `start_db`. For `export_doi`
-#' object of type `character`.
+#' For `export_control`, `export_object`, or `export_score`, `locations`
+#' refers to lists generated in `start_db`. For `export_doi`, `location`
+#' refers to an object of type `character`.
 #' @param type Type of time series for which data should be exported. Element
 #' of type `character`. Relevant only for `export_global` and
 #' `export_doi`. Takes one of the following values: *obs* - observed
@@ -64,6 +66,14 @@
 #'   locations = countries
 #' )
 #'
+#' export_object(
+#'   keyword = c("manchester united", "real madrid")
+#' )
+#'
+#' export_object(
+#'   keyword = list("manchester united", "real madrid")
+#' )
+#' 
 #' export_score(
 #'   object = 3,
 #'   control = 1,
