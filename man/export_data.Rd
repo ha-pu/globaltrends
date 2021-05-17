@@ -112,15 +112,17 @@ export_doi(
 )
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported.}
+\item{control}{Control batch number for which data should be exported. Only
+for \code{export_control} and \code{export_control_global}, input is also possible as
+list.}
 
 \item{locations}{List of locations for which the search score is used.
-For \code{export_control}, \code{export_object}, or \code{export_score}
-refers to lists generated in \code{start_db}. For \code{export_doi}
-object of type \code{character}.}
+For \code{export_control}, \code{export_object}, or \code{export_score}, \code{locations}
+refers to lists generated in \code{start_db}. For \code{export_doi}, \code{location}
+refers to an object of type \code{character}.}
 
-\item{keyword}{Object keywords for which data should be exported. Object of
-type \code{character}.}
+\item{keyword}{Object keywords for which data should be exported. Object or
+list of objects of type \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
 
@@ -163,6 +165,14 @@ export_control(control = 2)
 export_object(
   keyword = "manchester united",
   locations = countries
+)
+
+export_object(
+  keyword = c("manchester united", "real madrid")
+)
+
+export_object(
+  keyword = list("manchester united", "real madrid")
 )
 
 export_score(

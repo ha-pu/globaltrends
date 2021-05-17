@@ -3,22 +3,36 @@
 \name{plot_box}
 \alias{plot_box}
 \alias{plot_box.exp_score}
+\alias{plot_score_box}
 \alias{plot_box.abnorm_score}
+\alias{plot_abnorm_score_box}
 \alias{plot_box.exp_voi}
+\alias{plot_voi_box}
 \alias{plot_box.abnorm_voi}
+\alias{plot_abnorm_voi_box}
 \alias{plot_box.exp_doi}
+\alias{plot_doi_box}
 \alias{plot_box.abnorm_doi}
+\alias{plot_abnorm_doi_box}
 \title{Create boxplot for time series of globaltrends data}
 \usage{
 plot_box(data, ...)
 
 \method{plot_box}{exp_score}(data, type = "obs")
 
+plot_score_box(data, type = "obs")
+
 \method{plot_box}{abnorm_score}(data, ci = 0.95)
+
+plot_abnorm_score_box(data, ci = 0.95)
 
 \method{plot_box}{exp_voi}(data, type = "obs")
 
+plot_voi_box(data, type = "obs")
+
 \method{plot_box}{abnorm_voi}(data, ci = 0.95)
+
+plot_abnorm_voi_box(data, ci = 0.95)
 
 \method{plot_box}{exp_doi}(
   data,
@@ -28,7 +42,17 @@ plot_box(data, ...)
   smooth = TRUE
 )
 
+plot_doi_box(
+  data,
+  type = "obs",
+  measure = "gini",
+  locations = "countries",
+  smooth = TRUE
+)
+
 \method{plot_box}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95)
+
+plot_abnorm_doi_box(data, type = "obs", locations = "countries", ci = 0.95)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
@@ -64,11 +88,17 @@ When date for more than one location is provided, the function selects only
 the first location.
 For output of \code{get_abnorm_hist}, users can specify confidence intervals
 to highlight abnormal changes in the data.
+The \code{plot_xxx_box} functions allow to call \code{plot_box} on a data object that
+lost its respective class (e.g., due to a join).
 }
 \examples{
 \dontrun{
 data <- export_score(keyword = "amazon")
 plot_box(data, type = "obs")
+
+# for cases where data looses the respective class
+data <- export_score(keyword = "amazon")
+plot_score_box(data)
 
 data <- export_voi(keyword = "amazon")
 data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")

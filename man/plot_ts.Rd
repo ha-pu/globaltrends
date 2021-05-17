@@ -3,22 +3,36 @@
 \name{plot_ts}
 \alias{plot_ts}
 \alias{plot_ts.exp_score}
+\alias{plot_score_ts}
 \alias{plot_ts.abnorm_score}
+\alias{plot_abnorm_score_ts}
 \alias{plot_ts.exp_voi}
+\alias{plot_voi_ts}
 \alias{plot_ts.abnorm_voi}
+\alias{plot_abnorm_voi_ts}
 \alias{plot_ts.exp_doi}
+\alias{plot_doi_ts}
 \alias{plot_ts.abnorm_doi}
+\alias{plot_abnorm_doi_ts}
 \title{Plot time series of globaltrends data}
 \usage{
 plot_ts(data, ...)
 
 \method{plot_ts}{exp_score}(data, type = "obs", smooth = TRUE)
 
+plot_score_ts(data, type = "obs", smooth = TRUE)
+
 \method{plot_ts}{abnorm_score}(data, ci = 0.95)
+
+plot_abnorm_score_ts(data, ci = 0.95)
 
 \method{plot_ts}{exp_voi}(data, type = "obs", smooth = TRUE)
 
+plot_voi_ts(data, type = "obs", smooth = TRUE)
+
 \method{plot_ts}{abnorm_voi}(data, ci = 0.95)
+
+plot_abnorm_voi_ts(data, ci = 0.95)
 
 \method{plot_ts}{exp_doi}(
   data,
@@ -28,7 +42,17 @@ plot_ts(data, ...)
   smooth = TRUE
 )
 
+plot_doi_ts(
+  data,
+  type = "obs",
+  measure = "gini",
+  locations = "countries",
+  smooth = TRUE
+)
+
 \method{plot_ts}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95)
+
+plot_abnorm_doi_ts(data, type = "obs", locations = "countries", ci = 0.95)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
@@ -64,11 +88,17 @@ When date for more than one location is provided, the function selects only
 the first location.
 For output of \code{get_abnorm_hist}, users can specify confidence intervals
 to highlight abnormal changes in the data.
+The \code{plot_xxx_ts} functions allow to call \code{plot_ts} on a data object that
+lost its respective class (e.g., due to a join).
 }
 \examples{
 \dontrun{
 data <- export_score(keyword = "amazon")
 plot_ts(data, type = "obs")
+
+# for cases where data looses the respective class
+data <- export_score(keyword = "amazon")
+plot_score_ts(data)
 
 data <- export_voi(keyword = "amazon")
 data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
