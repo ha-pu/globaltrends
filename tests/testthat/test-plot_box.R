@@ -205,7 +205,7 @@ test_that("plot_box.abnorm_score4", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   out2 <- plot_abnorm_score_box(data)
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -344,7 +344,7 @@ test_that("plot_box.abnorm_voi2", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(example_score$keyword)[1:2]
   data <- map_dfr(keywords, export_voi)
   data <- get_abnorm_hist(data)
@@ -353,7 +353,7 @@ test_that("plot_box.abnorm_voi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -362,7 +362,7 @@ test_that("plot_box.abnorm_voi3", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   out2 <- plot_abnorm_voi_box(data)
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -406,7 +406,7 @@ test_that("plot_box.exp_doi3a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data, type = "trd", measure = "gini")
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(example_doi$keyword)[1:10]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   expect_warning(
@@ -414,7 +414,7 @@ test_that("plot_box.exp_doi3a", {
     "The plot function is limited to 9 keywords\\.\nYou use 10 keywords\\.\nOnly the first 9 keywords are used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -423,7 +423,7 @@ test_that("plot_box.exp_doi4a", {
   data <- map_dfr(keywords, export_doi, locations = "countries")
   out1 <- plot_box(data)
   out2 <- plot_doi_box(data)
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -692,7 +692,7 @@ test_that("plot_box.abnorm_doi2", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   expect_s3_class(out1, "ggplot")
-  
+
   keywords <- unique(example_doi$keyword)[1:2]
   data <- map_dfr(keywords, export_doi, locations = "countries")
   data <- get_abnorm_hist(data)
@@ -701,7 +701,7 @@ test_that("plot_box.abnorm_doi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 
@@ -710,7 +710,7 @@ test_that("plot_box.abnorm_doi3", {
   data <- get_abnorm_hist(data)
   out1 <- plot_box(data)
   out2 <- plot_abnorm_doi_box(data)
-  
+
   expect_identical(out1$labels, out2$labels)
 })
 

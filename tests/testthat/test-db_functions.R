@@ -91,7 +91,7 @@ test_that("start2", {
   setwd(tempdir())
   expect_error(
     start_db(),
-	"File 'db/globaltrends_db.sqlite' does not exist in working directory\\.\nSet working directory to correct path\\."
+    "File 'db/globaltrends_db.sqlite' does not exist in working directory\\.\nSet working directory to correct path\\."
   )
   setwd(current_wd)
 })

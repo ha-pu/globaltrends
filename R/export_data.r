@@ -73,7 +73,7 @@
 #' export_object(
 #'   keyword = list("manchester united", "real madrid")
 #' )
-#' 
+#'
 #' export_score(
 #'   object = 3,
 #'   control = 1,

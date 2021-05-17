@@ -39,7 +39,7 @@
 #' # for cases where data looses the respective class
 #' data <- export_score(keyword = "amazon")
 #' plot_score_ts(data)
-#' 
+#'
 #' data <- export_voi(keyword = "amazon")
 #' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
 #' plot_ts(data)
