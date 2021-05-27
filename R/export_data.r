@@ -18,10 +18,12 @@
 #' @param control Control batch number for which data should be exported. Only
 #' for `export_control` and `export_control_global`, input is also possible as
 #' list.
-#' @param locations List of locations for which the search score is used.
-#' For `export_control`, `export_object`, or `export_score`, `locations`
-#' refers to lists generated in `start_db`. For `export_doi`, `location`
-#' refers to an object of type `character`.
+#' @param location List of locations for which the data is exported. Refers to
+#' lists generated in `start_db` or `character` objects in these lists. Only for
+#' `export_control`, `export_object`, or `export_score`
+#' @param locations List of locations for which the data is exported. Refers to
+#' names of lists generated in `start_db` as an object of type `character`. Only
+#' for `export_doi`.
 #' @param type Type of time series for which data should be exported. Element
 #' of type `character`. Relevant only for `export_global` and
 #' `export_doi`. Takes one of the following values: *obs* - observed
@@ -77,7 +79,7 @@
 #' export_score(
 #'   object = 3,
 #'   control = 1,
-#'   locations = us_states
+#'   location = us_states
 #' ) %>%
 #'   readr::write_csv("data_score.csv")
 #'
@@ -104,18 +106,15 @@ export_control <- function(control = NULL, locations = NULL) UseMethod("export_c
 #' @method export_control numeric
 #' @export
 
-export_control.numeric <- function(control = NULL, locations = NULL) {
+export_control.numeric <- function(control = NULL, location = NULL) {
   if (length(control) > 1) {
     out <- export_control(control = as.list(control), locations = locations)
   } else {
     out <- .export_data_single(
       table = .tbl_control,
-      in_control = control
+      in_control = control,
+      in_location = location
     )
-    if (!is.null(locations)) {
-      in_location <- locations
-      out <- filter(out, .data$location %in% in_location)
-    }
     out <- filter(out, .data$location != "world")
     out <- rename(out, control = .data$batch)
   }
@@ -126,15 +125,12 @@ export_control.numeric <- function(control = NULL, locations = NULL) {
 #' @method export_control NULL
 #' @export
 
-export_control.NULL <- function(control = NULL, locations = NULL) {
+export_control.NULL <- function(control = NULL, location = NULL) {
   out <- .export_data_single(
     table = .tbl_control,
-    in_control = control
+    in_control = control,
+    in_location = location
   )
-  if (!is.null(locations)) {
-    in_location <- locations
-    out <- filter(out, .data$location %in% in_location)
-  }
   out <- filter(out, .data$location != "world")
   out <- rename(out, control = .data$batch)
   return(out)
@@ -144,8 +140,8 @@ export_control.NULL <- function(control = NULL, locations = NULL) {
 #' @method export_control list
 #' @export
 
-export_control.list <- function(control = NULL, locations = NULL) {
-  out <- map_dfr(control, export_control, locations = locations)
+export_control.list <- function(control = NULL, location = NULL) {
+  out <- map_dfr(control, export_control, location = location)
   return(out)
 }
 
@@ -164,9 +160,9 @@ export_control_global.numeric <- function(control = NULL) {
   } else {
     out <- .export_data_single(
       table = .tbl_control,
-      in_control = control
+      in_control = control,
+      in_location = "world"
     )
-    out <- filter(out, .data$location == "world")
     out <- rename(out, control = .data$batch)
   }
   return(out)
@@ -179,9 +175,9 @@ export_control_global.numeric <- function(control = NULL) {
 export_control_global.NULL <- function(control = NULL) {
   out <- .export_data_single(
     table = .tbl_control,
-    in_control = control
+    in_control = control,
+    in_location = "world"
   )
-  out <- filter(out, .data$location == "world")
   out <- rename(out, control = .data$batch)
   return(out)
 }
@@ -204,20 +200,17 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
 #' @method export_object character
 #' @export
 
-export_object.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_object.character <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   if (length(keyword) > 1) {
-    out <- export_object(keyword = as.list(keyword), object = object, control = control, locations = locations)
+    out <- export_object(keyword = as.list(keyword), object = object, control = control, location = location)
   } else {
     out <- .export_data_double(
       table = .tbl_object,
       in_keyword = keyword,
       in_object = object,
-      in_control = control
+      in_control = control,
+      in_location = location
     )
-    if (!is.null(locations)) {
-      in_location <- locations
-      out <- filter(out, .data$location %in% in_location)
-    }
     out <- filter(out, .data$location != "world")
     out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   }
@@ -228,17 +221,14 @@ export_object.character <- function(keyword = NULL, object = NULL, control = NUL
 #' @method export_object NULL
 #' @export
 
-export_object.NULL <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_object.NULL <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   out <- .export_data_double(
     table = .tbl_object,
     in_keyword = keyword,
     in_object = object,
-    in_control = control
+    in_control = control,
+    in_location = location
   )
-  if (!is.null(locations)) {
-    in_location <- locations
-    out <- filter(out, .data$location %in% in_location)
-  }
   out <- filter(out, .data$location != "world")
   out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   return(out)
@@ -248,8 +238,8 @@ export_object.NULL <- function(keyword = NULL, object = NULL, control = NULL, lo
 #' @method export_object list
 #' @export
 
-export_object.list <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
-  out <- map_dfr(keyword, export_object, object = object, control = control, locations = locations)
+export_object.list <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+  out <- map_dfr(keyword, export_object, object = object, control = control, location = location)
   return(out)
 }
 
@@ -270,9 +260,9 @@ export_object_global.character <- function(keyword = NULL, object = NULL, contro
       table = .tbl_object,
       in_keyword = keyword,
       in_object = object,
-      in_control = control
+      in_control = control,
+      in_location = "world"
     )
-    out <- filter(out, .data$location == "world")
     out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   }
   return(out)
@@ -287,9 +277,9 @@ export_object_global.NULL <- function(keyword = NULL, object = NULL, control = N
     table = .tbl_object,
     in_keyword = keyword,
     in_object = object,
-    in_control = control
+    in_control = control,
+    in_location = "world"
   )
-  out <- filter(out, .data$location == "world")
   out <- rename(out, object = .data$batch_o, control = .data$batch_c)
   return(out)
 }
@@ -306,26 +296,23 @@ export_object_global.list <- function(keyword = NULL, object = NULL, control = N
 #' @rdname export_data
 #' @export
 
-export_score <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) UseMethod("export_score", keyword)
+export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) UseMethod("export_score", keyword)
 
 #' @rdname export_data
 #' @method export_score character
 #' @export
 
-export_score.character <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_score.character <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   if (length(keyword) > 1) {
-    out <- export_score(keyword = as.list(keyword), object = object, control = control, locations = locations)
+    out <- export_score(keyword = as.list(keyword), object = object, control = control, location = location)
   } else {
     out <- .export_data_double(
       table = .tbl_score,
       in_keyword = keyword,
       in_object = object,
-      in_control = control
+      in_control = control,
+      in_location = location
     )
-    if (!is.null(locations)) {
-      in_location <- locations
-      out <- filter(out, .data$location %in% in_location)
-    }
     out <- filter(out, .data$location != "world")
     out <- rename(out, control = .data$batch_c, object = .data$batch_o)
     out <- select(out, -.data$synonym)
@@ -338,17 +325,14 @@ export_score.character <- function(keyword = NULL, object = NULL, control = NULL
 #' @method export_score NULL
 #' @export
 
-export_score.NULL <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_score.NULL <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   out <- .export_data_double(
     table = .tbl_score,
     in_keyword = keyword,
     in_object = object,
-    in_control = control
+    in_control = control,
+    in_location = location,
   )
-  if (!is.null(locations)) {
-    in_location <- locations
-    out <- filter(out, .data$location %in% in_location)
-  }
   out <- filter(out, .data$location != "world")
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   out <- select(out, -.data$synonym)
@@ -360,8 +344,8 @@ export_score.NULL <- function(keyword = NULL, object = NULL, control = NULL, loc
 #' @method export_score list
 #' @export
 
-export_score.list <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
-  out <- map_dfr(keyword, export_score, object = object, control = control, locations = locations)
+export_score.list <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+  out <- map_dfr(keyword, export_score, object = object, control = control, location = location)
   return(out)
 }
 
@@ -382,9 +366,9 @@ export_voi.character <- function(keyword = NULL, object = NULL, control = NULL) 
       table = .tbl_score,
       in_keyword = keyword,
       in_object = object,
-      in_control = control
+      in_control = control,
+      in_location = "world"
     )
-    out <- filter(out, .data$location == "world")
     out <- rename(out, control = .data$batch_c, object = .data$batch_o)
     out <- select(out, -.data$synonym)
     class(out) <- c("exp_voi", class(out))
@@ -401,9 +385,9 @@ export_voi.NULL <- function(keyword = NULL, object = NULL, control = NULL) {
     table = .tbl_score,
     in_keyword = keyword,
     in_object = object,
-    in_control = control
+    in_control = control,
+    in_location = "world"
   )
-  out <- filter(out, .data$location == "world")
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   out <- select(out, -.data$synonym)
   class(out) <- c("exp_voi", class(out))
@@ -486,10 +470,11 @@ export_doi.list <- function(keyword = NULL, object = NULL, control = NULL, locat
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 
-.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_type = NULL) {
+.export_data_single <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_type = NULL, in_location = NULL) {
   keyword <- in_keyword
   object <- in_object
   control <- in_control
+  location <- in_location
   .check_length(keyword, 1)
   .check_length(object, 1)
   .check_length(control, 1)
@@ -498,12 +483,14 @@ export_doi.list <- function(keyword = NULL, object = NULL, control = NULL, locat
   if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
+  if (!is.null(in_location)) .check_input(location, "character")
 
   if (!is.null(in_type)) in_type <- paste0("hits_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch == in_object)
   if (!is.null(in_control)) table <- filter(table, .data$batch == in_control)
   if (!is.null(in_type)) table <- filter(table, .data$type == in_type)
+  if (!is.null(in_location)) table <- filter(table, .data$location %in% in_location)
 
   table <- collect(table)
   table <- mutate(table, date = as_date(.data$date))
@@ -520,29 +507,31 @@ export_doi.list <- function(keyword = NULL, object = NULL, control = NULL, locat
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 
-.export_data_double <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_locations = NULL, in_type = NULL) {
+.export_data_double <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_location = NULL, in_locations = NULL, in_type = NULL) {
   keyword <- in_keyword
   object <- in_object
   control <- in_control
+  location <- in_location
   locations <- in_locations
   .check_length(keyword, 1)
   .check_length(object, 1)
   .check_length(control, 1)
-  .check_length(locations, 1)
   if (!is.null(in_type)) .check_type(in_type)
 
   if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
   if (!is.null(in_control)) .check_batch(in_control)
+  if (!is.null(in_location)) .check_input(location, "character")
   if (!is.null(in_locations)) .check_input(locations, "character")
 
   if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword == in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch_o == in_object)
   if (!is.null(in_control)) table <- filter(table, .data$batch_c == in_control)
-  if (!is.null(in_locations)) table <- filter(table, .data$locations == in_locations)
   if (!is.null(in_type)) table <- filter(table, .data$type == in_type)
-
+  if (!is.null(in_location)) table <- filter(table, .data$location %in% in_location)
+  if (!is.null(in_locations)) table <- filter(table, .data$locations == in_locations)
+  
   table <- collect(table)
   table <- mutate(table, date = as_date(.data$date))
   return(table)
