@@ -88,7 +88,7 @@ test_that("doi1", {
 })
 
 # plot_score -------------------------------------------------------------------
-data <- export_score(keyword = "fc barcelona", control = 1, locations = "US")
+data <- export_score(keyword = "fc barcelona", control = 1, location = "US")
 
 test_that("plot_score1", {
   expect_s3_class(
