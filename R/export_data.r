@@ -175,7 +175,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
 
 #' @rdname export_data
 #' @export
- 
+
 export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
     table = .tbl_score,
@@ -241,7 +241,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (!is.null(in_type)) table <- filter(table, .data$type %in% in_type)
   if (!is.null(in_location)) table <- filter(table, .data$location %in% in_location)
   if (!is.null(in_locations)) table <- filter(table, .data$locations %in% in_locations)
-  
+
   table <- collect(table)
   table <- mutate(table, date = as_date(.data$date))
   return(table)
