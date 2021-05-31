@@ -1,5 +1,6 @@
 # globaltrends v.0.0.8
-* Create `export_xxx` method for type `list`
+* Adapt `export_xxx` for `vector` and `list` inputs
+* Optimize RAM usage of `export_xxx`
 * Check whether "db/globaltrends_db.sqlite" file exists in working directory
 * Inclusion of "workaround" plot functions that set class `xxx` automatically:
 	* `plot_xxx_box`
