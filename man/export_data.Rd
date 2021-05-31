@@ -2,108 +2,27 @@
 % Please edit documentation in R/export_data.r
 \name{export_control}
 \alias{export_control}
-\alias{export_control.numeric}
-\alias{export_control.NULL}
-\alias{export_control.list}
 \alias{export_control_global}
-\alias{export_control_global.numeric}
-\alias{export_control_global.NULL}
-\alias{export_control_global.list}
 \alias{export_object}
-\alias{export_object.character}
-\alias{export_object.NULL}
-\alias{export_object.list}
 \alias{export_object_global}
-\alias{export_object_global.character}
-\alias{export_object_global.NULL}
-\alias{export_object_global.list}
 \alias{export_score}
-\alias{export_score.character}
-\alias{export_score.NULL}
-\alias{export_score.list}
 \alias{export_voi}
-\alias{export_voi.character}
-\alias{export_voi.NULL}
-\alias{export_voi.list}
 \alias{export_doi}
-\alias{export_doi.character}
-\alias{export_doi.NULL}
-\alias{export_doi.list}
 \title{Export data from database table}
 \usage{
-export_control(control = NULL, locations = NULL)
-
-\method{export_control}{numeric}(control = NULL, locations = NULL)
-
-\method{export_control}{`NULL`}(control = NULL, locations = NULL)
-
-\method{export_control}{list}(control = NULL, locations = NULL)
+export_control(control = NULL, location = NULL)
 
 export_control_global(control = NULL)
 
-\method{export_control_global}{numeric}(control = NULL)
-
-\method{export_control_global}{`NULL`}(control = NULL)
-
-\method{export_control_global}{list}(control = NULL)
-
-export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_object}{character}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_object}{`NULL`}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_object}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_object(keyword = NULL, object = NULL, control = NULL, location = NULL)
 
 export_object_global(keyword = NULL, object = NULL, control = NULL)
 
-\method{export_object_global}{character}(keyword = NULL, object = NULL, control = NULL)
-
-\method{export_object_global}{`NULL`}(keyword = NULL, object = NULL, control = NULL)
-
-\method{export_object}{list}(keyword = NULL, object = NULL, control = NULL)
-
-export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_score}{character}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_score}{`NULL`}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
-
-\method{export_score}{list}(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_score(keyword = NULL, object = NULL, control = NULL, location = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
 
-\method{export_voi}{character}(keyword = NULL, object = NULL, control = NULL)
-
-\method{export_voi}{`NULL`}(keyword = NULL, object = NULL, control = NULL)
-
-\method{export_voi}{list}(keyword = NULL, object = NULL, control = NULL)
-
 export_doi(
-  keyword = NULL,
-  object = NULL,
-  control = NULL,
-  locations = NULL,
-  type = NULL
-)
-
-\method{export_doi}{character}(
-  keyword = NULL,
-  object = NULL,
-  control = NULL,
-  locations = NULL,
-  type = NULL
-)
-
-\method{export_doi}{`NULL`}(
-  keyword = NULL,
-  object = NULL,
-  control = NULL,
-  locations = NULL,
-  type = NULL
-)
-
-\method{export_doi}{list}(
   keyword = NULL,
   object = NULL,
   control = NULL,
@@ -116,15 +35,18 @@ export_doi(
 for \code{export_control} and \code{export_control_global}, input is also possible as
 list.}
 
-\item{locations}{List of locations for which the search score is used.
-For \code{export_control}, \code{export_object}, or \code{export_score}, \code{locations}
-refers to lists generated in \code{start_db}. For \code{export_doi}, \code{location}
-refers to an object of type \code{character}.}
+\item{location}{List of locations for which the data is exported. Refers to
+lists generated in \code{start_db} or \code{character} objects in these lists. Only for
+\code{export_control}, \code{export_object}, or \code{export_score}}
 
 \item{keyword}{Object keywords for which data should be exported. Object or
 list of objects of type \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
+
+\item{locations}{List of locations for which the data is exported. Refers to
+names of lists generated in \code{start_db} as an object of type \code{character}. Only
+for \code{export_doi}.}
 
 \item{type}{Type of time series for which data should be exported. Element
 of type \code{character}. Relevant only for \code{export_global} and
@@ -152,7 +74,7 @@ various \emph{write} functions in R, the functions allow exports from the
 database to local files.
 }
 \details{
-Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
+Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control}, \emph{location},
 \emph{locations}, or \emph{type}. Not all filters are applicable for all
 functions. When filter \emph{keyword} and \emph{object} are used together,
 \emph{keyword} overrules \emph{object}. When supplying \code{NULL} as input, no filter is
@@ -178,7 +100,7 @@ export_object(
 export_score(
   object = 3,
   control = 1,
-  locations = us_states
+  location = us_states
 ) \%>\%
   readr::write_csv("data_score.csv")
 
