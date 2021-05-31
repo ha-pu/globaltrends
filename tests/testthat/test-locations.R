@@ -153,8 +153,8 @@ test_that("compute_doi", {
 
 # export score -----------------------------------------------------------------
 test_that("export_score", {
-  out1 <- export_score(locations = asia)
-  out2 <- export_score(locations = countries)
+  out1 <- export_score(location = asia)
+  out2 <- export_score(location = countries)
 
   expect_equal(
     unique(out1$location),
