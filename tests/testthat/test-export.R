@@ -44,15 +44,15 @@ test_that("export_control5", {
   )
   expect_error(
     export_control(control = "A"),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
   expect_error(
     export_control(control = TRUE),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
   expect_error(
     export_control(control = sum),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
 })
 
@@ -80,19 +80,19 @@ test_that("export_control_global4", {
 test_that("export_control_global5", {
   expect_error(
     export_control_global(control = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer numeric value."
   )
   expect_error(
     export_control_global(control = "A"),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
   expect_error(
     export_control_global(control = TRUE),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
   expect_error(
     export_control_global(control = sum),
-    "no applicable method"
+    "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
   )
 })
 
@@ -120,15 +120,15 @@ test_that("export_object4", {
 test_that("export_object5", {
   expect_error(
     export_object(keyword = 1),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     export_object(keyword = TRUE),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     export_object(keyword = sum),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -149,9 +149,9 @@ test_that("export_object6", {
     export_object(object = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_object(object = 1:5),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_object(object = 1:5)),
+    3120
   )
 })
 
@@ -172,9 +172,9 @@ test_that("export_object7", {
     export_object(control = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_object(control = 1:5),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_object(control = 1:5)),
+    3120
   )
 })
 
@@ -202,15 +202,15 @@ test_that("export_object_global4", {
 test_that("export_object_global5", {
   expect_error(
     export_object_global(keyword = 1),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     export_object_global(keyword = TRUE),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     export_object_global(keyword = sum),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -231,9 +231,9 @@ test_that("export_object_global6", {
     export_object_global(object = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_object_global(object = 1:5),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_object_global(object = 1:5)),
+    1560
   )
 })
 
@@ -254,9 +254,9 @@ test_that("export_object_global7", {
     export_object_global(control = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_object_global(control = 1:5),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_object_global(control = 1:5)),
+    1560
   )
 })
 
@@ -288,15 +288,15 @@ test_that("export_score4", {
 test_that("export_score5", {
   expect_error(
     export_score(keyword = 1),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     export_score(keyword = TRUE),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     export_score(keyword = sum),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -317,9 +317,9 @@ test_that("export_score6", {
     export_score(object = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_score(object = 1:5),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_score(object = 1:5)),
+    1920
   )
 })
 
@@ -340,9 +340,9 @@ test_that("export_score7", {
     export_score(control = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_score(control = 1:5),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_score(control = 1:5)),
+    1920
   )
 })
 
@@ -374,15 +374,15 @@ test_that("export_voi4", {
 test_that("export_voi5", {
   expect_error(
     export_voi(keyword = 1),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     export_voi(keyword = TRUE),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     export_voi(keyword = sum),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -403,9 +403,9 @@ test_that("export_voi6", {
     export_voi(object = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_voi(object = 1:5),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_voi(object = 1:5)),
+    1200
   )
 })
 
@@ -426,9 +426,9 @@ test_that("export_voi7", {
     export_voi(control = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_voi(control = 1:5),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_voi(control = 1:5)),
+    1200
   )
 })
 
@@ -460,15 +460,15 @@ test_that("export_doi4", {
 test_that("export_doi5", {
   expect_error(
     export_doi(keyword = 1),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     export_doi(keyword = TRUE),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     export_doi(keyword = sum),
-    "no applicable method"
+    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
   )
 })
 
@@ -489,9 +489,9 @@ test_that("export_doi6", {
     export_doi(object = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_doi(object = 1:5),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_doi(object = 1:5)),
+    3600
   )
 })
 
@@ -512,9 +512,9 @@ test_that("export_doi7", {
     export_doi(control = sum),
     "Batch number must be object of type integer.\nYou provided a non-integer value."
   )
-  expect_error(
-    export_doi(control = 1:5),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_doi(control = 1:5)),
+    3600
   )
 })
 
@@ -535,9 +535,9 @@ test_that("export_doi8", {
     export_doi(type = sum),
     "'type' must be object of type character.\nYou provided an object of type builtin."
   )
-  expect_error(
-    export_doi(type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
+  expect_equal(
+    nrow(export_doi(type = c("obs", "sad", "trd"))),
+    3600
   )
 })
 
@@ -554,9 +554,9 @@ test_that("export_doi9", {
     export_doi(locations = sum),
     "'locations' must be object of type character.\nYou provided an object of type builtin."
   )
-  expect_error(
-    export_doi(locations = letters[1:5]),
-    "'locations' must be object of length 1.\nYou provided an object of length 5."
+  expect_equal(
+    nrow(export_doi(locations = c("countries", "us_states"))),
+    3600
   )
 })
 
