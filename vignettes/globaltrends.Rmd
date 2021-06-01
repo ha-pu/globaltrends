@@ -247,7 +247,7 @@ data_score %>%
 #> # ... with 8,030 more rows
 ```
 
-To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data is `NULL`. In this case, all values from the database are exported. Alternatively, batch numbers/keywords can be specified individually, as vector or as list.
+To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data is `NULL`. In this case, all values from the database are exported. Alternatively, users can specify filters (e.g., keywords, batches, locations) individually, as vector or as list.
 
 ```{r, eval = FALSE}
 # export_control ---------------------------------------------------------------
