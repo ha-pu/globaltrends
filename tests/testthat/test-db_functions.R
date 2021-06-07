@@ -70,7 +70,7 @@ test_that("initialize", {
 })
 
 # start ------------------------------------------------------------------------
-test_that("start", {
+test_that("start1", {
   out <- capture_messages(start_db())
 
   expect_match(
@@ -83,6 +83,17 @@ test_that("start", {
     "Successfully exported all objects to \\.GlobalEnv\\.",
     all = FALSE
   )
+  disconnect_db()
+})
+
+test_that("start2", {
+  current_wd <- getwd()
+  setwd(tempdir())
+  expect_error(
+    start_db(),
+    "File 'db/globaltrends_db.sqlite' does not exist in working directory\\.\nSet working directory to correct path\\."
+  )
+  setwd(current_wd)
 })
 
 # re-create existing database --------------------------------------------------
@@ -95,6 +106,7 @@ test_that("re_create", {
 
 # disconnect -------------------------------------------------------------------
 test_that("disconnect", {
+  start_db()
   expect_message(
     disconnect_db(),
     "Successfully disconnected\\."

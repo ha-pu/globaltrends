@@ -267,8 +267,12 @@ initialize_db <- function() {
 
 start_db <- function() {
   # connect to db --------------------------------------------------------------
-  globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
-  message("Successfully connected to database.")
+  if (file.exists("db/globaltrends_db.sqlite")) {
+    globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
+    message("Successfully connected to database.")
+  } else {
+    stop("Error: File 'db/globaltrends_db.sqlite' does not exist in working directory.\nSet working directory to correct path.")
+  }
 
   # get tables -----------------------------------------------------------------
   tbl_locations <- tbl(globaltrends_db, "data_locations")

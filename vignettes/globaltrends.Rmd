@@ -29,7 +29,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.7'
+#> [1] '0.0.8'
 ```
 
 # Google Trends
@@ -63,9 +63,9 @@ We demonstrate the functionality of the `globaltrends` package based on a sample
 4. Exports and plots
 
 ## Setup and start database
-Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a [SQLite database](https://www.sqlite.org/index.html) to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.  
+Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses an [SQLite database](https://www.sqlite.org/index.html) to store and handle all data. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.  
 
-Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates a SQLite database file named *globaltrends_db.sqlite* within this folder. The command also creates all necessary tables within the database. For more information on database tables, please refer to their built-in documentation e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
+Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates an SQLite database file named *globaltrends_db.sqlite* within this folder. The command also creates all necessary tables within the database. For more information on database tables, please refer to their built-in documentation e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
 ```{r, eval = FALSE}
 # initialize_db ----------------------------------------------------------------
@@ -116,7 +116,7 @@ new_control <- add_control_keyword(
   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
   time = "2010-01-01 2020-12-31"
 )
-#> Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2019-12-31).
+#> Successfully created new control batch 1 (gmail ... youtube, 2010-01-01 2020-12-31).
 ```
 
 The function `add_control_keyword` also updates the object `keywords_control` in the global environment. This `tibble` can be used for batch lookup.
@@ -247,7 +247,7 @@ data_score %>%
 #> # ... with 8,030 more rows
 ```
 
-To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as `tibble`. Currently the functions do not include `list` inputs – users are advised to `purrr::map_dfr` or `dplyr::filter` instead.
+To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data is `NULL`. In this case, all values from the database are exported. Alternatively, users can specify filters (e.g., keywords, batches, locations) individually, as vector or as list.
 
 ```{r, eval = FALSE}
 # export_control ---------------------------------------------------------------
@@ -298,7 +298,7 @@ export_doi(object = 1, control = 1, type = "obs") %>%
 #> 3 microsoft 0.682
 ```
 
-Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. Except for `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
+Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. Except for `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. Alternatively, all plot-functions provide options to work without the respective class e.g., for cases where the class gets lost in a `join`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset – we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
 
 ```{r, eval = FALSE}
 # plot_score -------------------------------------------------------------------

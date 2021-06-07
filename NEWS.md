@@ -1,3 +1,12 @@
+# globaltrends v.0.0.8
+* Adapt `export_xxx` for `vector` and `list` inputs
+* Optimize RAM usage of `export_xxx`
+* Check whether "db/globaltrends_db.sqlite" file exists in working directory
+* Inclusion of "workaround" plot functions that set class `xxx` automatically:
+	* `plot_xxx_box`
+	* `plot_xxx_bar`
+	* `plot_xxx_ts`
+
 # globaltrends v.0.0.7
 * Change waiting times for errors
 	* Status Code != 200/Limit exceeded -> 60 seconds wait

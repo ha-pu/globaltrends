@@ -55,10 +55,10 @@
 #' @keywords internal
 #' @noRd
 
-.check_type <- function(type) {
-  .check_length(input = type, max = 1)
+.check_type <- function(type, len = 1) {
+  .check_length(input = type, max = len)
   .check_input(input = type, type = "character")
-  if (!(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou provided {type}."))
+  if (!all(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou provided {type}."))
 }
 
 #' @title Check smooth

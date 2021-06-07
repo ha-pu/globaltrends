@@ -33,7 +33,7 @@ Example data for the table \emph{batch_time} is available as R object
 }
 \seealso{
 \itemize{
-\item \code{\link[=add_keyword]{add_keyword()}}
+\item \code{\link[=add_control_keyword]{add_control_keyword()}}
 }
 }
 \keyword{datasets}

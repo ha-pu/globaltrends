@@ -3,14 +3,20 @@
 \name{plot_bar}
 \alias{plot_bar}
 \alias{plot_bar.exp_score}
+\alias{plot_score_bar}
 \alias{plot_bar.abnorm_score}
+\alias{plot_abnorm_score_bar}
 \title{Create barplot for cross-sectional globaltrends data}
 \usage{
 plot_bar(data, ...)
 
 \method{plot_bar}{exp_score}(data, type = "obs")
 
+plot_score_bar(data, type = "obs")
+
 \method{plot_bar}{abnorm_score}(data)
+
+plot_abnorm_score_bar(data)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
@@ -29,10 +35,18 @@ the top 10 countries. For output from \code{get_abnorm_hist} the plot shows
 five locations with the highest and lowest abnormal changes each. When the
 output includes more than one keyword, only the first keyword is used.
 }
+\details{
+The \code{plot_xxx_bar} functions allow to call \code{plot_bar} on a data object that
+lost its respective class (e.g., due to a join).
+}
 \examples{
 \dontrun{
 data <- export_score(keyword = "amazon")
 plot_bar(data, type = "obs")
+
+# for cases where data looses the respective class
+data <- export_score(keyword = "amazon")
+plot_score_bar(data)
 
 data <- export_score(keyword = "amazon")
 data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")

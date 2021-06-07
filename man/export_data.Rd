@@ -10,15 +10,15 @@
 \alias{export_doi}
 \title{Export data from database table}
 \usage{
-export_control(control = NULL, locations = NULL)
+export_control(control = NULL, location = NULL)
 
 export_control_global(control = NULL)
 
-export_object(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_object(keyword = NULL, object = NULL, control = NULL, location = NULL)
 
 export_object_global(keyword = NULL, object = NULL, control = NULL)
 
-export_score(keyword = NULL, object = NULL, control = NULL, locations = NULL)
+export_score(keyword = NULL, object = NULL, control = NULL, location = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
 
@@ -31,35 +31,41 @@ export_doi(
 )
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported.}
+\item{control}{Control batch number for which data should be exported. Only
+for \code{export_control} and \code{export_control_global}, input is also possible as
+list.}
 
-\item{locations}{List of locations for which the search score is used.
-For \code{export_control}, \code{export_object}, or \code{export_score}
-refers to lists generated in \code{start_db}. For \code{export_doi}
-object of type \code{character}.}
+\item{location}{List of locations for which the data is exported. Refers to
+lists generated in \code{start_db} or \code{character} objects in these lists. Only for
+\code{export_control}, \code{export_object}, or \code{export_score}}
 
-\item{keyword}{Object keywords for which data should be exported. Object of
-type \code{character}.}
+\item{keyword}{Object keywords for which data should be exported. Object or
+list of objects of type \code{character}.}
 
 \item{object}{Object batch number for which data should be exported.}
 
+\item{locations}{List of locations for which the data is exported. Refers to
+names of lists generated in \code{start_db} as an object of type \code{character}. Only
+for \code{export_doi}.}
+
 \item{type}{Type of time series for which data should be exported. Element
 of type \code{character}. Relevant only for \code{export_global} and
-\code{export_doi}. Takes one of the following values: *obs` - observed
+\code{export_doi}. Takes one of the following values: \emph{obs} - observed
 search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
 trend only search scores.}
 }
 \value{
 The functions export and filter the respective database tables.
 \itemize{
-\item \code{export_control} exports data from table *data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. \\item }export_object\verb{ exports data from table *data_object} with
-columns location, keyword, date, hits, object.Object of class
-\code{"data.frame"}.
-\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. \\item }export_voi\verb{ exports data from table *data_score} with
+\item \code{export_control} and \code{export_control_global} export data from table
+*data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. Methods are applied based on input *control*. \\item }export_object\code{and}export_object_global\verb{ export data from table *data_object} with columns location, keyword, date, hits, object. Object of
+class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
+\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
 columns keyword, date, hits, control, filters for
-\code{location == "world"}. Object of class
-\code{c("exp_voi", "data.frame")}.
-\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`.
+\code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
+Methods are applied based on input \emph{keyword}.
+\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`. Methods are applied based on input
+\emph{keyword}.
 }
 }
 \description{
@@ -68,12 +74,11 @@ various \emph{write} functions in R, the functions allow exports from the
 database to local files.
 }
 \details{
-Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control},
+Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control}, \emph{location},
 \emph{locations}, or \emph{type}. Not all filters are applicable for all
 functions. When filter \emph{keyword} and \emph{object} are used together,
-\emph{keyword} overrules \emph{object}. Currently the functions do not
-include list inputs - users are advised to \code{purrr::map_dfr} or
-\code{dplyr::filter} instead.
+\emph{keyword} overrules \emph{object}. When supplying \code{NULL} as input, no filter is
+applied to the variable.
 }
 \examples{
 \dontrun{
@@ -84,10 +89,18 @@ export_object(
   locations = countries
 )
 
+export_object(
+  keyword = c("manchester united", "real madrid")
+)
+
+export_object(
+  keyword = list("manchester united", "real madrid")
+)
+
 export_score(
   object = 3,
   control = 1,
-  locations = us_states
+  location = us_states
 ) \%>\%
   readr::write_csv("data_score.csv")
 
@@ -98,24 +111,7 @@ export_doi(
   locations = "us_states"
 ) \%>\%
   writexl::write_xlsx("data_doi.xlsx")
-
-# interaction with purrr::map_dfr
-purrr::map_dfr(
-  c("coca cola", "microsoft"),
-  export_doi,
-  control = 1,
-  type = "obs"
-)
-
-# interaction with dplyr::filter
-export_voi(
-  object = 1,
-  control = 1,
-  type = "obs"
-) \%>\%
-  dplyr::filter(lubridate::year(date) == 2019)
 }
-
 }
 \seealso{
 \itemize{
@@ -123,7 +119,5 @@ export_voi(
 \item \code{\link[=example_object]{example_object()}}
 \item \code{\link[=example_score]{example_score()}}
 \item \code{\link[=example_doi]{example_doi()}}
-\item \code{\link[purrr:map]{purrr::map()}}
-\item \code{\link[dplyr:filter]{dplyr::filter()}}
 }
 }
