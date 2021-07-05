@@ -1,6 +1,6 @@
 ^data-raw$
 ^globaltrends_Vignette\.pdf$
-^Puhr_Muellner\.pdf$
 ^vignettes/vignette_draft\.docx$
 ^.*\hex-globaltrends
 ^NEWS\.md$
+^useR 2021$
