@@ -20,6 +20,7 @@ Defaults to \emph{"2010-01-01 2020-12-31"}.}
 \value{
 Message that the batch has been created successfully. Batch data is
 written to tables \emph{batch_keywords} and \emph{batch_time}.
+Numeric vector containing the newly added batch numbers.
 }
 \description{
 The function adds one or more batches of keywords with a time period for

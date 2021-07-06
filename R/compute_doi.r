@@ -72,6 +72,7 @@ compute_doi <- function(object, control = 1, locations = "countries") UseMethod(
 #' @export
 
 compute_doi.numeric <- function(object, control = 1, locations = "countries") {
+  control <- unlist(control)
   .check_length(control, 1)
   .check_length(locations, 1)
   .check_input(locations, "character")

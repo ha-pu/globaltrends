@@ -99,6 +99,7 @@ compute_score <- function(object, control = 1, locations = countries) UseMethod(
 #' @export
 
 compute_score.numeric <- function(object, control = 1, locations = countries) {
+  control <- unlist(control)
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
