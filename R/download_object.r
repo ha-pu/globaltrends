@@ -98,19 +98,22 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
           terms_con <- terms_con$keyword[order(terms_con$hits)]
 
           i <- 1
+          success <- FALSE
           while (i <= length(terms_con)) {
             out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
-            if (!is.null(out) & median(out$hits[out$keyword == terms_con[[i]]]) > 1) {
+            if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 1) {
               out <- mutate(
                 out,
                 batch_c = control,
                 batch_o = object
               )
               dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
+              success <- TRUE
               break()
             }
             i <- i + 1
           }
+          if (!success) stop("Error: Too little signal in search volumes for control keywords.\nReconsider choice of control keywords.")
           message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
             current = which(locations == .x), total = length(locations)
           ))
