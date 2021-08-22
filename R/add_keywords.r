@@ -25,6 +25,7 @@
 #' @return
 #' Message that the batch has been created successfully. Batch data is
 #' written to tables *batch_keywords* and *batch_time*.
+#' Numeric vector containing the newly added batch numbers.
 #'
 #' @examples
 #' \dontrun{
@@ -107,7 +108,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
   } else {
     keyword <- list(keyword)
   }
-  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
+  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
@@ -116,7 +117,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @noRd
 
 .add_batch.list <- function(type, keyword, time, max) {
-  new_batches <- map(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
+  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
