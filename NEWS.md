@@ -1,5 +1,6 @@
 # globaltrends v.0.0.9
 * Fasten computation of search scores for data with synonyms
+* Fix bug for control keywords that have a median of 0 for their search volume time series
 
 # globaltrends v.0.0.8
 * Adapt `export_xxx` for `vector` and `list` inputs
