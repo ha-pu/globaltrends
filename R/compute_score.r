@@ -368,16 +368,16 @@ compute_voi <- function(object, control = 1) {
     message("Checking for synonyms...")
     data_synonym <- filter(.tbl_score, .data$keyword %in% lst_synonym & .data$synonym)
     data_synonym <- collect(data_synonym)
-    
+
     if (nrow(data_synonym) > 0) {
       message("Aggregating scores for synonyms...")
       lst_main <- unique(.keyword_synonyms$keyword[.keyword_synonyms$synonym %in% lst_synonym])
       data_main <- filter(.tbl_score, .data$keyword %in% lst_main)
       data_main <- collect(data_main)
-    
-    walk(lst_synonym, ~ {
-      keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x][[1]]
-      sub_main <- filter(data_main, .data$keyword == keyword_main)
+
+      walk(lst_synonym, ~ {
+        keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x][[1]]
+        sub_main <- filter(data_main, .data$keyword == keyword_main)
 
         sub_synonym <- filter(data_synonym, .data$keyword == .x)
         sub_main <- left_join(
@@ -386,7 +386,7 @@ compute_voi <- function(object, control = 1) {
           by = c("location", "date", "batch_c"),
           suffix = c("", "_s")
         )
-        
+
         sub_main <- mutate(
           sub_main,
           score_obs = .data$score_obs + coalesce(.data$score_obs_s, 0),
@@ -409,22 +409,22 @@ compute_voi <- function(object, control = 1) {
         data_synonym_agg <- inner_join(
           sub_synonym,
           select(
-            sub_main, 
-            .data$location, 
-            .data$date, 
+            sub_main,
+            .data$location,
+            .data$date,
             .data$batch_c
-            ),
+          ),
           by = c("location", "date", "batch_c")
         )
         data_synonym_agg <- mutate(data_synonym_agg, synonym = 0)
         data_synonym_nagg <- anti_join(
           sub_synonym,
           select(
-            sub_main, 
-            location, 
+            sub_main,
+            location,
             date,
             batch_c
-            ),
+          ),
           by = c("location", "date", "batch_c")
         )
 
@@ -432,7 +432,7 @@ compute_voi <- function(object, control = 1) {
         dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
         dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
         dbWriteTable(conn = globaltrends_db, name = "data_score", value = data, append = TRUE)
-    })
+      })
     }
   }
 }
