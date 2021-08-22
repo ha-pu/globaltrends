@@ -1,3 +1,6 @@
+# globaltrends v.0.0.9
+* Fasten computation of search scores for data with synonyms
+
 # globaltrends v.0.0.8
 * Adapt `export_xxx` for `vector` and `list` inputs
 * Optimize RAM usage of `export_xxx`
