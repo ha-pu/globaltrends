@@ -268,7 +268,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
       }
       message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
     })
-    .aggregate_synonym()
+    .aggregate_synonym(object = object)
     if (!ts_control | !ts_object) {
       text <- case_when(
         all(!c(ts_control, ts_object)) ~ "control and object",
@@ -358,57 +358,81 @@ compute_voi <- function(object, control = 1) {
 #' @importFrom rlang .data
 #' @importFrom purrr walk
 
-.aggregate_synonym <- function() {
-  data_score <- filter(.tbl_score, .data$synonym)
-  data_score <- collect(data_score)
+.aggregate_synonym <- function(object) {
+  lst_synonym <- filter(.keywords_object, .data$batch == object)
+  lst_synonym1 <- inner_join(lst_synonym, .keyword_synonyms, by = "keyword")
+  lst_synonym2 <- inner_join(lst_synonym, .keyword_synonyms, by = c("keyword" = "synonym"))
+  lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
-  if (nrow(data_score) > 0) {
-    walk(unique(data_score$keyword), ~ {
-      keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x]
-      data_main <- filter(.tbl_score, .data$keyword == keyword_main)
+  if (length(lst_synonym) > 0) {
+    message("Checking for synonyms...")
+    data_synonym <- filter(.tbl_score, .data$keyword %in% lst_synonym & .data$synonym)
+    data_synonym <- collect(data_synonym)
+    
+    if (nrow(data_synonym) > 0) {
+      message("Aggregating scores for synonyms...")
+      lst_main <- unique(.keyword_synonyms$keyword[.keyword_synonyms$synonym %in% lst_synonym])
+      data_main <- filter(.tbl_score, .data$keyword %in% lst_main)
       data_main <- collect(data_main)
+    
+    walk(lst_synonym, ~ {
+      keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x][[1]]
+      sub_main <- filter(data_main, .data$keyword == keyword_main)
 
-      data_synonym <- filter(data_score, keyword == .x)
-      data_main <- left_join(
-        data_main,
-        data_synonym,
-        by = c("location", "date", "batch_c"),
-        suffix = c("", "_s")
-      )
-      data_main <- mutate(data_main,
-        score_obs = .data$score_obs + coalesce(.data$score_obs_s, 0),
-        score_sad = .data$score_sad + coalesce(.data$score_sad_s, 0),
-        score_trd = .data$score_trd + coalesce(.data$score_trd_s, 0)
-      )
-      data_main <- select(
-        data_main,
-        .data$location,
-        .data$keyword,
-        .data$date,
-        .data$score_obs,
-        .data$score_sad,
-        .data$score_trd,
-        .data$batch_c,
-        .data$batch_o,
-        .data$synonym
-      )
+        sub_synonym <- filter(data_synonym, .data$keyword == .x)
+        sub_main <- left_join(
+          sub_main,
+          sub_synonym,
+          by = c("location", "date", "batch_c"),
+          suffix = c("", "_s")
+        )
+        
+        sub_main <- mutate(
+          sub_main,
+          score_obs = .data$score_obs + coalesce(.data$score_obs_s, 0),
+          score_sad = .data$score_sad + coalesce(.data$score_sad_s, 0),
+          score_trd = .data$score_trd + coalesce(.data$score_trd_s, 0)
+        )
+        sub_main <- select(
+          sub_main,
+          .data$location,
+          .data$keyword,
+          .data$date,
+          .data$score_obs,
+          .data$score_sad,
+          .data$score_trd,
+          .data$batch_c,
+          .data$batch_o,
+          .data$synonym
+        )
 
-      data_synonym_agg <- inner_join(
-        data_synonym,
-        select(data_main, .data$location, .data$date, .data$batch_c),
-        by = c("location", "date", "batch_c")
-      )
-      data_synonym_agg <- mutate(data_synonym_agg, synonym = 0)
-      data_synonym_nagg <- anti_join(
-        data_synonym,
-        select(data_main, location, date, batch_c),
-        by = c("location", "date", "batch_c")
-      )
+        data_synonym_agg <- inner_join(
+          sub_synonym,
+          select(
+            sub_main, 
+            .data$location, 
+            .data$date, 
+            .data$batch_c
+            ),
+          by = c("location", "date", "batch_c")
+        )
+        data_synonym_agg <- mutate(data_synonym_agg, synonym = 0)
+        data_synonym_nagg <- anti_join(
+          sub_synonym,
+          select(
+            sub_main, 
+            location, 
+            date,
+            batch_c
+            ),
+          by = c("location", "date", "batch_c")
+        )
 
-      data <- bind_rows(data_main, data_synonym_agg, data_synonym_nagg)
-      dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
-      dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
-      dbWriteTable(conn = globaltrends_db, name = "data_score", value = data, append = TRUE)
+        data <- bind_rows(sub_main, data_synonym_agg, data_synonym_nagg)
+        dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
+        dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
+        dbWriteTable(conn = globaltrends_db, name = "data_score", value = data, append = TRUE)
     })
+    }
   }
 }
