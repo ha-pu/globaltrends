@@ -94,6 +94,7 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
             hits = mean(.data$hits),
             .groups = "drop"
           )
+          terms_con <- filter(terms_con, hits > 0)
           terms_con <- terms_con$keyword[order(terms_con$hits)]
 
           i <- 1
