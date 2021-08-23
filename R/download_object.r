@@ -101,7 +101,7 @@ download_object.numeric <- function(object, control = 1, locations = countries) 
           success <- FALSE
           while (i <= length(terms_con)) {
             out <- .get_trend(location = .x, term = c(terms_con[[i]], terms_obj), time = time)
-            if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 1) {
+            if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0) {
               out <- mutate(
                 out,
                 batch_c = control,
