@@ -366,7 +366,7 @@ compute_voi <- function(object, control = 1) {
 
   if (length(lst_synonym) > 0) {
     message("Checking for synonyms...")
-    data_synonym <- filter(.tbl_score, .data$keyword %in% lst_synonym & .data$synonym)
+    data_synonym <- filter(.tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
     data_synonym <- collect(data_synonym)
 
     if (nrow(data_synonym) > 0) {
@@ -416,7 +416,7 @@ compute_voi <- function(object, control = 1) {
           ),
           by = c("location", "date", "batch_c")
         )
-        data_synonym_agg <- mutate(data_synonym_agg, synonym = 0)
+        data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
         data_synonym_nagg <- anti_join(
           sub_synonym,
           select(
