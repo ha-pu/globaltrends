@@ -81,15 +81,10 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   } else {
     walk(list(control, object), .check_batch)
     if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-      data <- collect(filter(.tbl_score, .data$batch_c == control & .data$batch_o == object))
-      data <- filter(
-        data,
-        .data$location %in% pull(
-          collect(filter(.tbl_locations, .data$type == locations)),
-          .data$location
-        )
-      )
-      data <- data[!(data$keyword %in% .keyword_synonyms$synonym), ]
+      data <- filter(.tbl_score, .data$batch_c == control & .data$batch_o == object)
+      data <- collect(data)
+      tmp_locations <- pull(collect(filter(.tbl_locations, .data$type == locations)), .data$location)
+      data <- filter(data, .data$location %in% tmp_locations & .data$synonym == 0)
 
       # compute doi measures
       data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
