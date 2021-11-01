@@ -1,3 +1,6 @@
+# globaltrends v.0.0.10
+* Change indication and handling of synonyms (synonyms are now ignored in `export_score` and `export_voi`)
+
 # globaltrends v.0.0.9
 * Fasten computation of search scores for data with synonyms
 * Fix bugs for control keywords that have a mean of 0 for their search volume time series
@@ -26,7 +29,7 @@
 	* `data_doi` -> `example_doi`
 	* `data_object` -> `example_object`
 	* `data_score` -> `example_score`
-* Waiting period between downloads reduced from 20-30 seconds to 5-10 seconds.
+* Waiting period between downloads reduced from 20-30 seconds to 5-10 seconds
 
 # globaltrends v.0.0.5
 * Added classes for output from `export_xxx`
