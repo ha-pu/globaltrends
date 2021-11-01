@@ -1,7 +1,7 @@
 Package: globaltrends
 Type: Package
 Title: Download and measure global trends through Google search volumes
-Version: 0.0.9
+Version: 0.0.10
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
     person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
@@ -41,7 +41,7 @@ Imports:
     utils (>= 4.0.2),
     WDI (>= 2.7.1),
 	zoo (>= 1.8.8)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr (>= 1.29),
