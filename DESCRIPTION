@@ -1,7 +1,7 @@
 Package: globaltrends
 Type: Package
 Title: Download and measure global trends through Google search volumes
-Version: 0.0.10
+Version: 0.0.11
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@wu.ac.at"),
     person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
@@ -30,6 +30,7 @@ Imports:
     glue (>= 1.4.2),
     gtrendsR (>= 1.4.7),
     ineq (>= 0.2.13),
+	maps (>= 3.4.0),
     lubridate (>= 1.7.9),
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
