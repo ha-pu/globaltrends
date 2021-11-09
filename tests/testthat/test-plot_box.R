@@ -3,6 +3,8 @@ suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 suppressWarnings(library(purrr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
@@ -112,27 +114,7 @@ test_that("plot_box.exp_score6", {
 
 # plot_box.exp_score signals ----------------------------------------------------
 test_that("plot_box.exp_scoreS1", {
-  data <- export_score(keyword = "fc barcelona")
-  expect_error(
-    plot_box(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_box(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    plot_box(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_box(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_box(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = plot_box, data = export_score(keyword = "fc barcelona"))
 })
 
 # plot_box.abnorm_score ---------------------------------------------------------

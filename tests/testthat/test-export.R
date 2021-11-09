@@ -2,6 +2,8 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()

@@ -3,6 +3,8 @@ suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 suppressWarnings(library(purrr))
 
+source("../test_functions.r")
+
 initialize_db()
 start_db()
 
@@ -271,28 +273,7 @@ test_that("plot_voi_doi-sig2", {
 })
 
 test_that("plot_voi_doi-sig3", {
-  data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = plot_voi_doi, data_doi = export_doi(keyword = "fc barcelona"), data_voi = export_voi(keyword = "fc barcelona"))
 })
 
 test_that("plot_voi_doi-sig4", {
