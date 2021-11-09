@@ -13,14 +13,12 @@ dbWriteTable(globaltrends_db, "data_score", example_score, append = TRUE)
 # plot_bar.exp_score ------------------------------------------------------------
 test_that("plot_bar.exp_score1", {
   keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   out1 <- plot_bar(data, type = "obs")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(example_score$keyword)[1:2]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   expect_warning(
     out2 <- plot_bar(data, type = "obs"),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
@@ -32,14 +30,12 @@ test_that("plot_bar.exp_score1", {
 
 test_that("plot_bar.exp_score2", {
   keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   out1 <- plot_bar(data, type = "sad")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(example_score$keyword)[1:2]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   expect_warning(
     out2 <- plot_bar(data, type = "sad"),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
@@ -51,14 +47,12 @@ test_that("plot_bar.exp_score2", {
 
 test_that("plot_bar.exp_score3", {
   keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   out1 <- plot_bar(data, type = "trd")
   expect_s3_class(out1, "ggplot")
 
   keywords <- unique(example_score$keyword)[1:2]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "US")
+  data <- map_dfr(keywords, export_score)
   expect_warning(
     out2 <- plot_bar(data, type = "trd"),
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
@@ -80,8 +74,7 @@ test_that("plot_bar.exp_score4", {
 # plot_bar.exp_score defaults ---------------------------------------------------
 test_that("plot_bar.exp_score5", {
   keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score) %>%
-    filter(location == "CN")
+  data <- map_dfr(keywords, export_score)
   out1 <- plot_bar(data)
   out2 <- plot_bar(data, type = "obs")
   out3 <- plot_bar(data, type = "sad")
