@@ -40,7 +40,6 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom ggplot2 aes
-#' @importFrom ggplot2 fortify
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 geom_map
 #' @importFrom ggplot2 labs
@@ -91,7 +90,6 @@ plot_map.exp_score <- function(data, type = "obs") {
 
   data_map <- map_data("world")
   data_map <- filter(data_map, .data$region != "Antarctica")
-  data_map <- fortify(data_map)
 
   data <- left_join(data_map, data, by = c("region" = "country"))
 
