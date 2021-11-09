@@ -49,6 +49,8 @@
 #' @importFrom ggplot2 theme
 #' @importFrom glue glue
 #' @importFrom rlang .data
+#' @importFrom stats na.omit
+#' @importFrom stringr str_to_upper
 #' @importFrom tibble as_tibble
 
 plot_map <- function(data, ...) UseMethod("plot_map", data)
@@ -93,7 +95,7 @@ plot_map.exp_score <- function(data, type = "obs") {
 
   data <- left_join(data_map, data, by = c("region" = "country"))
 
-  ggplot(data = data) +
+  plot <- ggplot(data = data) +
     geom_map(
       map = data,
       aes(
@@ -116,6 +118,8 @@ plot_map.exp_score <- function(data, type = "obs") {
       fill = "Search score"
     ) +
     theme(legend.position = "bottom")
+  
+  return(plot)
   }
 }
 
@@ -125,4 +129,68 @@ plot_map.exp_score <- function(data, type = "obs") {
 plot_score_map <- function(data, type = "obs") {
   class(data) <- c("exp_score", class(data))
   plot_map(data, type = type)
+}
+
+#' @rdname plot_map
+#' @export
+
+plot_map.abnorm_score <- function(data) {
+  len_keywords <- length(unique(data$keyword))
+  keyword <- unique(data$keyword)[[1]]
+  if (len_keywords > 1) {
+    data <- filter(data, .data$keyword == !!keyword)
+    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+  }
+  
+  data <- na.omit(data)
+  data <- group_by(data, .data$location)
+  data <- summarise(data, score_abnorm = mean(.data$score_abnorm), .groups = "drop")
+  
+  data_wdi <- as_tibble(WDI::WDI_data$country)
+  
+  data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
+  data <- select(
+    data,
+    .data$country,
+    .data$iso2c,
+    .data$score_abnorm
+  )
+  
+  data_map <- map_data("world")
+  data_map <- filter(data_map, .data$region != "Antarctica")
+  
+  data <- left_join(data_map, data, by = c("region" = "country"))
+  
+  plot <- ggplot(data = data) +
+    geom_map(
+      map = data,
+      aes(
+        x = .data$long,
+        y = .data$lat,
+        group = .data$group,
+        map_id = .data$region,
+        fill = .data$score_abnorm
+      ),
+      colour = "#f2f2f2",
+      size = 0.5
+    ) +
+    scale_x_continuous(breaks = c()) +
+    scale_y_continuous(breaks = c()) +
+    labs(
+      x = NULL,
+      y = NULL,
+      title = keyword,
+      fill = "Abnormal changes in search score"
+    ) +
+    theme(legend.position = "bottom")
+  
+  return(plot)
+}
+
+#' @rdname plot_map
+#' @export
+
+plot_abnorm_score_map <- function(data) {
+  class(data) <- c("abnorm_score", class(data))
+  plot_map(data)
 }
