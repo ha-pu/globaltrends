@@ -3,11 +3,14 @@
 \name{plot_map}
 \alias{plot_map}
 \alias{plot_map.exp_score}
+\alias{plot_score_map}
 \title{Create map for cross-sectional globaltrends data}
 \usage{
 plot_map(data, ...)
 
 \method{plot_map}{exp_score}(data, type = "obs")
+
+plot_score_map(data, type = "obs")
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}

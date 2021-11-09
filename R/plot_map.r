@@ -118,3 +118,11 @@ plot_map.exp_score <- function(data, type = "obs") {
     theme(legend.position = "bottom")
   }
 }
+
+#' @rdname plot_map
+#' @export
+
+plot_score_map <- function(data, type = "obs") {
+  class(data) <- c("exp_score", class(data))
+  plot_map(data, type = type)
+}
