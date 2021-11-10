@@ -2,6 +2,8 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
@@ -215,22 +217,7 @@ test_that("signals1", {
 })
 
 test_that("signals2", {
-  expect_error(
-    add_locations(type = 1, locations = "A"),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    add_locations(type = TRUE, locations = "A"),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    add_locations(type = sum, locations = "A"),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    add_locations(type = letters[1:3], locations = "A"),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = add_locations, incl = c(1, 3:5), locations = "A")
 })
 
 test_that("signals3", {
