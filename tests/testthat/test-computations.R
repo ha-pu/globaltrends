@@ -2,6 +2,8 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
@@ -68,26 +70,7 @@ test_that("compute_score2", {
 })
 
 test_that("compute_score3", {
-  expect_error(
-    compute_score(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_score(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_score, incl = 1:5, object = 1)
 })
 
 test_that("compute_score4", {
@@ -125,26 +108,7 @@ test_that("compute_score5", {
 })
 
 test_that("compute_score6", {
-  expect_error(
-    compute_voi(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_voi(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_voi, incl = 1:5, object = 1)
 })
 
 # compute voi ------------------------------------------------------------------
@@ -191,26 +155,7 @@ test_that("compute_doi2", {
 })
 
 test_that("compute_doi3", {
-  expect_error(
-    compute_doi(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_doi(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_doi, incl = 1:5, object = 1)
 })
 
 test_that("compute_doi4", {
@@ -340,26 +285,7 @@ test_that("remove_data3", {
 })
 
 test_that("remove_data4", {
-  expect_error(
-    remove_data(table = "data_object", control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = remove_data, incl = 1:5, table = "data_object", object = 1)
 })
 
 test_that("remove_data5", {
