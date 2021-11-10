@@ -1,3 +1,6 @@
+# globaltrends v.0.0.11
+* Add function plot_map()
+
 # globaltrends v.0.0.10
 * Change indication and handling of synonyms (synonyms are now ignored in `export_score` and `export_voi`)
 
