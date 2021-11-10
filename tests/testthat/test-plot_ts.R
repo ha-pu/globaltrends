@@ -289,27 +289,7 @@ test_that("plot_ts.exp_voi5", {
 
 # plot_ts.exp_voi signals ------------------------------------------------------
 test_that("plot_ts.exp_voiS1", {
-  data <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    plot_ts(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_ts(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = plot_ts, data = export_voi(keyword = "fc barcelona"))
 })
 
 test_that("plot_ts.exp_voiS2", {
@@ -613,27 +593,7 @@ test_that("plot_ts.exp_doi5d", {
 
 # plot_ts.exp_doi signals ------------------------------------------------------
 test_that("plot_ts.exp_doiS1", {
-  data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    plot_ts(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_ts(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = plot_ts, data = export_doi(keyword = "fc barcelona"))
 })
 
 test_that("plot_ts.exp_doiS2", {

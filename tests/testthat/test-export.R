@@ -521,22 +521,8 @@ test_that("export_doi7", {
 })
 
 test_that("export_doi8", {
-  expect_error(
-    export_doi(type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_doi(type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    export_doi(type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_doi(type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_type(fun = export_doi, incl = 2:5)
+  
   expect_equal(
     nrow(export_doi(type = c("obs", "sad", "trd"))),
     3600

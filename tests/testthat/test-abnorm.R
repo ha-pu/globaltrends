@@ -165,26 +165,7 @@ test_that("exp_voi4", {
 })
 
 test_that("exp_voi5", {
-  expect_error(
-    get_abnorm_hist(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = get_abnorm_hist, data = export_score(keyword = "fc barcelona"))
 })
 
 test_that("exp_voi6", {
