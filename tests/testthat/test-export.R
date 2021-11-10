@@ -105,22 +105,7 @@ test_that("export_object5", {
 })
 
 test_that("export_object6", {
-  expect_error(
-    export_object(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    export_object(object = "A"),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_object(object = TRUE),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_object(object = sum),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
+  test_object(fun = export_object)
   expect_equal(
     nrow(export_object(object = 1:5)),
     3120
@@ -129,7 +114,6 @@ test_that("export_object6", {
 
 test_that("export_object7", {
   test_control(fun = export_object)
-  
   expect_equal(
     nrow(export_object(control = 1:5)),
     3120
@@ -173,22 +157,7 @@ test_that("export_object_global5", {
 })
 
 test_that("export_object_global6", {
-  expect_error(
-    export_object_global(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    export_object_global(object = "A"),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_object_global(object = TRUE),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_object_global(object = sum),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
+  test_object(fun = export_object_global)
   expect_equal(
     nrow(export_object_global(object = 1:5)),
     1560
@@ -197,7 +166,6 @@ test_that("export_object_global6", {
 
 test_that("export_object_global7", {
   test_control(fun = export_object_global)
-  
   expect_equal(
     nrow(export_object_global(control = 1:5)),
     1560
@@ -245,22 +213,7 @@ test_that("export_score5", {
 })
 
 test_that("export_score6", {
-  expect_error(
-    export_score(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    export_score(object = "A"),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_score(object = TRUE),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_score(object = sum),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
+  test_object(fun = export_score)
   expect_equal(
     nrow(export_score(object = 1:5)),
     1920
@@ -269,7 +222,6 @@ test_that("export_score6", {
 
 test_that("export_score7", {
   test_control(fun = export_score)
-  
   expect_equal(
     nrow(export_score(control = 1:5)),
     1920
@@ -317,22 +269,7 @@ test_that("export_voi5", {
 })
 
 test_that("export_voi6", {
-  expect_error(
-    export_voi(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    export_voi(object = "A"),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_voi(object = TRUE),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_voi(object = sum),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
+  test_object(fun = export_voi)
   expect_equal(
     nrow(export_voi(object = 1:5)),
     1200
@@ -341,7 +278,6 @@ test_that("export_voi6", {
 
 test_that("export_voi7", {
   test_control(fun = export_voi)
-  
   expect_equal(
     nrow(export_voi(control = 1:5)),
     1200
@@ -389,22 +325,7 @@ test_that("export_doi5", {
 })
 
 test_that("export_doi6", {
-  expect_error(
-    export_doi(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    export_doi(object = "A"),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_doi(object = TRUE),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    export_doi(object = sum),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
+  test_object(fun = export_doi)
   expect_equal(
     nrow(export_doi(object = 1:5)),
     3600
@@ -413,7 +334,6 @@ test_that("export_doi6", {
 
 test_that("export_doi7", {
   test_control(fun = export_doi)
-  
   expect_equal(
     nrow(export_doi(control = 1:5)),
     3600
@@ -422,7 +342,6 @@ test_that("export_doi7", {
 
 test_that("export_doi8", {
   test_type(fun = export_doi, incl = 2:5)
-  
   expect_equal(
     nrow(export_doi(type = c("obs", "sad", "trd"))),
     3600

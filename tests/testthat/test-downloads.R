@@ -4,6 +4,7 @@ suppressWarnings(library(ggplot2))
 
 source("../test_functions.r")
 
+Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
@@ -152,22 +153,7 @@ test_that("download_object4", {
 
 # download object signals ------------------------------------------------------
 test_that("download_object5", {
-  expect_error(
-    download_object(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_object(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_object(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = download_object, incl = c(1, 6:8))
 })
 
 test_that("download_object6", {
@@ -190,22 +176,7 @@ test_that("download_object7", {
 })
 
 test_that("download_object8", {
-  expect_error(
-    download_object_global(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object_global(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_object_global(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_object_global(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = download_object_global, incl = c(1, 6:8))
 })
 
 test_that("download_object9", {
