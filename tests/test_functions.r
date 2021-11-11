@@ -109,3 +109,37 @@ test_object <- function(fun, incl = 1:4, ...) {
   if (7 %in% incl) fun_tmp(value = TRUE)
   if (8 %in% incl) fun_tmp(value = sum)
 } 
+
+# test keyword -----------------------------------------------------------------
+test_keyword <- function(fun, incl = 1:3, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, keyword = value)),
+      paste0("'keyword' must be object of type character.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  if (1 %in% incl) fun_tmp(value = 1, var_type = "double")
+  if (2 %in% incl) fun_tmp(value = TRUE, var_type = "logical")
+  if (3 %in% incl) fun_tmp(value = sum, var_type = "builtin")
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, keyword = value)),
+      "no applicable method"
+    )
+  }
+  
+  if (4 %in% incl) fun_tmp(value = 1)
+  if (5 %in% incl) fun_tmp(value = TRUE)
+  if (6 %in% incl) fun_tmp(value = sum)
+  
+} 
+
+# test measure -----------------------------------------------------------------
+
+# test ci ----------------------------------------------------------------------
+
+# test locations ---------------------------------------------------------------

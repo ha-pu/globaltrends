@@ -2,6 +2,7 @@
 suppressWarnings(library(dplyr))
 
 Sys.setenv("LANGUAGE" = "EN")
+source("../test_functions.r")
 
 initialize_db()
 start_db()
@@ -184,18 +185,7 @@ test_that("keywords_object3", {
 
 # add_control / add_keyword signals --------------------------------------------
 test_that("add_batch1", {
-  expect_error(
-    add_control_keyword(keyword = 1),
-    "no applicable method"
-  )
-  expect_error(
-    add_control_keyword(keyword = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    add_control_keyword(keyword = sum),
-    "no applicable method"
-  )
+  test_keyword(fun = add_control_keyword, incl = 4:6)
 })
 
 test_that("add_batch2", {
@@ -218,18 +208,7 @@ test_that("add_batch2", {
 })
 
 test_that("add_batch3", {
-  expect_error(
-    add_object_keyword(keyword = 1),
-    "no applicable method"
-  )
-  expect_error(
-    add_object_keyword(keyword = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    add_object_keyword(keyword = sum),
-    "no applicable method"
-  )
+  test_keyword(fun = add_object_keyword, incl = 4:6)
 })
 
 test_that("add_batch4", {

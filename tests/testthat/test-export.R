@@ -90,18 +90,7 @@ test_that("export_object4", {
 })
 
 test_that("export_object5", {
-  expect_error(
-    export_object(keyword = 1),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_object(keyword = TRUE),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_object(keyword = sum),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = export_object)
 })
 
 test_that("export_object6", {
@@ -142,18 +131,7 @@ test_that("export_object_global4", {
 })
 
 test_that("export_object_global5", {
-  expect_error(
-    export_object_global(keyword = 1),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_object_global(keyword = TRUE),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_object_global(keyword = sum),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = export_object_global)
 })
 
 test_that("export_object_global6", {
@@ -198,18 +176,7 @@ test_that("export_score4", {
 })
 
 test_that("export_score5", {
-  expect_error(
-    export_score(keyword = 1),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_score(keyword = TRUE),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_score(keyword = sum),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = export_score)
 })
 
 test_that("export_score6", {
@@ -254,18 +221,7 @@ test_that("export_voi4", {
 })
 
 test_that("export_voi5", {
-  expect_error(
-    export_voi(keyword = 1),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_voi(keyword = TRUE),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_voi(keyword = sum),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = export_voi)
 })
 
 test_that("export_voi6", {
@@ -310,18 +266,7 @@ test_that("export_doi4", {
 })
 
 test_that("export_doi5", {
-  expect_error(
-    export_doi(keyword = 1),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_doi(keyword = TRUE),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_doi(keyword = sum),
-    "Error: 'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = export_doi)
 })
 
 test_that("export_doi6", {
