@@ -255,26 +255,7 @@ test_that("exp_doi4", {
 })
 
 test_that("exp_doi5", {
-  expect_error(
-    get_abnorm_hist(data, measure = 1),
-    "'measure' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = "A"),
-    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = TRUE),
-    "'measure' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = sum),
-    "'measure' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = c("gini", "hhi", "entropy")),
-    "'measure' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_measure(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_doi6", {

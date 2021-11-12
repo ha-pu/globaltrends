@@ -597,27 +597,7 @@ test_that("plot_ts.exp_doiS1", {
 })
 
 test_that("plot_ts.exp_doiS2", {
-  data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, measure = 1),
-    "'measure' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, measure = "A"),
-    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
-  )
-  expect_error(
-    plot_ts(data, measure = TRUE),
-    "'measure' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_ts(data, measure = sum),
-    "'measure' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, measure = c("gini", "hhi", "entropy")),
-    "'measure' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_measure(fun = plot_ts, data = export_doi(keyword = "fc barcelona"))
 })
 
 test_that("plot_ts.exp_doiS3", {

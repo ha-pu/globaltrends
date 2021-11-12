@@ -139,7 +139,28 @@ test_keyword <- function(fun, incl = 1:3, ...) {
 } 
 
 # test measure -----------------------------------------------------------------
-
+test_measure <- function(fun, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, measure = value)),
+      paste0("'measure' must be object of type character.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  purrr::map2(list(1, TRUE, sum), c("double", "logical", "builtin"), fun_tmp)
+  
+  expect_error(
+    do.call(fun, c(args, measure = "A")),
+    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
+  )
+  
+  expect_error(
+    do.call(fun, c(args, measure = list(c("gini", "hhi", "entropy")))),
+    "'measure' must be object of length 1.\nYou provided an object of length 3."
+  )
+}
 # test ci ----------------------------------------------------------------------
 
 # test locations ---------------------------------------------------------------
