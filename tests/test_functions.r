@@ -210,3 +210,30 @@ test_locations <- function(fun, incl = FALSE, ...) {
     )
   }
 }
+
+# test train -------------------------------------------------------------------
+test_train <- function(fun, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, train_win = value)),
+      paste0("'train_win' must be object of type numeric.\nYou provided an object of type ", var_type, ".")
+    )
+    expect_error(
+      do.call(fun, c(args, train_break = value)),
+      paste0("'train_break' must be object of type numeric.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  purrr::map2(list("A", TRUE, sum), c("character", "logical", "builtin"), fun_tmp)
+  
+  expect_error(
+    do.call(fun, c(args, train_win = list(1:5))),
+    "'train_win' must be object of length 1.\nYou provided an object of length 5."
+  )
+  expect_error(
+    do.call(fun, c(args, train_break = list(1:5))),
+    "'train_break' must be object of length 1.\nYou provided an object of length 5."
+  )
+}
