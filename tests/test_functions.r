@@ -237,3 +237,17 @@ test_train <- function(fun, ...) {
     "'train_break' must be object of length 1.\nYou provided an object of length 5."
   )
 }
+
+# test smooth ------------------------------------------------------------------
+test_smooth <- function(fun, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, smooth = value)),
+      paste0("'smooth' must be object of type logical.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  purrr::map2(list(1, "A", sum), c("double", "character", "builtin"), fun_tmp)
+}

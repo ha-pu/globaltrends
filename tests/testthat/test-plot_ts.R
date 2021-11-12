@@ -119,18 +119,9 @@ test_that("plot_ts.exp_scoreS1", {
 
 test_that("plot_ts.exp_scoreS2", {
   data <- export_score(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  
+  test_smooth(fun = plot_ts, data = data)
+  
   expect_error(
     plot_ts(data, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."
@@ -271,18 +262,8 @@ test_that("plot_ts.exp_voiS1", {
 
 test_that("plot_ts.exp_voiS2", {
   data <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  test_smooth(fun = plot_ts, data = data)
+  
   expect_error(
     plot_ts(data, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."
@@ -561,18 +542,8 @@ test_that("plot_ts.exp_doiS3", {
 
 test_that("plot_ts.exp_doiS4", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_ts(data, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  test_smooth(fun = plot_ts, data = data)
+  
   expect_error(
     plot_ts(data, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."

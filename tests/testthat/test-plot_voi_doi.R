@@ -289,18 +289,9 @@ test_that("plot_voi_doi-sig5", {
 test_that("plot_voi_doi-sig6", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  
+  test_smooth(fun = plot_voi_doi, data_doi = data1, data_voi = data2)
+  
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."
