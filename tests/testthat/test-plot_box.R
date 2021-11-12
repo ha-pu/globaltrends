@@ -121,30 +121,7 @@ test_that("plot_box.exp_scoreS1", {
 test_that("plot_box.abnorm_score1", {
   data <- export_score(keyword = "fc barcelona")
   data <- get_abnorm_hist(data)
-  expect_error(
-    plot_box(data, ci = "A"),
-    "'ci' must be object of type double.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_box(data, ci = TRUE),
-    "'ci' must be object of type double.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_box(data, ci = sum),
-    "'ci' must be object of type double.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_box(data, ci = 1:3 / 10),
-    "'ci' must be object of length 1.\nYou provided an object of length 3."
-  )
-  expect_error(
-    plot_box(data, ci = 0),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 0."
-  )
-  expect_error(
-    plot_box(data, ci = 1),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 1."
-  )
+  test_ci(fun = plot_box, data = data)
 })
 
 test_that("plot_box.abnorm_score2", {
@@ -275,30 +252,7 @@ test_that("plot_box.exp_voiS1", {
 test_that("plot_box.abnorm_voi1", {
   data <- export_voi(keyword = "fc barcelona")
   data <- get_abnorm_hist(data)
-  expect_error(
-    plot_box(data, ci = "A"),
-    "'ci' must be object of type double.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_box(data, ci = TRUE),
-    "'ci' must be object of type double.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_box(data, ci = sum),
-    "'ci' must be object of type double.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_box(data, ci = 1:3 / 10),
-    "'ci' must be object of length 1.\nYou provided an object of length 3."
-  )
-  expect_error(
-    plot_box(data, ci = 0),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 0."
-  )
-  expect_error(
-    plot_box(data, ci = 1),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 1."
-  )
+  test_ci(fun = plot_box, data = data)
 })
 
 test_that("plot_box.abnorm_voi2", {
@@ -583,30 +537,7 @@ test_that("plot_box.exp_doiS3", {
 test_that("plot_box.abnorm_doi1", {
   data <- export_doi(keyword = "fc barcelona")
   data <- get_abnorm_hist(data)
-  expect_error(
-    plot_box(data, ci = "A"),
-    "'ci' must be object of type double.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_box(data, ci = TRUE),
-    "'ci' must be object of type double.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_box(data, ci = sum),
-    "'ci' must be object of type double.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_box(data, ci = 1:3 / 10),
-    "'ci' must be object of length 1.\nYou provided an object of length 3."
-  )
-  expect_error(
-    plot_box(data, ci = 0),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 0."
-  )
-  expect_error(
-    plot_box(data, ci = 1),
-    "'ci' must be greater than 0 and less than 1.\nYou provided 1."
-  )
+  test_ci(fun = plot_box, data = data)
 })
 
 test_that("plot_box.abnorm_doi2", {

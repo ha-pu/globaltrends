@@ -161,6 +161,33 @@ test_measure <- function(fun, ...) {
     "'measure' must be object of length 1.\nYou provided an object of length 3."
   )
 }
+
 # test ci ----------------------------------------------------------------------
+test_ci <- function(fun, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, ci = value)),
+      paste0("'ci' must be object of type double.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  purrr::map2(list("A", TRUE, sum), c("character", "logical", "builtin"), fun_tmp)
+  
+  expect_error(
+    do.call(fun, c(args, ci = list(c(1:3 / 10)))),
+    "'ci' must be object of length 1.\nYou provided an object of length 3."
+  )
+  
+  fun_tmp <- function(value) {
+    expect_error(
+      do.call(fun, c(args, ci = value)),
+      paste0("'ci' must be greater than 0 and less than 1.\nYou provided ", value, ".")
+    )
+  }
+  
+  purrr::map(list(0, 1), fun_tmp)
+}
 
 # test locations ---------------------------------------------------------------
