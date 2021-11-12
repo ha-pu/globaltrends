@@ -59,18 +59,7 @@ test_that("compute_score3", {
 })
 
 test_that("compute_score4", {
-  expect_error(
-    compute_score(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    compute_score(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    compute_score(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_locations(fun = compute_score, object = 1)
 })
 
 test_that("compute_score5", {
@@ -114,18 +103,7 @@ test_that("compute_doi3", {
 })
 
 test_that("compute_doi4", {
-  expect_error(
-    compute_doi(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    compute_doi(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical"
-  )
-  expect_error(
-    compute_doi(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin"
-  )
+  test_locations(fun = compute_doi, object = 1)
 })
 
 test_that("compute_doi5", {

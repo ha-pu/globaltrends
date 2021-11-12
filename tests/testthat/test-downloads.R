@@ -161,18 +161,7 @@ test_that("download_object6", {
 })
 
 test_that("download_object7", {
-  expect_error(
-    download_object(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    download_object(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    download_object(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_locations(fun = download_object, object = 1)
 })
 
 test_that("download_object8", {

@@ -515,22 +515,7 @@ test_that("plot_box.exp_doiS2", {
 
 test_that("plot_box.exp_doiS3", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_box(data, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_box(data, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_box(data, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_box(data, locations = letters[1:5]),
-    "'locations' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_locations(fun = plot_box, incl = TRUE, data = data)
 })
 
 # plot_box.abnorm_doi -----------------------------------------------------------

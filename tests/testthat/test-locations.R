@@ -198,22 +198,7 @@ test_that("plot_box", {
 
 # signals ----------------------------------------------------------------------
 test_that("signals1", {
-  expect_error(
-    add_locations(locations = 1, type = "A"),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    add_locations(locations = TRUE, type = "A"),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    add_locations(locations = sum, type = "A"),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    add_locations(locations = as.list(letters[1:3]), type = "A"),
-    "'locations' must be object of type character.\nYou provided an object of type list."
-  )
+  test_locations(fun = add_locations, type = "A")
 })
 
 test_that("signals2", {

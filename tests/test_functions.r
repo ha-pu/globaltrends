@@ -191,3 +191,22 @@ test_ci <- function(fun, ...) {
 }
 
 # test locations ---------------------------------------------------------------
+test_locations <- function(fun, incl = FALSE, ...) {
+  args <- list(...)
+  
+  fun_tmp <- function(value, var_type) {
+    expect_error(
+      do.call(fun, c(args, locations = value)),
+      paste0("'locations' must be object of type character.\nYou provided an object of type ", var_type, ".")
+    )
+  }
+  
+  purrr::map2(list(1, TRUE, sum), c("double", "logical", "builtin"), fun_tmp)
+  
+  if (incl) {
+    expect_error(
+      do.call(fun, c(args, locations = list(letters[1:5]))),
+      "'locations' must be object of length 1.\nYou provided an object of length 5."
+    )
+  }
+}

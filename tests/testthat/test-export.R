@@ -294,18 +294,7 @@ test_that("export_doi8", {
 })
 
 test_that("export_doi9", {
-  expect_error(
-    export_doi(locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    export_doi(locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    export_doi(locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_locations(fun = export_doi)
   expect_equal(
     nrow(export_doi(locations = c("countries", "us_states"))),
     3600

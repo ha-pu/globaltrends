@@ -283,22 +283,7 @@ test_that("plot_voi_doi-sig4", {
 test_that("plot_voi_doi-sig5", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = letters[1:5]),
-    "'locations' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_locations(fun = plot_voi_doi, incl = TRUE,  data_doi = data1, data_voi = data2)
 })
 
 test_that("plot_voi_doi-sig6", {

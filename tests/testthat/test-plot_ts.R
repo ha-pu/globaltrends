@@ -556,22 +556,7 @@ test_that("plot_ts.exp_doiS2", {
 
 test_that("plot_ts.exp_doiS3", {
   data <- export_doi(keyword = "fc barcelona")
-  expect_error(
-    plot_ts(data, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_ts(data, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_ts(data, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_ts(data, locations = letters[1:5]),
-    "'locations' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_locations(fun = plot_ts, incl = TRUE, data = data)
 })
 
 test_that("plot_ts.exp_doiS4", {
