@@ -95,16 +95,18 @@ plot_map.exp_score <- function(data, type = "obs") {
 
   data <- left_join(data_map, data, by = c("region" = "country"))
 
-  plot <- ggplot(data = data) +
+  plot <- ggplot(
+    data = data,
+    aes(
+      x = .data$long,
+      y = .data$lat,
+      group = .data$group,
+      map_id = .data$region,
+      fill = .data$measure
+    )
+    ) +
     geom_map(
       map = data,
-      aes(
-        x = .data$long,
-        y = .data$lat,
-        group = .data$group,
-        map_id = .data$region,
-        fill = .data$measure
-      ),
       colour = "#f2f2f2",
       size = 0.5
     ) +
@@ -161,16 +163,18 @@ plot_map.abnorm_score <- function(data) {
   
   data <- left_join(data_map, data, by = c("region" = "country"))
   
-  plot <- ggplot(data = data) +
+  plot <- ggplot(
+    data = data,
+    aes(
+      x = .data$long,
+      y = .data$lat,
+      group = .data$group,
+      map_id = .data$region,
+      fill = .data$score_abnorm
+    )
+    ) +
     geom_map(
       map = data,
-      aes(
-        x = .data$long,
-        y = .data$lat,
-        group = .data$group,
-        map_id = .data$region,
-        fill = .data$score_abnorm
-      ),
       colour = "#f2f2f2",
       size = 0.5
     ) +
