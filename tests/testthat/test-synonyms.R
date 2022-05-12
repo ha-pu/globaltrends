@@ -2,6 +2,9 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+Sys.setenv("LANGUAGE" = "EN")
+source("../test_functions.r")
+
 initialize_db()
 start_db()
 
@@ -104,18 +107,7 @@ test_that("add_synonyms2", {
 })
 
 test_that("add_synonyms4", {
-  expect_error(
-    add_synonym(keyword = 1, synonym = "A"),
-    "'keyword' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    add_synonym(keyword = TRUE, synonym = "A"),
-    "'keyword' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    add_synonym(keyword = sum, synonym = "A"),
-    "'keyword' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_keyword(fun = add_synonym, synonym = "A")
 })
 
 test_that("add_synonyms5", {
@@ -136,3 +128,4 @@ test_that("add_synonyms5", {
 # disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
+Sys.unsetenv("LANGUAGE")

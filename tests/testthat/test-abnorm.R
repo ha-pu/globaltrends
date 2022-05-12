@@ -2,6 +2,8 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
@@ -35,64 +37,11 @@ test_that("exp_score2", {
 })
 
 test_that("exp_score3", {
-  expect_error(
-    get_abnorm_hist(data, train_win = "A"),
-    "'train_win' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = TRUE),
-    "'train_win' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = sum),
-    "'train_win' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = 1:5),
-    "'train_win' must be object of length 1.\nYou provided an object of length 5."
-  )
-})
-
-test_that("exp_score4", {
-  expect_error(
-    get_abnorm_hist(data, train_break = "A"),
-    "'train_break' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = TRUE),
-    "'train_break' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = sum),
-    "'train_break' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = 1:5),
-    "'train_break' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_train(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_score5", {
-  expect_error(
-    get_abnorm_hist(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_score6", {
@@ -144,64 +93,11 @@ test_that("exp_voi2", {
 })
 
 test_that("exp_voi3", {
-  expect_error(
-    get_abnorm_hist(data, train_win = "A"),
-    "'train_win' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = TRUE),
-    "'train_win' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = sum),
-    "'train_win' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = 1:5),
-    "'train_win' must be object of length 1.\nYou provided an object of length 5."
-  )
-})
-
-test_that("exp_voi4", {
-  expect_error(
-    get_abnorm_hist(data, train_break = "A"),
-    "'train_break' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = TRUE),
-    "'train_break' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = sum),
-    "'train_break' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = 1:5),
-    "'train_break' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_train(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_voi5", {
-  expect_error(
-    get_abnorm_hist(data, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = get_abnorm_hist, data = export_score(keyword = "fc barcelona"))
 })
 
 test_that("exp_voi6", {
@@ -253,64 +149,11 @@ test_that("exp_doi2", {
 })
 
 test_that("exp_doi3", {
-  expect_error(
-    get_abnorm_hist(data, train_win = "A"),
-    "'train_win' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = TRUE),
-    "'train_win' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = sum),
-    "'train_win' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_win = 1:5),
-    "'train_win' must be object of length 1.\nYou provided an object of length 5."
-  )
-})
-
-test_that("exp_doi4", {
-  expect_error(
-    get_abnorm_hist(data, train_break = "A"),
-    "'train_break' must be object of type numeric.\nYou provided an object of type character."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = TRUE),
-    "'train_break' must be object of type numeric.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = sum),
-    "'train_break' must be object of type numeric.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, train_break = 1:5),
-    "'train_break' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_train(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_doi5", {
-  expect_error(
-    get_abnorm_hist(data, measure = 1),
-    "'measure' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = "A"),
-    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = TRUE),
-    "'measure' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = sum),
-    "'measure' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    get_abnorm_hist(data, measure = c("gini", "hhi", "entropy")),
-    "'measure' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_measure(fun = get_abnorm_hist, data = data)
 })
 
 test_that("exp_doi6", {

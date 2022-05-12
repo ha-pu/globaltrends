@@ -3,6 +3,8 @@ suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 suppressWarnings(library(purrr))
 
+source("../test_functions.r")
+
 initialize_db()
 start_db()
 
@@ -271,91 +273,25 @@ test_that("plot_voi_doi-sig2", {
 })
 
 test_that("plot_voi_doi-sig3", {
-  data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = 1),
-    "'type' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = "A"),
-    "'type' must be either 'obs', 'sad', or 'trd'.\nYou provided A."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = TRUE),
-    "'type' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = sum),
-    "'type' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, type = c("obs", "sad", "trd")),
-    "'type' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_type(fun = plot_voi_doi, data_doi = export_doi(keyword = "fc barcelona"), data_voi = export_voi(keyword = "fc barcelona"))
 })
 
 test_that("plot_voi_doi-sig4", {
-  data1 <- export_doi(keyword = "fc barcelona")
-  data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, measure = 1),
-    "'measure' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, measure = "A"),
-    "'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided A."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, measure = TRUE),
-    "'measure' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, measure = sum),
-    "'measure' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, measure = c("gini", "hhi", "entropy")),
-    "'measure' must be object of length 1.\nYou provided an object of length 3."
-  )
+  test_measure(fun = plot_voi_doi, data_doi = export_doi(keyword = "fc barcelona"), data_voi = export_voi(keyword = "fc barcelona"))
 })
 
 test_that("plot_voi_doi-sig5", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, locations = letters[1:5]),
-    "'locations' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_locations(fun = plot_voi_doi, incl = TRUE,  data_doi = data1, data_voi = data2)
 })
 
 test_that("plot_voi_doi-sig6", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = 1),
-    "'smooth' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = "A"),
-    "'smooth' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    plot_voi_doi(data_doi = data1, data_voi = data2, smooth = sum),
-    "'smooth' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  
+  test_smooth(fun = plot_voi_doi, data_doi = data1, data_voi = data2)
+  
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."

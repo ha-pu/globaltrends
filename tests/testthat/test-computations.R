@@ -2,6 +2,8 @@
 suppressWarnings(library(DBI))
 suppressWarnings(library(dplyr))
 
+source("../test_functions.r")
+
 Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
@@ -49,102 +51,23 @@ test_that("compute_score1", {
 
 # compute score signals --------------------------------------------------------
 test_that("compute_score2", {
-  expect_error(
-    compute_score(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_score(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    compute_score(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    compute_score(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = compute_score, incl = c(1, 6:8))
 })
 
 test_that("compute_score3", {
-  expect_error(
-    compute_score(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_score(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_score(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_score, incl = 1:5, object = 1)
 })
 
 test_that("compute_score4", {
-  expect_error(
-    compute_score(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    compute_score(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    compute_score(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_locations(fun = compute_score, object = 1)
 })
 
 test_that("compute_score5", {
-  expect_error(
-    compute_voi(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_voi(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    compute_voi(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    compute_voi(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = compute_voi, incl = c(1, 6:8))
 })
 
 test_that("compute_score6", {
-  expect_error(
-    compute_voi(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_voi(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_voi(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_voi, incl = 1:5, object = 1)
 })
 
 # compute voi ------------------------------------------------------------------
@@ -172,60 +95,15 @@ test_that("compute_doi1", {
 
 # compute doi signals ----------------------------------------------------------
 test_that("compute_doi2", {
-  expect_error(
-    compute_doi(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_doi(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    compute_doi(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    compute_doi(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = compute_doi, incl = c(1, 6:8))
 })
 
 test_that("compute_doi3", {
-  expect_error(
-    compute_doi(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    compute_doi(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    compute_doi(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = compute_doi, incl = 1:5, object = 1)
 })
 
 test_that("compute_doi4", {
-  expect_error(
-    compute_doi(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    compute_doi(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical"
-  )
-  expect_error(
-    compute_doi(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin"
-  )
+  test_locations(fun = compute_doi, object = 1)
 })
 
 test_that("compute_doi5", {
@@ -340,49 +218,11 @@ test_that("remove_data3", {
 })
 
 test_that("remove_data4", {
-  expect_error(
-    remove_data(table = "data_object", control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = remove_data, incl = 1:5, table = "data_object", object = 1)
 })
 
 test_that("remove_data5", {
-  expect_error(
-    remove_data(table = "data_object", object = 1.5, control = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    remove_data(table = "data_object", object = "A", control = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", object = TRUE, control = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", object = sum, control = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    remove_data(table = "data_object", object = 1:5, control = 1),
-    "'object' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_object(fun = remove_data, incl = 1:5, table = "data_object", control = 1)
 })
 
 # disconnect -------------------------------------------------------------------
