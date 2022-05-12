@@ -3,7 +3,7 @@
 #' @description
 #' The function creates world maps for cross-sectional search score data. It
 #' uses the output of `export_score` to prepare a map of search scores. For
-#' output from `get_abnorm_hist` the map shows abnormal changes in the 
+#' output from `get_abnorm_hist` the map shows abnormal changes in the
 #' respective country search scores. When the output includes more than one
 #' keyword, only the first keyword is used.
 #'
@@ -60,19 +60,19 @@ plot_map <- function(data, ...) UseMethod("plot_map", data)
 
 plot_map.exp_score <- function(data, type = "obs") {
   .check_type(type)
-  
+
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
-  
-  
+
+
   data$measure <- data[paste0("score_", type)][[1]]
   data <- group_by(data, .data$location)
   data <- summarise(data, measure = mean(.data$measure), .groups = "drop")
-  
+
   if (all(is.na(data$measure))) {
     text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
     if (type != "obs") {
@@ -80,48 +80,48 @@ plot_map.exp_score <- function(data, type = "obs") {
     }
     warning(text)
   } else {
-  data_wdi <- as_tibble(WDI::WDI_data$country)
+    data_wdi <- as_tibble(WDI::WDI_data$country)
 
-  data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
-  data <- select(
-    data,
-    .data$country,
-    .data$iso2c,
-    .data$measure
-  )
-
-  data_map <- map_data("world")
-  data_map <- filter(data_map, .data$region != "Antarctica")
-
-  data <- left_join(data_map, data, by = c("region" = "country"))
-
-  plot <- ggplot(
-    data = data,
-    aes(
-      x = .data$long,
-      y = .data$lat,
-      group = .data$group,
-      map_id = .data$region,
-      fill = .data$measure
+    data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
+    data <- select(
+      data,
+      .data$country,
+      .data$iso2c,
+      .data$measure
     )
+
+    data_map <- map_data("world")
+    data_map <- filter(data_map, .data$region != "Antarctica")
+
+    data <- left_join(data_map, data, by = c("region" = "country"))
+
+    plot <- ggplot(
+      data = data,
+      aes(
+        x = .data$long,
+        y = .data$lat,
+        group = .data$group,
+        map_id = .data$region,
+        fill = .data$measure
+      )
     ) +
-    geom_map(
-      map = data,
-      colour = "#f2f2f2",
-      size = 0.5
-    ) +
-    scale_x_continuous(breaks = c()) +
-    scale_y_continuous(breaks = c()) +
-    labs(
-      x = NULL,
-      y = NULL,
-      title = keyword,
-      caption = glue("Search score as {str_to_upper(type)} time series."),
-      fill = "Search score"
-    ) +
-    theme(legend.position = "bottom")
-  
-  return(plot)
+      geom_map(
+        map = data,
+        colour = "#f2f2f2",
+        size = 0.5
+      ) +
+      scale_x_continuous(breaks = c()) +
+      scale_y_continuous(breaks = c()) +
+      labs(
+        x = NULL,
+        y = NULL,
+        title = keyword,
+        caption = glue("Search score as {str_to_upper(type)} time series."),
+        fill = "Search score"
+      ) +
+      theme(legend.position = "bottom")
+
+    return(plot)
   }
 }
 
@@ -143,13 +143,13 @@ plot_map.abnorm_score <- function(data) {
     data <- filter(data, .data$keyword == !!keyword)
     warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
   }
-  
+
   data <- na.omit(data)
   data <- group_by(data, .data$location)
   data <- summarise(data, score_abnorm = mean(.data$score_abnorm), .groups = "drop")
-  
+
   data_wdi <- as_tibble(WDI::WDI_data$country)
-  
+
   data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
   data <- select(
     data,
@@ -157,12 +157,12 @@ plot_map.abnorm_score <- function(data) {
     .data$iso2c,
     .data$score_abnorm
   )
-  
+
   data_map <- map_data("world")
   data_map <- filter(data_map, .data$region != "Antarctica")
-  
+
   data <- left_join(data_map, data, by = c("region" = "country"))
-  
+
   plot <- ggplot(
     data = data,
     aes(
@@ -172,7 +172,7 @@ plot_map.abnorm_score <- function(data) {
       map_id = .data$region,
       fill = .data$score_abnorm
     )
-    ) +
+  ) +
     geom_map(
       map = data,
       colour = "#f2f2f2",
@@ -187,7 +187,7 @@ plot_map.abnorm_score <- function(data) {
       fill = "Abnormal changes in search score"
     ) +
     theme(legend.position = "bottom")
-  
+
   return(plot)
 }
 
