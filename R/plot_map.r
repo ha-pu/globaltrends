@@ -58,7 +58,7 @@ plot_map <- function(data, ...) UseMethod("plot_map", data)
 #' @rdname plot_map
 #' @export
 
-plot_map.exp_score <- function(data, type = "obs") {
+plot_map.exp_score <- function(data, type = "obs", ...) {
   .check_type(type)
 
   len_keywords <- length(unique(data$keyword))
@@ -136,7 +136,7 @@ plot_score_map <- function(data, type = "obs") {
 #' @rdname plot_map
 #' @export
 
-plot_map.abnorm_score <- function(data) {
+plot_map.abnorm_score <- function(data, ...) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {

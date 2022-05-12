@@ -55,7 +55,7 @@ plot_bar <- function(data, ...) UseMethod("plot_bar", data)
 #' @rdname plot_bar
 #' @export
 
-plot_bar.exp_score <- function(data, type = "obs") {
+plot_bar.exp_score <- function(data, type = "obs", ...) {
   .check_type(type)
 
   len_keywords <- length(unique(data$keyword))
@@ -104,7 +104,7 @@ plot_score_bar <- function(data, type = "obs") {
 #' @rdname plot_bar
 #' @export
 
-plot_bar.abnorm_score <- function(data) {
+plot_bar.abnorm_score <- function(data, ...) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {

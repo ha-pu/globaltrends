@@ -9,15 +9,17 @@
 \usage{
 get_abnorm_hist(data, ...)
 
-\method{get_abnorm_hist}{exp_score}(data, train_win = 12, train_break = 0, type = "obs")
+\method{get_abnorm_hist}{exp_score}(data, train_win = 12, train_break = 0, type = "obs", ...)
 
-\method{get_abnorm_hist}{exp_voi}(data, train_win = 12, train_break = 0, type = "obs")
+\method{get_abnorm_hist}{exp_voi}(data, train_win = 12, train_break = 0, type = "obs", ...)
 
-\method{get_abnorm_hist}{exp_doi}(data, train_win = 12, train_break = 0, measure = "gini")
+\method{get_abnorm_hist}{exp_doi}(data, train_win = 12, train_break = 0, measure = "gini", ...)
 }
 \arguments{
 \item{data}{Object of class \code{exp_score}, \code{exp_voi} or
 \code{exp_doi} generated through \code{export_...} functions.}
+
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{train_win}{Object of type \code{numeric}. Length of rolling average
 training window in months. Defaults to 12.}

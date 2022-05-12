@@ -10,16 +10,18 @@
 \usage{
 plot_map(data, ...)
 
-\method{plot_map}{exp_score}(data, type = "obs")
+\method{plot_map}{exp_score}(data, type = "obs", ...)
 
 plot_score_map(data, type = "obs")
 
-\method{plot_map}{abnorm_score}(data)
+\method{plot_map}{abnorm_score}(data, ...)
 
 plot_abnorm_score_map(data)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
+
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{type}{Object of type \code{character} indicating the type of time
 series-column from data_score, takes either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults

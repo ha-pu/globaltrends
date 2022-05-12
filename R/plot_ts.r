@@ -26,6 +26,7 @@
 #' function of `ggplot2` should be used. Defaults to `TRUE`.
 #' @param ci Confidence interval within which changes are assumed to be normal.
 #' Object of type `double, 0 < ci < 1`. Defaults to *0.95*.
+#' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return
 #' Line plot of time series as `ggplot2` object. For plots for output from
@@ -69,7 +70,7 @@ plot_ts <- function(data, ...) UseMethod("plot_ts", data)
 #' @rdname plot_ts
 #' @export
 
-plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE) {
+plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE, ...) {
   .check_type(type)
   .check_smooth(smooth)
 
@@ -122,7 +123,7 @@ plot_score_ts <- function(data, type = "obs", smooth = TRUE) {
 #' @rdname plot_ts
 #' @export
 
-plot_ts.abnorm_score <- function(data, ci = 0.95) {
+plot_ts.abnorm_score <- function(data, ci = 0.95, ...) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
@@ -170,7 +171,7 @@ plot_abnorm_score_ts <- function(data, ci = 0.95) {
 #' @rdname plot_ts
 #' @export
 
-plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE) {
+plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE, ...) {
   .check_type(type)
   .check_smooth(smooth)
 
@@ -215,7 +216,7 @@ plot_voi_ts <- function(data, type = "obs", smooth = TRUE) {
 #' @rdname plot_ts
 #' @export
 
-plot_ts.abnorm_voi <- function(data, ci = 0.95) {
+plot_ts.abnorm_voi <- function(data, ci = 0.95, ...) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
@@ -256,7 +257,7 @@ plot_abnorm_voi_ts <- function(data, ci = 0.95) {
 #' @rdname plot_ts
 #' @export
 
-plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
+plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE, ...) {
   .check_type(type)
   .check_measure(measure)
   .check_locations(locations)
@@ -305,7 +306,7 @@ plot_doi_ts <- function(data, type = "obs", measure = "gini", locations = "count
 #' @rdname plot_ts
 #' @export
 
-plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95) {
+plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95, ...) {
   .check_type(type)
   .check_locations(locations)
   .check_ci(ci)
