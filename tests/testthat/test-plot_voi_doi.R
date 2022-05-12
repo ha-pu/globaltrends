@@ -283,15 +283,15 @@ test_that("plot_voi_doi-sig4", {
 test_that("plot_voi_doi-sig5", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  test_locations(fun = plot_voi_doi, incl = TRUE,  data_doi = data1, data_voi = data2)
+  test_locations(fun = plot_voi_doi, incl = TRUE, data_doi = data1, data_voi = data2)
 })
 
 test_that("plot_voi_doi-sig6", {
   data1 <- export_doi(keyword = "fc barcelona")
   data2 <- export_voi(keyword = "fc barcelona")
-  
+
   test_smooth(fun = plot_voi_doi, data_doi = data1, data_voi = data2)
-  
+
   expect_error(
     plot_voi_doi(data_doi = data1, data_voi = data2, smooth = c(TRUE, TRUE)),
     "'smooth' must be object of length 1.\nYou provided an object of length 2."

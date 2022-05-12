@@ -28,6 +28,7 @@
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `countries`.
+#' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
 #'
 #' @seealso
 #' * [example_control()]
@@ -57,16 +58,17 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_control <- function(control, locations = countries) UseMethod("download_control", control)
+download_control <- function(control, locations = countries, ...) UseMethod("download_control", control)
 
 #' @rdname download_control
 #' @method download_control numeric
 #' @export
 
-download_control.numeric <- function(control, locations = countries) {
+download_control.numeric <- function(control, locations = countries, ...) {
+  args <- list(...)
   .check_input(locations, "character")
   if (length(control) > 1) {
-    download_control(control = as.list(control), locations = locations)
+    download_control(control = as.list(control), locations = locations, ...)
   } else {
     .check_batch(control)
     terms <- .keywords_control$keyword[.keywords_control$batch == control]
@@ -78,7 +80,7 @@ download_control.numeric <- function(control, locations = countries) {
         in_location <- .x
       }
       if (.test_empty(table = "data_control", batch_c = control, location = in_location)) {
-        out <- .get_trend(location = .x, term = terms, time = time)
+        out <- do.call(.get_trend, c(args, location = .x, term = list(terms), time = time))
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
           dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
@@ -99,13 +101,13 @@ download_control.numeric <- function(control, locations = countries) {
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = countries) {
-  walk(control, download_control, locations = locations)
+download_control.list <- function(control, locations = countries, ...) {
+  walk(control, download_control, locations = locations, ...)
 }
 
 #' @rdname download_control
 #' @export
 
-download_control_global <- function(control) {
-  download_control(control = control, locations = "")
+download_control_global <- function(control, ...) {
+  download_control(control = control, locations = "", ...)
 }
