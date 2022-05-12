@@ -37,6 +37,8 @@ more than four (five) keywords, the vector is split into four-keyword
 of length four (five) or less. Each batch of keywords is combined with a time
 period for which data will be downloaded. To change the time period for an
 existing batch, all downloads and computations must be rerun.
+\emph{Note}: To avoid trailing spaces \code{stringr::str_squish} is automatically
+applied to all keywords.
 }
 \examples{
 \dontrun{
@@ -78,5 +80,6 @@ add_control_keyword(
 \itemize{
 \item \code{\link[=example_keywords]{example_keywords()}}
 \item \code{\link[=example_time]{example_time()}}
+\item \code{\link[stringr:str_trim]{stringr::str_squish()}}
 }
 }
