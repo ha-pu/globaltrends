@@ -15,6 +15,8 @@
 #' of length four (five) or less. Each batch of keywords is combined with a time
 #' period for which data will be downloaded. To change the time period for an
 #' existing batch, all downloads and computations must be rerun.
+#' *Note*: To avoid trailing spaces `stringr::str_squish` is automatically
+#' applied to all keywords.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of type
 #' `character` or a `list` of `character` vectors.
@@ -65,6 +67,7 @@
 #' @seealso
 #' * [example_keywords()]
 #' * [example_time()]
+#' * [stringr::str_squish()]
 #'
 #' @rdname add_keyword
 #' @export
@@ -95,6 +98,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @importFrom glue glue
 #' @importFrom purrr map
 #' @importFrom rlang .data
+#' @importFrom stringr str_squish
 #' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, time, max) UseMethod(".add_batch", keyword)
@@ -137,6 +141,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     } else {
       new_batch <- max(.keywords_control$batch) + 1
     }
+    keyword <- str_squish(keyword)
     data <- tibble(batch = new_batch, keyword, type = "control")
     dbWriteTable(conn = globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "control")
@@ -192,6 +197,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' for Bayern Munich. Search scores for keywords that are added as synonyms are
 #' aggregated when running `compute_score`. The function allows to add
 #' synonyms for a single keyword at a time.
+#' *Note*: To avoid trailing spaces `stringr::str_squish` is automatically
+#' applied to all keywords and synonyms.
 #'
 #' @param keyword Keyword of type `character` and length 1 for which the
 #' synonyms are added.
@@ -203,6 +210,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #'
 #' @seealso
 #' * [compute_score()]
+#' * [stringr::str_squish()]
 #'
 #' @examples
 #' \dontrun{
@@ -216,6 +224,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @importFrom DBI dbWriteTable
 #' @importFrom glue glue
 #' @importFrom purrr walk
+#' @importFrom stringr str_squish
 #' @importFrom tibble tibble
 
 add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
@@ -229,6 +238,8 @@ add_synonym.character <- function(keyword, synonym) {
     add_synonym(keyword = keyword, synonym = as.list(synonym))
   } else {
     if (!is.character(synonym)) stop(glue("Error:'synonym' must of type 'character'.\nYou provided an object of type {typeof(synonym)}."))
+    keyword <- str_squish(keyword)
+    synonym <- str_squish(synonym)
     out <- tibble(keyword, synonym)
     dbWriteTable(
       conn = globaltrends_db,

@@ -11,8 +11,8 @@
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_replace
 
-.get_trend <- function(location, term, time = "all") {
-  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
+.get_trend <- function(location, term, time = "all", ...) {
+  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE, ...))
   while (inherits(out, "try-error")) {
     if (str_detect(attr(out, "condition")$message, "^<simpleError in get_widget(comparison_item, category, gprop, hl, cookie_url, tz): widget$status_code == 200")) {
       Sys.sleep(60)

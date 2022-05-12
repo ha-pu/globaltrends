@@ -57,7 +57,7 @@ plot_box <- function(data, ...) UseMethod("plot_box", data)
 #' @rdname plot_box
 #' @export
 
-plot_box.exp_score <- function(data, type = "obs") {
+plot_box.exp_score <- function(data, type = "obs", ...) {
   .check_type(type)
 
   len_keywords <- length(unique(data$keyword))
@@ -101,7 +101,7 @@ plot_score_box <- function(data, type = "obs") {
 #' @rdname plot_box
 #' @export
 
-plot_box.abnorm_score <- function(data, ci = 0.95) {
+plot_box.abnorm_score <- function(data, ci = 0.95, ...) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
@@ -146,7 +146,7 @@ plot_abnorm_score_box <- function(data, ci = 0.95) {
 #' @rdname plot_box
 #' @export
 
-plot_box.exp_voi <- function(data, type = "obs") {
+plot_box.exp_voi <- function(data, type = "obs", ...) {
   .check_type(type)
 
   len_keywords <- length(unique(data$keyword))
@@ -183,7 +183,7 @@ plot_voi_box <- function(data, type = "obs") {
 #' @rdname plot_box
 #' @export
 
-plot_box.abnorm_voi <- function(data, ci = 0.95) {
+plot_box.abnorm_voi <- function(data, ci = 0.95, ...) {
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
   ci2 <- 1 - ci1
@@ -221,7 +221,7 @@ plot_abnorm_voi_box <- function(data, ci = 0.95) {
 #' @rdname plot_box
 #' @export
 
-plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
+plot_box.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", ...) {
   .check_type(type)
   .check_measure(measure)
   .check_locations(locations)
@@ -261,7 +261,7 @@ plot_doi_box <- function(data, type = "obs", measure = "gini", locations = "coun
 #' @rdname plot_box
 #' @export
 
-plot_box.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95) {
+plot_box.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95, ...) {
   .check_type(type)
   .check_locations(locations)
   .check_ci(ci)

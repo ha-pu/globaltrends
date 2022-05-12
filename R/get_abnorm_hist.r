@@ -29,13 +29,13 @@
 #' training window in months. Defaults to 12.
 #' @param train_break Object of type `numeric`. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
-#' @inheritParams export_control
 #' @param type Object of type `character` indicating the type of time
 #' series-column from data_score, takes either *obs*, *sad*, or
 #' *trd*. Defaults to *"obs"*.
 #' @param measure Object of type `character` indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
 #' either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
+#' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return
 #' The functions export and filter the respective database tables and return
@@ -86,7 +86,7 @@ get_abnorm_hist <- function(data, ...) UseMethod("get_abnorm_hist", data)
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs") {
+get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs", ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -117,7 +117,7 @@ get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, typ
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs") {
+get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs", ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
@@ -147,7 +147,7 @@ get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type 
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini") {
+get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini", ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)

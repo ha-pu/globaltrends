@@ -18,19 +18,19 @@
 \usage{
 plot_ts(data, ...)
 
-\method{plot_ts}{exp_score}(data, type = "obs", smooth = TRUE)
+\method{plot_ts}{exp_score}(data, type = "obs", smooth = TRUE, ...)
 
 plot_score_ts(data, type = "obs", smooth = TRUE)
 
-\method{plot_ts}{abnorm_score}(data, ci = 0.95)
+\method{plot_ts}{abnorm_score}(data, ci = 0.95, ...)
 
 plot_abnorm_score_ts(data, ci = 0.95)
 
-\method{plot_ts}{exp_voi}(data, type = "obs", smooth = TRUE)
+\method{plot_ts}{exp_voi}(data, type = "obs", smooth = TRUE, ...)
 
 plot_voi_ts(data, type = "obs", smooth = TRUE)
 
-\method{plot_ts}{abnorm_voi}(data, ci = 0.95)
+\method{plot_ts}{abnorm_voi}(data, ci = 0.95, ...)
 
 plot_abnorm_voi_ts(data, ci = 0.95)
 
@@ -39,7 +39,8 @@ plot_abnorm_voi_ts(data, ci = 0.95)
   type = "obs",
   measure = "gini",
   locations = "countries",
-  smooth = TRUE
+  smooth = TRUE,
+  ...
 )
 
 plot_doi_ts(
@@ -50,12 +51,14 @@ plot_doi_ts(
   smooth = TRUE
 )
 
-\method{plot_ts}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95)
+\method{plot_ts}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95, ...)
 
 plot_abnorm_doi_ts(data, type = "obs", locations = "countries", ci = 0.95)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
+
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{type}{Object of type \code{character} indicating the type of time
 series-column from data_score, takes either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults

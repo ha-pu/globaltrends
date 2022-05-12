@@ -2,6 +2,9 @@
 suppressWarnings(library(dplyr))
 suppressWarnings(library(ggplot2))
 
+source("../test_functions.r")
+
+Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
@@ -82,22 +85,7 @@ test_that("download_control3", {
 
 # download control signals -----------------------------------------------------
 test_that("download_control4", {
-  expect_error(
-    download_control(control = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_control(control = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_control(control = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_control(control = sum),
-    "no applicable method"
-  )
+  test_control(fun = download_control, incl = c(1, 6:8))
 })
 
 test_that("download_control5", {
@@ -116,22 +104,7 @@ test_that("download_control5", {
 })
 
 test_that("download_control6", {
-  expect_error(
-    download_control_global(control = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_control_global(control = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_control_global(control = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_control_global(control = sum),
-    "no applicable method"
-  )
+  test_control(fun = download_control_global, incl = c(1, 6:8))
 })
 
 # download object --------------------------------------------------------------
@@ -180,102 +153,23 @@ test_that("download_object4", {
 
 # download object signals ------------------------------------------------------
 test_that("download_object5", {
-  expect_error(
-    download_object(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_object(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_object(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = download_object, incl = c(1, 6:8))
 })
 
 test_that("download_object6", {
-  expect_error(
-    download_object(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = download_object, incl = 1:5, object = 1)
 })
 
 test_that("download_object7", {
-  expect_error(
-    download_object(object = 1, locations = 1),
-    "'locations' must be object of type character.\nYou provided an object of type double."
-  )
-  expect_error(
-    download_object(object = 1, locations = TRUE),
-    "'locations' must be object of type character.\nYou provided an object of type logical."
-  )
-  expect_error(
-    download_object(object = 1, locations = sum),
-    "'locations' must be object of type character.\nYou provided an object of type builtin."
-  )
+  test_locations(fun = download_object, object = 1)
 })
 
 test_that("download_object8", {
-  expect_error(
-    download_object_global(object = 1.5),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object_global(object = "A"),
-    "no applicable method"
-  )
-  expect_error(
-    download_object_global(object = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    download_object_global(object = sum),
-    "no applicable method"
-  )
+  test_object(fun = download_object_global, incl = c(1, 6:8))
 })
 
 test_that("download_object9", {
-  expect_error(
-    download_object_global(control = 1.5, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
-  )
-  expect_error(
-    download_object_global(control = "A", object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object_global(control = TRUE, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object_global(control = sum, object = 1),
-    "Batch number must be object of type integer.\nYou provided a non-integer value."
-  )
-  expect_error(
-    download_object_global(control = 1:5, object = 1),
-    "'control' must be object of length 1.\nYou provided an object of length 5."
-  )
+  test_control(fun = download_object_global, incl = 1:5, object = 1)
 })
 
 # disconnect -------------------------------------------------------------------
