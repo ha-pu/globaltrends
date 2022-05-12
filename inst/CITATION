@@ -1,0 +1,18 @@
+citHeader("To cite globaltrends in publications use:")
+citEntry(
+  entry = "Article",
+  title = "Let me Google that for you: Capturing globalization using Google Trends",
+  author = personList(
+    as.person("Harald Puhr"),
+	as.person("Jakob Müllner")
+  ),
+  journal = "SSRN Workin Paper",
+  year = 2021,
+  url = "https://ssrn.com/abstract=3969013",
+  textVersion = paste(
+    "Puhr, H., & Müllner, J. (2021).", 
+	"Let me Google that for you: Capturing globalization using Google Trends", 
+	"(SSRN Working Paper 3969013).",
+	"Available at https://ssrn.com/abstract=3969013."
+  )
+)
