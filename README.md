@@ -77,3 +77,6 @@ plot_box(data = abnorm_doi)
 # disconnect from db -----------------------------------------------------------
 disconnect_db()
 ````
+
+If you use the `globaltrends` package, please cite it as:
+Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (SSRN Working Paper 3969013). Available at [https://ssrn.com/abstract=3969013](https://ssrn.com/abstract=3969013).

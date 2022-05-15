@@ -15,11 +15,16 @@
 #' of length four (five) or less. Each batch of keywords is combined with a time
 #' period for which data will be downloaded. To change the time period for an
 #' existing batch, all downloads and computations must be rerun.
+#' If you use search topics for object keywords, make sure to use search topics
+#' for control keywords and vice versa. See Google's
+#' [FAQ](https://support.google.com/trends/answer/4359550?hl=en) for additional
+#' information on search topics.
 #' *Note*: To avoid trailing spaces `stringr::str_squish` is automatically
 #' applied to all keywords.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of type
-#' `character` or a `list` of `character` vectors.
+#' `character` or a `list` of `character` vectors. The function also allows the
+#' usage of codes for search topics instead of search terms.
 #' @param time Time frame for which the batch data should be downloaded. Object
 #' of type `character` that takes the from "YYYY-MM-DD YYYY-MM-DD".
 #' Defaults to *"2010-01-01 2020-12-31"*.
@@ -63,6 +68,13 @@
 #'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
+#' 
+#' # search topics
+#' add_control_keyword(
+#'   keyword = c("%2Fm%2F02q_bk", "%2Fm%2F055t58", "%2Fm%2F025sndk", "%2Fm%2F0d07ph", "%2Fm%2F09jcvs"),
+#'   time = "2016-01-01 2019-12-31"
+#' )
+#' # This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 #' }
 #' @seealso
 #' * [example_keywords()]

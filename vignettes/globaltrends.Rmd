@@ -104,7 +104,7 @@ The next step in the `globaltrends` workflow is data download from Google Trends
 The download for a single keyword batch for a single location takes about 10 seconds. This includes a randomized waiting period of 5-10 seconds between downloads. Depending on download frequency, Google Trends might block users for some time. Unfortunately, the exact download limits are unknown ([Issue #140](https://github.com/PMassicotte/gtrendsR/issues/140), [Issue #255](https://github.com/PMassicotte/gtrendsR/issues/255)). In this case, `globaltrends` waits 1 minute before it retries the download.
 
 ### Download control data
-First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](http://www.google.com/trends) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
+First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](http://www.google.com/trends) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
 
 ```{r, eval = FALSE}
 # add_control_keyword ----------------------------------------------------------
@@ -145,7 +145,7 @@ download_control_global(control = new_control)
 ```
 
 ### Download object data
-For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five as for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
+For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five as for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
 
 ```{r, eval = FALSE}
 # add_object_keyword -----------------------------------------------------------
@@ -497,6 +497,17 @@ dplyr::count(data, location)
 #> 3 DE         127
 ```
 
+# Search topics vs search terms
+Results for individual keywords as search terms (e.g., *weather*, *apple*, *coca cola*) might be distorted by translation issues (i.e., keywords are search for in different languages), keyword contamination (i.e., keywords relate to different queries: apple vs. Apple Inc.), and keyword dilution (i.e., multiple keywords relate to the same query: election, vote). Search topics allow users to partly overcome these issues. [Google](https://support.google.com/trends/answer/4359550?hl=en) defines a search topic as “a group of terms that share the same concept in any language.” Thereby, queries that use search topics are language-independent, cover queries for different terms, and differentiate between queries.  
+
+Users can identify the codes of search topics on the Google Trends portal, by selecting the respective topic, rather than a search term (see the screenshot below).
+
+![](screenshot001.png){width=100%}
+
+After selecting the relevant search topics, users can identify the topic codes in the query’s URL. For example, based on the URL [https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT]( https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT) the topic *The Coca-Cola Company* is *%2Fm%2F03phgz*. Users can use these topic codes as keywords instead of single search terms. We point users to Kupfer and Zorn (2020, pp. 1169-1170) for a detailed comparison of search topics and search terms.  
+
+**Important:** We recommend that search topics for control keywords are used in combination with search topics for object keywords and vice versa.
+
 # Further applications
 To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to compare degree of internationalization for various organizations on a unified scale (e.g., *Coca-Cola Company*, *Facebook Inc.*, *Real Madrid*, and *Manchester United*). In addition, the time-series nature of Google Trends allows for historical analysis of internationalization patterns and speed within organizations.
 
@@ -516,6 +527,7 @@ The enormous detail of the data opens additional applications in research that a
 
 # References
 * Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based uncertainty index for the United States and Australia. *Economics Letters*, 161: 149-153.
+* Kupfer, A. & Zorn, J. 2020. A language-independent measurement of economic policy uncertainty in Eastern European countries. *Emerging Markets Finance and Trade*, 56(5): 1166-1180.
 * MacKinlay, A. C. 1997. Event studies in economics and finance. *Journal of Economic Literature*, 35(1): 13-39.
 * McWilliams, A. & Siegel, D. 1997. Event studies in management research: Theoretical and empirical issues. *Academy of Management Journal*, 40(3): 626-657.
 
