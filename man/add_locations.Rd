@@ -33,8 +33,8 @@ computation functions.
 Location sets control the loations for which data is downloaded or to which
 computations are applied. By adding new location sets, the default sets
 \emph{countries} and \emph{us_states} can be expanded by additional sets.
-Thereby, users can compute DOI within a region (e.g. adding EU countries as
-a set) or single countries (e.g. adding regions of France as a set). Download
+Thereby, users can compute DOI within a region (e.g., adding EU countries as
+a set) or single countries (e.g., adding regions of France as a set). Download
 and computation functions check whether data for a location already exists.
 Therefore, data will not be duplicated when location data already exists from
 another set.

@@ -7,7 +7,7 @@
 start_db()
 }
 \value{
-The function exports the following objects to .GlobalEnv:
+The function exports the following objects to the globaltrends namespace:
 \itemize{
 \item globaltrends_db A DBIConnection object, as returned by
 \code{DBI::dbConnect()}, connecting to the SQLite database in the working

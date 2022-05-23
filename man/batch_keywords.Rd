@@ -21,7 +21,7 @@ example_keywords
 }
 \description{
 The table \emph{batch_keywords} contains the keywords for each batch. Each
-line contains one \emph{keyword}, the \emph{type} of the batch (i.e. control
+line contains one \emph{keyword}, the \emph{type} of the batch (i.e., control
 or object) and the id of the \emph{batch} to which the keyword is assigned.
 Keywords can be added with the function \code{add_keywords}. The function
 \code{start_db} exports the table \emph{batch_keywords} as objects
