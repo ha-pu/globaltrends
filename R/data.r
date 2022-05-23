@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The table *batch_keywords* contains the keywords for each batch. Each
-#' line contains one *keyword*, the *type* of the batch (i.e. control
+#' line contains one *keyword*, the *type* of the batch (i.e., control
 #' or object) and the id of the *batch* to which the keyword is assigned.
 #' Keywords can be added with the function `add_keywords`. The function
 #' `start_db` exports the table *batch_keywords* as objects
@@ -31,7 +31,7 @@
 #' @description
 #' The table *batch_time* contains the time period for which data is
 #' downloaded for each batch. Each line contains one *time* period, the
-#' *type* of the batch (i.e. control or object) and the id of the
+#' *type* of the batch (i.e., control or object) and the id of the
 #' *batch* to which the time period is assigned. Time frames take the form
 #' `"YYYY-MM-DD YYYY-MM-DD"`. Time periods are added automatically through
 #' the function `add_keywords`. The function `start_db` exports the

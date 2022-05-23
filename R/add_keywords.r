@@ -32,7 +32,7 @@
 #' @return
 #' Message that the batch has been created successfully. Batch data is
 #' written to tables *batch_keywords* and *batch_time*.
-#' Numeric vector containing the newly added batch numbers.
+#' Numeric vector containing the newly added batch numbers are returned.
 #'
 #' @examples
 #' \dontrun{
@@ -163,13 +163,13 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", ".keywords_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     time_control <- filter(.tbl_time, .data$type == "control")
     time_control <- select(time_control, -.data$type)
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", ".time_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully created new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else if (type == "object") {
@@ -187,13 +187,13 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", ".keywords_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     time_object <- filter(.tbl_time, .data$type == "object")
     time_object <- select(time_object, -.data$type)
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", ".time_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
@@ -262,7 +262,7 @@ add_synonym.character <- function(keyword, synonym) {
     keyword_synonyms <- collect(.tbl_synonyms)
     lst_export <- list(keyword_synonyms, keyword_synonyms)
     names(lst_export) <- list("keyword_synonyms", ".keyword_synonyms")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully added synonym | keyword: {keyword} | synonym: {synonym}"))
   }
 }

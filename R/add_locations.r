@@ -9,8 +9,8 @@
 #' Location sets control the loations for which data is downloaded or to which
 #' computations are applied. By adding new location sets, the default sets
 #' *countries* and *us_states* can be expanded by additional sets.
-#' Thereby, users can compute DOI within a region (e.g. adding EU countries as
-#' a set) or single countries (e.g. adding regions of France as a set). Download
+#' Thereby, users can compute DOI within a region (e.g., adding EU countries as
+#' a set) or single countries (e.g., adding regions of France as a set). Download
 #' and computation functions check whether data for a location already exists.
 #' Therefore, data will not be duplicated when location data already exists from
 #' another set.
@@ -69,7 +69,7 @@ add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) 
   message(glue("Successfully created new location set {type} ({locations_collapse}).", locations_collapse = paste(locations, collapse = ", ")))
 }
 
-#' @title Export locations to .GlobalEnv
+#' @title Export locations to globaltrends namespace
 #'
 #' @keywords internal
 #' @noRd
@@ -88,5 +88,5 @@ add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) 
 
   names(lst_locations) <- locations
 
-  invisible(list2env(lst_locations, envir = .GlobalEnv))
+  invisible(list2env(lst_locations, envir = as.environment("package:globaltrends")))
 }

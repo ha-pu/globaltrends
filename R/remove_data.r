@@ -99,7 +99,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", ".keywords_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully deleted control batch {batch_c} from 'batch_keywords'."))
 
     .remove_data_control(batch_c = batch_c)
@@ -110,7 +110,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", ".keywords_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully deleted object batch {batch_o} from 'batch_keywords'."))
 
     .remove_data_object(batch_o = batch_o)
@@ -132,7 +132,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", ".time_control")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully deleted control batch {batch_c} from 'batch_time'."))
   } else if (type == "object") {
     dbExecute(conn = globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_o))
@@ -141,7 +141,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", ".time_object")
-    invisible(list2env(lst_export, envir = .GlobalEnv))
+    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
     message(glue("Successfully deleted object batch {batch_o} from 'batch_time'."))
   }
 }

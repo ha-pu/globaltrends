@@ -223,7 +223,7 @@ initialize_db <- function() {
 #' * [dplyr::tbl()]
 #'
 #' @return
-#' The function exports the following objects to .GlobalEnv:
+#' The function exports the following objects to the globaltrends namespace:
 #' \itemize{
 #'   \item globaltrends_db A DBIConnection object, as returned by
 #'   `DBI::dbConnect()`, connecting to the SQLite database in the working
@@ -331,7 +331,7 @@ start_db <- function() {
     ".time_object",
     ".keyword_synonyms"
   )
-  invisible(list2env(lst_object, envir = .GlobalEnv))
+  invisible(list2env(lst_object, envir = as.environment("package:globaltrends")))
   lst_object <- list(
     globaltrends_db,
     tbl_doi,
@@ -356,10 +356,10 @@ start_db <- function() {
     "time_object",
     "keyword_synonyms"
   )
-  invisible(list2env(lst_object, envir = .GlobalEnv))
+  invisible(list2env(lst_object, envir = as.environment("package:globaltrends")))
 
   .export_locations()
-  message("Successfully exported all objects to .GlobalEnv.")
+  message("Successfully exported all objects to globaltrends namespace.")
 }
 
 #' @title Disconnect from database
