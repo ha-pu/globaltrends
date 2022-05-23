@@ -8,19 +8,6 @@ Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
-rm(
-  tbl_control,
-  tbl_doi,
-  tbl_object,
-  tbl_score,
-  keyword_synonyms,
-  keywords_control,
-  keywords_object,
-  time_control,
-  time_object,
-  envir = .GlobalEnv
-)
-
 add_control_keyword(
   keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
   time = "2010-01-01 2019-12-31"
@@ -41,6 +28,9 @@ test_that("download_object1", {
 
 # download control --------------------------------------------------------------
 test_that("download_control1", {
+  skip_on_cran()
+  skip_if_offline()
+  
   out <- capture_messages(download_control(control = 1, locations = countries[1:3]))
 
   expect_match(
@@ -66,6 +56,9 @@ test_that("download_control1", {
 
 # re-download control ----------------------------------------------------------
 test_that("download_control2", {
+  skip_on_cran()
+  skip_if_offline()
+  
   expect_message(
     download_control(control = 1, locations = countries[[1]]),
     "Control data already available | control: 1 | location: US [1/1]"
@@ -74,6 +67,9 @@ test_that("download_control2", {
 
 # download control global ------------------------------------------------------
 test_that("download_control3", {
+  skip_on_cran()
+  skip_if_offline()
+  
   expect_message(
     download_control_global(control = 1),
     "Successfully downloaded control data | control: 1 | location: world [1/1]"
@@ -109,6 +105,9 @@ test_that("download_control6", {
 
 # download object --------------------------------------------------------------
 test_that("download_object2", {
+  skip_on_cran()
+  skip_if_offline()
+  
   out <- capture_messages(download_object(object = 1, locations = countries[1:3]))
 
   expect_match(
@@ -134,6 +133,9 @@ test_that("download_object2", {
 
 # re-download object -----------------------------------------------------------
 test_that("download_object3", {
+  skip_on_cran()
+  skip_if_offline()
+  
   expect_message(
     download_object(object = 1, locations = countries[[1]]),
     "Object data already available | object: 1 | control: 1 | location: US [1/1]"
@@ -142,6 +144,9 @@ test_that("download_object3", {
 
 # download object global -------------------------------------------------------
 test_that("download_object4", {
+  skip_on_cran()
+  skip_if_offline()
+  
   expect_message(
     download_object_global(object = 1),
     "Successfully downloaded object data | object: 1 | control: 1 | location: world [1/1]"
