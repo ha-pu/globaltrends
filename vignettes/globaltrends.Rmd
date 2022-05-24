@@ -536,22 +536,68 @@ The enormous detail of the data opens additional applications in research that a
 ## Relevelling of search volumes
 Google Trends does not provide raw search queries for downloads. Instead, Google Trends expresses the number of search queries as search volumes relative to the total number of search queries and then normalizes this data. To use Google Trends data, we first have to bring all search volumes to the same level.  
 For object keyword $ko$, included in object batch $bo$, Google Trends observes $SQ_{ko,bo,l,t}$ search queries for location $l$ at time $t$. The number of raw search queries is transformed to search volumes $SV_{ko,bo,l,t}$ by division through the total number of search queries for the given location-time pair $l,t$:
-$$SV_{ko,bo,l,t}=\frac{SQ_{ko,bo,l,t}}{\sum SQ_{l,t}}.$$
+
+\begin{equation}
+SV_{ko,bo,l,t}=\frac{SQ_{ko,bo,l,t}}{\sum SQ_{l,t}}.
+\tag{1}
+\end{equation}
+
 Next, Google Trends divides search volumes $SV_{ko,bo,l,t}$ by the maximum search value within object batch $bo$ at location $l$ to normalize search volumes to $\tilde{SV}_{ko,bo,l,t}$:
-$$\tilde{SV}_{ko,bo,l,t}=\frac{SV_{ko,bo,l,t}}{max(SV_{bo,l})*100}.$$
+
+\begin{equation}
+\tilde{SV}_{ko,bo,l,t}=\frac{SV_{ko,bo,l,t}}{max(SV_{bo,l})*100}.
+\tag{2}
+\end{equation}
+
 Since this normalization step is contingent on the maximum search volume within object batch $bo$, normalized search volumes $\tilde{SV}$ depend on the other keywords included in the object batch, the choice of location, and time span $T$ ($t \in T$) for which data is obtained. To prepare normalized search volumes $\tilde{SV}$ for further usage, the `globaltrends` packages follows Castelnuovo and Tran (2017, pp. A1-A2) to relevel $\tilde{SV}$ through mapping to a benchmark. To this end, we map all $\tilde{SV}$ values in object batch $bo$ to the same level as $\tilde{SV}$ values in control batch $bc$. The function `download_object` automatically adds a control keyword $kc$ to all object batches $bo$. In functions `compute_score` and `compute_voi`, $\tilde{SV}_{kc,bc,l,t}$ of control keyword $kc$ in control batch $bc$ is divided by $\tilde{SV}_{ko,bc,l,t}$ in object batch $bo$. By multiplying the result of this division with normalized search volumes $\tilde{SV}_{ko,bo,l,t}$, we get releveled search volumes $\tilde{SV}_{ko,bc,l,t}$ for object keyword $ko$, at location $l$, at time $t$:
-$$\tilde{SV}_{ko,bc,l,t}=\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}.$$
+
+\begin{equation}
+\tilde{SV}_{ko,bc,l,t}=\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}.
+\tag{3}
+\end{equation}
+
 After the relevelling, search volumes from all object batches use control batch $bc$ as basis for normalization.
 
 ## Computing search scores
 The outcome of the relevelling is not a de-normalization but that search volumes are relevelled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ by search volumes for a set of control keywords $KC$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting control keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in KC$:
-$$SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bc,l,t}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}.$$
-Plugging in the formulas for relevelling and normalization from above, we can rewrite the formula for $SC$ as follows:
-$$SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}$$
-$$SC_{ko,l,t}=\frac{\frac{SV_{ko,bo,t,l}}{max(SV_{bo,l})*100}*\frac{\frac{SV_{kc,bc,l,t}}{max(SV_{bc,l})*100}}{\frac{SV_{kc,bo,l,t}}{ max(SV_{bo,l})*100}}}{\sum_{kc \in KC} \frac{SV_{kc,bc,l,t}}{ max(SV_{bc,l})*100}}$$
-$$SC_{ko,l,t}=\frac{SV_{ko,bo,t,l}*\frac{SV_{kc,bc,l,t}}{SV_{kc,bo,l,t}}}{\sum_{kc \in KC} SV_{kc,bc,l,t}}$$
-$$SC_{ko,l,t}=\frac{SV_{ko,bc,l,t}}{\sum_{kc \in KC} SV_{kc,bc,l,t}}.$$
-Using the formula for $SV$ from above, we can reformulate $SC$ as:
-$$SC_{ko,l,t}=\frac{\frac{SQ_{ko,l,t}}{\sum SQ_{l,t}}} {\sum_{kc \in KC} \frac{SQ_{kc,l,t}}{\sum SQ_{l,t}}}.$$
-$$SC_{ko,l,t}=\frac{SQ_{ko,l,t}}{\sum_{kc \in KC} SQ_{kc,l,t}}.$$
+
+\begin{equation}
+SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bc,l,t}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}.
+\tag{4}
+\end{equation}
+
+Using equation (3) for normalization from above, we can rewrite the equation (4) for $SC$ as follows:
+
+\begin{equation}
+SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bo,t,l}*\frac{\tilde{SV}_{kc,bc,l,t}}{\tilde{SV}_{kc,bo,l,t}}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}
+\tag{5}
+\end{equation}
+
+\begin{equation}
+SC_{ko,l,t}=\frac{\frac{SV_{ko,bo,t,l}}{max(SV_{bo,l})*100}*\frac{\frac{SV_{kc,bc,l,t}}{max(SV_{bc,l})*100}}{\frac{SV_{kc,bo,l,t}}{ max(SV_{bo,l})*100}}}{\sum_{kc \in KC} \frac{SV_{kc,bc,l,t}}{ max(SV_{bc,l})*100}}
+\tag{6}
+\end{equation}
+
+\begin{equation}
+SC_{ko,l,t}=\frac{SV_{ko,bo,t,l}*\frac{SV_{kc,bc,l,t}}{SV_{kc,bo,l,t}}}{\sum_{kc \in KC} SV_{kc,bc,l,t}}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+SC_{ko,l,t}=\frac{SV_{ko,bc,l,t}}{\sum_{kc \in KC} SV_{kc,bc,l,t}}.
+\tag{8}
+\end{equation}
+
+Using the equation (1) for $SV$ from above, we can reformulate $SC$ as:
+
+\begin{equation}
+SC_{ko,l,t}=\frac{\frac{SQ_{ko,l,t}}{\sum SQ_{l,t}}} {\sum_{kc \in KC} \frac{SQ_{kc,l,t}}{\sum SQ_{l,t}}}.
+\tag{9}
+\end{equation}
+
+\begin{equation}
+SC_{ko,l,t}=\frac{SQ_{ko,l,t}}{\sum_{kc \in KC} SQ_{kc,l,t}}.
+\tag{10}
+\end{equation}
+
 Based on these transformations, we can interpret search score $SC$ as the ratio of search queries $SQ_{ko,l,t}$ for object keyword $ko$ divided by the sum of search queries $SQ_{kc,l,t}$ for control keywords $ko \in KC$ at location $l$ for time $t$. Since $SC$ is independent from any keyword batch $bo$ or $bc$, search scores therefore allow comparison across objects of interest, time, and countries.
