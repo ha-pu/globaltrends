@@ -19,7 +19,7 @@ dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
     keyword
   ) %>%
   unique()
-assign(".keywords_object", .keywords_object, envir = .GlobalEnv)
+assign(".keywords_object", .keywords_object, envir = as.environment("package:globaltrends"))
 
 test_that("score1", {
   expect_warning(
