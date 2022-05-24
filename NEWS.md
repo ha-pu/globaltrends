@@ -1,3 +1,7 @@
+# globaltrends v.0.0.12
+* Stop direct exports from functions to .GlobalEnv
+* Exports of objects (e.g., SQL connections, keyword tables) are redirected to package namespace.
+
 # globaltrends v.0.0.11
 * Add function plot_map()
 * Add automatic stringr::str_squish for keywords and synonyms
