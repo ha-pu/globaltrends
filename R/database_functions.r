@@ -357,7 +357,7 @@ start_db <- function() {
     "keyword_synonyms"
   )
   invisible(list2env(lst_object, envir = as.environment("package:globaltrends")))
-
+  
   .export_locations()
   message("Successfully exported all objects to globaltrends namespace.")
 }
