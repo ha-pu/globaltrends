@@ -42,7 +42,7 @@ Imports:
     utils (>= 4.0.2),
     WDI (>= 2.7.1),
 	zoo (>= 1.8.8)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr (>= 1.29),
