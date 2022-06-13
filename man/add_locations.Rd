@@ -14,7 +14,7 @@ type \code{character}.}
 \code{character} of length 1.}
 
 \item{export}{Indicator whether the new location set should be directly
-exported to .GlobalEnv. Object of type \code{logical}, defaults to
+exported to the package environment. Object of type \code{logical}, defaults to
 \code{TRUE}.}
 
 \item{db}{Connection to database file that should be closed. Defaults

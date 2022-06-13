@@ -47,7 +47,7 @@ control batch that has been used as baseline for mapping. Column
 distribution of search scores. DOI is computed and automatically written to
 the table with the function \code{compute_doi}. The function \code{start_db}
 exports the table \emph{data_doi} as database connection \code{tbl_doi} to
-\code{.GlobalEnv}. Users can access the database table through
+the package environment. Users can access the database table through
 \code{dplyr::tbl}.
 The sample data included in \code{data_doi} was simulated based on actual
 Google Trends data.

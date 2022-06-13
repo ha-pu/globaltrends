@@ -20,7 +20,7 @@
 #' @param type Name of the location set that should be added. Object of type
 #' `character` of length 1.
 #' @param export Indicator whether the new location set should be directly
-#' exported to .GlobalEnv. Object of type `logical`, defaults to
+#' exported to the package environment. Object of type `logical`, defaults to
 #' `TRUE`.
 #' @param db Connection to database file that should be closed. Defaults
 #' to `globaltrends_db`.

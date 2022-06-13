@@ -300,7 +300,7 @@ start_db <- function() {
   time_object <- collect(time_object)
   keyword_synonyms <- collect(tbl_synonyms)
 
-  # write objects to .GlobalEnv ------------------------------------------------
+  # write objects to the package environment -----------------------------------
   lst_object <- list(
     tbl_locations,
     tbl_keywords,

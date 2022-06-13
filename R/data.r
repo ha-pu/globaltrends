@@ -6,7 +6,7 @@
 #' or object) and the id of the *batch* to which the keyword is assigned.
 #' Keywords can be added with the function `add_keywords`. The function
 #' `start_db` exports the table *batch_keywords* as objects
-#' `keywords_control` and `keywords_object` to `.GlobalEnv`.
+#' `keywords_control` and `keywords_object` to the package environment.
 #'
 #' Example data for the table *batch_keywords* is available as R object
 #' `example_keywords`.
@@ -64,7 +64,7 @@
 #' gets the value *world* as location. Data is downloaded and automatically
 #' written to the table through the function `download_control`. The
 #' function `start_db` exports the table *data_control* as database
-#' connection `tbl_control` to `.GlobalEnv`. Users can access the
+#' connection `tbl_control` to the package environment. Users can access the
 #' database table through `dplyr::tbl`.
 #' The sample data included in `data_control` was simulated based on actual
 #' Google Trends data.
@@ -104,7 +104,7 @@
 #' downloaded and automatically written to the table through the function
 #' `download_object`. The function `start_db` exports the table
 #' *data_object* as database connection `tbl_object` to
-#' `.GlobalEnv`. Users can access the database table through
+#' the package environment. Users can access the database table through
 #' `dplyr::tbl`.
 #' The sample data included in `data_object` was simulated based on actual
 #' Google Trends data.
@@ -148,7 +148,7 @@
 #' scores are computed and automatically written to the table with the function
 #' `compute_score`. The function `start_db` exports the table
 #' *data_score* as database connection `tbl_score` to
-#' `.GlobalEnv`. Users can access the database table through
+#' the package environment. Users can access the database table through
 #' `dplyr::tbl`.
 #' The sample data included in `data_score` was simulated based on actual
 #' Google Trends data.
@@ -199,7 +199,7 @@
 #' distribution of search scores. DOI is computed and automatically written to
 #' the table with the function `compute_doi`. The function `start_db`
 #' exports the table *data_doi* as database connection `tbl_doi` to
-#' `.GlobalEnv`. Users can access the database table through
+#' the package environment. Users can access the database table through
 #' `dplyr::tbl`.
 #' The sample data included in `data_doi` was simulated based on actual
 #' Google Trends data.

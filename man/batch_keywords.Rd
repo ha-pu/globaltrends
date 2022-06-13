@@ -25,7 +25,7 @@ line contains one \emph{keyword}, the \emph{type} of the batch (i.e., control
 or object) and the id of the \emph{batch} to which the keyword is assigned.
 Keywords can be added with the function \code{add_keywords}. The function
 \code{start_db} exports the table \emph{batch_keywords} as objects
-\code{keywords_control} and \code{keywords_object} to \code{.GlobalEnv}.
+\code{keywords_control} and \code{keywords_object} to the package environment.
 
 Example data for the table \emph{batch_keywords} is available as R object
 \code{example_keywords}.
