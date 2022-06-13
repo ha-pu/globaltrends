@@ -169,8 +169,8 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
               )
             )
           } else {
-            if (nrow(count(qry_control, .data$date)) < 24) assign("ts_control", FALSE, envir = as.environment("package:globaltrends"))
-            if (nrow(count(qry_object, .data$date)) < 24) assign("ts_object", FALSE, envir = as.environment("package:globaltrends"))
+            if (nrow(count(qry_control, .data$date)) < 24) assign("ts_control", FALSE, envir = env_parent())
+            if (nrow(count(qry_object, .data$date)) < 24) assign("ts_object", FALSE, envir = env_parent())
           }
           qry_control <- pivot_longer(
             qry_control,
