@@ -10,7 +10,7 @@ initialize_db()
 start_db()
 
 # enter data -------------------------------------------------------------------
-dbWriteTable(globaltrends_db, "data_score", example_score, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_score", example_score, append = TRUE)
 
 # plot_map.exp_score ------------------------------------------------------------
 test_that("plot_map.exp_score1", {

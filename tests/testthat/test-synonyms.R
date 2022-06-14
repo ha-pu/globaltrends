@@ -42,31 +42,31 @@ test_that("add_synonyms1", {
     all = FALSE
   )
 
-  expect_equal(nrow(keyword_synonyms), 2)
+  expect_equal(nrow(gt.env$keyword_synonyms), 2)
 })
 
 # enter data -------------------------------------------------------------------
-data <- filter(example_control, batch == 1 & location %in% countries[1:3])
-dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+data <- filter(example_control, batch == 1 & location %in% gt.env$countries[1:3])
+dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(
   example_object,
   batch_c == 1 & batch_o == 1 &
-    location %in% countries[1:2]
+    location %in% gt.env$countries[1:2]
 ) %>%
   mutate(batch_o = 1)
-dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 data <- filter(
   example_object,
   batch_c == 1 & batch_o == 2 &
-    location %in% countries[2:3]
+    location %in% gt.env$countries[2:3]
 ) %>%
   mutate(batch_o = 2)
-dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 
-compute_score(object = 1, locations = countries[1:2])
+compute_score(object = 1, locations = gt.env$countries[1:2])
 out1 <- export_score(keyword = "fc bayern")
 
-compute_score(object = 2, locations = countries[1:3])
+compute_score(object = 2, locations = gt.env$countries[1:3])
 out2 <- export_score(keyword = "fc bayern")
 
 # compare results --------------------------------------------------------------
@@ -83,14 +83,14 @@ test_that("keyword_score", {
 })
 
 test_that("keyword_synonym", {
-  out2_cn <- .tbl_score %>%
+  out2_cn <- gt.env$.tbl_score %>%
     filter(keyword == "bayern munich" & location == "CN") %>%
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
 
   expect_equal(out2_cn$synonym, 2)
 
-  out2_jp <- .tbl_score %>%
+  out2_jp <- gt.env$.tbl_score %>%
     filter(keyword == "bayern munich" & location == "JP") %>%
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
