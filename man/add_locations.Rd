@@ -30,7 +30,7 @@ the database. The location set serves as input for all download and
 computation functions.
 }
 \details{
-Location sets control the loations for which data is downloaded or to which
+Location sets control the locations for which data is downloaded or to which
 computations are applied. By adding new location sets, the default sets
 \emph{countries} and \emph{us_states} can be expanded by additional sets.
 Thereby, users can compute DOI within a region (e.g., adding EU countries as

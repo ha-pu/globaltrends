@@ -80,7 +80,7 @@ test_that("start1", {
   )
   expect_match(
     out,
-    "Successfully exported all objects to globaltrends namespace\\.",
+    "Successfully exported all objects to package environment gt\\.env\\.",
     all = FALSE
   )
   disconnect_db()
