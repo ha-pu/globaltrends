@@ -7,11 +7,11 @@
 \alias{compute_voi}
 \title{Compute keyword-country search score}
 \usage{
-compute_score(object, control = 1, locations = countries)
+compute_score(object, control = 1, locations = gt.env$countries)
 
-\method{compute_score}{numeric}(object, control = 1, locations = countries)
+\method{compute_score}{numeric}(object, control = 1, locations = gt.env$countries)
 
-\method{compute_score}{list}(object, control = 1, locations = countries)
+\method{compute_score}{list}(object, control = 1, locations = gt.env$countries)
 
 compute_voi(object, control = 1)
 }

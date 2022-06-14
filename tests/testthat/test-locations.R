@@ -19,9 +19,9 @@ test_that("add_loc1", {
     "Successfully created new location set dach \\(AT, DE, CH\\)\\."
   )
 
-  expect_error(
-    dach,
-    "object 'dach' not found"
+  expect_equal(
+    gt.env$dach,
+    NULL
   )
 
   expect_message(
@@ -34,7 +34,7 @@ test_that("add_loc1", {
   )
 
   expect_identical(
-    asia,
+    gt.env$asia,
     c("CN", "JP")
   )
 })
@@ -44,12 +44,12 @@ start_db()
 
 test_that("add_loc2", {
   expect_identical(
-    dach,
+    gt.env$dach,
     c("AT", "DE", "CH")
   )
 
   expect_identical(
-    asia,
+    gt.env$asia,
     c("CN", "JP")
   )
 })
@@ -65,12 +65,12 @@ add_object_keyword(
   time = "2010-01-01 2019-12-31"
 )
 
-dbWriteTable(globaltrends_db, "data_control", example_control, append = TRUE)
-dbWriteTable(globaltrends_db, "data_object", example_object, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_control", example_control, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_object", example_object, append = TRUE)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
-  out <- capture_messages(compute_score(object = 1, control = 1, locations = asia))
+  out <- capture_messages(compute_score(object = 1, control = 1, locations = gt.env$asia))
 
   expect_match(
     out,
@@ -83,7 +83,7 @@ test_that("compute_score1", {
     all = FALSE
   )
 
-  out <- tbl_score %>%
+  out <- gt.env$tbl_score %>%
     count(location) %>%
     collect()
 
@@ -99,9 +99,9 @@ test_that("compute_score1", {
 })
 
 test_that("compute_score2", {
-  compute_score(object = 1, control = 1, locations = countries)
+  compute_score(object = 1, control = 1, locations = gt.env$countries)
 
-  out <- tbl_score %>%
+  out <- gt.env$tbl_score %>%
     count(location) %>%
     collect()
 
@@ -125,7 +125,7 @@ test_that("compute_doi", {
     "Successfully computed DOI | control: 1 | object: 1 [1/1]"
   )
 
-  out <- tbl_doi %>%
+  out <- gt.env$tbl_doi %>%
     count(locations) %>%
     collect()
 
@@ -139,7 +139,7 @@ test_that("compute_doi", {
     c(1440, 1440)
   )
 
-  out <- tbl_doi %>%
+  out <- gt.env$tbl_doi %>%
     group_by(locations) %>%
     summarise(
       gini = mean(gini, na.rm = TRUE),
@@ -155,8 +155,8 @@ test_that("compute_doi", {
 
 # export score -----------------------------------------------------------------
 test_that("export_score", {
-  out1 <- export_score(location = asia)
-  out2 <- export_score(location = countries)
+  out1 <- export_score(location = gt.env$asia)
+  out2 <- export_score(location = gt.env$countries)
 
   expect_equal(
     unique(out1$location),

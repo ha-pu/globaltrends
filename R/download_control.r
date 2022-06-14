@@ -58,21 +58,21 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_control <- function(control, locations = countries, ...) UseMethod("download_control", control)
+download_control <- function(control, locations = gt.env$countries, ...) UseMethod("download_control", control)
 
 #' @rdname download_control
 #' @method download_control numeric
 #' @export
 
-download_control.numeric <- function(control, locations = countries, ...) {
+download_control.numeric <- function(control, locations = gt.env$countries, ...) {
   args <- list(...)
   .check_input(locations, "character")
   if (length(control) > 1) {
     download_control(control = as.list(control), locations = locations, ...)
   } else {
     .check_batch(control)
-    terms <- .keywords_control$keyword[.keywords_control$batch == control]
-    time <- .time_control$time[.time_control$batch == control]
+    terms <- gt.env$.keywords_control$keyword[gt.env$.keywords_control$batch == control]
+    time <- gt.env$.time_control$time[gt.env$.time_control$batch == control]
     walk(locations, ~ {
       if (.x == "") {
         in_location <- "world"
@@ -83,7 +83,7 @@ download_control.numeric <- function(control, locations = countries, ...) {
         out <- do.call(.get_trend, c(args, location = .x, term = list(terms), time = time))
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
-          dbWriteTable(conn = globaltrends_db, name = "data_control", value = out, append = TRUE)
+          dbWriteTable(conn = gt.env$globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
         message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
           current = which(locations == .x), total = length(locations)
@@ -101,7 +101,7 @@ download_control.numeric <- function(control, locations = countries, ...) {
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = countries, ...) {
+download_control.list <- function(control, locations = gt.env$countries, ...) {
   walk(control, download_control, locations = locations, ...)
 }
 

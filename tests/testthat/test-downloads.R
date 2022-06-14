@@ -21,7 +21,7 @@ add_object_keyword(
 # try download object ----------------------------------------------------------
 test_that("download_object1", {
   out <- expect_message(
-    download_object(object = 1, locations = countries[[1]]),
+    download_object(object = 1, locations = gt.env$countries[[1]]),
     "Download for object data failed.\nThere is no data in 'data_control' for control batch 1 and location US."
   )
 })
@@ -31,7 +31,7 @@ test_that("download_control1", {
   skip_on_cran()
   skip_if_offline()
   
-  out <- capture_messages(download_control(control = 1, locations = countries[1:3]))
+  out <- capture_messages(download_control(control = 1, locations = gt.env$countries[1:3]))
 
   expect_match(
     out,
@@ -49,7 +49,7 @@ test_that("download_control1", {
     all = FALSE
   )
 
-  out <- filter(.tbl_control, batch == 1 & location != "world")
+  out <- filter(gt.env$.tbl_control, batch == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
@@ -60,7 +60,7 @@ test_that("download_control2", {
   skip_if_offline()
   
   expect_message(
-    download_control(control = 1, locations = countries[[1]]),
+    download_control(control = 1, locations = gt.env$countries[[1]]),
     "Control data already available | control: 1 | location: US [1/1]"
   )
 })
@@ -74,7 +74,7 @@ test_that("download_control3", {
     download_control_global(control = 1),
     "Successfully downloaded control data | control: 1 | location: world [1/1]"
   )
-  out <- filter(.tbl_control, batch == 1 & location == "world")
+  out <- filter(gt.env$.tbl_control, batch == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
 })
@@ -108,7 +108,7 @@ test_that("download_object2", {
   skip_on_cran()
   skip_if_offline()
   
-  out <- capture_messages(download_object(object = 1, locations = countries[1:3]))
+  out <- capture_messages(download_object(object = 1, locations = gt.env$countries[1:3]))
 
   expect_match(
     out,
@@ -126,7 +126,7 @@ test_that("download_object2", {
     all = FALSE
   )
 
-  out <- filter(.tbl_object, batch_o == 1 & location != "world")
+  out <- filter(gt.env$.tbl_object, batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
@@ -137,7 +137,7 @@ test_that("download_object3", {
   skip_if_offline()
   
   expect_message(
-    download_object(object = 1, locations = countries[[1]]),
+    download_object(object = 1, locations = gt.env$countries[[1]]),
     "Object data already available | object: 1 | control: 1 | location: US [1/1]"
   )
 })
@@ -151,7 +151,7 @@ test_that("download_object4", {
     download_object_global(object = 1),
     "Successfully downloaded object data | object: 1 | control: 1 | location: world [1/1]"
   )
-  out <- filter(.tbl_object, batch_o == 1 & location == "world")
+  out <- filter(gt.env$.tbl_object, batch_o == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
 })

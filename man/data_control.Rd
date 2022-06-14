@@ -31,8 +31,8 @@ control \emph{batch} for a given \emph{location} and \emph{date}. Global data
 gets the value \emph{world} as location. Data is downloaded and automatically
 written to the table through the function \code{download_control}. The
 function \code{start_db} exports the table \emph{data_control} as database
-connection \code{tbl_control} to the package environment. Users can access the
-database table through \code{dplyr::tbl}.
+connection \code{tbl_control} to the package environment \code{gt.env}. Users
+can access the database table through \code{dplyr::tbl}.
 The sample data included in \code{data_control} was simulated based on actual
 Google Trends data.
 

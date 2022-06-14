@@ -102,7 +102,7 @@
 
 export_control <- function(control = NULL, location = NULL) {
   out <- .export_data(
-    table = .tbl_control,
+    table = gt.env$.tbl_control,
     in_batch = unlist(control),
     in_location = unlist(location)
   )
@@ -116,7 +116,7 @@ export_control <- function(control = NULL, location = NULL) {
 
 export_control_global <- function(control = NULL) {
   out <- .export_data(
-    table = .tbl_control,
+    table = gt.env$.tbl_control,
     in_batch = unlist(control),
     in_location = "world"
   )
@@ -129,7 +129,7 @@ export_control_global <- function(control = NULL) {
 
 export_object <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   out <- .export_data(
-    table = .tbl_object,
+    table = gt.env$.tbl_object,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -145,7 +145,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
 
 export_object_global <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
-    table = .tbl_object,
+    table = gt.env$.tbl_object,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -160,7 +160,7 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 
 export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
   out <- .export_data(
-    table = .tbl_score,
+    table = gt.env$.tbl_score,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -178,7 +178,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
 
 export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
-    table = .tbl_score,
+    table = gt.env$.tbl_score,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -196,7 +196,7 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
 
 export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
   out <- .export_data(
-    table = .tbl_doi,
+    table = gt.env$.tbl_doi,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),

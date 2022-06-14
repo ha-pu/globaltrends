@@ -7,11 +7,11 @@
 \alias{download_control_global}
 \title{Download data for control keywords}
 \usage{
-download_control(control, locations = countries, ...)
+download_control(control, locations = gt.env$countries, ...)
 
-\method{download_control}{numeric}(control, locations = countries, ...)
+\method{download_control}{numeric}(control, locations = gt.env$countries, ...)
 
-\method{download_control}{list}(control, locations = countries, ...)
+\method{download_control}{list}(control, locations = gt.env$countries, ...)
 
 download_control_global(control, ...)
 }

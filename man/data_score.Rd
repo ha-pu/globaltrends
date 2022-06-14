@@ -44,8 +44,8 @@ for mapping. Global data takes the value \emph{world} as location. Search
 scores are computed and automatically written to the table with the function
 \code{compute_score}. The function \code{start_db} exports the table
 \emph{data_score} as database connection \code{tbl_score} to
-the package environment. Users can access the database table through
-\code{dplyr::tbl}.
+the package environment \code{gt.env}. Users can access the database
+table through \code{dplyr::tbl}.
 The sample data included in \code{data_score} was simulated based on actual
 Google Trends data.
 

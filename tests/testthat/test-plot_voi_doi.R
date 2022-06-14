@@ -9,8 +9,8 @@ initialize_db()
 start_db()
 
 # enter data -------------------------------------------------------------------
-dbWriteTable(globaltrends_db, "data_score", example_score, append = TRUE)
-dbWriteTable(globaltrends_db, "data_doi", example_doi, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_score", example_score, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_doi", example_doi, append = TRUE)
 
 # plot voi doi gini ------------------------------------------------------------
 test_that("plot_voi_doi-gini1", {
