@@ -22,7 +22,7 @@ objects of type \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to
-\code{countries}.}
+\code{gt.env$countries}.}
 
 \item{...}{Arguments that are passed on to the \code{gtrendsR::gtrends} function.}
 }
