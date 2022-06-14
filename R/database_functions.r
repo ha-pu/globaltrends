@@ -85,7 +85,6 @@ initialize_db <- function() {
 
   # data_locations -------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
-  name TEXT,
   location TEXT,
   type TEXT
           )")

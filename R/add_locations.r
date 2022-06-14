@@ -6,7 +6,7 @@
 #' computation functions.
 #'
 #' @details
-#' Location sets control the loations for which data is downloaded or to which
+#' Location sets control the locations for which data is downloaded or to which
 #' computations are applied. By adding new location sets, the default sets
 #' *countries* and *us_states* can be expanded by additional sets.
 #' Thereby, users can compute DOI within a region (e.g., adding EU countries as
@@ -60,12 +60,16 @@ add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltren
   walk(locations, ~ {
     if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided {.x}."))
   })
+  
+  # handle namibia
+  locations[locations == "NA"] <- "NX"
 
   data <- tibble(location = locations, type = type)
   dbWriteTable(conn = db, name = "data_locations", value = data, append = TRUE)
 
   if (export) .export_locations()
 
+  locations[locations == "NX"] <- "NA"
   message(glue("Successfully created new location set {type} ({locations_collapse}).", locations_collapse = paste(locations, collapse = ", ")))
 }
 
@@ -86,6 +90,12 @@ add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltren
     return(out)
   })
 
+  # handle namibia
+  lst_locations <- map(lst_locations, ~{
+    .x[.x == "NX"] <- "NA"
+    return(.x)
+  })
+  
   names(lst_locations) <- locations
 
   invisible(list2env(lst_locations, envir = gt.env))

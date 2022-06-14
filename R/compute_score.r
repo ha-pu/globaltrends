@@ -108,6 +108,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
     walk(list(control, object), .check_batch)
     ts_control <- TRUE
     ts_object <- TRUE
+    locations[locations == "NA"] <- "NX" # handle namibia
     walk(locations, ~ {
       if (.test_empty(
         table = "data_score",

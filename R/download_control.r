@@ -27,7 +27,7 @@
 #' objects of type `numeric`.
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
-#' `countries`.
+#' `gt.env$countries`.
 #' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
 #'
 #' @seealso
@@ -78,11 +78,14 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
         in_location <- "world"
       } else {
         in_location <- .x
+        in_location[in_location == "NA"] <- "NX" # handle namibia
       }
       if (.test_empty(table = "data_control", batch_c = control, location = in_location)) {
+        in_location[in_location == "NX"] <- "NA" # handle namibia
         out <- do.call(.get_trend, c(args, location = .x, term = list(terms), time = time))
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
+          out$location[out$location == "NA"] <- "NX" # handle namibia
           dbWriteTable(conn = gt.env$globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
         message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
