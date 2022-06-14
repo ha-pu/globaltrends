@@ -20,10 +20,10 @@
 #' @param type Name of the location set that should be added. Object of type
 #' `character` of length 1.
 #' @param export Indicator whether the new location set should be directly
-#' exported to the package environment. Object of type `logical`, defaults to
-#' `TRUE`.
+#' exported to the package environment `gt.env`. Object of type `logical`,
+#' defaults to `TRUE`.
 #' @param db Connection to database file that should be closed. Defaults
-#' to `globaltrends_db`.
+#' to `gt.env$globaltrends_db`.
 #'
 #' @return
 #' Message that the location set has been created successfully. Location data is
@@ -46,7 +46,7 @@
 #' @importFrom stats na.omit
 #' @importFrom tibble tibble
 
-add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) {
+add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltrends_db) {
   .check_input(locations, "character")
   .check_input(type, "character")
   .check_length(type, 1)
@@ -69,18 +69,18 @@ add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) 
   message(glue("Successfully created new location set {type} ({locations_collapse}).", locations_collapse = paste(locations, collapse = ", ")))
 }
 
-#' @title Export locations to globaltrends namespace
+#' @title Export locations to package environment gt.env
 #'
 #' @keywords internal
 #' @noRd
 
 .export_locations <- function() {
-  locations <- distinct(.tbl_locations, type)
+  locations <- distinct(gt.env$.tbl_locations, type)
   locations <- collect(locations)
   locations <- locations$type
 
   lst_locations <- map(locations, ~ {
-    out <- filter(.tbl_locations, .data$type == .x)
+    out <- filter(gt.env$.tbl_locations, .data$type == .x)
     out <- collect(out)
     out <- pull(out, .data$location)
     return(out)
@@ -88,5 +88,5 @@ add_locations <- function(locations, type, export = TRUE, db = globaltrends_db) 
 
   names(lst_locations) <- locations
 
-  invisible(list2env(lst_locations, envir = as.environment("package:globaltrends")))
+  invisible(list2env(lst_locations, envir = gt.env))
 }

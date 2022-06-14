@@ -148,52 +148,52 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
   .check_length(time, 1)
   .check_input(time, "character")
   if (type == "control") {
-    if (nrow(.keywords_control) == 0) {
+    if (nrow(gt.env$.keywords_control) == 0) {
       new_batch <- 1
     } else {
-      new_batch <- max(.keywords_control$batch) + 1
+      new_batch <- max(gt.env$.keywords_control$batch) + 1
     }
     keyword <- str_squish(keyword)
     data <- tibble(batch = new_batch, keyword, type = "control")
-    dbWriteTable(conn = globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
+    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "control")
-    dbWriteTable(conn = globaltrends_db, name = "batch_time", value = data, append = TRUE)
-    keywords_control <- filter(.tbl_keywords, .data$type == "control")
+    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data, append = TRUE)
+    keywords_control <- filter(gt.env$.tbl_keywords, .data$type == "control")
     keywords_control <- select(keywords_control, -.data$type)
     keywords_control <- collect(keywords_control)
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", ".keywords_control")
-    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
-    time_control <- filter(.tbl_time, .data$type == "control")
+    invisible(list2env(lst_export, envir = gt.env))
+    time_control <- filter(gt.env$.tbl_time, .data$type == "control")
     time_control <- select(time_control, -.data$type)
     time_control <- collect(time_control)
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", ".time_control")
-    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
+    invisible(list2env(lst_export, envir = gt.env))
     message(glue("Successfully created new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else if (type == "object") {
-    if (nrow(.keywords_object) == 0) {
+    if (nrow(gt.env$.keywords_object) == 0) {
       new_batch <- 1
     } else {
-      new_batch <- max(.keywords_object$batch) + 1
+      new_batch <- max(gt.env$.keywords_object$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "object")
-    dbWriteTable(conn = globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
+    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
     data <- tibble(batch = new_batch, time = time, type = "object")
-    dbWriteTable(conn = globaltrends_db, name = "batch_time", value = data, append = TRUE)
-    keywords_object <- filter(.tbl_keywords, .data$type == "object")
+    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data, append = TRUE)
+    keywords_object <- filter(gt.env$.tbl_keywords, .data$type == "object")
     keywords_object <- select(keywords_object, -.data$type)
     keywords_object <- collect(keywords_object)
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", ".keywords_object")
-    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
-    time_object <- filter(.tbl_time, .data$type == "object")
+    invisible(list2env(lst_export, envir = gt.env))
+    time_object <- filter(gt.env$.tbl_time, .data$type == "object")
     time_object <- select(time_object, -.data$type)
     time_object <- collect(time_object)
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", ".time_object")
-    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
+    invisible(list2env(lst_export, envir = gt.env))
     message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
     return(new_batch)
   } else {
@@ -254,15 +254,15 @@ add_synonym.character <- function(keyword, synonym) {
     synonym <- str_squish(synonym)
     out <- tibble(keyword, synonym)
     dbWriteTable(
-      conn = globaltrends_db,
+      conn = gt.env$globaltrends_db,
       name = "keyword_synonyms",
       value = out,
       append = TRUE
     )
-    keyword_synonyms <- collect(.tbl_synonyms)
+    keyword_synonyms <- collect(gt.env$.tbl_synonyms)
     lst_export <- list(keyword_synonyms, keyword_synonyms)
     names(lst_export) <- list("keyword_synonyms", ".keyword_synonyms")
-    invisible(list2env(lst_export, envir = as.environment("package:globaltrends")))
+    invisible(list2env(lst_export, envir = gt.env))
     message(glue("Successfully added synonym | keyword: {keyword} | synonym: {synonym}"))
   }
 }
