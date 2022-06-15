@@ -267,7 +267,9 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
           )
         }
       }
-      message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+      in_location <- .x
+      in_location[in_location == "NX"] <- "NA" # handle namibia
+      message(glue("Successfully computed search score | control: {control} | object: {object} | location: {in_location} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
     })
     .aggregate_synonym(object = object)
     if (!ts_control | !ts_object) {
