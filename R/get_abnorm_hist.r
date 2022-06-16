@@ -86,12 +86,12 @@ get_abnorm_hist <- function(data, ...) UseMethod("get_abnorm_hist", data)
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = "obs", ...) {
+get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = c("obs", "sad", "trd"), ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
-  .check_type(type)
+  type <- match.arg(type)
   data$score <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control, .data$location)
   data <- mutate(data, base = rollmean(.data$score, k = train_win, align = "right", fill = NA))
@@ -117,12 +117,12 @@ get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, typ
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = "obs", ...) {
+get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = c("obs", "sad", "trd"), ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
-  .check_type(type)
+  type <- match.arg(type)
   data$voi <- data[glue("score_{type}")][[1]]
   data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, base = rollmean(.data$voi, k = train_win, align = "right", fill = NA))
@@ -147,12 +147,12 @@ get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type 
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measure = "gini", ...) {
+get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measure = c("gini", "hhi", "entropy"), ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
-  .check_measure(measure)
+  measure <- match.arg(measure)
   data$doi <- data[measure][[1]]
   data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
   data <- mutate(data, base = rollmean(.data$doi, k = train_win, align = "right", fill = NA))
