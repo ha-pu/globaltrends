@@ -7,8 +7,8 @@
 plot_voi_doi(
   data_voi,
   data_doi,
-  type = "obs",
-  measure = "gini",
+  type = c("obs", "sad", "trd"),
+  measure = c("gini", "hhi", "entropy"),
   locations = "countries",
   smooth = TRUE
 )

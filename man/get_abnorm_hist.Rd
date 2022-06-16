@@ -9,11 +9,29 @@
 \usage{
 get_abnorm_hist(data, ...)
 
-\method{get_abnorm_hist}{exp_score}(data, train_win = 12, train_break = 0, type = "obs", ...)
+\method{get_abnorm_hist}{exp_score}(
+  data,
+  train_win = 12,
+  train_break = 0,
+  type = c("obs", "sad", "trd"),
+  ...
+)
 
-\method{get_abnorm_hist}{exp_voi}(data, train_win = 12, train_break = 0, type = "obs", ...)
+\method{get_abnorm_hist}{exp_voi}(
+  data,
+  train_win = 12,
+  train_break = 0,
+  type = c("obs", "sad", "trd"),
+  ...
+)
 
-\method{get_abnorm_hist}{exp_doi}(data, train_win = 12, train_break = 0, measure = "gini", ...)
+\method{get_abnorm_hist}{exp_doi}(
+  data,
+  train_win = 12,
+  train_break = 0,
+  measure = c("gini", "hhi", "entropy"),
+  ...
+)
 }
 \arguments{
 \item{data}{Object of class \code{exp_score}, \code{exp_voi} or

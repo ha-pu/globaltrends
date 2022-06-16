@@ -18,7 +18,7 @@
 \usage{
 plot_box(data, ...)
 
-\method{plot_box}{exp_score}(data, type = "obs", ...)
+\method{plot_box}{exp_score}(data, type = c("obs", "sad", "trd"), ...)
 
 plot_score_box(data, type = "obs")
 
@@ -26,7 +26,7 @@ plot_score_box(data, type = "obs")
 
 plot_abnorm_score_box(data, ci = 0.95)
 
-\method{plot_box}{exp_voi}(data, type = "obs", ...)
+\method{plot_box}{exp_voi}(data, type = c("obs", "sad", "trd"), ...)
 
 plot_voi_box(data, type = "obs")
 
@@ -34,7 +34,13 @@ plot_voi_box(data, type = "obs")
 
 plot_abnorm_voi_box(data, ci = 0.95)
 
-\method{plot_box}{exp_doi}(data, type = "obs", measure = "gini", locations = "countries", ...)
+\method{plot_box}{exp_doi}(
+  data,
+  type = c("obs", "sad", "trd"),
+  measure = c("gini", "hhi", "entropy"),
+  locations = "countries",
+  ...
+)
 
 plot_doi_box(
   data,
@@ -44,7 +50,13 @@ plot_doi_box(
   smooth = TRUE
 )
 
-\method{plot_box}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95, ...)
+\method{plot_box}{abnorm_doi}(
+  data,
+  type = c("obs", "sad", "trd"),
+  locations = "countries",
+  ci = 0.95,
+  ...
+)
 
 plot_abnorm_doi_box(data, type = "obs", locations = "countries", ci = 0.95)
 }

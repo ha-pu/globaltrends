@@ -10,7 +10,7 @@
 \usage{
 plot_map(data, ...)
 
-\method{plot_map}{exp_score}(data, type = "obs", ...)
+\method{plot_map}{exp_score}(data, type = c("obs", "sad", "trd"), ...)
 
 plot_score_map(data, type = "obs")
 

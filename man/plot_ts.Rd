@@ -18,7 +18,7 @@
 \usage{
 plot_ts(data, ...)
 
-\method{plot_ts}{exp_score}(data, type = "obs", smooth = TRUE, ...)
+\method{plot_ts}{exp_score}(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...)
 
 plot_score_ts(data, type = "obs", smooth = TRUE)
 
@@ -26,7 +26,7 @@ plot_score_ts(data, type = "obs", smooth = TRUE)
 
 plot_abnorm_score_ts(data, ci = 0.95)
 
-\method{plot_ts}{exp_voi}(data, type = "obs", smooth = TRUE, ...)
+\method{plot_ts}{exp_voi}(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...)
 
 plot_voi_ts(data, type = "obs", smooth = TRUE)
 
@@ -36,8 +36,8 @@ plot_abnorm_voi_ts(data, ci = 0.95)
 
 \method{plot_ts}{exp_doi}(
   data,
-  type = "obs",
-  measure = "gini",
+  type = c("obs", "sad", "trd"),
+  measure = c("gini", "hhi", "entropy"),
   locations = "countries",
   smooth = TRUE,
   ...
@@ -51,7 +51,13 @@ plot_doi_ts(
   smooth = TRUE
 )
 
-\method{plot_ts}{abnorm_doi}(data, type = "obs", locations = "countries", ci = 0.95, ...)
+\method{plot_ts}{abnorm_doi}(
+  data,
+  type = c("obs", "sad", "trd"),
+  locations = "countries",
+  ci = 0.95,
+  ...
+)
 
 plot_abnorm_doi_ts(data, type = "obs", locations = "countries", ci = 0.95)
 }

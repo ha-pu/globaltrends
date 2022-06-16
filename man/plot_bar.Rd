@@ -10,7 +10,7 @@
 \usage{
 plot_bar(data, ...)
 
-\method{plot_bar}{exp_score}(data, type = "obs", ...)
+\method{plot_bar}{exp_score}(data, type = c("obs", "sad", "trd"), ...)
 
 plot_score_bar(data, type = "obs")
 
