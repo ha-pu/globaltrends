@@ -243,25 +243,25 @@ test_that("export_voi7", {
 # export_doi -------------------------------------------------------------------
 test_that("export_doi1", {
   out <- export_doi()
-  expect_equal(nrow(out), 3600)
+  expect_equal(nrow(out), 1200)
   expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi2", {
   out <- export_doi(keyword = "manchester united")
-  expect_equal(nrow(out), 360)
+  expect_equal(nrow(out), 120)
   expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi3", {
   out <- export_doi(keyword = NULL)
-  expect_equal(nrow(out), 3600)
+  expect_equal(nrow(out), 1200)
   expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi4", {
   out <- export_doi(keyword = list(c("manchester united", "real madrid")))
-  expect_equal(nrow(out), 720)
+  expect_equal(nrow(out), 240)
   expect_s3_class(out, "exp_doi")
 })
 
@@ -273,7 +273,7 @@ test_that("export_doi6", {
   test_object(fun = export_doi)
   expect_equal(
     nrow(export_doi(object = 1:5)),
-    3600
+    1200
   )
 })
 
@@ -281,15 +281,7 @@ test_that("export_doi7", {
   test_control(fun = export_doi)
   expect_equal(
     nrow(export_doi(control = 1:5)),
-    3600
-  )
-})
-
-test_that("export_doi8", {
-  test_type(fun = export_doi, incl = 2:5)
-  expect_equal(
-    nrow(export_doi(type = c("obs", "sad", "trd"))),
-    3600
+    1200
   )
 })
 
@@ -297,7 +289,7 @@ test_that("export_doi9", {
   test_locations(fun = export_doi)
   expect_equal(
     nrow(export_doi(locations = c("countries", "us_states"))),
-    3600
+    1200
   )
 })
 

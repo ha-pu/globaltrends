@@ -277,10 +277,6 @@ test_that("signals1", {
   test_locations(fun = add_locations, type = "A")
 })
 
-test_that("signals2", {
-  test_type(fun = add_locations, incl = c(1, 3:5), locations = "A")
-})
-
 test_that("signals3", {
   expect_error(
     add_locations(locations = "A", type = "A", export = 1),

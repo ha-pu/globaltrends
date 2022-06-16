@@ -73,26 +73,6 @@ test_that("plot_bar.exp_score4", {
   expect_identical(out1$labels, out2$labels)
 })
 
-# plot_bar.exp_score defaults ---------------------------------------------------
-test_that("plot_bar.exp_score5", {
-  keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score)
-  out1 <- plot_bar(data)
-  out2 <- plot_bar(data, type = "obs")
-  out3 <- plot_bar(data, type = "sad")
-  out4 <- plot_bar(data, type = "trd")
-
-  expect_identical(out1$labels, out2$labels)
-  expect_false(identical(out2, out3))
-  expect_false(identical(out2, out4))
-  expect_false(identical(out3, out4))
-})
-
-# plot_bar.exp_score signals ----------------------------------------------------
-test_that("plot_bar.exp_scoreS1", {
-  test_type(fun = plot_bar, data = export_score(keyword = "fc barcelona"))
-})
-
 # plot_bar.abnorm_score ---------------------------------------------------------
 test_that("plot_bar.abnorm_score1", {
   data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "US")
