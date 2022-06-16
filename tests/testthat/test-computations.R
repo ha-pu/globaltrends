@@ -44,7 +44,7 @@ test_that("compute_score1", {
     all = FALSE
   )
 
-  out <- filter(gt.env$.tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
+  out <- filter(gt.env$tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1440)
 })
@@ -76,7 +76,7 @@ test_that("compute_voi1", {
     compute_voi(control = 1, object = 1),
     "Successfully computed search score | control: 1 | object: 1 | location: world [1/1]",
   )
-  out <- filter(gt.env$.tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
+  out <- filter(gt.env$tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 480)
 })
@@ -87,7 +87,7 @@ test_that("compute_doi1", {
     compute_doi(control = 1, object = 1, locations = "countries"),
     "Successfully computed DOI | control: 1 | object: 1 [1/1]"
   )
-  out <- filter(gt.env$.tbl_doi, batch_c == 1 & batch_o == 1)
+  out <- filter(gt.env$tbl_doi, batch_c == 1 & batch_o == 1)
   out <- collect(out)
   expect_equal(nrow(out), 1440)
 })
@@ -148,8 +148,8 @@ test_that("remove_data1", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch == 1 & type == "control")
-  out_time <- filter(gt.env$.tbl_time, batch == 1 & type == "control")
+  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "control")
+  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "control")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
   expect_equal(nrow(out_keywords), 0)
@@ -185,8 +185,8 @@ test_that("remove_data2", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch == 1 & type == "object")
-  out_time <- filter(gt.env$.tbl_time, batch == 1 & type == "object")
+  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "object")
+  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "object")
   out_keywords <- collect(out_keywords)
   out_time <- collect(out_time)
   expect_equal(nrow(out_keywords), 0)

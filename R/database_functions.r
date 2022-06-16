@@ -301,39 +301,12 @@ start_db <- function() {
 
   # write objects to the package environment gt.env ----------------------------
   lst_object <- list(
+    globaltrends_db,
     tbl_locations,
     tbl_keywords,
     tbl_time,
-    tbl_doi,
-    tbl_control,
-    tbl_object,
-    tbl_score,
-    tbl_synonyms,
-    keywords_control,
-    time_control,
-    keywords_object,
-    time_object,
-    keyword_synonyms
-  )
-  names(lst_object) <- list(
-    ".tbl_locations",
-    ".tbl_keywords",
-    ".tbl_time",
-    ".tbl_doi",
-    ".tbl_control",
-    ".tbl_object",
-    ".tbl_score",
-    ".tbl_synonyms",
-    ".keywords_control",
-    ".time_control",
-    ".keywords_object",
-    ".time_object",
-    ".keyword_synonyms"
-  )
-  invisible(list2env(lst_object, envir = gt.env))
-  lst_object <- list(
-    globaltrends_db,
-    tbl_doi,
+	tbl_synonyms,
+	tbl_doi,
     tbl_control,
     tbl_object,
     tbl_score,
@@ -344,8 +317,12 @@ start_db <- function() {
     keyword_synonyms
   )
   names(lst_object) <- list(
-    "globaltrends_db",
-    "tbl_doi",
+	"globaltrends_db",
+    "tbl_locations",
+    "tbl_keywords",
+    "tbl_time",
+    "tbl_synonyms",
+	"tbl_doi",
     "tbl_control",
     "tbl_object",
     "tbl_score",

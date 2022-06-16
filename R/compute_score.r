@@ -117,12 +117,12 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
         location = .x
       )) {
         qry_object <- filter(
-          gt.env$.tbl_object,
+          gt.env$tbl_object,
           .data$batch_c == control & .data$batch_o == object & .data$location == .x
         )
         qry_object <- collect(qry_object)
         if (nrow(qry_object) != 0) {
-          qry_control <- filter(gt.env$.tbl_control, .data$batch == control & .data$location == .x)
+          qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == .x)
           qry_control <- collect(qry_control)
 
           qry_control <- mutate(qry_control, date = as_date(.data$date))
@@ -255,7 +255,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
             batch_c = control,
             batch_o = object,
             synonym = case_when(
-              .data$keyword %in% gt.env$.keyword_synonyms$synonym ~ TRUE,
+              .data$keyword %in% gt.env$keyword_synonyms$synonym ~ TRUE,
               TRUE ~ FALSE
             )
           )
@@ -362,24 +362,24 @@ compute_voi <- function(object, control = 1) {
 #' @importFrom purrr walk
 
 .aggregate_synonym <- function(object) {
-  lst_synonym <- filter(gt.env$.keywords_object, .data$batch == object)
-  lst_synonym1 <- inner_join(lst_synonym, gt.env$.keyword_synonyms, by = "keyword")
-  lst_synonym2 <- inner_join(lst_synonym, gt.env$.keyword_synonyms, by = c("keyword" = "synonym"))
+  lst_synonym <- filter(gt.env$keywords_object, .data$batch == object)
+  lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword")
+  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"))
   lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
   if (length(lst_synonym) > 0) {
     message("Checking for synonyms...")
-    data_synonym <- filter(gt.env$.tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
+    data_synonym <- filter(gt.env$tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
     data_synonym <- collect(data_synonym)
 
     if (nrow(data_synonym) > 0) {
       message("Aggregating scores for synonyms...")
-      lst_main <- unique(gt.env$.keyword_synonyms$keyword[gt.env$.keyword_synonyms$synonym %in% lst_synonym])
-      data_main <- filter(gt.env$.tbl_score, .data$keyword %in% lst_main)
+      lst_main <- unique(gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym %in% lst_synonym])
+      data_main <- filter(gt.env$tbl_score, .data$keyword %in% lst_main)
       data_main <- collect(data_main)
 
       walk(lst_synonym, ~ {
-        keyword_main <- gt.env$.keyword_synonyms$keyword[gt.env$.keyword_synonyms$synonym == .x][[1]]
+        keyword_main <- gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym == .x][[1]]
         sub_main <- filter(data_main, .data$keyword == keyword_main)
 
         sub_synonym <- filter(data_synonym, .data$keyword == .x)

@@ -16,10 +16,10 @@ test_that("keywords_control1", {
     ),
     "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\."
   )
-  out_keywords <- filter(gt.env$.tbl_keywords, batch == 1 & type == "control") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "control") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch == 1 & type == "control") %>%
+  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "control") %>%
     collect() %>%
     count(batch)
   expect_equal(out_keywords$n[[1]], 5)
@@ -45,10 +45,10 @@ test_that("keywords_control2", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch > 1 & type == "control") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch > 1 & type == "control") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch > 1 & type == "control") %>%
+  out_time <- filter(gt.env$tbl_time, batch > 1 & type == "control") %>%
     collect() %>%
     count(batch)
   expect_equal(nrow(out_keywords), 2)
@@ -81,10 +81,10 @@ test_that("keywords_control3", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch > 3 & type == "control") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch > 3 & type == "control") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch > 3 & type == "control") %>%
+  out_time <- filter(gt.env$tbl_time, batch > 3 & type == "control") %>%
     collect() %>%
     count(batch)
   expect_equal(nrow(out_keywords), 2)
@@ -104,10 +104,10 @@ test_that("keywords_object1", {
     ),
     "Successfully created new object batch 1 \\(apple, facebook, google, microsoft, 2010-01-01 2019-12-31\\)\\."
   )
-  out_keywords <- filter(gt.env$.tbl_keywords, batch == 1 & type == "object") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "object") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch == 1 & type == "object") %>%
+  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "object") %>%
     collect() %>%
     count(batch)
   expect_equal(out_keywords$n[[1]], 4)
@@ -133,10 +133,10 @@ test_that("keywords_object2", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch > 1 & type == "object") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch > 1 & type == "object") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch > 1 & type == "object") %>%
+  out_time <- filter(gt.env$tbl_time, batch > 1 & type == "object") %>%
     collect() %>%
     count(batch)
   expect_equal(nrow(out_keywords), 2)
@@ -169,10 +169,10 @@ test_that("keywords_object3", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$.tbl_keywords, batch > 3 & type == "object") %>%
+  out_keywords <- filter(gt.env$tbl_keywords, batch > 3 & type == "object") %>%
     collect() %>%
     count(batch)
-  out_time <- filter(gt.env$.tbl_time, batch > 3 & type == "object") %>%
+  out_time <- filter(gt.env$tbl_time, batch > 3 & type == "object") %>%
     collect() %>%
     count(batch)
   expect_equal(nrow(out_keywords), 2)

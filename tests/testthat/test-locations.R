@@ -203,7 +203,7 @@ test_that("namibia1", {
     "Successfully created new location set test \\(NA\\)\\."
   )
   
-  out <- gt.env$.tbl_locations %>%
+  out <- gt.env$tbl_locations %>%
     filter(type == "test") %>%
     collect() %>%
     pull(location)

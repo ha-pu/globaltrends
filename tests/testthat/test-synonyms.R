@@ -83,14 +83,14 @@ test_that("keyword_score", {
 })
 
 test_that("keyword_synonym", {
-  out2_cn <- gt.env$.tbl_score %>%
+  out2_cn <- gt.env$tbl_score %>%
     filter(keyword == "bayern munich" & location == "CN") %>%
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
 
   expect_equal(out2_cn$synonym, 2)
 
-  out2_jp <- gt.env$.tbl_score %>%
+  out2_jp <- gt.env$tbl_score %>%
     filter(keyword == "bayern munich" & location == "JP") %>%
     collect() %>%
     summarise(synonym = mean(synonym), .groups = "drop")
