@@ -79,12 +79,12 @@ add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltren
 #' @noRd
 
 .export_locations <- function() {
-  locations <- distinct(gt.env$.tbl_locations, type)
+  locations <- distinct(gt.env$tbl_locations, .data$type)
   locations <- collect(locations)
   locations <- locations$type
 
   lst_locations <- map(locations, ~ {
-    out <- filter(gt.env$.tbl_locations, .data$type == .x)
+    out <- filter(gt.env$tbl_locations, .data$type == .x)
     out <- collect(out)
     out <- pull(out, .data$location)
     return(out)

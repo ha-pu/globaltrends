@@ -71,8 +71,8 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
     download_control(control = as.list(control), locations = locations, ...)
   } else {
     .check_batch(control)
-    terms <- gt.env$.keywords_control$keyword[gt.env$.keywords_control$batch == control]
-    time <- gt.env$.time_control$time[gt.env$.time_control$batch == control]
+    terms <- gt.env$keywords_control$keyword[gt.env$keywords_control$batch == control]
+    time <- gt.env$time_control$time[gt.env$time_control$batch == control]
     walk(locations, ~ {
       if (.x == "") {
         in_location <- "world"

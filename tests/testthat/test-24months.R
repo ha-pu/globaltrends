@@ -13,13 +13,13 @@ data <- filter(example_control, batch == 1)
 dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(example_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
 dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
-.keywords_object <- data %>%
+keywords_object <- data %>%
   select(
     batch = batch_o,
     keyword
   ) %>%
   unique()
-assign(".keywords_object", .keywords_object, envir = gt.env)
+assign("keywords_object", keywords_object, envir = gt.env)
 
 test_that("score1", {
   expect_warning(

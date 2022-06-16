@@ -49,7 +49,7 @@ test_that("download_control1", {
     all = FALSE
   )
 
-  out <- filter(gt.env$.tbl_control, batch == 1 & location != "world")
+  out <- filter(gt.env$tbl_control, batch == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
@@ -74,7 +74,7 @@ test_that("download_control3", {
     download_control_global(control = 1),
     "Successfully downloaded control data | control: 1 | location: world [1/1]"
   )
-  out <- filter(gt.env$.tbl_control, batch == 1 & location == "world")
+  out <- filter(gt.env$tbl_control, batch == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
 })
@@ -126,7 +126,7 @@ test_that("download_object2", {
     all = FALSE
   )
 
-  out <- filter(gt.env$.tbl_object, batch_o == 1 & location != "world")
+  out <- filter(gt.env$tbl_object, batch_o == 1 & location != "world")
   out <- collect(out)
   expect_equal(nrow(out), 1800)
 })
@@ -151,7 +151,7 @@ test_that("download_object4", {
     download_object_global(object = 1),
     "Successfully downloaded object data | object: 1 | control: 1 | location: world [1/1]"
   )
-  out <- filter(gt.env$.tbl_object, batch_o == 1 & location == "world")
+  out <- filter(gt.env$tbl_object, batch_o == 1 & location == "world")
   out <- collect(out)
   expect_equal(nrow(out), 600)
 })
