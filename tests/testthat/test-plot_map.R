@@ -64,14 +64,6 @@ test_that("plot_map.exp_score3", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_map.exp_score4", {
-  keywords <- unique(example_score$keyword)[1]
-  data <- map_dfr(keywords, export_score)
-  out1 <- plot_map(data)
-  out2 <- plot_score_map(data)
-  expect_identical(out1$labels, out2$labels)
-})
-
 # plot_map.abnorm_score ---------------------------------------------------------
 test_that("plot_map.abnorm_score1", {
   data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "US")
@@ -88,14 +80,6 @@ test_that("plot_map.abnorm_score1", {
   )
   expect_s3_class(out2, "ggplot")
 
-  expect_identical(out1$labels, out2$labels)
-})
-
-test_that("plot_map.abnorm_score2", {
-  data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "US")
-  data <- get_abnorm_hist(data)
-  out1 <- plot_map(data)
-  out2 <- plot_abnorm_score_map(data)
   expect_identical(out1$labels, out2$labels)
 })
 

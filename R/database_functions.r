@@ -46,6 +46,7 @@
 #' @importFrom DBI dbConnect
 #' @importFrom DBI dbDisconnect
 #' @importFrom DBI dbExecute
+#' @importFrom dbplyr sql
 #' @importFrom RSQLite SQLite
 
 initialize_db <- function() {

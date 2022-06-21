@@ -7,10 +7,6 @@
 #' respective country search scores. When the output includes more than one
 #' keyword, only the first keyword is used.
 #'
-#' @details
-#' The `plot_xxx_map` functions allow to call `plot_map` on a data object that
-#' lost its respective class (e.g., due to a join).
-#'
 #' @inheritParams plot_ts
 #'
 #' @return
@@ -20,10 +16,6 @@
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
 #' plot_map(data, type = "obs")
-#'
-#' # for cases where data looses the respective class
-#' data <- export_score(keyword = "amazon")
-#' plot_score_map(data)
 #'
 #' data <- export_score(keyword = "amazon")
 #' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
@@ -48,6 +40,7 @@
 #' @importFrom ggplot2 scale_x_continuous
 #' @importFrom ggplot2 theme
 #' @importFrom glue glue
+#' @importFrom maps area.map
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @importFrom stringr str_to_upper
@@ -128,14 +121,6 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
 #' @rdname plot_map
 #' @export
 
-plot_score_map <- function(data, type = "obs") {
-  class(data) <- c("exp_score", class(data))
-  plot_map(data, type = type)
-}
-
-#' @rdname plot_map
-#' @export
-
 plot_map.abnorm_score <- function(data, ...) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
@@ -189,12 +174,4 @@ plot_map.abnorm_score <- function(data, ...) {
     theme(legend.position = "bottom")
 
   return(plot)
-}
-
-#' @rdname plot_map
-#' @export
-
-plot_abnorm_score_map <- function(data) {
-  class(data) <- c("abnorm_score", class(data))
-  plot_map(data)
 }

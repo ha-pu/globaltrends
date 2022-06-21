@@ -3,20 +3,14 @@
 \name{plot_map}
 \alias{plot_map}
 \alias{plot_map.exp_score}
-\alias{plot_score_map}
 \alias{plot_map.abnorm_score}
-\alias{plot_abnorm_score_map}
 \title{Create map for cross-sectional globaltrends data}
 \usage{
 plot_map(data, ...)
 
 \method{plot_map}{exp_score}(data, type = c("obs", "sad", "trd"), ...)
 
-plot_score_map(data, type = "obs")
-
 \method{plot_map}{abnorm_score}(data, ...)
-
-plot_abnorm_score_map(data)
 }
 \arguments{
 \item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
@@ -37,18 +31,10 @@ output from \code{get_abnorm_hist} the map shows abnormal changes in the
 respective country search scores. When the output includes more than one
 keyword, only the first keyword is used.
 }
-\details{
-The \code{plot_xxx_map} functions allow to call \code{plot_map} on a data object that
-lost its respective class (e.g., due to a join).
-}
 \examples{
 \dontrun{
 data <- export_score(keyword = "amazon")
 plot_map(data, type = "obs")
-
-# for cases where data looses the respective class
-data <- export_score(keyword = "amazon")
-plot_score_map(data)
 
 data <- export_score(keyword = "amazon")
 data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
