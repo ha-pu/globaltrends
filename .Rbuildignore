@@ -4,3 +4,4 @@
 ^.*/hex-globaltrends
 ^NEWS\.md$
 ^useR 2021$
+^\.github$
