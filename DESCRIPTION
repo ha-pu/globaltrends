@@ -3,8 +3,8 @@ Type: Package
 Title: Download and measure global trends through Google search volumes
 Version: 0.0.12
 Authors@R: c(
-    person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@uibk.ac.at"),
-    person("Jakob", "Muellner", role = c("ccp"), email = "jakob.muellner@wu.ac.at")
+    person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@gmail.com"),
+    person("Jakob", "Muellner", role = c("ccp"))
   )
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
