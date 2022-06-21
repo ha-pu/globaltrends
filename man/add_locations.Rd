@@ -4,7 +4,7 @@
 \alias{add_locations}
 \title{Add sets of locations}
 \usage{
-add_locations(locations, type, export = TRUE, db = gt.env$globaltrends_db)
+add_locations(locations, type, export = TRUE)
 }
 \arguments{
 \item{locations}{Locations that should be added as set of locations. Vector of
@@ -16,9 +16,6 @@ type \code{character}.}
 \item{export}{Indicator whether the new location set should be directly
 exported to the package environment \code{gt.env}. Object of type \code{logical},
 defaults to \code{TRUE}.}
-
-\item{db}{Connection to database file that should be closed. Defaults
-to \code{gt.env$globaltrends_db}.}
 }
 \value{
 Message that the location set has been created successfully. Location data is

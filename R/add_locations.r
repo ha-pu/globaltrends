@@ -22,8 +22,6 @@
 #' @param export Indicator whether the new location set should be directly
 #' exported to the package environment `gt.env`. Object of type `logical`,
 #' defaults to `TRUE`.
-#' @param db Connection to database file that should be closed. Defaults
-#' to `gt.env$globaltrends_db`.
 #'
 #' @return
 #' Message that the location set has been created successfully. Location data is
@@ -46,7 +44,7 @@
 #' @importFrom stats na.omit
 #' @importFrom tibble tibble
 
-add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltrends_db) {
+add_locations <- function(locations, type, export = TRUE) {
   .check_input(locations, "character")
   .check_input(type, "character")
   .check_length(type, 1)
@@ -65,7 +63,7 @@ add_locations <- function(locations, type, export = TRUE, db = gt.env$globaltren
   locations[locations == "NA"] <- "NX"
 
   data <- tibble(location = locations, type = type)
-  dbWriteTable(conn = db, name = "data_locations", value = data, append = TRUE)
+  dbWriteTable(conn = gt.env$globaltrends_db, name = "data_locations", value = data, append = TRUE)
 
   if (export) .export_locations()
 

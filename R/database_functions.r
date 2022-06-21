@@ -56,6 +56,7 @@ initialize_db <- function() {
   # create db ------------------------------------------------------------------
   if (file.exists("db/globaltrends_db.sqlite")) stop("Error: File 'db/globaltrends_db.sqlite' already exists.")
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
+  assign("globaltrends_db", globaltrends_db, envir = gt.env)
   message("Successfully created database.")
 
   # batch_keywords -------------------------------------------------------------
@@ -146,7 +147,7 @@ initialize_db <- function() {
   message("Successfully created table 'data_doi'.")
 
   # disconnect from db ---------------------------------------------------------
-  disconnect_db(db = globaltrends_db)
+  disconnect_db()
 }
 
 #' @title Enter location data into database
@@ -183,8 +184,7 @@ initialize_db <- function() {
   add_locations(
     locations = countries$iso2c,
     type = "countries",
-    export = FALSE,
-    db = globaltrends_db
+    export = FALSE
   )
 
   # create us_states -----------------------------------------------------------
@@ -194,8 +194,7 @@ initialize_db <- function() {
   add_locations(
     locations = us_states$sub_code,
     type = "us_states",
-    export = FALSE,
-    db = globaltrends_db
+    export = FALSE
   )
 
   message("Successfully entered data into 'data_locations'.")
@@ -353,9 +352,6 @@ start_db <- function() {
 #' * [initialize_db()]
 #' * [start_db()]
 #'
-#' @param db Connection to database file that should be closed. Defaults
-#' to `gt.env$globaltrends_db`.
-#'
 #' @return
 #' Message that disconnection was successful.
 #'
@@ -367,7 +363,7 @@ start_db <- function() {
 #' @importFrom DBI dbDisconnect
 
 
-disconnect_db <- function(db = gt.env$globaltrends_db) {
-  dbDisconnect(conn = db)
+disconnect_db <- function() {
+  dbDisconnect(conn = gt.env$globaltrends_db)
   message("Successfully disconnected.")
 }
