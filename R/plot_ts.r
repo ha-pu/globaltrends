@@ -11,8 +11,6 @@
 #' the first location.
 #' For output of `get_abnorm_hist`, users can specify confidence intervals
 #' to highlight abnormal changes in the data.
-#' The `plot_xxx_ts` functions allow to call `plot_ts` on a data object that
-#' lost its respective class (e.g., due to a join).
 #'
 #' @param data Data exported from `export_...` or `compute_abnorm` functions.
 #' @param type Object of type `character` indicating the type of time
@@ -36,10 +34,6 @@
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
 #' plot_ts(data, type = "obs")
-#'
-#' # for cases where data looses the respective class
-#' data <- export_score(keyword = "amazon")
-#' plot_score_ts(data)
 #'
 #' data <- export_voi(keyword = "amazon")
 #' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
@@ -70,9 +64,9 @@ plot_ts <- function(data, ...) UseMethod("plot_ts", data)
 #' @rdname plot_ts
 #' @export
 
-plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE, ...) {
-  .check_type(type)
-  .check_smooth(smooth)
+plot_ts.exp_score <- function(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...) {
+  type <- match.arg(type)
+  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
@@ -110,14 +104,6 @@ plot_ts.exp_score <- function(data, type = "obs", smooth = TRUE, ...) {
 
     return(plot)
   }
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_score_ts <- function(data, type = "obs", smooth = TRUE) {
-  class(data) <- c("exp_score", class(data))
-  plot_ts(data, type = type, smooth = smooth)
 }
 
 #' @rdname plot_ts
@@ -163,17 +149,9 @@ plot_ts.abnorm_score <- function(data, ci = 0.95, ...) {
 #' @rdname plot_ts
 #' @export
 
-plot_abnorm_score_ts <- function(data, ci = 0.95) {
-  class(data) <- c("abnorm_score", class(data))
-  plot_ts(data, ci = ci)
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE, ...) {
-  .check_type(type)
-  .check_smooth(smooth)
+plot_ts.exp_voi <- function(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...) {
+  type <- match.arg(type)
+  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
@@ -203,14 +181,6 @@ plot_ts.exp_voi <- function(data, type = "obs", smooth = TRUE, ...) {
 
     return(plot)
   }
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_voi_ts <- function(data, type = "obs", smooth = TRUE) {
-  class(data) <- c("exp_voi", class(data))
-  plot_ts(data, type = type, smooth = smooth)
 }
 
 #' @rdname plot_ts
@@ -249,19 +219,11 @@ plot_ts.abnorm_voi <- function(data, ci = 0.95, ...) {
 #' @rdname plot_ts
 #' @export
 
-plot_abnorm_voi_ts <- function(data, ci = 0.95) {
-  class(data) <- c("abnorm_voi", class(data))
-  plot_ts(data, ci = ci)
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE, ...) {
-  .check_type(type)
-  .check_measure(measure)
+plot_ts.exp_doi <- function(data, type = c("obs", "sad", "trd"), measure = c("gini", "hhi", "entropy"), locations = "countries", smooth = TRUE, ...) {
+  type <- match.arg(type)
+  measure <- match.arg(measure)
   .check_locations(locations)
-  .check_smooth(smooth)
+  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
@@ -298,16 +260,8 @@ plot_ts.exp_doi <- function(data, type = "obs", measure = "gini", locations = "c
 #' @rdname plot_ts
 #' @export
 
-plot_doi_ts <- function(data, type = "obs", measure = "gini", locations = "countries", smooth = TRUE) {
-  class(data) <- c("exp_doi", class(data))
-  plot_ts(data, type = type, measure = measure, locations = locations, smooth = smooth)
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci = 0.95, ...) {
-  .check_type(type)
+plot_ts.abnorm_doi <- function(data, type = c("obs", "sad", "trd"), locations = "countries", ci = 0.95, ...) {
+  type <- match.arg(type)
   .check_locations(locations)
   .check_ci(ci)
   ci1 <- (1 - ci) / 2
@@ -346,12 +300,4 @@ plot_ts.abnorm_doi <- function(data, type = "obs", locations = "countries", ci =
         title = keyword
       )
   }
-}
-
-#' @rdname plot_ts
-#' @export
-
-plot_abnorm_doi_ts <- function(data, type = "obs", locations = "countries", ci = 0.95) {
-  class(data) <- c("abnorm_doi", class(data))
-  plot_ts(data, type = type, locations = locations, ci = ci)
 }

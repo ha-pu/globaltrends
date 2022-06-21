@@ -200,7 +200,8 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
+export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = c("obs", "sad", "trd")) {
+  type <- match.arg(type)
   out <- .export_data(
     table = gt.env$tbl_doi,
     in_keyword = unlist(keyword),
@@ -231,7 +232,6 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   batch <- in_batch
   location <- in_location
   locations <- in_locations
-  if (!is.null(in_type)) .check_type(in_type, len = 3)
 
   if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)

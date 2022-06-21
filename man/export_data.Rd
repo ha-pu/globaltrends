@@ -27,7 +27,7 @@ export_doi(
   object = NULL,
   control = NULL,
   locations = NULL,
-  type = NULL
+  type = c("obs", "sad", "trd")
 )
 }
 \arguments{

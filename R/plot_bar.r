@@ -7,10 +7,6 @@
 #' five locations with the highest and lowest abnormal changes each. When the
 #' output includes more than one keyword, only the first keyword is used.
 #'
-#' @details
-#' The `plot_xxx_bar` functions allow to call `plot_bar` on a data object that
-#' lost its respective class (e.g., due to a join).
-#'
 #' @inheritParams plot_ts
 #'
 #' @return
@@ -20,10 +16,6 @@
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
 #' plot_bar(data, type = "obs")
-#'
-#' # for cases where data looses the respective class
-#' data <- export_score(keyword = "amazon")
-#' plot_score_bar(data)
 #'
 #' data <- export_score(keyword = "amazon")
 #' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
@@ -55,8 +47,8 @@ plot_bar <- function(data, ...) UseMethod("plot_bar", data)
 #' @rdname plot_bar
 #' @export
 
-plot_bar.exp_score <- function(data, type = "obs", ...) {
-  .check_type(type)
+plot_bar.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
+  type <- match.arg(type)
 
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
@@ -96,14 +88,6 @@ plot_bar.exp_score <- function(data, type = "obs", ...) {
 #' @rdname plot_bar
 #' @export
 
-plot_score_bar <- function(data, type = "obs") {
-  class(data) <- c("exp_score", class(data))
-  plot_bar(data, type = type)
-}
-
-#' @rdname plot_bar
-#' @export
-
 plot_bar.abnorm_score <- function(data, ...) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
@@ -131,12 +115,4 @@ plot_bar.abnorm_score <- function(data, ...) {
     )
 
   return(plot)
-}
-
-#' @rdname plot_bar
-#' @export
-
-plot_abnorm_score_bar <- function(data) {
-  class(data) <- c("abnorm_score", class(data))
-  plot_bar(data)
 }
