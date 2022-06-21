@@ -49,15 +49,6 @@ test_that("plot_ts.exp_score4", {
   expect_identical(out1$labels, out2$labels)
 })
 
-test_that("plot_ts.exp_score5", {
-  data <- export_score(keyword = example_score$keyword[[1]]) %>%
-    filter(location == "CN")
-  out1 <- plot_ts(data)
-  out2 <- plot_score_ts(data)
-
-  expect_identical(out1$labels, out2$labels)
-})
-
 # plot_ts.abnorm_score ---------------------------------------------------------
 test_that("plot_ts.abnorm_score1", {
   data <- export_score(keyword = "fc barcelona")
@@ -96,15 +87,6 @@ test_that("plot_ts.abnorm_score3", {
     "The plot function is limited to 1 location\\.\nYou use 3 locations\\.\nOnly 'CN' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-
-  expect_identical(out1$labels, out2$labels)
-})
-
-test_that("plot_ts.abnorm_score4", {
-  data <- export_score(keyword = unique(example_score$keyword)[[1]], location = "CN")
-  data <- get_abnorm_hist(data)
-  out1 <- plot_ts(data)
-  out2 <- plot_abnorm_score_ts(data)
 
   expect_identical(out1$labels, out2$labels)
 })
@@ -148,15 +130,6 @@ test_that("plot_ts.abnorm_voi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-
-  expect_identical(out1$labels, out2$labels)
-})
-
-test_that("plot_ts.abnorm_voi3", {
-  data <- export_voi(keyword = unique(example_score$keyword)[[1]])
-  data <- get_abnorm_hist(data)
-  out1 <- plot_ts(data)
-  out2 <- plot_abnorm_voi_ts(data)
 
   expect_identical(out1$labels, out2$labels)
 })
@@ -206,15 +179,6 @@ test_that("plot_ts.abnorm_doi2", {
     "The plot function is limited to 1 keyword\\.\nYou use 2 keywords\\.\nOnly 'amazon' is used\\."
   )
   expect_s3_class(out2, "ggplot")
-
-  expect_identical(out1$labels, out2$labels)
-})
-
-test_that("plot_ts.abnorm_doi3", {
-  data <- export_doi(keyword = unique(example_doi$keyword)[[1]], locations = "countries")
-  data <- get_abnorm_hist(data)
-  out1 <- plot_ts(data)
-  out2 <- plot_abnorm_doi_ts(data)
 
   expect_identical(out1$labels, out2$labels)
 })
