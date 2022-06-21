@@ -52,15 +52,15 @@
     in_location <- location
     in_locations <- locations
     if (table == "data_control") {
-      out <- filter(.tbl_control, .data$batch == in_batch_c & .data$location == in_location)
+      out <- filter(gt.env$tbl_control, .data$batch == in_batch_c & .data$location == in_location)
     } else if (table == "data_object") {
-      out <- filter(.tbl_object, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
+      out <- filter(gt.env$tbl_object, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
     } else if (table == "data_score") {
-      out <- filter(.tbl_score, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
+      out <- filter(gt.env$tbl_score, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
     } else if (table == "data_doi") {
-      out <- filter(.tbl_doi, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$locations == in_locations)
+      out <- filter(gt.env$tbl_doi, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$locations == in_locations)
     } else if (table == "data_global") {
-      out <- filter(.tbl_global, .data$batch == in_batch_o)
+      out <- filter(gt.env$tbl_global, .data$batch == in_batch_o)
     }
     out <- utils::head(out)
     out <- collect(out)

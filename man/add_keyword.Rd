@@ -11,7 +11,8 @@ add_object_keyword(keyword, time = "2010-01-01 2020-12-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of type
-\code{character} or a \code{list} of \code{character} vectors.}
+\code{character} or a \code{list} of \code{character} vectors. The function also allows the
+usage of codes for search topics instead of search terms.}
 
 \item{time}{Time frame for which the batch data should be downloaded. Object
 of type \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
@@ -20,7 +21,7 @@ Defaults to \emph{"2010-01-01 2020-12-31"}.}
 \value{
 Message that the batch has been created successfully. Batch data is
 written to tables \emph{batch_keywords} and \emph{batch_time}.
-Numeric vector containing the newly added batch numbers.
+Numeric vector containing the newly added batch numbers are returned.
 }
 \description{
 The function adds one or more batches of keywords with a time period for
@@ -37,6 +38,10 @@ more than four (five) keywords, the vector is split into four-keyword
 of length four (five) or less. Each batch of keywords is combined with a time
 period for which data will be downloaded. To change the time period for an
 existing batch, all downloads and computations must be rerun.
+If you use search topics for object keywords, make sure to use search topics
+for control keywords and vice versa. See Google's
+\href{https://support.google.com/trends/answer/4359550?hl=en}{FAQ} for additional
+information on search topics.
 \emph{Note}: To avoid trailing spaces \code{stringr::str_squish} is automatically
 applied to all keywords.
 }
@@ -74,6 +79,13 @@ add_control_keyword(
   ),
   time = "2016-01-01 2019-12-31"
 )
+
+# search topics
+add_control_keyword(
+  keyword = c("\%2Fm\%2F02q_bk", "\%2Fm\%2F055t58", "\%2Fm\%2F025sndk", "\%2Fm\%2F0d07ph", "\%2Fm\%2F09jcvs"),
+  time = "2016-01-01 2019-12-31"
+)
+# This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 }
 }
 \seealso{

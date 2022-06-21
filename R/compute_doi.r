@@ -81,9 +81,9 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   } else {
     walk(list(control, object), .check_batch)
     if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-      data <- filter(.tbl_score, .data$batch_c == control & .data$batch_o == object)
+      data <- filter(gt.env$tbl_score, .data$batch_c == control & .data$batch_o == object)
       data <- collect(data)
-      tmp_locations <- pull(collect(filter(.tbl_locations, .data$type == locations)), .data$location)
+      tmp_locations <- pull(collect(filter(gt.env$tbl_locations, .data$type == locations)), .data$location)
       data <- filter(data, .data$location %in% tmp_locations & .data$synonym == 0)
 
       # compute doi measures
@@ -122,9 +122,9 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         batch_o = object,
         locations = locations
       )
-      dbWriteTable(conn = globaltrends_db, name = "data_doi", value = out, append = TRUE)
+      dbWriteTable(conn = gt.env$globaltrends_db, name = "data_doi", value = out, append = TRUE)
     }
-    message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(.keywords_object$batch)))
+    message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(gt.env$keywords_object$batch)))
   }
 }
 

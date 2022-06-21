@@ -58,8 +58,8 @@ plot_map <- function(data, ...) UseMethod("plot_map", data)
 #' @rdname plot_map
 #' @export
 
-plot_map.exp_score <- function(data, type = "obs", ...) {
-  .check_type(type)
+plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
+  type <- match.arg(type)
 
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]

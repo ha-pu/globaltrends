@@ -21,7 +21,7 @@ example_time
 \description{
 The table \emph{batch_time} contains the time period for which data is
 downloaded for each batch. Each line contains one \emph{time} period, the
-\emph{type} of the batch (i.e. control or object) and the id of the
+\emph{type} of the batch (i.e., control or object) and the id of the
 \emph{batch} to which the time period is assigned. Time frames take the form
 \code{"YYYY-MM-DD YYYY-MM-DD"}. Time periods are added automatically through
 the function \code{add_keywords}. The function \code{start_db} exports the

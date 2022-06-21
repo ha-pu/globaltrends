@@ -7,11 +7,11 @@
 \alias{download_control_global}
 \title{Download data for control keywords}
 \usage{
-download_control(control, locations = countries, ...)
+download_control(control, locations = gt.env$countries, ...)
 
-\method{download_control}{numeric}(control, locations = countries, ...)
+\method{download_control}{numeric}(control, locations = gt.env$countries, ...)
 
-\method{download_control}{list}(control, locations = countries, ...)
+\method{download_control}{list}(control, locations = gt.env$countries, ...)
 
 download_control_global(control, ...)
 }
@@ -22,7 +22,7 @@ objects of type \code{numeric}.}
 
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to
-\code{countries}.}
+\code{gt.env$countries}.}
 
 \item{...}{Arguments that are passed on to the \code{gtrendsR::gtrends} function.}
 }

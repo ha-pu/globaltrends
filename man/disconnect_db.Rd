@@ -4,11 +4,11 @@
 \alias{disconnect_db}
 \title{Disconnect from database}
 \usage{
-disconnect_db(db = globaltrends_db)
+disconnect_db(db = gt.env$globaltrends_db)
 }
 \arguments{
 \item{db}{Connection to database file that should be closed. Defaults
-to \code{globaltrends_db}.}
+to \code{gt.env$globaltrends_db}.}
 }
 \value{
 Message that disconnection was successful.

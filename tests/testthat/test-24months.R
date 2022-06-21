@@ -10,16 +10,16 @@ start_db()
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
 data <- filter(example_control, batch == 1)
-dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(example_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
-dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
-.keywords_object <- data %>%
+dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
+keywords_object <- data %>%
   select(
     batch = batch_o,
     keyword
   ) %>%
   unique()
-assign(".keywords_object", .keywords_object, envir = .GlobalEnv)
+assign("keywords_object", keywords_object, envir = gt.env)
 
 test_that("score1", {
   expect_warning(
@@ -39,9 +39,9 @@ test_that("score2", {
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
 data <- filter(example_control, batch == 1 & year(as_date(date)) == 2019)
-dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(example_object, batch_c == 1 & batch_o == 1)
-dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 
 test_that("score3", {
   expect_warning(
@@ -61,9 +61,9 @@ test_that("score4", {
 remove_data("data_control", control = 1)
 remove_data("data_object", object = 1)
 data <- filter(example_control, batch == 1 & year(as_date(date)) == 2019)
-dbWriteTable(globaltrends_db, "data_control", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(example_object, batch_c == 1 & batch_o == 1 & year(as_date(date)) == 2019)
-dbWriteTable(globaltrends_db, "data_object", data, append = TRUE)
+dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 
 test_that("score5", {
   expect_warning(

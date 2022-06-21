@@ -39,38 +39,6 @@
   if (ci <= 0 | ci >= 1) stop(glue("Error: 'ci' must be greater than 0 and less than 1.\nYou provided {ci}."))
 }
 
-#' @title Check measure
-#'
-#' @keywords internal
-#' @noRd
-
-.check_measure <- function(measure) {
-  if (!is.null(measure)) .check_input(input = measure, type = "character")
-  .check_length(input = measure, max = 1)
-  if (!(measure %in% c("gini", "hhi", "entropy"))) stop(glue("Error: 'measure' must be either 'gini', 'hhi', or 'entropy'.\nYou provided {measure}."))
-}
-
-#' @title Check type
-#'
-#' @keywords internal
-#' @noRd
-
-.check_type <- function(type, len = 1) {
-  .check_length(input = type, max = len)
-  .check_input(input = type, type = "character")
-  if (!all(type %in% c("obs", "sad", "trd"))) stop(glue("Error: 'type' must be either 'obs', 'sad', or 'trd'.\nYou provided {type}."))
-}
-
-#' @title Check smooth
-#'
-#' @keywords internal
-#' @noRd
-
-.check_smooth <- function(smooth) {
-  .check_length(input = smooth, max = 1)
-  .check_input(input = smooth, type = "logical")
-}
-
 #' @title Check locations
 #'
 #' @keywords internal

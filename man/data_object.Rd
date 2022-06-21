@@ -37,8 +37,8 @@ column \emph{batch_c} indicates the control batch to which the data will be
 mapped. Global data takes the value \emph{world} as location. Data is
 downloaded and automatically written to the table through the function
 \code{download_object}. The function \code{start_db} exports the table
-\emph{data_object} as database connection \code{tbl_object} to
-\code{.GlobalEnv}. Users can access the database table through
+\emph{data_object} as database connection \code{tbl_object} to the package
+environment \code{gt.env}. Users can access the database table through
 \code{dplyr::tbl}.
 The sample data included in \code{data_object} was simulated based on actual
 Google Trends data.

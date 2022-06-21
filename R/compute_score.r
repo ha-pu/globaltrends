@@ -92,13 +92,13 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-compute_score <- function(object, control = 1, locations = countries) UseMethod("compute_score", object)
+compute_score <- function(object, control = 1, locations = gt.env$countries) UseMethod("compute_score", object)
 
 #' @rdname compute_score
 #' @method compute_score numeric
 #' @export
 
-compute_score.numeric <- function(object, control = 1, locations = countries) {
+compute_score.numeric <- function(object, control = 1, locations = gt.env$countries) {
   control <- unlist(control)
   .check_length(control, 1)
   .check_input(locations, "character")
@@ -108,6 +108,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
     walk(list(control, object), .check_batch)
     ts_control <- TRUE
     ts_object <- TRUE
+    locations[locations == "NA"] <- "NX" # handle namibia
     walk(locations, ~ {
       if (.test_empty(
         table = "data_score",
@@ -116,12 +117,12 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
         location = .x
       )) {
         qry_object <- filter(
-          .tbl_object,
+          gt.env$tbl_object,
           .data$batch_c == control & .data$batch_o == object & .data$location == .x
         )
         qry_object <- collect(qry_object)
         if (nrow(qry_object) != 0) {
-          qry_control <- filter(.tbl_control, .data$batch == control & .data$location == .x)
+          qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == .x)
           qry_control <- collect(qry_control)
 
           qry_control <- mutate(qry_control, date = as_date(.data$date))
@@ -254,19 +255,21 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
             batch_c = control,
             batch_o = object,
             synonym = case_when(
-              .data$keyword %in% .keyword_synonyms$synonym ~ TRUE,
+              .data$keyword %in% gt.env$keyword_synonyms$synonym ~ TRUE,
               TRUE ~ FALSE
             )
           )
           dbWriteTable(
-            conn = globaltrends_db,
+            conn = gt.env$globaltrends_db,
             name = "data_score",
             value = out,
             append = TRUE
           )
         }
       }
-      message(glue("Successfully computed search score | control: {control} | object: {object} | location: {.x} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+      in_location <- .x
+      in_location[in_location == "NX"] <- "NA" # handle namibia
+      message(glue("Successfully computed search score | control: {control} | object: {object} | location: {in_location} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
     })
     .aggregate_synonym(object = object)
     if (!ts_control | !ts_object) {
@@ -284,7 +287,7 @@ compute_score.numeric <- function(object, control = 1, locations = countries) {
 #' @method compute_score list
 #' @export
 
-compute_score.list <- function(object, control = 1, locations = countries) {
+compute_score.list <- function(object, control = 1, locations = gt.env$countries) {
   walk(object, compute_score, control = control, locations = locations)
 }
 
@@ -359,24 +362,24 @@ compute_voi <- function(object, control = 1) {
 #' @importFrom purrr walk
 
 .aggregate_synonym <- function(object) {
-  lst_synonym <- filter(.keywords_object, .data$batch == object)
-  lst_synonym1 <- inner_join(lst_synonym, .keyword_synonyms, by = "keyword")
-  lst_synonym2 <- inner_join(lst_synonym, .keyword_synonyms, by = c("keyword" = "synonym"))
+  lst_synonym <- filter(gt.env$keywords_object, .data$batch == object)
+  lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword")
+  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"))
   lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
   if (length(lst_synonym) > 0) {
     message("Checking for synonyms...")
-    data_synonym <- filter(.tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
+    data_synonym <- filter(gt.env$tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
     data_synonym <- collect(data_synonym)
 
     if (nrow(data_synonym) > 0) {
       message("Aggregating scores for synonyms...")
-      lst_main <- unique(.keyword_synonyms$keyword[.keyword_synonyms$synonym %in% lst_synonym])
-      data_main <- filter(.tbl_score, .data$keyword %in% lst_main)
+      lst_main <- unique(gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym %in% lst_synonym])
+      data_main <- filter(gt.env$tbl_score, .data$keyword %in% lst_main)
       data_main <- collect(data_main)
 
       walk(lst_synonym, ~ {
-        keyword_main <- .keyword_synonyms$keyword[.keyword_synonyms$synonym == .x][[1]]
+        keyword_main <- gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym == .x][[1]]
         sub_main <- filter(data_main, .data$keyword == keyword_main)
 
         sub_synonym <- filter(data_synonym, .data$keyword == .x)
@@ -429,9 +432,9 @@ compute_voi <- function(object, control = 1) {
         )
 
         data <- bind_rows(sub_main, data_synonym_agg, data_synonym_nagg)
-        dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
-        dbExecute(conn = globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
-        dbWriteTable(conn = globaltrends_db, name = "data_score", value = data, append = TRUE)
+        dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
+        dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
+        dbWriteTable(conn = gt.env$globaltrends_db, name = "data_score", value = data, append = TRUE)
       })
     }
   }

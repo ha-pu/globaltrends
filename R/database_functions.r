@@ -85,7 +85,6 @@ initialize_db <- function() {
 
   # data_locations -------------------------------------------------------------
   dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
-  name TEXT,
   location TEXT,
   type TEXT
           )")
@@ -223,7 +222,7 @@ initialize_db <- function() {
 #' * [dplyr::tbl()]
 #'
 #' @return
-#' The function exports the following objects to .GlobalEnv:
+#' The function exports the following objects to the package environment `globaltrends_db`:
 #' \itemize{
 #'   \item globaltrends_db A DBIConnection object, as returned by
 #'   `DBI::dbConnect()`, connecting to the SQLite database in the working
@@ -300,41 +299,14 @@ start_db <- function() {
   time_object <- collect(time_object)
   keyword_synonyms <- collect(tbl_synonyms)
 
-  # write objects to .GlobalEnv ------------------------------------------------
+  # write objects to the package environment gt.env ----------------------------
   lst_object <- list(
+    globaltrends_db,
     tbl_locations,
     tbl_keywords,
     tbl_time,
-    tbl_doi,
-    tbl_control,
-    tbl_object,
-    tbl_score,
-    tbl_synonyms,
-    keywords_control,
-    time_control,
-    keywords_object,
-    time_object,
-    keyword_synonyms
-  )
-  names(lst_object) <- list(
-    ".tbl_locations",
-    ".tbl_keywords",
-    ".tbl_time",
-    ".tbl_doi",
-    ".tbl_control",
-    ".tbl_object",
-    ".tbl_score",
-    ".tbl_synonyms",
-    ".keywords_control",
-    ".time_control",
-    ".keywords_object",
-    ".time_object",
-    ".keyword_synonyms"
-  )
-  invisible(list2env(lst_object, envir = .GlobalEnv))
-  lst_object <- list(
-    globaltrends_db,
-    tbl_doi,
+	tbl_synonyms,
+	tbl_doi,
     tbl_control,
     tbl_object,
     tbl_score,
@@ -345,8 +317,12 @@ start_db <- function() {
     keyword_synonyms
   )
   names(lst_object) <- list(
-    "globaltrends_db",
-    "tbl_doi",
+	"globaltrends_db",
+    "tbl_locations",
+    "tbl_keywords",
+    "tbl_time",
+    "tbl_synonyms",
+	"tbl_doi",
     "tbl_control",
     "tbl_object",
     "tbl_score",
@@ -356,10 +332,10 @@ start_db <- function() {
     "time_object",
     "keyword_synonyms"
   )
-  invisible(list2env(lst_object, envir = .GlobalEnv))
-
+  invisible(list2env(lst_object, envir = gt.env))
+  
   .export_locations()
-  message("Successfully exported all objects to .GlobalEnv.")
+  message("Successfully exported all objects to package environment gt.env.")
 }
 
 #' @title Disconnect from database
@@ -378,7 +354,7 @@ start_db <- function() {
 #' * [start_db()]
 #'
 #' @param db Connection to database file that should be closed. Defaults
-#' to `globaltrends_db`.
+#' to `gt.env$globaltrends_db`.
 #'
 #' @return
 #' Message that disconnection was successful.
@@ -391,7 +367,7 @@ start_db <- function() {
 #' @importFrom DBI dbDisconnect
 
 
-disconnect_db <- function(db = globaltrends_db) {
+disconnect_db <- function(db = gt.env$globaltrends_db) {
   dbDisconnect(conn = db)
   message("Successfully disconnected.")
 }

@@ -64,13 +64,13 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_object <- function(object, control = 1, locations = countries, ...) UseMethod("download_object", object)
+download_object <- function(object, control = 1, locations = gt.env$countries, ...) UseMethod("download_object", object)
 
 #' @rdname download_object
 #' @method download_object numeric
 #' @export
 
-download_object.numeric <- function(object, control = 1, locations = countries, ...) {
+download_object.numeric <- function(object, control = 1, locations = gt.env$countries, ...) {
   args <- list(...)
   .check_length(control, 1)
   .check_input(locations, "character")
@@ -78,18 +78,20 @@ download_object.numeric <- function(object, control = 1, locations = countries, 
     download_object(control = control, object = as.list(object), locations = locations, ...)
   } else {
     walk(list(control, object), .check_batch)
-    terms_obj <- .keywords_object$keyword[.keywords_object$batch == object]
-    time <- .time_object$time[.time_object$batch == object]
+    terms_obj <- gt.env$keywords_object$keyword[gt.env$keywords_object$batch == object]
+    time <- gt.env$time_object$time[gt.env$time_object$batch == object]
 
     walk(locations, ~ {
       if (.x == "") {
         in_location <- "world"
       } else {
         in_location <- .x
+        in_location[in_location == "NA"] <- "NX" # handle namibia
       }
       if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
-        qry_control <- filter(.tbl_control, .data$batch == control & .data$location == in_location)
+        qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == in_location)
         qry_control <- collect(qry_control)
+        in_location[in_location == "NX"] <- "NA" # handle namibia
         if (nrow(qry_control) > 0) {
           terms_con <- summarise(
             group_by(qry_control, .data$keyword),
@@ -109,7 +111,8 @@ download_object.numeric <- function(object, control = 1, locations = countries, 
                 batch_c = control,
                 batch_o = object
               )
-              dbWriteTable(conn = globaltrends_db, name = "data_object", value = out, append = TRUE)
+              out$location[out$location == "NA"] <- "NX" # handle namibia
+              dbWriteTable(conn = gt.env$globaltrends_db, name = "data_object", value = out, append = TRUE)
               success <- TRUE
               break()
             }
@@ -135,7 +138,7 @@ download_object.numeric <- function(object, control = 1, locations = countries, 
 #' @method download_object list
 #' @export
 
-download_object.list <- function(object, control = 1, locations = countries, ...) {
+download_object.list <- function(object, control = 1, locations = gt.env$countries, ...) {
   walk(object, download_object, control = control, locations = locations, ...)
 }
 

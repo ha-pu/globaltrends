@@ -101,13 +101,15 @@
 #' @importFrom purrr map_dfr
 
 export_control <- function(control = NULL, location = NULL) {
+  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
-    table = .tbl_control,
+    table = gt.env$tbl_control,
     in_batch = unlist(control),
     in_location = unlist(location)
   )
   out <- filter(out, .data$location != "world")
   out <- rename(out, control = .data$batch)
+  out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
 
@@ -116,7 +118,7 @@ export_control <- function(control = NULL, location = NULL) {
 
 export_control_global <- function(control = NULL) {
   out <- .export_data(
-    table = .tbl_control,
+    table = gt.env$tbl_control,
     in_batch = unlist(control),
     in_location = "world"
   )
@@ -128,8 +130,9 @@ export_control_global <- function(control = NULL) {
 #' @export
 
 export_object <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
-    table = .tbl_object,
+    table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -137,6 +140,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
   )
   out <- filter(out, .data$location != "world")
   out <- rename(out, object = .data$batch_o, control = .data$batch_c)
+  out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
 
@@ -145,7 +149,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
 
 export_object_global <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
-    table = .tbl_object,
+    table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -159,8 +163,9 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 #' @export
 
 export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
-    table = .tbl_score,
+    table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -169,6 +174,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   out <- filter(out, .data$location != "world" & .data$synonym == 0)
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
   out <- select(out, -.data$synonym)
+  out$location[out$location == "NX"] <- "NA" # handle namibia
   class(out) <- c("exp_score", class(out))
   return(out)
 }
@@ -178,7 +184,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
 
 export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
-    table = .tbl_score,
+    table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -194,9 +200,10 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = NULL) {
+export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL, type = c("obs", "sad", "trd")) {
+  type <- match.arg(type)
   out <- .export_data(
-    table = .tbl_doi,
+    table = gt.env$tbl_doi,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
@@ -225,7 +232,6 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   batch <- in_batch
   location <- in_location
   locations <- in_locations
-  if (!is.null(in_type)) .check_type(in_type, len = 3)
 
   if (!is.null(in_keyword)) .check_input(keyword, "character")
   if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)

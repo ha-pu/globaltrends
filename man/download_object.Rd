@@ -7,11 +7,11 @@
 \alias{download_object_global}
 \title{Download data for object batch}
 \usage{
-download_object(object, control = 1, locations = countries, ...)
+download_object(object, control = 1, locations = gt.env$countries, ...)
 
-\method{download_object}{numeric}(object, control = 1, locations = countries, ...)
+\method{download_object}{numeric}(object, control = 1, locations = gt.env$countries, ...)
 
-\method{download_object}{list}(object, control = 1, locations = countries, ...)
+\method{download_object}{list}(object, control = 1, locations = gt.env$countries, ...)
 
 download_object_global(object, control = 1, ...)
 }
