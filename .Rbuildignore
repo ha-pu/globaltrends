@@ -5,3 +5,4 @@
 ^NEWS\.md$
 ^useR 2021$
 ^\.github$
+^codecov\.yml$
