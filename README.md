@@ -14,7 +14,7 @@ To measure degree of internationalization, `globaltrends` offers a wide array of
 
 The enormous detail of the data opens additional applications in research that are impossible with traditional measures of internationalization. For instance, using `globaltrends` on a subnational level allows researchers to **study proliferation within a country** and, for example, to trace a particular market entry. In addition, `globaltrends` offers applications beyond corporate internationalization, such as **data on global interest in products, persons, events, fads or scandals, even academic authors and papers**. 
 
-`globaltrends` provides user-friendly access to Google Trends. The [package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf) offers additonal technical details and a basic tutorial. Please, refer to the [package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md) for change log.
+`globaltrends` provides user-friendly access to Google Trends. The [package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf) offers additional technical details and a basic tutorial. Please, refer to the [package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md) for change log.
 
 ````
 # install ----------------------------------------------------------------------

@@ -214,7 +214,7 @@
 #'   `lubridate::as_date`.}
 #'   \item{type}{Column of type `character` indicating the type of time
 #'   series-column from `data_score` that is used for DOI computation,
-#'   takes either "socre_obs", "score_sad", or "score_trd".}
+#'   takes either "score_obs", "score_sad", or "score_trd".}
 #'   \item{gini}{Column of type `double` showing the DOI computed as
 #'   inverted Gini coefficient of the search score distribution from
 #'   `data_score`.}
