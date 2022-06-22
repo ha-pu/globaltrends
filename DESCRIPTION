@@ -1,6 +1,6 @@
 Package: globaltrends
 Type: Package
-Title: Download and measure global trends through Google search volumes
+Title: Download and Measure Global Trends Through Google Search Volumes
 Version: 0.0.12
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@gmail.com"),
@@ -17,6 +17,8 @@ Description: Google offers public access to global search volumes from its
     scores. This offers insights such as degree of internationalization of
     firms and organizations or dissemination of political, social, or
     technological trends across the globe or within single countries.
+	An outline of the package's methodological foundations and potential
+	applications is available on SSRN: <https://www.ssrn.com/abstract=3969013>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -45,6 +47,7 @@ Imports:
 RoxygenNote: 7.2.0
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    covr,
     knitr (>= 1.29),
     rmarkdown (>= 2.3),
     testthat (>= 2.3.2)
