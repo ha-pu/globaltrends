@@ -1,6 +1,6 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ha-pu/globaltrends/workflows/R-CMD-check/badge.svg)](https://github.com/ha-pu/globaltrends/actions)
-[![test-coverage](https://github.com/ha-pu/globaltrends/workflows/test-coverage/badge.svg)](https://github.com/ha-pu/globaltrends/actions)
+[![Codecov test coverage](https://codecov.io/gh/ha-pu/globaltrends/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ha-pu/globaltrends?branch=master)
 <!-- badges: end -->
 
 # globaltrends
