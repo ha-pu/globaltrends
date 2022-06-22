@@ -2,7 +2,6 @@
 ^globaltrends_Vignette\.pdf$
 ^vignettes/vignette_draft\.docx$
 ^.*/hex-globaltrends
-^NEWS\.md$
 ^useR 2021$
 ^\.github$
 ^codecov\.yml$
