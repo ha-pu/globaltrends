@@ -7,3 +7,4 @@
 ^\.github$
 ^codecov\.yml$
 ^LICENSE\.md$
+^cran-comments.md
