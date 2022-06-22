@@ -41,7 +41,17 @@ There is one NOTE that is only found on Windows (Server 2022, R-devel 64-bit):
 As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
 
 ## winbulider
-Winbuilder might show an error regarding a (possible) invalid URL:
+Winbuilder might show errors regarding (possible) invalid URLs:
+
+```
+URL: https://support.google.com/trends/answer/4359550
+  From: man/add_keyword.Rd
+        inst/doc/globaltrends.html
+  Status: 404
+  Message: Not Found
+```
+
+Unlike indicated by winbuilder, the URL is available and can be accessed in the browser.
 
 ```
 URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
