@@ -20,13 +20,13 @@
 #'   \item time_object: Tibble that contains all batch times per object batch.
 #'   \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
 #' }
-#' 
+#'
 #' @seealso
 #' * [example_control()]
 #' * [example_object()]
 #' * [example_score()]
 #' * [example_doi()]
-#' 
+#'
 #' @export gt.env
 
 gt.env <- new.env(parent = emptyenv())
@@ -37,7 +37,7 @@ gt.env <- new.env(parent = emptyenv())
     "tbl_keywords",
     "tbl_time",
     "tbl_synonyms",
-	  "tbl_doi",
+    "tbl_doi",
     "tbl_control",
     "tbl_object",
     "tbl_score",

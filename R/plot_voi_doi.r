@@ -71,7 +71,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
   type <- match.arg(type)
   measure <- match.arg(measure)
   .check_locations(locations)
-  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
+  stopifnot("`smooth` must be a logical." = is.logical(smooth))
 
   in_type <- type
   in_locations <- locations

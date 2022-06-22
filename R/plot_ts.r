@@ -66,7 +66,7 @@ plot_ts <- function(data, ...) UseMethod("plot_ts", data)
 
 plot_ts.exp_score <- function(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...) {
   type <- match.arg(type)
-  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
+  stopifnot("`smooth` must be a logical." = is.logical(smooth))
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
@@ -151,7 +151,7 @@ plot_ts.abnorm_score <- function(data, ci = 0.95, ...) {
 
 plot_ts.exp_voi <- function(data, type = c("obs", "sad", "trd"), smooth = TRUE, ...) {
   type <- match.arg(type)
-  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
+  stopifnot("`smooth` must be a logical." = is.logical(smooth))
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
@@ -223,7 +223,7 @@ plot_ts.exp_doi <- function(data, type = c("obs", "sad", "trd"), measure = c("gi
   type <- match.arg(type)
   measure <- match.arg(measure)
   .check_locations(locations)
-  stopifnot("`smooth` must be a logical." = is.logical(smooth)) 
+  stopifnot("`smooth` must be a logical." = is.logical(smooth))
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
