@@ -305,8 +305,8 @@ start_db <- function() {
     tbl_locations,
     tbl_keywords,
     tbl_time,
-	tbl_synonyms,
-	tbl_doi,
+    tbl_synonyms,
+    tbl_doi,
     tbl_control,
     tbl_object,
     tbl_score,
@@ -317,12 +317,12 @@ start_db <- function() {
     keyword_synonyms
   )
   names(lst_object) <- list(
-	"globaltrends_db",
+    "globaltrends_db",
     "tbl_locations",
     "tbl_keywords",
     "tbl_time",
     "tbl_synonyms",
-	"tbl_doi",
+    "tbl_doi",
     "tbl_control",
     "tbl_object",
     "tbl_score",
@@ -333,7 +333,7 @@ start_db <- function() {
     "keyword_synonyms"
   )
   invisible(list2env(lst_object, envir = gt.env))
-  
+
   .export_locations()
   message("Successfully exported all objects to package environment gt.env.")
 }

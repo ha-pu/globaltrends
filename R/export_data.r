@@ -101,7 +101,7 @@
 #' @importFrom purrr map_dfr
 
 export_control <- function(control = NULL, location = NULL) {
-  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
+  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_control,
     in_batch = unlist(control),
@@ -130,7 +130,7 @@ export_control_global <- function(control = NULL) {
 #' @export
 
 export_object <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
-  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
+  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -163,7 +163,7 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 #' @export
 
 export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
-  if(!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
+  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_score,
     in_keyword = unlist(keyword),

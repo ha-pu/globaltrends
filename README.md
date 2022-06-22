@@ -9,7 +9,7 @@
   <img src="hex-globaltrends/hex-globaltrends.png" width="250" height="250">
 </p>
 
-Google offers public access to global search volumes through its search engine through the [Google Trends portal](http://www.google.com/trends). The `globaltrends` package downloads search volumes provided by Google Trends and uses them to measure and analyze the **distribution of search trends across countries or within countries**. `globaltrends` allows researchers and analysts to investigate patterns within these trends, such as **degree of internationalization** of firms and organizations or dissemination of political, social, or technological trends across the globe or within single countries.  
+Google offers public access to global search volumes through its search engine through the [Google Trends portal](https://trends.google.com/trends/). The `globaltrends` package downloads search volumes provided by Google Trends and uses them to measure and analyze the **distribution of search trends across countries or within countries**. `globaltrends` allows researchers and analysts to investigate patterns within these trends, such as **degree of internationalization** of firms and organizations or dissemination of political, social, or technological trends across the globe or within single countries.  
 
 To measure degree of internationalization, `globaltrends` offers a wide array of empirical possibilities. It allows researchers to **compare degree of internationalization for various organizations on a unified scale**. In addition, the time-series nature of Google Trends allows for **historical analysis of internationalization patterns and speed** within organizations.  
 
@@ -84,4 +84,4 @@ disconnect_db()
 ````
 
 If you use the `globaltrends` package, please cite it as:
-Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (SSRN Working Paper 3969013). Available at [https://ssrn.com/abstract=3969013](https://ssrn.com/abstract=3969013).
+Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (SSRN Working Paper 3969013). Available at [https://www.ssrn.com/abstract=3969013](https://www.ssrn.com/abstract=3969013).

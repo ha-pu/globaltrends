@@ -17,7 +17,7 @@
 #' existing batch, all downloads and computations must be rerun.
 #' If you use search topics for object keywords, make sure to use search topics
 #' for control keywords and vice versa. See Google's
-#' [FAQ](https://support.google.com/trends/answer/4359550?hl=en) for additional
+#' [FAQ](https://support.google.com/trends/answer/4359550) for additional
 #' information on search topics.
 #' *Note*: To avoid trailing spaces `stringr::str_squish` is automatically
 #' applied to all keywords.
@@ -68,7 +68,7 @@
 #'   ),
 #'   time = "2016-01-01 2019-12-31"
 #' )
-#' 
+#'
 #' # search topics
 #' add_control_keyword(
 #'   keyword = c("%2Fm%2F02q_bk", "%2Fm%2F055t58", "%2Fm%2F025sndk", "%2Fm%2F0d07ph", "%2Fm%2F09jcvs"),

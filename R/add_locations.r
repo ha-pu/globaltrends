@@ -58,7 +58,7 @@ add_locations <- function(locations, type, export = TRUE) {
   walk(locations, ~ {
     if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided {.x}."))
   })
-  
+
   # handle namibia
   locations[locations == "NA"] <- "NX"
 
@@ -89,11 +89,11 @@ add_locations <- function(locations, type, export = TRUE) {
   })
 
   # handle namibia
-  lst_locations <- map(lst_locations, ~{
+  lst_locations <- map(lst_locations, ~ {
     .x[.x == "NX"] <- "NA"
     return(.x)
   })
-  
+
   names(lst_locations) <- locations
 
   invisible(list2env(lst_locations, envir = gt.env))
