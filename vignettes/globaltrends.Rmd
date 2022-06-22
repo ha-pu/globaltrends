@@ -25,7 +25,7 @@ library(globaltrends)
 
 # package version --------------------------------------------------------------
 packageVersion("globaltrends")
-#> [1] '0.0.8'
+#> [1] '0.0.12'
 ```
 
 # Google Trends
