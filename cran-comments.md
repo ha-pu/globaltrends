@@ -40,6 +40,18 @@ There is one NOTE that is only found on Windows (Server 2022, R-devel 64-bit):
 ```
 As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
 
+## winbulider
+Winbuilder might show an error regarding a (possible) invalid URL:
+
+```
+URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
+  From: inst/doc/globaltrends.html
+  Status: 429
+  Message: Too Many Requests
+```
+
+This does not signify an invalid URL but indicates that Google Trends blocks downloads due to too many requests.
+
 ---
 
 This is the initial submission of the globaltrends package.
