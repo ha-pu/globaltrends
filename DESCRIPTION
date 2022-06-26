@@ -1,7 +1,7 @@
 Package: globaltrends
 Type: Package
 Title: Download and Measure Global Trends Through Google Search Volumes
-Version: 0.0.12
+Version: 0.0.12.9000
 Authors@R: c(
     person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@gmail.com"),
     person("Jakob", "Muellner", role = c("ccp"))
@@ -10,16 +10,16 @@ URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Description: Google offers public access to global search volumes from its
     search engine through the Google Trends portal. The package downloads
-	these search volumes provided by Google Trends and uses them to measure
-	and analyze the distribution of search scores across countries or
+    these search volumes provided by Google Trends and uses them to measure
+    and analyze the distribution of search scores across countries or
     within countries. The package allows researchers and analysts to use these
     search scores to investigate global trends based on patterns within these
     scores. This offers insights such as degree of internationalization of
     firms and organizations or dissemination of political, social, or
     technological trends across the globe or within single countries.
-	An outline of the package's methodological foundations and potential
-	applications is available as a working paper:
-	<https://www.ssrn.com/abstract=3969013>.
+    An outline of the package's methodological foundations and potential
+    applications is available as a working paper:
+    https://www.ssrn.com/abstract=3969013.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -33,7 +33,7 @@ Imports:
     glue (>= 1.4.2),
     gtrendsR (>= 1.5.1),
     ineq (>= 0.2.13),
-	maps (>= 3.4.0),
+    maps (>= 3.4.0),
     lubridate (>= 1.7.9),
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
@@ -44,7 +44,7 @@ Imports:
     tidyr (>= 1.0.0),
     utils (>= 4.0.2),
     WDI (>= 2.7.1),
-	zoo (>= 1.8.8)
+    zoo (>= 1.8.8)
 RoxygenNote: 7.2.0
 Roxygen: list(markdown = TRUE)
 Suggests: 
