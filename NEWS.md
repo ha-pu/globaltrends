@@ -1,3 +1,5 @@
+# globaltrends v.0.0.12.9000
+
 # globaltrends v.0.0.12
 * Stop direct exports from functions to .GlobalEnv
 * Exports of objects (e.g., SQL connections, keyword tables) are redirected to package environment `gt.env`
