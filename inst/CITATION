@@ -4,15 +4,15 @@ citEntry(
   title = "Let me Google that for you: Capturing globalization using Google Trends",
   author = personList(
     as.person("Harald Puhr"),
-	as.person("Jakob Müllner")
+    as.person("Jakob Müllner")
   ),
-  journal = "SSRN Workin Paper",
+  journal = "SSRN Working Paper",
   year = 2021,
   url = "https://www.ssrn.com/abstract=3969013",
   textVersion = paste(
     "Puhr, H., & Müllner, J. (2021).", 
-	"Let me Google that for you: Capturing globalization using Google Trends", 
-	"(SSRN Working Paper 3969013).",
-	"Available at https://www.ssrn.com/abstract=3969013."
+    "Let me Google that for you: Capturing globalization using Google Trends", 
+    "(SSRN Working Paper 3969013).",
+    "Available at https://www.ssrn.com/abstract=3969013."
   )
 )
