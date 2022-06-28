@@ -1,4 +1,5 @@
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/globaltrends)](https://CRAN.R-project.org/package=globaltrends)
 [![R-CMD-check](https://github.com/ha-pu/globaltrends/workflows/R-CMD-check/badge.svg)](https://github.com/ha-pu/globaltrends/actions)
 [![Codecov test coverage](https://codecov.io/gh/ha-pu/globaltrends/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ha-pu/globaltrends?branch=master)
 <!-- badges: end -->
