@@ -38,7 +38,7 @@ Imports:
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
     RSQLite (>= 2.2.0),
-    stats (>= 4.0.2),
+    stats (>= 2.15.1),
     stringr (>= 1.4.0),
     tibble (>= 3.0.3),
     tidyr (>= 1.0.0),
