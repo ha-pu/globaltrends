@@ -20,6 +20,9 @@ The enormous detail of the data opens additional applications in research that a
 
 ````
 # install ----------------------------------------------------------------------
+# current cran version
+install.packages("globaltrends")
+# current dev version
 devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
 
 # packages ---------------------------------------------------------------------
