@@ -9,6 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<center>
+![](hex-globaltrends.png){#id .class width="25%" height="25%"}
+</center>
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -18,7 +22,10 @@ knitr::opts_chunk$set(
 
 ```{r setup, eval = FALSE}
 # install package --------------------------------------------------------------
-devtools::install_github("ha-pu/globaltrends/*release", build_vignettes = TRUE)
+# current cran version
+install.packages("globaltrends")
+# current dev version
+devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
 
 # load package -----------------------------------------------------------------
 library(globaltrends)
