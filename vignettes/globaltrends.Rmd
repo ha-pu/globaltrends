@@ -10,7 +10,7 @@ vignette: >
 ---
 
 <center>
-![](./hex-globaltrends.png){#id .class width="25%" height="25%"}
+![](hex-globaltrends.png){#id .class width="25%" height="25%"}
 </center>
 
 ```{r, include = FALSE}
