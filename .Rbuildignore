@@ -1,6 +1,7 @@
 ^data-raw$
 ^globaltrends_Vignette\.pdf$
 ^vignettes/vignette_draft\.docx$
+^vignettes/google_method\.r$
 ^useR 2021$
 ^\.github$
 ^codecov\.yml$
