@@ -2,6 +2,9 @@
 * Set minimum dependency of `stats` and `utils` to version `2.15.1` in line with minimum `R` dependency
 * Store globaltrends logo in the *vignettes* folder
 * Add explanation of Google's data preparation methodology to vignette
+* Change wait intervals for status responses != 200
+	* Status == 429 or 500: wait 1 second
+	* All other responses: wait 60 seconds
 
 # globaltrends v.0.0.12
 * Stop direct exports from functions to .GlobalEnv
