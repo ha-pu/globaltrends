@@ -5,6 +5,7 @@
 * Change wait intervals for status responses != 200
 	* Status == 500: wait 1 second
 	* All other responses: wait 60 seconds
+* Add function `vacuum_data` to free unused memory after `remove_data`
 
 # globaltrends v.0.0.12
 * Stop direct exports from functions to .GlobalEnv
