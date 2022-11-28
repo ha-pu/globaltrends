@@ -225,6 +225,14 @@ test_that("remove_data5", {
   test_object(fun = remove_data, incl = 1:5, table = "data_object", control = 1)
 })
 
+# remove data vacuum -----------------------------------------------------------
+test_that("remove_data6", {
+  size_t0 <- file.size("db/globaltrends_db.sqlite")
+  expect_message(vacuum_data(), "Vacuum completed successfully.")
+  size_t1 <- file.size("db/globaltrends_db.sqlite")
+  expect_true(size_t0 > size_t1)
+})
+
 # disconnect -------------------------------------------------------------------
 disconnect_db()
 unlink("db", recursive = TRUE)
