@@ -45,7 +45,7 @@ Imports:
     utils (>= 2.15.1),
     WDI (>= 2.7.1),
     zoo (>= 1.8.8)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
     covr,
