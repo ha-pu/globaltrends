@@ -2,7 +2,7 @@
 * Set minimum dependency of `stats` and `utils` to version `2.15.1` in line with minimum `R` dependency
 * Store globaltrends logo in the *vignettes* folder
 * Add explanation of Google's data preparation methodology to vignette
-* Change wait intervals for status responses != 200
+* Change wait intervals for status responses != 200 and add message about automatic retry of download
 	* Status == 500: wait 1 second
 	* All other responses: wait 60 seconds
 * Add function `vacuum_data` to free unused memory after `remove_data`

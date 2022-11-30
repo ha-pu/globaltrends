@@ -15,9 +15,11 @@
   out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE, ...))
   while (inherits(out, "try-error")) {
     if (str_detect(attr(out, "condition")$message, "Status code was not 200. Returned status code:500")) {
+	  message("globaltrends automatically retries download in 1s.")
       Sys.sleep(1)
     } else {
-      Sys.sleep(60)
+      message("globaltrends automatically retries download in 60s.")
+	  Sys.sleep(60)
     }
     out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
   }
