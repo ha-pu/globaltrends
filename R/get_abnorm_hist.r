@@ -101,14 +101,14 @@ get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, typ
   data <- ungroup(data)
   data <- select(
     data,
-    .data$keyword,
-    .data$location,
-    .data$date,
-    .data$control,
-    .data$object,
-    .data$score,
-    .data$score_abnorm,
-    .data$quantile
+    keyword,
+    location,
+    date,
+    control,
+    object,
+    score,
+    score_abnorm,
+    quantile
   )
   class(data) <- c("abnorm_score", class(data))
   return(data)
@@ -132,13 +132,13 @@ get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type 
   data <- ungroup(data)
   data <- select(
     data,
-    .data$keyword,
-    .data$date,
-    .data$control,
-    .data$object,
-    .data$voi,
-    .data$voi_abnorm,
-    .data$quantile
+    keyword,
+    date,
+    control,
+    object,
+    voi,
+    voi_abnorm,
+    quantile
   )
   class(data) <- c("abnorm_voi", class(data))
   return(data)
@@ -162,15 +162,15 @@ get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measu
   data <- ungroup(data)
   data <- select(
     data,
-    .data$keyword,
-    .data$date,
-    .data$type,
-    .data$control,
-    .data$object,
-    .data$locations,
-    .data$doi,
-    .data$doi_abnorm,
-    .data$quantile
+    keyword,
+    date,
+    type,
+    control,
+    object,
+    locations,
+    doi,
+    doi_abnorm,
+    quantile
   )
   class(data) <- c("abnorm_doi", class(data))
   return(data)

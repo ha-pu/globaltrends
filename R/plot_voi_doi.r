@@ -97,10 +97,10 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
   } else {
     data <- select(
       data,
-      .data$keyword,
-      .data$date,
-      .data$hits,
-      .data$measure
+      keyword,
+      date,
+      hits,
+      measure
     )
     data <- stats::na.omit(data)
 
@@ -111,7 +111,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
       data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
     }
 
-    data <- pivot_longer(data, cols = c(.data$hits, .data$measure), names_to = "plot", values_to = "trend")
+    data <- pivot_longer(data, cols = c(hits, measure), names_to = "plot", values_to = "trend")
     data <- mutate(data, plot = as_factor(.data$plot))
     data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
     plot <- ggplot(data, aes(x = .data$date)) +

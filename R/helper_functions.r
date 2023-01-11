@@ -31,7 +31,7 @@
       hits = as.double(str_replace(.data$hits, "<1", "0.1")),
       date = as_date(.data$date)
     )
-    out <- select(out, location = .data$geo, .data$keyword, .data$date, .data$hits)
+    out <- select(out, location = geo, keyword, date, hits)
     Sys.sleep(stats::runif(1, min = 5, max = 10))
     return(out)
   }

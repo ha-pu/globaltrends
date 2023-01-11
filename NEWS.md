@@ -6,6 +6,14 @@
 	* Status == 500: wait 1 second
 	* All other responses: wait 60 seconds
 * Add function `vacuum_data` to free unused memory after `remove_data`
+* Removed all usage of `.data` to comply with `tidyselect 1.2.0`, this applies to calls of:
+	* `dplyr::rename`
+	* `dplyr::select`
+	* `purrr::map`
+	* `purrr::walk`
+	* `tidyr::pivot_longer`
+	* `tidyr::pivot_wider`
+* Replaced `size` with `linewidth` to comply with `ggplot2 3.4.0`
 
 # globaltrends v.0.0.12
 * Stop direct exports from functions to .GlobalEnv

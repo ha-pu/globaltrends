@@ -107,12 +107,12 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       out <- bind_rows(out1, out2)
       out <- select(
         out,
-        .data$date,
-        .data$keyword,
-        .data$type,
-        .data$gini,
-        .data$hhi,
-        .data$entropy
+        date,
+        keyword,
+        type,
+        gini,
+        hhi,
+        entropy
       )
 
       # write data

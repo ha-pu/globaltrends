@@ -174,7 +174,7 @@ initialize_db <- function() {
   countries <- WDI::WDI_data$country
   countries <- as_tibble(countries)
   countries <- filter(countries, .data$region != "Aggregates")
-  countries <- select(countries, location = .data$iso2c)
+  countries <- select(countries, location = iso2c)
   countries <- WDI::WDI(country = countries$location, indicator = "NY.GDP.MKTP.KD", start = 2018, end = 2018)
   countries <- bind_rows(countries, tibble(iso2c = "TW", country = "Taiwan", NY.GDP.MKTP.KD = 6.08186e+11, year = 2018))
   countries <- mutate(countries, NY.GDP.MKTP.KD = case_when(is.na(.data$NY.GDP.MKTP.KD) ~ 0, TRUE ~ .data$NY.GDP.MKTP.KD))
@@ -286,16 +286,16 @@ start_db <- function() {
 
   # load files -----------------------------------------------------------------
   keywords_control <- filter(tbl_keywords, .data$type == "control")
-  keywords_control <- select(keywords_control, -.data$type)
+  keywords_control <- select(keywords_control, -type)
   keywords_control <- collect(keywords_control)
   time_control <- filter(tbl_time, .data$type == "control")
-  time_control <- select(time_control, -.data$type)
+  time_control <- select(time_control, -type)
   time_control <- collect(time_control)
   keywords_object <- filter(tbl_keywords, .data$type == "object")
-  keywords_object <- select(keywords_object, -.data$type)
+  keywords_object <- select(keywords_object, -type)
   keywords_object <- collect(keywords_object)
   time_object <- filter(tbl_time, .data$type == "object")
-  time_object <- select(time_object, -.data$type)
+  time_object <- select(time_object, -type)
   time_object <- collect(time_object)
   keyword_synonyms <- collect(tbl_synonyms)
 

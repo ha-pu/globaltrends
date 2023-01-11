@@ -212,7 +212,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
           data_control <- mutate(data_control,
             benchmark = coalesce(.data$value_o / .data$value_c, 0)
           )
-          data_control <- select(data_control, .data$location, .data$date, .data$key, .data$benchmark)
+          data_control <- select(data_control, location, date, key, benchmark)
           data_control <- inner_join(
             data_control,
             qry_control,
@@ -221,11 +221,11 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
           data_control <- mutate(data_control, value = .data$value * .data$benchmark)
           data_control <- select(
             data_control,
-            .data$location,
-            .data$date,
-            .data$key,
-            .data$keyword,
-            .data$value
+            location,
+            date,
+            key,
+            keyword,
+            value
           )
 
           data_object <- anti_join(qry_object, data_control, by = c("keyword"))
@@ -243,11 +243,11 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
             key = str_replace(.data$key, "hits$", "score_obs"),
             key = str_replace(.data$key, "hits_", "score_")
           )
-          data_object <- select(data_object, .data$location, .data$date, .data$keyword, .data$key, .data$score)
+          data_object <- select(data_object, location, date, keyword, key, score)
           out <- pivot_wider(
             data_object,
-            names_from = .data$key,
-            values_from = .data$score,
+            names_from = key,
+            values_from = score,
             values_fill = 0
           )
           out <- mutate(
@@ -318,7 +318,7 @@ compute_voi <- function(object, control = 1) {
   out <- group_by(out, .data$location, .data$keyword, .data$year, .data$month, .data$day)
   out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
   out <- mutate(out, date = ymd(glue("{.data$year}-{.data$month}-{.data$day}")))
-  out <- select(out, .data$location, .data$keyword, .data$date, .data$hits)
+  out <- select(out, location, keyword, date, hits)
   return(out)
 }
 
@@ -398,24 +398,24 @@ compute_voi <- function(object, control = 1) {
         )
         sub_main <- select(
           sub_main,
-          .data$location,
-          .data$keyword,
-          .data$date,
-          .data$score_obs,
-          .data$score_sad,
-          .data$score_trd,
-          .data$batch_c,
-          .data$batch_o,
-          .data$synonym
+          location,
+          keyword,
+          date,
+          score_obs,
+          score_sad,
+          score_trd,
+          batch_c,
+          batch_o,
+          synonym
         )
 
         data_synonym_agg <- inner_join(
           sub_synonym,
           select(
             sub_main,
-            .data$location,
-            .data$date,
-            .data$batch_c
+            location,
+            date,
+            batch_c
           ),
           by = c("location", "date", "batch_c")
         )

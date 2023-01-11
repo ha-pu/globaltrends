@@ -98,7 +98,6 @@
 #' @importFrom dplyr select
 #' @importFrom rlang .data
 #' @importFrom glue glue
-#' @importFrom purrr map_dfr
 
 export_control <- function(control = NULL, location = NULL) {
   if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
@@ -173,7 +172,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   )
   out <- filter(out, .data$location != "world" & .data$synonym == 0)
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
-  out <- select(out, -.data$synonym)
+  out <- select(out, -synonym)
   out$location[out$location == "NX"] <- "NA" # handle namibia
   class(out) <- c("exp_score", class(out))
   return(out)
@@ -192,7 +191,7 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   )
   out <- filter(out, .data$synonym == 0)
   out <- rename(out, control = .data$batch_c, object = .data$batch_o)
-  out <- select(out, -.data$synonym)
+  out <- select(out, -synonym)
   class(out) <- c("exp_voi", class(out))
   return(out)
 }
