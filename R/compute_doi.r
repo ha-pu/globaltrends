@@ -89,13 +89,13 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       # compute doi measures
       data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
       data <- nest(data, data = c(.data$location, .data$score))
-      data <- mutate(data, check = map_lgl(.data$data, ~ !all(is.na(.x$score))))
+      data <- mutate(data, check = map_lgl(data, ~ !all(is.na(.x$score))))
       out1 <- filter(data, .data$check)
       out1 <- mutate(
         out1,
-        gini = map_dbl(.data$data, ~ .compute_gini(series = .x$score)),
-        hhi = map_dbl(.data$data, ~ .compute_hhi(series = .x$score)),
-        entropy = map_dbl(.data$data, ~ .compute_entropy(series = .x$score))
+        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
+        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
+        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
       )
       out2 <- filter(data, !.data$check)
       out2 <- mutate(
