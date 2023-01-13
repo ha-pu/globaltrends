@@ -10,7 +10,7 @@
 #' The dependency structure works as follows: *batch_keyword* / *batch_time* ->
 #' *data_control* -> *data_object* -> *data_score* -> *data_doi*.
 #' After using `remove_data`, run `vacuum_data` to free-up unused memory in
-#' the database file. Depening on the database size, `vacuum_data` might
+#' the database file. Depending on the database size, `vacuum_data` might
 #' take some minutes for execution.
 #'
 #' @param table Database table from which the batch should be removed.  Object
