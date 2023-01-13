@@ -203,6 +203,11 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 
 #' Add synonyms for object keywords
 #'
+#' @aliases
+#' add_synonym
+#' add_synonym.character
+#' add_synonym.list
+#'
 #' @description
 #' The function allows to add synonyms for object keywords. Sometimes, objects
 #' of interest can be searched with different keywords on Google e.g., FC Bayern
@@ -233,6 +238,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' }
 #'
 #' @export
+#' @rdname add_synonym
 #' @importFrom DBI dbWriteTable
 #' @importFrom glue glue
 #' @importFrom purrr walk
@@ -242,6 +248,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
 
 #' @export
+#' @rdname add_synonym
 
 add_synonym.character <- function(keyword, synonym) {
   .check_length(keyword, 1)
@@ -268,6 +275,7 @@ add_synonym.character <- function(keyword, synonym) {
 }
 
 #' @export
+#' @rdname add_synonym
 
 add_synonym.list <- function(keyword, synonym) {
   walk(synonym, add_synonym, keyword = keyword)
