@@ -1,28 +1,28 @@
-Package: globaltrends
 Type: Package
+Package: globaltrends
 Title: Download and Measure Global Trends Through Google Search Volumes
 Version: 0.0.12.9000
 Authors@R: c(
-    person("Harald", "Puhr", role = c("aut", "cre"), email = "harald.puhr@gmail.com"),
-    person("Jakob", "Muellner", role = c("ccp"))
+    person("Harald", "Puhr", , "harald.puhr@gmail.com", role = c("aut", "cre")),
+    person("Jakob", "Muellner", role = "ccp")
   )
-URL: https://github.com/ha-pu/globaltrends/
-BugReports: https://github.com/ha-pu/globaltrends/issues/
 Description: Google offers public access to global search volumes from its
     search engine through the Google Trends portal. The package downloads
-    these search volumes provided by Google Trends and uses them to measure
-    and analyze the distribution of search scores across countries or
-    within countries. The package allows researchers and analysts to use these
-    search scores to investigate global trends based on patterns within these
-    scores. This offers insights such as degree of internationalization of
-    firms and organizations or dissemination of political, social, or
-    technological trends across the globe or within single countries.
-    An outline of the package's methodological foundations and potential
-    applications is available as a working paper:
-    https://www.ssrn.com/abstract=3969013.
+    these search volumes provided by Google Trends and uses them to
+    measure and analyze the distribution of search scores across countries
+    or within countries. The package allows researchers and analysts to
+    use these search scores to investigate global trends based on patterns
+    within these scores. This offers insights such as degree of
+    internationalization of firms and organizations or dissemination of
+    political, social, or technological trends across the globe or within
+    single countries.  An outline of the package's methodological
+    foundations and potential applications is available as a working
+    paper: https://www.ssrn.com/abstract=3969013.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
+URL: https://github.com/ha-pu/globaltrends/
+BugReports: https://github.com/ha-pu/globaltrends/issues/
+Depends: 
+    R (>= 2.15.1)
 Imports:
     DBI (>= 1.1.0),
     dbplyr (>= 1.4.4),
@@ -33,8 +33,8 @@ Imports:
     glue (>= 1.4.2),
     gtrendsR (>= 1.5.1),
     ineq (>= 0.2.13),
-    maps (>= 3.4.0),
     lubridate (>= 1.7.9),
+    maps (>= 3.4.0),
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
     RSQLite (>= 2.2.0),
@@ -45,13 +45,13 @@ Imports:
     utils (>= 2.15.1),
     WDI (>= 2.7.1),
     zoo (>= 1.8.8)
-RoxygenNote: 7.2.1
-Roxygen: list(markdown = TRUE)
 Suggests: 
-    covr,
     knitr (>= 1.29),
     rmarkdown (>= 2.3),
     testthat (>= 2.3.2)
-VignetteBuilder: knitr
-Depends: 
-    R (>= 2.15.1)
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
