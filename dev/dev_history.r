@@ -37,7 +37,6 @@ devtools::check_win_devel()
 usethis::use_git_ignore("revdep/")
 usethis::use_build_ignore("revdep/")
 
-devtools::revdep()
 library(revdepcheck)
 # In another session
 id <- rstudioapi::terminalExecute("Rscript -e 'revdepcheck::revdep_check(num_workers = 4)'")
