@@ -107,7 +107,7 @@ export_control <- function(control = NULL, location = NULL) {
     in_location = unlist(location)
   )
   out <- filter(out, .data$location != "world")
-  out <- rename(out, control = .data$batch)
+  out <- rename(out, control = batch)
   out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
@@ -121,7 +121,7 @@ export_control_global <- function(control = NULL) {
     in_batch = unlist(control),
     in_location = "world"
   )
-  out <- rename(out, control = .data$batch)
+  out <- rename(out, control = batch)
   return(out)
 }
 
@@ -138,7 +138,7 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
     in_location = unlist(location)
   )
   out <- filter(out, .data$location != "world")
-  out <- rename(out, object = .data$batch_o, control = .data$batch_c)
+  out <- rename(out, object = batch_o, control = batch_c)
   out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
@@ -154,7 +154,7 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
     in_control = unlist(control),
     in_location = "world"
   )
-  out <- rename(out, object = .data$batch_o, control = .data$batch_c)
+  out <- rename(out, object = batch_o, control = batch_c)
   return(out)
 }
 
@@ -171,7 +171,7 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
     in_location = unlist(location),
   )
   out <- filter(out, .data$location != "world" & .data$synonym == 0)
-  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
   out$location[out$location == "NX"] <- "NA" # handle namibia
   class(out) <- c("exp_score", class(out))
@@ -190,7 +190,7 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
     in_location = "world"
   )
   out <- filter(out, .data$synonym == 0)
-  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
   class(out) <- c("exp_voi", class(out))
   return(out)
@@ -209,7 +209,7 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
     in_locations = unlist(locations),
     in_type = unlist(type)
   )
-  out <- rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- rename(out, control = batch_c, object = batch_o)
   class(out) <- c("exp_doi", class(out))
   return(out)
 }

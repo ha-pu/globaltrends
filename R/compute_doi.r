@@ -88,7 +88,7 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
 
       # compute doi measures
       data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
-      data <- nest(data, data = c(.data$location, .data$score))
+      data <- nest(data, data = c(location, score))
       data <- mutate(data, check = map_lgl(data, ~ !all(is.na(.x$score))))
       out1 <- filter(data, .data$check)
       out1 <- mutate(

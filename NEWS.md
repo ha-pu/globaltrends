@@ -11,8 +11,10 @@
 	* `dplyr::select`
 	* `purrr::map`
 	* `purrr::walk`
+	* `tidyr::nest`
 	* `tidyr::pivot_longer`
 	* `tidyr::pivot_wider`
+	* `tidyr::unnest`
 * Replaced `size` with `linewidth` to comply with `ggplot2 3.4.0`
 
 # globaltrends v.0.0.12

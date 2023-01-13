@@ -139,9 +139,9 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
             ) >= 24
           ) {
             # adjust to time series and impute negative values
-            qry_control <- nest(qry_control, data = c(.data$date, .data$hits))
+            qry_control <- nest(qry_control, data = c(date, hits))
             qry_control <- mutate(qry_control, data = map(data, .adjust_ts))
-            qry_control <- unnest(qry_control, .data$data)
+            qry_control <- unnest(qry_control, data)
             qry_control <- mutate(qry_control,
               hits_trd = case_when(
                 .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
@@ -154,9 +154,9 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
                 TRUE ~ .data$hits_sad
               )
             )
-            qry_object <- nest(qry_object, data = c(.data$date, .data$hits))
+            qry_object <- nest(qry_object, data = c(date, hits))
             qry_object <- mutate(qry_object, data = map(data, .adjust_ts))
-            qry_object <- unnest(qry_object, .data$data)
+            qry_object <- unnest(qry_object, data)
             qry_object <- mutate(qry_object,
               hits_trd = case_when(
                 .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
