@@ -7,7 +7,6 @@ attachment::att_amend_desc()
 # Run tests and examples
 devtools::test()
 devtools::run_examples()
-# autotest::autotest_package(test = TRUE)
 
 # Check package as CRAN
 rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
