@@ -34,7 +34,6 @@ devtools::check_win_devel()
 
 # Check reverse dependencies
 # remotes::install_github("r-lib/revdepcheck")
-install.packages('revdepcheck', repos = 'https://r-lib.r-universe.dev')
 usethis::use_git_ignore("revdep/")
 usethis::use_build_ignore("revdep/")
 

@@ -1,11 +1,12 @@
 ^\.github$
 ^codecov\.yml$
-^cran-comments.md
+^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^data-raw$
 ^dev$
 ^globaltrends_Vignette\.pdf$
 ^LICENSE\.md$
+^revdep$
 ^vignettes/vignette_draft\.docx$
 ^vignettes/google_method\.r$
 ^useR 2021$
