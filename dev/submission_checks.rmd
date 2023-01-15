@@ -79,7 +79,7 @@ devtools::spell_check()
 * Add a summary of the new changes (from the NEWS.md file)
 * Add a summary of the test environments
 * Add a summary of the R CMD check results (explain ERRORs, WARNINGs, NOTEs)
-* Add downstream dependencies
+* Add a summary of issues with reverse dependencies
 
 # Run again a final local R CMD check
 
@@ -100,11 +100,10 @@ devtools::check()
 # Submit the package to CRAN.
 
 * Use devtools::release() which performs more checks prior to submission
-* Confirm submission via link in the email.
-
+* Confirm submission via link in the email
 
 # After successful submission
 
 * Create a new release with tag version on your GitHub repo
 * Copy and paste the contents of the relevant NEWS.md section into the release notes
-* Increment the version of the package in the DESCRIPTION file (to X.X.X.9000).
+* Increment the version of the package in the DESCRIPTION file (to X.X.X.9000)
