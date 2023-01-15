@@ -1,0 +1,113 @@
+---
+title: "Submission checks"
+output: html_notebook
+---
+
+# See if there are any new requirements, policies or recommendations
+
+* Check latest CRAN policies on http://cran.r-project.org/web/packages/policies.html
+* See the CRAN checklist for package submission: https://cran.r-project.org/web/packages/submission_checklist.html
+* Check for new edits in the R packages online book.
+
+Update R, Rstudio and all dependent R packages.
+* For the latter you can also use devtools::install_deps() which updates outdated dependencies.
+```{r}
+devtools::install_deps()
+```
+
+# Test your package again after all the updates and package modifications
+
+* Check unit tests with devtools::test()
+```{r}
+devtools::test()
+```
+
+* Check coverage of all your tests with devtools::test_coverage()
+```{r}
+devtools::test_coverage()
+```
+
+* Check examples with devtools::run_examples()
+```{r}
+devtools::run_examples()
+```
+
+* Update the documentation with devtools::document() and update potential vignettes
+```{r}
+devtools::document()
+```
+
+* Check all in local environment: devtools::check()
+```{r}
+devtools::check()
+```
+
+Check reverse dependencies:
+* Use now revdepcheck::revdep_check()
+```{r}
+revdepcheck::revdep_check()
+```
+
+* If that doesn’t work use: tools::dependsOnPkgs()
+```{r}
+tools::dependsOnPkgs()
+```
+
+# Test your package on different platforms/versions with devtools for Windows
+
+* devtools::check_win_release()
+```{r}
+devtools::check_win_release()
+```
+
+* devtools::check_win_devel()
+```{r}
+devtools::check_win_devel()
+```
+
+* devtools::check_win_oldrelease()
+```{r}
+devtools::check_win_oldrelease()
+```
+
+# Check spelling errors after finalising all file
+
+* devtools::spell_check()
+```{r}
+devtools::spell_check()
+```
+
+# Update cran-comments.md
+
+* Add a summary of the new changes (from the NEWS.md file)
+* Add a summary of the test environments
+* Add a summary of the R CMD check results (explain ERRORs, WARNINGs, NOTEs)
+* Add downstream dependencies
+
+# Run again a final local R CMD check
+
+* devtools::check()
+```{r}
+devtools::check()
+```
+
+
+# Re-submission
+
+* Update now the ‘Version’ field in the DESCRIPTION file
+  * After the final push to Github
+  * On the Github website you have still the development version (until CRAN acceptance)
+  * The new version for the submission
+* Replace in the NEWS.md file the development version with the new submitted version number
+
+# Submit the package to CRAN.
+
+* Use devtools::release() which performs more checks prior to submission
+* Confirm submission via link in the email.
+
+
+# After successful submission
+
+* Create a new release with tag version on your GitHub repo
+* Copy and paste the contents of the relevant NEWS.md section into the release notes
+* Increment the version of the package in the DESCRIPTION file (to X.X.X.9000).
