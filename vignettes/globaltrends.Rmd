@@ -277,7 +277,7 @@ export_score(object = 1, control = 1)
 purrr::map_dfr(c("coca cola", "microsoft"), export_doi, control = 1, type = "obs")
 #> # A tibble: 240 x 9
 #>    keyword   date       type       gini   hhi entropy control object locations
-#>    <chr>     <date>     <chr>     <dbl> <dbl>   <dbl>   <int>  <int> <chr>    
+#>    <chr>     <date>     <chr>     <dbl> <dbl>   <dbl>   <int>  <int> <chr>
 #>  1 coca cola 2010-01-01 score_obs 0.397 0.874  -0.938       1     1 countries
 #>  ...
 #> 10 coca cola 2010-10-01 score_obs 0.574 0.968  -0.303       1     1 countries
@@ -481,10 +481,10 @@ By default, `globaltrends` makes all downloads and computations for the *countri
 ```{r, eval = FALSE}
 # change locations -------------------------------------------------------------
 download_control(control = 1, locations = us_states)
-download_object(object = list(1,2), locations = us_states)
+download_object(object = list(1, 2), locations = us_states)
 download_mapping(control = 1, object = 2, locations = us_states)
 compute_score(control = 1, object = 2, locations = us_states)
-compute_doi(control = 1, object = list(1,2), locations = "us_states")
+compute_doi(control = 1, object = list(1, 2), locations = "us_states")
 ```
 
 ![](plot013.png){width=100%}

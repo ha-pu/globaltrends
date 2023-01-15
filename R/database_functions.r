@@ -50,7 +50,6 @@
 #' @importFrom RSQLite SQLite
 
 initialize_db <- function() {
-
   # create db folder -----------------------------------------------------------
   if (!dir.exists("db")) dir.create("db")
 
