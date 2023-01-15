@@ -3,6 +3,7 @@
 ## Test environments
 
 ## Test coverage
+The test coverage [devtools:::test_coverage()] of the package is 96%.
 
 ## R CMD check results
 
