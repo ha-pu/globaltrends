@@ -1,4 +1,4 @@
-#' @internal
+#' @keywords internal
 #' @noRd
 #' @importFrom utils globalVariables
 
