@@ -10,6 +10,7 @@ output: html_notebook
 * Check for new edits in the R packages online book.
 
 Update R, Rstudio and all dependent R packages.
+
 * For the latter you can also use devtools::install_deps() which updates outdated dependencies.
 ```{r}
 devtools::install_deps()
@@ -42,15 +43,11 @@ devtools::document()
 devtools::check()
 ```
 
-Check reverse dependencies:
-* Use now revdepcheck::revdep_check()
-```{r}
-revdepcheck::revdep_check()
-```
+# Check reverse dependencies
 
-* If that doesn’t work use: tools::dependsOnPkgs()
+* Check reverse dependencies with revdepcheck::revdep_check()
 ```{r}
-tools::dependsOnPkgs()
+revdepcheck::revdep_check(pkg = "..")
 ```
 
 # Test your package on different platforms/versions with devtools for Windows
@@ -72,7 +69,7 @@ devtools::check_win_oldrelease()
 
 # Check spelling errors after finalising all file
 
-* devtools::spell_check()
+* Use spellcheck with devtools::spell_check()
 ```{r}
 devtools::spell_check()
 ```
