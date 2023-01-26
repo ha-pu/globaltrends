@@ -5,6 +5,11 @@
 * Windows Server 2022, R-devel, 64 bit on R-Hub
 * Ubuntu Linux 20.04.1 LTS, R-release, GCC on R-Hub
 * Fedora Linux, R-devel, clang, gfortran on R-Hub
+* macOS-latest (release) on GitHub
+* windows-latest (release) on GitHub
+* ubuntu-latest (devel) on GitHub
+* ubuntu-latest (release) on GitHub
+* ubuntu-latest (oldrel-1) on GitHub
 
 ## Test coverage
 The test coverage [devtools:::test_coverage()] of the package is 96%.
@@ -33,7 +38,7 @@ Found the following files/directories:
 ```
 
 As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this
-could be due to a bug/crash in MiKTeX and can likely be ignored.The same issue
+could be due to a bug/crash in MiKTeX and can likely be ignored. The same note
 was reported in the initial submission.
 
 ## winbulider
@@ -48,7 +53,18 @@ URL: https://support.google.com/trends/answer/4359550
 ```
 
 Unlike indicated by winbuilder, the URL is available and can be accessed in the
-browser. The same issue was reported in the initial submission.
+browser. The same note was reported in the initial submission.
+
+```
+URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
+  From: inst/doc/globaltrends.html
+  Status: 429
+  Message: Too Many Requests
+```
+
+This does not signify an invalid URL but indicates that Google Trends blocks
+downloads due to too many requests.  The same note was reported in the initial
+submission.
 
 ---
 
