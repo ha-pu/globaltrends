@@ -38,6 +38,11 @@ devtools::run_examples()
 devtools::document()
 ```
 
+* Run styler
+```{r}
+styler::style_pkg()
+```
+
 * Check all in local environment: devtools::check()
 ```{r}
 devtools::check()
@@ -47,27 +52,31 @@ devtools::check()
 
 * Check reverse dependencies with revdepcheck::revdep_check()
 ```{r}
+# devtools::install_github("r-lib/revdepcheck")
 revdepcheck::revdep_check(pkg = "..")
 ```
 
-# Test your package on different platforms/versions with devtools for Windows
+# Test your package on different platforms/versions on ruub
+
+* devtools::check_rhub()
+```{r}
+devtools::check_rhub(pkg = "..", platforms = "fedora-clang-devel", email = "harald.puhr@gmail.com")
+```
+
+```{r}
+devtools::check_rhub(pkg = "..", platforms = "ubuntu-gcc-release", email = "harald.puhr@gmail.com")
+```
+
+```{r}
+devtools::check_rhub(pkg = "..", platforms = "windows-x86_64-devel", email = "harald.puhr@gmail.com")
+```
 
 * devtools::check_win_release()
 ```{r}
 devtools::check_win_release()
 ```
 
-* devtools::check_win_devel()
-```{r}
-devtools::check_win_devel()
-```
-
-* devtools::check_win_oldrelease()
-```{r}
-devtools::check_win_oldrelease()
-```
-
-# Check spelling errors after finalising all file
+# Check spelling errors after finalising all files
 
 * Use spellcheck with devtools::spell_check()
 ```{r}
@@ -100,6 +109,11 @@ devtools::check()
 # Submit the package to CRAN.
 
 * Use devtools::release() which performs more checks prior to submission
+
+```{r}
+devtools::release()
+```
+
 * Confirm submission via link in the email
 
 # After successful submission
