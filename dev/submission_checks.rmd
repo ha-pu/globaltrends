@@ -71,9 +71,9 @@ devtools::check_rhub(pkg = "..", platforms = "ubuntu-gcc-release", email = "hara
 devtools::check_rhub(pkg = "..", platforms = "windows-x86_64-devel", email = "harald.puhr@gmail.com")
 ```
 
-* devtools::check_win_release()
+* devtools::check_win_devel()
 ```{r}
-devtools::check_win_release()
+devtools::check_win_devel()
 ```
 
 # Check spelling errors after finalising all files
