@@ -554,7 +554,7 @@ Google filters the total population of search queries on its platform to those q
 
 # Appendix B
 
-## Relevelling of search volumes
+## Releveling of search volumes
 Google Trends does not provide raw search queries for downloads. Instead, Google Trends expresses the number of search queries as search volumes relative to the total number of search queries and then normalizes this data. To use Google Trends data, we first have to bring all search volumes to the same level.  
 For object keyword $ko$, included in object batch $bo$, Google Trends observes $SQ_{ko,bo,l,t}$ search queries for location $l$ at time $t$. The number of raw search queries is transformed to search volumes $SV_{ko,bo,l,t}$ by division through the total number of search queries for the given location-time pair $l,t$:
 
@@ -577,10 +577,10 @@ Since this normalization step is contingent on the maximum search volume within 
 \tag{3}
 \end{equation}
 
-After the relevelling, search volumes from all object batches use control batch $bc$ as basis for normalization.
+After the releveling, search volumes from all object batches use control batch $bc$ as basis for normalization.
 
 ## Computing search scores
-The outcome of the relevelling is not a de-normalization but that search volumes are releveled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ by search volumes for a set of control keywords $KC$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting control keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in KC$:
+The outcome of the releveling is not a de-normalization but that search volumes are releveled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ by search volumes for a set of control keywords $KC$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting control keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in KC$:
 
 \begin{equation}
 SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bc,l,t}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}.
