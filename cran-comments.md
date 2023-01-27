@@ -75,6 +75,8 @@ In this resubmission of the globaltrends package I have made the following updat
 * Changed time intervals for download functions
 * Added a function to clean up the SQLite file created by the package
 * Adapted functions in line with tidyselect version 1.2.0
+* Facilitated handling of location = "NA - Namibia"
+* Dropped dependency on `WDI` package
 
 Thanks!
 Harald Puhr
