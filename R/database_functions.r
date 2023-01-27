@@ -27,6 +27,8 @@
 #' @seealso
 #' * [start_db()]
 #' * [disconnect_db()]
+#' * [countries()]
+#' * [us_states()]
 #' * [example_keywords()]
 #' * [example_time()]
 #' * [example_control()]
@@ -170,29 +172,15 @@ initialize_db <- function() {
 
 .enter_location <- function(globaltrends_db) {
   # create countries -----------------------------------------------------------
-  countries <- WDI::WDI_data$country
-  countries <- as_tibble(countries)
-  countries <- filter(countries, .data$region != "Aggregates")
-  countries <- select(countries, location = iso2c)
-  countries <- WDI::WDI(country = countries$location, indicator = "NY.GDP.MKTP.KD", start = 2018, end = 2018)
-  countries <- bind_rows(countries, tibble(iso2c = "TW", country = "Taiwan", NY.GDP.MKTP.KD = 6.08186e+11, year = 2018))
-  countries <- mutate(countries, NY.GDP.MKTP.KD = case_when(is.na(.data$NY.GDP.MKTP.KD) ~ 0, TRUE ~ .data$NY.GDP.MKTP.KD))
-  countries <- mutate(countries, gdp_share = .data$NY.GDP.MKTP.KD / sum(.data$NY.GDP.MKTP.KD))
-  countries <- arrange(countries, -.data$gdp_share)
-  countries <- mutate(countries, gdp_cum_share = cumsum(.data$gdp_share))
-  countries <- filter(countries, .data$iso2c %in% unique(gtrendsR::countries$country_code) & .data$gdp_share >= 0.001)
   add_locations(
-    locations = countries$iso2c,
+    locations = globaltrends::countries,
     type = "countries",
     export = FALSE
   )
 
   # create us_states -----------------------------------------------------------
-  us_states <- gtrendsR::countries
-  us_states <- mutate_all(us_states, as.character)
-  us_states <- us_states[which(us_states$sub_code == "US-AL")[[1]]:which(us_states$sub_code == "US-DC")[[1]], ]
   add_locations(
-    locations = us_states$sub_code,
+    locations = globaltrends::us_states,
     type = "us_states",
     export = FALSE
   )

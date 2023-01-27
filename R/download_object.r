@@ -86,12 +86,10 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
         in_location <- "world"
       } else {
         in_location <- .x
-        in_location[in_location == "NA"] <- "NX" # handle namibia
       }
       if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
         qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == in_location)
         qry_control <- collect(qry_control)
-        in_location[in_location == "NX"] <- "NA" # handle namibia
         if (nrow(qry_control) > 0) {
           terms_con <- summarise(
             group_by(qry_control, .data$keyword),
@@ -111,7 +109,6 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
                 batch_c = control,
                 batch_o = object
               )
-              out$location[out$location == "NA"] <- "NX" # handle namibia
               dbWriteTable(conn = gt.env$globaltrends_db, name = "data_object", value = out, append = TRUE)
               success <- TRUE
               break()
