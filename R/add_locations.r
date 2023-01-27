@@ -64,9 +64,11 @@ add_locations <- function(locations, type, export = TRUE) {
   # handle Namibia
   if (any(locations == "NA")) {
     locations <- locations[locations != "NA"]
-    warning("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.")
+   
     if (length(locations) == 0) {
-      stop("The argument 'locations' has lenght 0!")
+      stop("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!")
+    } else {
+      warning("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.")
     }
   }
 
