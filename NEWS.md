@@ -1,5 +1,5 @@
 # globaltrends v.0.0.12.9000
-* Set minimum dependency of `stats` and `utils` to version `2.15.1` in line with minimum `R` dependency
+* Set minimum dependency of `stats` and `utils` to version `3.5.0` in line with minimum `R` dependency
 * Store globaltrends logo in the *vignettes* folder
 * Add explanation of Google's data preparation methodology to vignette
 * Change wait intervals for status responses != 200 and add message about automatic retry of download
@@ -16,6 +16,8 @@
 	* `tidyr::pivot_wider`
 	* `tidyr::unnest`
 * Replaced `size` with `linewidth` to comply with `ggplot2 3.4.0`
+* Facilitated handling of location = "NA - Namibia", the function `add_locations` does automatically drop the location
+* Dropped dependency on `WDI` package, references to `WDI::WDI_data` were replaced by data objects `countries` and `countries_wdi`
 
 # globaltrends v.0.0.12
 * Stop direct exports from functions to .GlobalEnv

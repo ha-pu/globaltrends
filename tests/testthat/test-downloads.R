@@ -8,6 +8,8 @@ Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
+test_locations <- c("US", "CN", "JP")
+
 add_control_keyword(
   keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
   time = "2010-01-01 2019-12-31"
@@ -21,7 +23,7 @@ add_object_keyword(
 # try download object ----------------------------------------------------------
 test_that("download_object1", {
   out <- expect_message(
-    download_object(object = 1, locations = gt.env$countries[[1]]),
+    download_object(object = 1, locations = test_locations[[1]]),
     "Download for object data failed.\nThere is no data in 'data_control' for control batch 1 and location US."
   )
 })
@@ -31,7 +33,7 @@ test_that("download_control1", {
   skip_on_cran()
   skip_if_offline()
 
-  out <- capture_messages(download_control(control = 1, locations = gt.env$countries[1:3]))
+  out <- capture_messages(download_control(control = 1, locations = test_locations[1:3]))
 
   expect_match(
     out,
@@ -60,7 +62,7 @@ test_that("download_control2", {
   skip_if_offline()
 
   expect_message(
-    download_control(control = 1, locations = gt.env$countries[[1]]),
+    download_control(control = 1, locations = test_locations[[1]]),
     "Control data already available | control: 1 | location: US [1/1]"
   )
 })
@@ -108,7 +110,7 @@ test_that("download_object2", {
   skip_on_cran()
   skip_if_offline()
 
-  out <- capture_messages(download_object(object = 1, locations = gt.env$countries[1:3]))
+  out <- capture_messages(download_object(object = 1, locations = test_locations[1:3]))
 
   expect_match(
     out,
@@ -137,7 +139,7 @@ test_that("download_object3", {
   skip_if_offline()
 
   expect_message(
-    download_object(object = 1, locations = gt.env$countries[[1]]),
+    download_object(object = 1, locations = test_locations[[1]]),
     "Object data already available | object: 1 | control: 1 | location: US [1/1]"
   )
 })

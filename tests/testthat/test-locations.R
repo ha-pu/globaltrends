@@ -198,78 +198,17 @@ test_that("plot_box", {
 
 # namibia ----------------------------------------------------------------------
 test_that("namibia1", {
-  expect_message(
-    add_locations("NA", "test"),
-    "Successfully created new location set test \\(NA\\)\\."
+  expect_warning(
+    add_locations(c("NA", "AT"), "test"),
+    "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped."
   )
-
-  out <- gt.env$tbl_locations %>%
-    filter(type == "test") %>%
-    collect() %>%
-    pull(location)
-  expect_equal(out, "NX")
 })
 
 test_that("namibia2", {
-  skip_on_cran()
-  skip_if_offline()
-
-  add_control_keyword(keyword = "google", time = "2010-01-01 2020-12-31")
-  expect_message(
-    download_control(control = 2, locations = gt.env$test),
-    "Successfully downloaded control data | control: 2 | location: NA [1/1]"
+  expect_error(
+    add_locations("NA", "test"),
+    "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!"
   )
-
-  out <- gt.env$tbl_control %>%
-    filter(batch == 2) %>%
-    collect()
-  expect_equal(nrow(out), 132)
-  expect_equal(out$location[[1]], "NX")
-
-  out <- export_control(location = gt.env$test, control = 2)
-  expect_equal(nrow(out), 132)
-  expect_equal(out$location[[1]], "NA")
-})
-
-test_that("namibia3", {
-  skip_on_cran()
-  skip_if_offline()
-
-  add_object_keyword(keyword = "football", time = "2010-01-01 2020-12-31")
-  expect_message(
-    download_object(object = 2, control = 2, locations = gt.env$test),
-    "Successfully downloaded object data | object: 2 | control: 2 | location: NA [1/1]"
-  )
-
-  out <- gt.env$tbl_object %>%
-    filter(batch_c == 2) %>%
-    collect()
-  expect_equal(nrow(out), 264)
-  expect_equal(out$location[[1]], "NX")
-
-  out <- export_object(location = gt.env$test, control = 2)
-  expect_equal(nrow(out), 264)
-  expect_equal(out$location[[1]], "NA")
-})
-
-test_that("namibia4", {
-  skip_on_cran()
-  skip_if_offline()
-
-  expect_message(
-    compute_score(object = 2, control = 2, locations = gt.env$test),
-    "Successfully computed search score | control: 2 | object: 2 | location: NA [1/1]"
-  )
-
-  out <- gt.env$tbl_score %>%
-    filter(batch_c == 2) %>%
-    collect()
-  expect_equal(nrow(out), 132)
-  expect_equal(out$location[[1]], "NX")
-
-  out <- export_score(location = gt.env$test, control = 2)
-  expect_equal(nrow(out), 132)
-  expect_equal(out$location[[1]], "NA")
 })
 
 # signals ----------------------------------------------------------------------

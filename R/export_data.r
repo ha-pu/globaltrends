@@ -100,7 +100,6 @@
 #' @importFrom glue glue
 
 export_control <- function(control = NULL, location = NULL) {
-  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_control,
     in_batch = unlist(control),
@@ -108,7 +107,6 @@ export_control <- function(control = NULL, location = NULL) {
   )
   out <- filter(out, .data$location != "world")
   out <- rename(out, control = batch)
-  out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
 
@@ -129,7 +127,6 @@ export_control_global <- function(control = NULL) {
 #' @export
 
 export_object <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
-  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -139,7 +136,6 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
   )
   out <- filter(out, .data$location != "world")
   out <- rename(out, object = batch_o, control = batch_c)
-  out$location[out$location == "NX"] <- "NA" # handle namibia
   return(out)
 }
 
@@ -162,7 +158,6 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 #' @export
 
 export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
-  if (!is.null(location)) location[location == "NA"] <- "NX" # handle namibia
   out <- .export_data(
     table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
@@ -173,7 +168,6 @@ export_score <- function(keyword = NULL, object = NULL, control = NULL, location
   out <- filter(out, .data$location != "world" & .data$synonym == 0)
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
-  out$location[out$location == "NX"] <- "NA" # handle namibia
   class(out) <- c("exp_score", class(out))
   return(out)
 }

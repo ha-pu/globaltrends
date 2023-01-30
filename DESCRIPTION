@@ -22,7 +22,7 @@ License: MIT + file LICENSE
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Depends: 
-    R (>= 2.15.1)
+    R (>= 3.5.0)
 Imports:
     DBI (>= 1.1.0),
     dbplyr (>= 1.4.4),
@@ -38,12 +38,11 @@ Imports:
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
     RSQLite (>= 2.2.0),
-    stats (>= 2.15.1),
+    stats (>= 3.5.0),
     stringr (>= 1.4.0),
     tibble (>= 3.0.3),
     tidyr (>= 1.0.0),
-    utils (>= 2.15.1),
-    WDI (>= 2.7.1),
+    utils (>= 3.5.0),
     zoo (>= 1.8.8)
 Suggests: 
     knitr (>= 1.29),
