@@ -314,8 +314,6 @@
 #' * UZ
 #' * VN
 #' * ZA
-#' @seealso
-#' * [WDI::WDI()]
 #' @name countries
 "countries"
 
@@ -324,8 +322,6 @@
 #' @description
 #' A data.frame that includes ISO2 codes and country names for all countries and
 #' locations in the World Bank's World Development Indicators database.
-#' @seealso
-#' * [WDI::WDI_data()]
 #' @name countries_wdi
 "countries_wdi"
 

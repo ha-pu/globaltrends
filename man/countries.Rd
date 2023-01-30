@@ -88,9 +88,4 @@ World Development Indicators database. The data includes:
 \item ZA
 }
 }
-\seealso{
-\itemize{
-\item \code{\link[WDI:WDI]{WDI::WDI()}}
-}
-}
 \keyword{datasets}

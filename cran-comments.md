@@ -41,6 +41,17 @@ As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this
 could be due to a bug/crash in MiKTeX and can likely be ignored. The same note
 was reported in the initial submission.
 
+### Note 2
+There is one NOTE that is only found on Fedora Linux (R-devel, clang, gfortran):
+
+```
+* checking HTML version of manual ... NOTE
+  Skipping checking HTML validation: no command 'tidy' found
+```
+
+As noted in [R-hub issue #548](https://github.com/r-hub/rhub/issues/548), this
+issue appears to be independent of the configuration on the local machine.
+
 ## winbulider
 Winbuilder might show errors regarding (possible) invalid URLs:
 

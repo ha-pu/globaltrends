@@ -14,9 +14,4 @@ countries_wdi
 A data.frame that includes ISO2 codes and country names for all countries and
 locations in the World Bank's World Development Indicators database.
 }
-\seealso{
-\itemize{
-\item \code{\link[WDI:WDI_data]{WDI::WDI_data()}}
-}
-}
 \keyword{datasets}
