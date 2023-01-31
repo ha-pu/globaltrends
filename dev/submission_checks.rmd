@@ -65,15 +65,7 @@ devtools::check_win_devel()
 
 * devtools::check_rhub()
 ```{r}
-devtools::check_rhub(pkg = "..", platforms = "fedora-clang-devel", email = "harald.puhr@gmail.com")
-```
-
-```{r}
-devtools::check_rhub(pkg = "..", platforms = "ubuntu-gcc-release", email = "harald.puhr@gmail.com")
-```
-
-```{r}
-devtools::check_rhub(pkg = "..", platforms = "windows-x86_64-devel", email = "harald.puhr@gmail.com")
+devtools::check_rhub(pkg = "..", email = "harald.puhr@gmail.com")
 ```
 
 # Check spelling errors after finalising all files
