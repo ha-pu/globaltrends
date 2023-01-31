@@ -45,6 +45,8 @@ initialize_db()
 \itemize{
 \item \code{\link[=start_db]{start_db()}}
 \item \code{\link[=disconnect_db]{disconnect_db()}}
+\item \code{\link[=countries]{countries()}}
+\item \code{\link[=us_states]{us_states()}}
 \item \code{\link[=example_keywords]{example_keywords()}}
 \item \code{\link[=example_time]{example_time()}}
 \item \code{\link[=example_control]{example_control()}}

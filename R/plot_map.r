@@ -73,9 +73,7 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
     }
     warning(text)
   } else {
-    data_wdi <- as_tibble(WDI::WDI_data$country)
-
-    data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
+    data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"))
     data <- select(
       data,
       country,
@@ -133,9 +131,7 @@ plot_map.abnorm_score <- function(data, ...) {
   data <- group_by(data, .data$location)
   data <- summarise(data, score_abnorm = mean(.data$score_abnorm), .groups = "drop")
 
-  data_wdi <- as_tibble(WDI::WDI_data$country)
-
-  data <- inner_join(data_wdi, data, by = c("iso2c" = "location"))
+  data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"))
   data <- select(
     data,
     country,

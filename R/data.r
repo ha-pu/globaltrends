@@ -236,3 +236,150 @@
 #' * [dplyr::tbl()]
 #' @name data_doi
 "example_doi"
+
+#' countries
+#'
+#' @description
+#' A character vector that includes ISO2 codes for all countries with a share in
+#' global GDP >= 0.1\% in 2018. Data on GDP is retrieved from the World Bank's
+#' World Development Indicators database. The data includes:
+#' * AE
+#' * AO
+#' * AR
+#' * AT
+#' * AU
+#' * BD
+#' * BE
+#' * BR
+#' * CA
+#' * CH
+#' * CL
+#' * CN
+#' * CO
+#' * CU
+#' * CZ
+#' * DE
+#' * DK
+#' * DO
+#' * DZ
+#' * EC
+#' * EG
+#' * ES
+#' * ET
+#' * FI
+#' * FR
+#' * GB
+#' * GR
+#' * HK
+#' * HU
+#' * ID
+#' * IE
+#' * IL
+#' * IN
+#' * IQ
+#' * IR
+#' * IT
+#' * JP
+#' * KR
+#' * KW
+#' * KZ
+#' * LK
+#' * MA
+#' * MX
+#' * MY
+#' * NG
+#' * NL
+#' * NO
+#' * NZ
+#' * OM
+#' * PE
+#' * PH
+#' * PK
+#' * PL
+#' * PR
+#' * PT
+#' * QA
+#' * RO
+#' * RU
+#' * SA
+#' * SD
+#' * SE
+#' * SG
+#' * SK
+#' * TH
+#' * TR
+#' * TW
+#' * UA
+#' * US
+#' * UZ
+#' * VN
+#' * ZA
+#' @name countries
+"countries"
+
+#' countries_wdi
+#'
+#' @description
+#' A data.frame that includes ISO2 codes and country names for all countries and
+#' locations in the World Bank's World Development Indicators database.
+#' @name countries_wdi
+"countries_wdi"
+
+#' us_states
+#'
+#' @description
+#' A character vector that includes ISO2 codes for all US federal states and
+#' Washington DC. The data includes:
+#' * US-AL
+#' * US-AK
+#' * US-AZ
+#' * US-AR
+#' * US-CA
+#' * US-CO
+#' * US-CT
+#' * US-DE
+#' * US-FL
+#' * US-GA
+#' * US-HI
+#' * US-ID
+#' * US-IL
+#' * US-IN
+#' * US-IA
+#' * US-KS
+#' * US-KY
+#' * US-LA
+#' * US-ME
+#' * US-MD
+#' * US-MA
+#' * US-MI
+#' * US-MN
+#' * US-MS
+#' * US-MO
+#' * US-MT
+#' * US-NE
+#' * US-NV
+#' * US-NH
+#' * US-NJ
+#' * US-NM
+#' * US-NY
+#' * US-NC
+#' * US-ND
+#' * US-OH
+#' * US-OK
+#' * US-OR
+#' * US-PA
+#' * US-RI
+#' * US-SC
+#' * US-SD
+#' * US-TN
+#' * US-TX
+#' * US-UT
+#' * US-VT
+#' * US-VA
+#' * US-WA
+#' * US-WV
+#' * US-WI
+#' * US-WY
+#' * US-DC
+#' @name us_states
+"us_states"

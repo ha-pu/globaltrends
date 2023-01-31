@@ -8,12 +8,14 @@ Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
+test_locations <- c("US", "CN", "JP")
+
 # enter data -------------------------------------------------------------------
-data <- filter(example_control, batch == 1 & location %in% c(gt.env$countries[1:2], "world"))
+data <- filter(example_control, batch == 1 & location %in% c(test_locations[1:2], "world"))
 dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(example_object, batch_c == 1 & batch_o %in% 1:3 & location %in% c(gt.env$countries[1:2], "world"))
+data <- filter(example_object, batch_c == 1 & batch_o %in% 1:3 & location %in% c(test_locations[1:2], "world"))
 dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
-data <- filter(example_score, batch_c == 1 & batch_o %in% 1:3 & location %in% c(gt.env$countries[1:2], "world"))
+data <- filter(example_score, batch_c == 1 & batch_o %in% 1:3 & location %in% c(test_locations[1:2], "world"))
 dbWriteTable(gt.env$globaltrends_db, "data_score", data, append = TRUE)
 data <- filter(example_doi, batch_c == 1 & batch_o %in% 1:3 & locations == "countries")
 dbWriteTable(gt.env$globaltrends_db, "data_doi", data, append = TRUE)

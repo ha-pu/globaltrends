@@ -14,6 +14,8 @@
 #' and computation functions check whether data for a location already exists.
 #' Therefore, data will not be duplicated when location data already exists from
 #' another set.
+#' Unfortunately, the Google Trends API cannot handle the location
+#' "NA - Namibia". Therefore, the location will be dropped automatically.
 #'
 #' @param locations Locations that should be added as set of locations. Vector of
 #' type `character`.
@@ -59,15 +61,22 @@ add_locations <- function(locations, type, export = TRUE) {
     if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided {.x}."))
   })
 
-  # handle namibia
-  locations[locations == "NA"] <- "NX"
+  # handle Namibia
+  if (any(locations == "NA")) {
+    locations <- locations[locations != "NA"]
+
+    if (length(locations) == 0) {
+      stop("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!")
+    } else {
+      warning("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.")
+    }
+  }
 
   data <- tibble(location = locations, type = type)
   dbWriteTable(conn = gt.env$globaltrends_db, name = "data_locations", value = data, append = TRUE)
 
   if (export) .export_locations()
 
-  locations[locations == "NX"] <- "NA"
   message(glue("Successfully created new location set {type} ({locations_collapse}).", locations_collapse = paste(locations, collapse = ", ")))
 }
 
@@ -86,12 +95,6 @@ add_locations <- function(locations, type, export = TRUE) {
     out <- collect(out)
     out <- pull(out, .data$location)
     return(out)
-  })
-
-  # handle namibia
-  lst_locations <- map(lst_locations, ~ {
-    .x[.x == "NX"] <- "NA"
-    return(.x)
   })
 
   names(lst_locations) <- locations
