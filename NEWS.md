@@ -15,6 +15,7 @@
 	* `tidyr::pivot_longer`
 	* `tidyr::pivot_wider`
 	* `tidyr::unnest`
+* As a consequence of the changes in `tidyselect 1.2.0`, several objects are defined as global variables (see `globals.r` for details) 
 * Replaced `size` with `linewidth` to comply with `ggplot2 3.4.0`
 * Facilitated handling of location = "NA - Namibia", the function `add_locations` does automatically drop the location
 * Dropped dependency on `WDI` package, references to `WDI::WDI_data` were replaced by data objects `countries` and `countries_wdi`
