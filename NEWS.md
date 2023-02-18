@@ -1,4 +1,4 @@
-# globaltrends v.0.0.13
+# globaltrends v.0.0.12.9000
 * Set minimum dependency of `stats` and `utils` to version `3.5.0` in line with minimum `R` dependency
 * Store globaltrends logo in the *vignettes* folder
 * Add explanation of Google's data preparation methodology to vignette
