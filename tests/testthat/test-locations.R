@@ -8,11 +8,13 @@ Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
+location_set <- c("AT", "DE", "CH", "CN", "JP", "US")
+
 # add location set -------------------------------------------------------------
 test_that("add_loc1", {
   expect_message(
     add_locations(
-      locations = c("AT", "DE", "CH"),
+      locations = location_set[1:3],
       type = "dach",
       export = FALSE
     ),
@@ -26,7 +28,7 @@ test_that("add_loc1", {
 
   expect_message(
     add_locations(
-      locations = c("CN", "JP"),
+      locations = location_set[4:5],
       type = "asia",
       export = TRUE
     ),
@@ -35,7 +37,7 @@ test_that("add_loc1", {
 
   expect_identical(
     gt.env$asia,
-    c("CN", "JP")
+    location_set[4:5]
   )
 })
 
@@ -45,12 +47,12 @@ start_db()
 test_that("add_loc2", {
   expect_identical(
     gt.env$dach,
-    c("AT", "DE", "CH")
+    location_set[1:3]
   )
 
   expect_identical(
     gt.env$asia,
-    c("CN", "JP")
+    location_set[4:5]
   )
 })
 
@@ -89,7 +91,7 @@ test_that("compute_score1", {
 
   expect_identical(
     out$location,
-    c("CN", "JP")
+    location_set[4:5]
   )
 
   expect_equal(
@@ -107,7 +109,7 @@ test_that("compute_score2", {
 
   expect_identical(
     out$location,
-    c("CN", "JP", "US")
+    location_set[4:6]
   )
 
   expect_equal(
@@ -160,12 +162,12 @@ test_that("export_score", {
 
   expect_equal(
     unique(out1$location),
-    c("CN", "JP")
+    location_set[4:5]
   )
 
   expect_equal(
     unique(out2$location),
-    c("CN", "JP", "US")
+    location_set[4:6]
   )
 })
 
