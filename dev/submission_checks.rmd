@@ -56,7 +56,7 @@ devtools::check()
 revdepcheck::revdep_check(pkg = "..")
 ```
 
-# Test your package on different platforms/versions on ruub
+# Test your package on different platforms/versions on rhub
 
 * devtools::check_win_devel()
 ```{r}
