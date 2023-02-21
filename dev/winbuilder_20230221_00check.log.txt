@@ -15,11 +15,6 @@ Maintainer: 'Harald Puhr <harald.puhr@gmail.com>'
 
 Version contains large components (0.0.12.9000)
 
-Package CITATION file contains call(s) to old-style personList() or
-as.personList().  Please use c() on person objects instead.
-Package CITATION file contains call(s) to old-style citEntry().  Please
-use bibentry() instead.
-
 Found the following (possibly) invalid URLs:
   URL: https://ssrn.com/abstract=3969013 (moved to https://www.ssrn.com/abstract=3969013)
     From: inst/doc/globaltrends.html
@@ -83,13 +78,13 @@ No news entries found.
 * checking files in 'vignettes' ... OK
 * checking examples ... [6s] OK
 * checking for unstated dependencies in 'tests' ... OK
-* checking tests ... [147s] OK
+* checking tests ... [144s] OK
   Running 'test_functions.r' [0s]
-  Running 'testthat.r' [146s]
+  Running 'testthat.r' [143s]
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes in 'inst/doc' ... OK
-* checking re-building of vignette outputs ... [5s] OK
-* checking PDF version of manual ... [32s] OK
+* checking re-building of vignette outputs ... [4s] OK
+* checking PDF version of manual ... [33s] OK
 * checking HTML version of manual ... [6s] OK
 * checking for detritus in the temp directory ... OK
 * DONE
