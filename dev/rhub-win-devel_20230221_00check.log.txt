@@ -1,0 +1,1082 @@
+Started by user r-hub Jenkins admin
+Building remotely on win2022.iotwjus4p5merbek114fbzbqud.dx.internal.cloudapp.net-8ad97dc7 (slave rtools4 swarm windows-ucrt windows) in workspace C:\Users\rhub\workspace\globaltrends_0.0.12.9000.tar.gz-463cb1c46483424b8ace768229e5cae3
+[globaltrends_0.0.12.9000.tar.gz-463cb1c46483424b8ace768229e5cae3] $ powershell.exe -NonInteractive -ExecutionPolicy ByPass "& 'C:\Users\rhub\AppData\Local\Temp\2\hudson5195471277323655939.ps1'"
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"status":"ok"}
+RawContent        : HTTP/1.1 200 OK
+                    Transfer-Encoding: chunked
+                    Connection: keep-alive
+                    Vary: Accept-Encoding
+                    Content-Type: application/json
+                    Date: Tue, 21 Feb 2023 15:22:35 GMT
+                    Set-Cookie: r-hub frontend=s%3A98447eaf...
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked], [Connection, keep-alive], [Vary, Accept-Encoding], [Content-Type, 
+                    application/json]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : System.__ComObject
+RawContentLength  : 15
+
+VERBOSE: Checking globaltrends_0.0.12.9000.tar.gz-463cb1c46483424b8ace768229e5cae3
+>>>>>============== Creating new user
+VERBOSE: Creating new user...
+The command completed successfully.
+
+
+PSPath            : Microsoft.PowerShell.Core\FileSystem::C:\Users\USERuZYRGXzBkj\.R
+PSParentPath      : Microsoft.PowerShell.Core\FileSystem::C:\Users\USERuZYRGXzBkj
+PSChildName       : .R
+PSDrive           : C
+PSProvider        : Microsoft.PowerShell.Core\FileSystem
+PSIsContainer     : True
+Name              : .R
+FullName          : C:\Users\USERuZYRGXzBkj\.R
+Parent            : USERuZYRGXzBkj
+Exists            : True
+Root              : C:\
+Extension         : .R
+CreationTime      : 2/21/2023 4:23:23 PM
+CreationTimeUtc   : 2/21/2023 3:23:23 PM
+LastAccessTime    : 2/21/2023 4:23:23 PM
+LastAccessTimeUtc : 2/21/2023 3:23:23 PM
+LastWriteTime     : 2/21/2023 4:23:23 PM
+LastWriteTimeUtc  : 2/21/2023 3:23:23 PM
+Attributes        : Directory
+Mode              : d-----
+BaseName          : .R
+Target            : {}
+LinkType          : 
+
+>>>>>============== Downloading and unpacking package file
+VERBOSE: Downloading https://builder.r-hub.io/file/28efe41636af4d48897e21b3b35f92a6
+VERBOSE: GET https://builder.r-hub.io/file/28efe41636af4d48897e21b3b35f92a6 with 0-byte payload
+VERBOSE: received 2150878-byte response of content type application/octet-stream
+VERBOSE: Getting R version from symbolic name...
+VERBOSE: Starting sub-process as new user...
+
+Name                           Value                                                                                   
+----                           -----                                                                                   
+ALLUSERSPROFILE                C:\ProgramData                                                                          
+APPDATA                        C:\Users\USERuZYRGXzBkj\AppData\Roaming                                                 
+CommonProgramFiles             C:\Program Files (x86)\Common Files                                                     
+CommonProgramFiles(x86)        C:\Program Files (x86)\Common Files                                                     
+CommonProgramW6432             C:\Program Files\Common Files                                                           
+COMPUTERNAME                   win2022                                                                                 
+ComSpec                        C:\Windows\system32\cmd.exe                                                             
+DriverData                     C:\Windows\System32\Drivers\DriverData                                                  
+home                           C:\Users\USERuZYRGXzBkj                                                                 
+HOMEDRIVE                      C:                                                                                      
+HOMEPATH                       \Users\USERuZYRGXzBkj                                                                   
+LOCALAPPDATA                   C:\Users\USERuZYRGXzBkj\AppData\Local                                                   
+MIKTEX_ENV_EXCEPTION_PATH      c:\temp                                                                                 
+NUMBER_OF_PROCESSORS           2                                                                                       
+OS                             Windows_NT                                                                              
+Path                           C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windo...
+PATHEXT                        .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL                              
+PROCESSOR_ARCHITECTURE         x86                                                                                     
+PROCESSOR_ARCHITEW6432         AMD64                                                                                   
+PROCESSOR_IDENTIFIER           Intel64 Family 6 Model 85 Stepping 7, GenuineIntel                                      
+PROCESSOR_LEVEL                6                                                                                       
+PROCESSOR_REVISION             5507                                                                                    
+ProgramData                    C:\ProgramData                                                                          
+ProgramFiles                   C:\Program Files (x86)                                                                  
+ProgramFiles(x86)              C:\Program Files (x86)                                                                  
+ProgramW6432                   C:\Program Files                                                                        
+PSExecutionPolicyPreference    Bypass                                                                                  
+PSModulePath                   C:\Users\USERuZYRGXzBkj\Documents\WindowsPowerShell\Modules;C:\Program Files (x86)\Wi...
+PUBLIC                         C:\Users\Public                                                                         
+RTOOLS40_HOME                  C:\rtools40                                                                             
+RTOOLS42_HOME                  C:\rtools42                                                                             
+RTOOLS43_HOME                  C:\rtools43                                                                             
+SystemDrive                    C:                                                                                      
+SystemRoot                     C:\Windows                                                                              
+TEMP                           C:\Users\USERUZ~1\AppData\Local\Temp                                                    
+TMP                            C:\Users\USERUZ~1\AppData\Local\Temp                                                    
+USERDOMAIN                     win2022                                                                                 
+USERNAME                       USERuZYRGXzBkj                                                                          
+USERPROFILE                    C:\Users\USERuZYRGXzBkj                                                                 
+windir                         C:\Windows                                                                              
+
+
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+> dir.create(Sys.getenv('R_LIBS_USER'), showWarnings = FALSE, recursive = TRUE)
+> 
+> 
+
+
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+> install.packages('BiocManager')
+(as 'lib' is unspecified)
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/BiocManager_1.30.19.zip'
+Installing package into 'C:/Users/USERuZYRGXzBkj/AppData/Local/R/win-library/4.3'
+Content type 'application/zip' length 336332 bytes (328 KB)
+downloaded 328 KB
+==================================================
+
+package 'BiocManager' successfully unpacked and MD5 sums checked
+	C:\Users\USERuZYRGXzBkj\AppData\Local\Temp\RtmpAvFuwY\downloaded_packages
+> 
+The downloaded binary packages are in
+
+> 
+
+
+>>>>>============== Querying package dependencies
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+> source('install-github.R')$value('r-lib/remotes@r-hub')
+Downloading GitHub repo r-lib/remotes@r-hub
+Running `R CMD build`...
+* checking for file 'C:\Users\USERuZYRGXzBkj\AppData\Local\Temp\RtmpuoC2cw\remotescd85913949\r-lib-remotes-6e26f33/DESCRIPTION' ... OK
+* preparing 'remotes':
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building 'remotes_2.1.1.9000.tar.gz'
+Installing package into 'C:/Users/USERuZYRGXzBkj/AppData/Local/R/win-library/4.3'
+(as 'lib' is unspecified)
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+* installing *source* package 'remotes' ...
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+** help
+*** installing help indices
+** building package indices
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+> 
+> 
+
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (remotes)
+
+>>>>>============== Installing package dependencies
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+> remotes::install_deps('globaltrends_0.0.12.9000.tar.gz',dependencies=TRUE,INSTALL_opts='--no-multiarch')
+vctrs        (NA -> 0.5.2     ) [CRAN]
+cli          (NA -> 3.6.0     ) [CRAN]
+glue         (NA -> 1.6.2     ) [CRAN]
+lifecycle    (NA -> 1.0.3     ) [CRAN]
+rlang        (NA -> 1.0.6     ) [CRAN]
+generics     (NA -> 0.1.3     ) [CRAN]
+magrittr     (NA -> 2.0.3     ) [CRAN]
+pillar       (NA -> 1.8.1     ) [CRAN]
+R6           (NA -> 2.5.1     ) [CRAN]
+tibble       (NA -> 3.1.8     ) [CRAN]
+tidyselect   (NA -> 1.2.0     ) [CRAN]
+fansi        (NA -> 1.0.4     ) [CRAN]
+pkgconfig    (NA -> 2.0.3     ) [CRAN]
+utf8         (NA -> 1.2.3     ) [CRAN]
+withr        (NA -> 2.5.0     ) [CRAN]
+gtable       (NA -> 0.3.1     ) [CRAN]
+isoband      (NA -> 0.2.7     ) [CRAN]
+scales       (NA -> 1.2.1     ) [CRAN]
+farver       (NA -> 2.1.1     ) [CRAN]
+labeling     (NA -> 0.4.2     ) [CRAN]
+munsell      (NA -> 0.5.0     ) [CRAN]
+RColorBrewer (NA -> 1.1-3     ) [CRAN]
+colorspace   (NA -> 2.1-0     ) [CRAN]
+viridisLite  (NA -> 0.4.1     ) [CRAN]
+zoo          (NA -> 1.8-11    ) [CRAN]
+quadprog     (NA -> 1.5-8     ) [CRAN]
+quantmod     (NA -> 0.4.20    ) [CRAN]
+xts          (NA -> 0.13.0    ) [CRAN]
+TTR          (NA -> 0.24.3    ) [CRAN]
+curl         (NA -> 5.0.0     ) [CRAN]
+Rcpp         (NA -> 1.0.10    ) [CRAN]
+BH           (NA -> 1.81.0-1  ) [CRAN]
+bit          (NA -> 4.0.5     ) [CRAN]
+cpp11        (NA -> 0.4.3     ) [CRAN]
+fastmap      (NA -> 1.1.0     ) [CRAN]
+stringi      (NA -> 1.7.12    ) [CRAN]
+xfun         (NA -> 0.37      ) [CRAN]
+cachem       (NA -> 1.0.6     ) [CRAN]
+htmltools    (NA -> 0.5.4     ) [CRAN]
+jsonlite     (NA -> 1.8.4     ) [CRAN]
+sass         (NA -> 0.4.5     ) [CRAN]
+jquerylib    (NA -> 0.1.4     ) [CRAN]
+base64enc    (NA -> 0.1-3     ) [CRAN]
+memoise      (NA -> 2.0.1     ) [CRAN]
+mime         (NA -> 0.12      ) [CRAN]
+ellipsis     (NA -> 0.3.2     ) [CRAN]
+digest       (NA -> 0.6.31    ) [CRAN]
+fs           (NA -> 1.6.1     ) [CRAN]
+rappdirs     (NA -> 0.3.3     ) [CRAN]
+evaluate     (NA -> 0.20      ) [CRAN]
+highr        (NA -> 0.10      ) [CRAN]
+yaml         (NA -> 2.3.7     ) [CRAN]
+ps           (NA -> 1.7.2     ) [CRAN]
+processx     (NA -> 3.8.0     ) [CRAN]
+rprojroot    (NA -> 2.0.3     ) [CRAN]
+crayon       (NA -> 1.5.2     ) [CRAN]
+desc         (NA -> 1.4.2     ) [CRAN]
+rematch2     (NA -> 2.1.2     ) [CRAN]
+assertthat   (NA -> 0.2.1     ) [CRAN]
+diffobj      (NA -> 0.3.5     ) [CRAN]
+blob         (NA -> 1.2.3     ) [CRAN]
+DBI          (NA -> 1.1.3     ) [CRAN]
+dplyr        (NA -> 1.1.0     ) [CRAN]
+purrr        (NA -> 1.0.1     ) [CRAN]
+fracdiff     (NA -> 1.5-2     ) [CRAN]
+ggplot2      (NA -> 3.4.1     ) [CRAN]
+lmtest       (NA -> 0.9-40    ) [CRAN]
+timeDate     (NA -> 4022.108  ) [CRAN]
+tseries      (NA -> 0.10-53   ) [CRAN]
+urca         (NA -> 1.3-3     ) [CRAN]
+RcppArmad... (NA -> 0.11.4.4.0) [CRAN]
+anytime      (NA -> 0.3.9     ) [CRAN]
+timechange   (NA -> 0.2.0     ) [CRAN]
+bit64        (NA -> 4.0.5     ) [CRAN]
+plogr        (NA -> 0.2.0     ) [CRAN]
+bslib        (NA -> 0.4.2     ) [CRAN]
+stringr      (NA -> 1.5.0     ) [CRAN]
+knitr        (NA -> 1.42      ) [CRAN]
+tinytex      (NA -> 0.44      ) [CRAN]
+brio         (NA -> 1.1.3     ) [CRAN]
+callr        (NA -> 3.7.3     ) [CRAN]
+pkgload      (NA -> 1.3.2     ) [CRAN]
+praise       (NA -> 1.0.0     ) [CRAN]
+waldo        (NA -> 0.4.0     ) [CRAN]
+dbplyr       (NA -> 2.3.0     ) [CRAN]
+forcats      (NA -> 1.0.0     ) [CRAN]
+forecast     (NA -> 8.20      ) [CRAN]
+gtrendsR     (NA -> 1.5.1     ) [CRAN]
+ineq         (NA -> 0.2-13    ) [CRAN]
+lubridate    (NA -> 1.9.2     ) [CRAN]
+RSQLite      (NA -> 2.3.0     ) [CRAN]
+maps         (NA -> 3.4.1     ) [CRAN]
+tidyr        (NA -> 1.3.0     ) [CRAN]
+testthat     (NA -> 3.1.6     ) [CRAN]
+Installing 95 packages: rlang, vctrs, cli, glue, lifecycle, generics, magrittr, pillar, R6, tibble, tidyselect, fansi, utf8, pkgconfig, withr, gtable, isoband, scales, farver, labeling, munsell, RColorBrewer, viridisLite, colorspace, zoo, quadprog, quantmod, xts, TTR, curl, Rcpp, BH, cpp11, bit, cachem, fastmap, stringi, xfun, htmltools, jsonlite, sass, jquerylib, memoise, base64enc, mime, digest, ellipsis, fs, rappdirs, evaluate, highr, yaml, processx, ps, rprojroot, crayon, desc, diffobj, rematch2, assertthat, blob, DBI, dplyr, purrr, fracdiff, ggplot2, lmtest, timeDate, tseries, urca, RcppArmadillo, anytime, timechange, bit64, plogr, stringr, bslib, knitr, tinytex, brio, callr, pkgload, praise, waldo, dbplyr, forcats, forecast, gtrendsR, ineq, lubridate, maps, RSQLite, tidyr, rmarkdown, testthat
+rmarkdown    (NA -> 2.20      ) [CRAN]
+Installing packages into 'C:/Users/USERuZYRGXzBkj/AppData/Local/R/win-library/4.3'
+(as 'lib' is unspecified)
+
+  There is a binary version available but the source version is later:
+    binary source needs_compilation
+xts 0.12.2 0.13.0              TRUE
+
+  Binaries will be installed
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/rlang_1.0.6.zip'
+Content type 'application/zip' length 1567375 bytes (1.5 MB)
+==================================================
+downloaded 1.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/vctrs_0.5.2.zip'
+Content type 'application/zip' length 1371435 bytes (1.3 MB)
+==================================================
+downloaded 1.3 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/cli_3.6.0.zip'
+Content type 'application/zip' length 1296493 bytes (1.2 MB)
+==================================================
+downloaded 1.2 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/glue_1.6.2.zip'
+Content type 'application/zip' length 162213 bytes (158 KB)
+==================================================
+downloaded 158 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/lifecycle_1.0.3.zip'
+Content type 'application/zip' length 138837 bytes (135 KB)
+==================================================
+downloaded 135 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/generics_0.1.3.zip'
+Content type 'application/zip' length 78972 bytes (77 KB)
+==================================================
+downloaded 77 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/magrittr_2.0.3.zip'
+Content type 'application/zip' length 226894 bytes (221 KB)
+==================================================
+downloaded 221 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/pillar_1.8.1.zip'
+Content type 'application/zip' length 688259 bytes (672 KB)
+==================================================
+downloaded 672 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/R6_2.5.1.zip'
+Content type 'application/zip' length 84273 bytes (82 KB)
+==================================================
+downloaded 82 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/tibble_3.1.8.zip'
+Content type 'application/zip' length 733228 bytes (716 KB)
+==================================================
+downloaded 716 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/tidyselect_1.2.0.zip'
+Content type 'application/zip' length 223926 bytes (218 KB)
+==================================================
+downloaded 218 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/fansi_1.0.4.zip'
+Content type 'application/zip' length 312540 bytes (305 KB)
+==================================================
+downloaded 305 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/utf8_1.2.3.zip'
+Content type 'application/zip' length 149661 bytes (146 KB)
+==================================================
+downloaded 146 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/pkgconfig_2.0.3.zip'
+Content type 'application/zip' length 22430 bytes (21 KB)
+==================================================
+downloaded 21 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/withr_2.5.0.zip'
+Content type 'application/zip' length 231337 bytes (225 KB)
+==================================================
+downloaded 225 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/gtable_0.3.1.zip'
+Content type 'application/zip' length 164213 bytes (160 KB)
+==================================================
+downloaded 160 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/isoband_0.2.7.zip'
+Content type 'application/zip' length 1967880 bytes (1.9 MB)
+==================================================
+downloaded 1.9 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/scales_1.2.1.zip'
+Content type 'application/zip' length 613861 bytes (599 KB)
+==================================================
+downloaded 599 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/farver_2.1.1.zip'
+Content type 'application/zip' length 1505007 bytes (1.4 MB)
+==================================================
+downloaded 1.4 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/labeling_0.4.2.zip'
+Content type 'application/zip' length 62667 bytes (61 KB)
+==================================================
+downloaded 61 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/munsell_0.5.0.zip'
+Content type 'application/zip' length 244619 bytes (238 KB)
+==================================================
+downloaded 238 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/RColorBrewer_1.1-3.zip'
+Content type 'application/zip' length 55881 bytes (54 KB)
+==================================================
+downloaded 54 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/viridisLite_0.4.1.zip'
+Content type 'application/zip' length 1300005 bytes (1.2 MB)
+==================================================
+downloaded 1.2 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/colorspace_2.1-0.zip'
+Content type 'application/zip' length 2634250 bytes (2.5 MB)
+==================================================
+downloaded 2.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/zoo_1.8-11.zip'
+Content type 'application/zip' length 1017047 bytes (993 KB)
+==================================================
+downloaded 993 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/quadprog_1.5-8.zip'
+Content type 'application/zip' length 37147 bytes (36 KB)
+==================================================
+downloaded 36 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/quantmod_0.4.20.zip'
+Content type 'application/zip' length 1044310 bytes (1019 KB)
+==================================================
+package 'rlang' successfully unpacked and MD5 sums checked
+package 'vctrs' successfully unpacked and MD5 sums checked
+package 'cli' successfully unpacked and MD5 sums checked
+package 'glue' successfully unpacked and MD5 sums checked
+package 'lifecycle' successfully unpacked and MD5 sums checked
+package 'generics' successfully unpacked and MD5 sums checked
+package 'magrittr' successfully unpacked and MD5 sums checked
+package 'pillar' successfully unpacked and MD5 sums checked
+package 'R6' successfully unpacked and MD5 sums checked
+package 'tibble' successfully unpacked and MD5 sums checked
+package 'tidyselect' successfully unpacked and MD5 sums checked
+package 'fansi' successfully unpacked and MD5 sums checked
+package 'utf8' successfully unpacked and MD5 sums checked
+package 'pkgconfig' successfully unpacked and MD5 sums checked
+package 'withr' successfully unpacked and MD5 sums checked
+package 'gtable' successfully unpacked and MD5 sums checked
+package 'isoband' successfully unpacked and MD5 sums checked
+package 'scales' successfully unpacked and MD5 sums checked
+package 'farver' successfully unpacked and MD5 sums checked
+package 'labeling' successfully unpacked and MD5 sums checked
+package 'munsell' successfully unpacked and MD5 sums checked
+package 'RColorBrewer' successfully unpacked and MD5 sums checked
+package 'viridisLite' successfully unpacked and MD5 sums checked
+package 'colorspace' successfully unpacked and MD5 sums checked
+package 'zoo' successfully unpacked and MD5 sums checked
+package 'quadprog' successfully unpacked and MD5 sums checked
+package 'quantmod' successfully unpacked and MD5 sums checked
+package 'xts' successfully unpacked and MD5 sums checked
+package 'TTR' successfully unpacked and MD5 sums checked
+package 'curl' successfully unpacked and MD5 sums checked
+package 'Rcpp' successfully unpacked and MD5 sums checked
+package 'BH' successfully unpacked and MD5 sums checked
+package 'cpp11' successfully unpacked and MD5 sums checked
+package 'bit' successfully unpacked and MD5 sums checked
+package 'cachem' successfully unpacked and MD5 sums checked
+package 'fastmap' successfully unpacked and MD5 sums checked
+package 'stringi' successfully unpacked and MD5 sums checked
+package 'xfun' successfully unpacked and MD5 sums checked
+package 'htmltools' successfully unpacked and MD5 sums checked
+package 'jsonlite' successfully unpacked and MD5 sums checked
+package 'sass' successfully unpacked and MD5 sums checked
+package 'jquerylib' successfully unpacked and MD5 sums checked
+package 'memoise' successfully unpacked and MD5 sums checked
+package 'base64enc' successfully unpacked and MD5 sums checked
+package 'mime' successfully unpacked and MD5 sums checked
+package 'digest' successfully unpacked and MD5 sums checked
+package 'ellipsis' successfully unpacked and MD5 sums checked
+package 'fs' successfully unpacked and MD5 sums checked
+package 'rappdirs' successfully unpacked and MD5 sums checked
+package 'evaluate' successfully unpacked and MD5 sums checked
+package 'highr' successfully unpacked and MD5 sums checked
+package 'yaml' successfully unpacked and MD5 sums checked
+package 'processx' successfully unpacked and MD5 sums checked
+package 'ps' successfully unpacked and MD5 sums checked
+package 'rprojroot' successfully unpacked and MD5 sums checked
+package 'crayon' successfully unpacked and MD5 sums checked
+package 'desc' successfully unpacked and MD5 sums checked
+package 'diffobj' successfully unpacked and MD5 sums checked
+package 'rematch2' successfully unpacked and MD5 sums checked
+package 'assertthat' successfully unpacked and MD5 sums checked
+package 'blob' successfully unpacked and MD5 sums checked
+package 'DBI' successfully unpacked and MD5 sums checked
+package 'dplyr' successfully unpacked and MD5 sums checked
+package 'purrr' successfully unpacked and MD5 sums checked
+package 'fracdiff' successfully unpacked and MD5 sums checked
+package 'ggplot2' successfully unpacked and MD5 sums checked
+package 'lmtest' successfully unpacked and MD5 sums checked
+package 'timeDate' successfully unpacked and MD5 sums checked
+package 'tseries' successfully unpacked and MD5 sums checked
+package 'urca' successfully unpacked and MD5 sums checked
+package 'RcppArmadillo' successfully unpacked and MD5 sums checked
+package 'anytime' successfully unpacked and MD5 sums checked
+package 'timechange' successfully unpacked and MD5 sums checked
+package 'bit64' successfully unpacked and MD5 sums checked
+package 'plogr' successfully unpacked and MD5 sums checked
+package 'stringr' successfully unpacked and MD5 sums checked
+package 'bslib' successfully unpacked and MD5 sums checked
+package 'knitr' successfully unpacked and MD5 sums checked
+package 'tinytex' successfully unpacked and MD5 sums checked
+package 'brio' successfully unpacked and MD5 sums checked
+package 'callr' successfully unpacked and MD5 sums checked
+package 'pkgload' successfully unpacked and MD5 sums checked
+package 'praise' successfully unpacked and MD5 sums checked
+package 'waldo' successfully unpacked and MD5 sums checked
+package 'dbplyr' successfully unpacked and MD5 sums checked
+package 'forcats' successfully unpacked and MD5 sums checked
+package 'forecast' successfully unpacked and MD5 sums checked
+package 'gtrendsR' successfully unpacked and MD5 sums checked
+package 'ineq' successfully unpacked and MD5 sums checked
+package 'lubridate' successfully unpacked and MD5 sums checked
+package 'maps' successfully unpacked and MD5 sums checked
+package 'RSQLite' successfully unpacked and MD5 sums checked
+package 'tidyr' successfully unpacked and MD5 sums checked
+package 'rmarkdown' successfully unpacked and MD5 sums checked
+package 'testthat' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\USERuZYRGXzBkj\AppData\Local\Temp\RtmpgFtMGq\downloaded_packages
+> 
+> 
+
+downloaded 1019 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/xts_0.12.2.zip'
+Content type 'application/zip' length 822547 bytes (803 KB)
+==================================================
+downloaded 803 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/TTR_0.24.3.zip'
+Content type 'application/zip' length 518933 bytes (506 KB)
+==================================================
+downloaded 506 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/curl_5.0.0.zip'
+Content type 'application/zip' length 2621950 bytes (2.5 MB)
+downloaded 2.5 MB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/Rcpp_1.0.10.zip'
+
+==================================================
+Content type 'application/zip' length 2869449 bytes (2.7 MB)
+==================================================
+downloaded 2.7 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/BH_1.81.0-1.zip'
+Content type 'application/zip' length 21361511 bytes (20.4 MB)
+==================================================
+downloaded 20.4 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/cpp11_0.4.3.zip'
+Content type 'application/zip' length 321885 bytes (314 KB)
+==================================================
+downloaded 314 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/bit_4.0.5.zip'
+Content type 'application/zip' length 1134714 bytes (1.1 MB)
+==================================================
+downloaded 1.1 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/cachem_1.0.6.zip'
+Content type 'application/zip' length 71219 bytes (69 KB)
+==================================================
+downloaded 69 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/fastmap_1.1.0.zip'
+Content type 'application/zip' length 126183 bytes (123 KB)
+==================================================
+downloaded 123 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/stringi_1.7.12.zip'
+Content type 'application/zip' length 14216393 bytes (13.6 MB)
+==================================================
+downloaded 13.6 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/xfun_0.37.zip'
+Content type 'application/zip' length 412636 bytes (402 KB)
+==================================================
+downloaded 402 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/htmltools_0.5.4.zip'
+Content type 'application/zip' length 350687 bytes (342 KB)
+==================================================
+downloaded 342 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/jsonlite_1.8.4.zip'
+Content type 'application/zip' length 1104798 bytes (1.1 MB)
+
+downloaded 1.1 MB
+==================================================
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/sass_0.4.5.zip'
+Content type 'application/zip' length 2594937 bytes (2.5 MB)
+==================================================
+downloaded 2.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/jquerylib_0.1.4.zip'
+Content type 'application/zip' length 525938 bytes (513 KB)
+==================================================
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/memoise_2.0.1.zip'
+Content type 'application/zip' length 49829 bytes (48 KB)
+==================================================
+downloaded 48 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/base64enc_0.1-3.zip'
+Content type 'application/zip' length 32628 bytes (31 KB)
+==================================================
+downloaded 31 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/mime_0.12.zip'
+Content type 'application/zip' length 40790 bytes (39 KB)
+downloaded 513 KB
+==================================================
+downloaded 39 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/digest_0.6.31.zip'
+Content type 'application/zip' length 197192 bytes (192 KB)
+==================================================
+downloaded 192 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/ellipsis_0.3.2.zip'
+Content type 'application/zip' length 40303 bytes (39 KB)
+==================================================
+downloaded 39 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/fs_1.6.1.zip'
+Content type 'application/zip' length 390771 bytes (381 KB)
+==================================================
+downloaded 381 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/rappdirs_0.3.3.zip'
+Content type 'application/zip' length 51339 bytes (50 KB)
+==================================================
+downloaded 50 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/evaluate_0.20.zip'
+Content type 'application/zip' length 80232 bytes (78 KB)
+==================================================
+downloaded 78 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/highr_0.10.zip'
+Content type 'application/zip' length 46510 bytes (45 KB)
+==================================================
+downloaded 45 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/yaml_2.3.7.zip'
+Content type 'application/zip' length 115640 bytes (112 KB)
+==================================================
+downloaded 112 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/processx_3.8.0.zip'
+Content type 'application/zip' length 858629 bytes (838 KB)
+==================================================
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/ps_1.7.2.zip'
+downloaded 838 KB
+Content type 'application/zip' length 552707 bytes (539 KB)
+==================================================
+downloaded 539 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/rprojroot_2.0.3.zip'
+Content type 'application/zip' length 109059 bytes (106 KB)
+==================================================
+downloaded 106 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/crayon_1.5.2.zip'
+Content type 'application/zip' length 161875 bytes (158 KB)
+==================================================
+
+downloaded 158 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/desc_1.4.2.zip'
+Content type 'application/zip' length 326796 bytes (319 KB)
+==================================================
+
+downloaded 319 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/diffobj_0.3.5.zip'
+Content type 'application/zip' length 1008672 bytes (985 KB)
+==================================================
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/rematch2_2.1.2.zip'
+
+downloaded 985 KB
+Content type 'application/zip' length 47525 bytes (46 KB)
+==================================================
+
+downloaded 46 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/assertthat_0.2.1.zip'
+Content type 'application/zip' length 54834 bytes (53 KB)
+==================================================
+downloaded 53 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/blob_1.2.3.zip'
+Content type 'application/zip' length 48233 bytes (47 KB)
+==================================================
+downloaded 47 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/DBI_1.1.3.zip'
+Content type 'application/zip' length 774116 bytes (755 KB)
+==================================================
+downloaded 755 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/dplyr_1.1.0.zip'
+Content type 'application/zip' length 1544909 bytes (1.5 MB)
+==================================================
+downloaded 1.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/purrr_1.0.1.zip'
+Content type 'application/zip' length 498056 bytes (486 KB)
+==================================================
+
+downloaded 486 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/fracdiff_1.5-2.zip'
+Content type 'application/zip' length 104698 bytes (102 KB)
+==================================================
+downloaded 102 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/ggplot2_3.4.1.zip'
+Content type 'application/zip' length 4218388 bytes (4.0 MB)
+==================================================
+downloaded 4.0 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/lmtest_0.9-40.zip'
+Content type 'application/zip' length 405753 bytes (396 KB)
+downloaded 396 KB
+==================================================
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/timeDate_4022.108.zip'
+Content type 'application/zip' length 1394966 bytes (1.3 MB)
+==================================================
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/tseries_0.10-53.zip'
+downloaded 1.3 MB
+Content type 'application/zip' length 378749 bytes (369 KB)
+downloaded 369 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/urca_1.3-3.zip'
+
+==================================================
+Content type 'application/zip' length 1109229 bytes (1.1 MB)
+downloaded 1.1 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/RcppArmadillo_0.11.4.4.0.zip'
+==================================================
+Content type 'application/zip' length 1998272 bytes (1.9 MB)
+==================================================
+downloaded 1.9 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/anytime_0.3.9.zip'
+Content type 'application/zip' length 742561 bytes (725 KB)
+==================================================
+downloaded 725 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/timechange_0.2.0.zip'
+Content type 'application/zip' length 516492 bytes (504 KB)
+==================================================
+downloaded 504 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/bit64_4.0.5.zip'
+Content type 'application/zip' length 493795 bytes (482 KB)
+==================================================
+downloaded 482 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/plogr_0.2.0.zip'
+Content type 'application/zip' length 19073 bytes (18 KB)
+==================================================
+downloaded 18 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/stringr_1.5.0.zip'
+Content type 'application/zip' length 317528 bytes (310 KB)
+==================================================
+downloaded 310 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/bslib_0.4.2.zip'
+Content type 'application/zip' length 5060089 bytes (4.8 MB)
+==================================================
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/knitr_1.42.zip'
+
+downloaded 4.8 MB
+Content type 'application/zip' length 1497647 bytes (1.4 MB)
+==================================================
+downloaded 1.4 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/tinytex_0.44.zip'
+Content type 'application/zip' length 135204 bytes (132 KB)
+==================================================
+
+downloaded 132 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/brio_1.1.3.zip'
+Content type 'application/zip' length 38358 bytes (37 KB)
+==================================================
+downloaded 37 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/callr_3.7.3.zip'
+Content type 'application/zip' length 440948 bytes (430 KB)
+==================================================
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/pkgload_1.3.2.zip'
+
+downloaded 430 KB
+Content type 'application/zip' length 177879 bytes (173 KB)
+
+downloaded 173 KB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/praise_1.0.0.zip'
+==================================================
+Content type 'application/zip' length 19846 bytes (19 KB)
+==================================================
+downloaded 19 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/waldo_0.4.0.zip'
+Content type 'application/zip' length 101645 bytes (99 KB)
+==================================================
+downloaded 99 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/dbplyr_2.3.0.zip'
+Content type 'application/zip' length 1090728 bytes (1.0 MB)
+==================================================
+downloaded 1.0 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/forcats_1.0.0.zip'
+Content type 'application/zip' length 427679 bytes (417 KB)
+downloaded 417 KB
+
+==================================================
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/forecast_8.20.zip'
+Content type 'application/zip' length 1904577 bytes (1.8 MB)
+
+downloaded 1.8 MB
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/gtrendsR_1.5.1.zip'
+==================================================
+Content type 'application/zip' length 1988333 bytes (1.9 MB)
+==================================================
+downloaded 1.9 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/ineq_0.2-13.zip'
+Content type 'application/zip' length 88589 bytes (86 KB)
+==================================================
+downloaded 86 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/lubridate_1.9.2.zip'
+Content type 'application/zip' length 981484 bytes (958 KB)
+==================================================
+downloaded 958 KB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/maps_3.4.1.zip'
+Content type 'application/zip' length 3098292 bytes (3.0 MB)
+==================================================
+downloaded 3.0 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/RSQLite_2.3.0.zip'
+Content type 'application/zip' length 1569835 bytes (1.5 MB)
+==================================================
+downloaded 1.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/tidyr_1.3.0.zip'
+Content type 'application/zip' length 1291736 bytes (1.2 MB)
+==================================================
+downloaded 1.2 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/rmarkdown_2.20.zip'
+Content type 'application/zip' length 3715487 bytes (3.5 MB)
+==================================================
+downloaded 3.5 MB
+
+trying URL 'https://cloud.r-project.org/bin/windows/contrib/4.3/testthat_3.1.6.zip'
+Content type 'application/zip' length 2104403 bytes (2.0 MB)
+
+==================================================
+downloaded 2.0 MB
+
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+* installing to library 'C:/Users/USERuZYRGXzBkj/AppData/Local/R/win-library/4.3'
+* installing *source* package 'globaltrends' ...
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+
+    CRAN: https://cloud.r-project.org
+** help
+*** installing help indices
+** building package indices
+'getOption("repos")' replaces Bioconductor standard repositories, see
+
+'?repositories' for details
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+** testing if installed package can be loaded from final location
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+
+** testing if installed package keeps a record of temporary installation path
+* MD5 sums
+packaged installation of 'globaltrends' as globaltrends_0.0.12.9000.zip
+* DONE (globaltrends)
+
+>>>>>============== Running R CMD check
+setting _R_CHECK_FORCE_SUGGESTS_ to false
+setting R_COMPILE_AND_INSTALL_PACKAGES to never
+setting R_REMOTES_STANDALONE to true
+setting R_REMOTES_NO_ERRORS_FROM_WARNINGS to true
+setting _R_CHECK_FORCE_SUGGESTS_ to true
+setting _R_CHECK_CRAN_INCOMING_USE_ASPELL_ to true
+'getOption("repos")' replaces Bioconductor standard repositories, see
+'?repositories' for details
+
+replacement repositories:
+    CRAN: https://cloud.r-project.org
+
+* using R Under development (unstable) (2023-01-14 r83615 ucrt)
+* R was compiled by
+    gcc.exe (GCC) 12.2.0
+    GNU Fortran (GCC) 12.2.0
+* running under: Windows Server x64 (build 20348)
+* using session charset: UTF-8
+* using platform: x86_64-w64-mingw32 (64-bit)
+* using log directory 'C:/Users/USERuZYRGXzBkj/globaltrends.Rcheck'
+* using option '--as-cran'
+* checking for file 'globaltrends/DESCRIPTION' ... OK
+* checking extension type ... Package
+* this is package 'globaltrends' version '0.0.12.9000'
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [13s] NOTE
+Maintainer: 'Harald Puhr <harald.puhr@gmail.com>'
+
+Version contains large components (0.0.12.9000)
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if there is a namespace ... OK
+* checking if this is a source package ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking whether package 'globaltrends' can be installed ... [17s] OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking 'build' directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... [19s] OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of 'data' directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking installed files from 'inst/doc' ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking files in 'vignettes' ... OK
+* checking examples ... OK
+* checking for unstated dependencies in 'tests' ... OK
+* checking tests ...
+  Running 'test_functions.r'
+  Running 'testthat.r' [124s]
+ [125s] OK
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in 'inst/doc' ... OK
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... [20s] OK
+* checking HTML version of manual ... OK
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... NOTE
+Found the following files/directories:
+  'lastMiKTeXException'
+* DONE
+
+Status: 2 NOTEs
+See
+  'C:/Users/USERuZYRGXzBkj/globaltrends.Rcheck/00check.log'
+for details.
+
+
+
+
+>>>>>============== Done with R CMD check
++R-HUB-R-HUB-R-HUB Done.
+
+
+VERBOSE: Saving artifacts
+VERBOSE: Cleaning up, deleting files and user
+>>>>>============== Cleaning up files and user
+
+INFO: No tasks running with the specified criteria.
+The command completed successfully.
+
+
+
+SSH: Connecting from host [win2022]
+SSH: Connecting with configuration [files] ...
+SSH: Disconnecting configuration [files] ...
+SSH: Transferred 7 file(s)
+Build step 'Send files or execute commands over SSH' changed build result to SUCCESS
+Pinging https://builder.r-hub.io/build/SUCCESS/globaltrends_0.0.12.9000.tar.gz-463cb1c46483424b8ace768229e5cae3/2023-02-21T15:32:31Z
+{"status":"ok"}
+Finished: SUCCESS
