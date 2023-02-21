@@ -91,6 +91,11 @@ In this resubmission of the globaltrends package I have made the following updat
 * Facilitated handling of location = "NA - Namibia"
 * Dropped dependency on `WDI` package
 
+Excluding the dependency on `WDI` from `globaltrends` will also resolve the
+failed CRAN checks for the current version of the package (0.0.12), since
+these failures relate to failed downloads from the World Bank servers attempted
+by the `WDI` package.
+
 Thanks!
 Harald Puhr
 
