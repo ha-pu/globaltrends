@@ -1,4 +1,4 @@
-bibEntry(	 
+bibentry(	 
   bibtype = "Article",
   title = "Let me Google that for you: Capturing globalization using Google Trends",
   author = c(
@@ -14,5 +14,5 @@ bibEntry(
     "(SSRN Working Paper 3969013).",
     "Available at https://www.ssrn.com/abstract=3969013."
   ),
-  key = "globaltrends-ssrn
+  key = "globaltrends-ssrn"
 )
