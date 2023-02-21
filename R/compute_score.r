@@ -198,7 +198,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
               "key"
             ),
             suffix = c("_o", "_c"),
-			multiple = "error"
+            multiple = "error"
           )
           data_control <- mutate(
             data_control,
@@ -241,7 +241,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
             data_object,
             data_control,
             by = c("location", "date", "key"),
-			multiple = "error"
+            multiple = "error"
           )
           data_object <- mutate(
             data_object,
@@ -393,7 +393,7 @@ compute_voi <- function(object, control = 1) {
           sub_synonym,
           by = c("location", "date", "batch_c"),
           suffix = c("", "_s"),
-		  multiple = "error"
+          multiple = "error"
         )
 
         sub_main <- mutate(
@@ -424,7 +424,7 @@ compute_voi <- function(object, control = 1) {
             batch_c
           ),
           by = c("location", "date", "batch_c"),
-		  multiple = "error"
+          multiple = "error"
         )
         data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
         data_synonym_nagg <- anti_join(
