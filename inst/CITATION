@@ -1,11 +1,10 @@
-citHeader("To cite globaltrends in publications use:")
-citEntry(
-  entry = "Article",
+bibEntry(	 
+  bibtype = "Article",
   title = "Let me Google that for you: Capturing globalization using Google Trends",
-  author = personList(
-    as.person("Harald Puhr"),
-    as.person("Jakob Müllner")
-  ),
+  author = c(
+       person("Harald", "Puhr"),
+       person("Jakob", "Müllner")
+     ),
   journal = "SSRN Working Paper",
   year = 2021,
   url = "https://www.ssrn.com/abstract=3969013",
@@ -14,5 +13,6 @@ citEntry(
     "Let me Google that for you: Capturing globalization using Google Trends", 
     "(SSRN Working Paper 3969013).",
     "Available at https://www.ssrn.com/abstract=3969013."
-  )
+  ),
+  key = "globaltrends-ssrn
 )
