@@ -12,7 +12,7 @@
 * ubuntu-latest (oldrel-1) on GitHub
 
 ## Test coverage
-The test coverage [devtools:::test_coverage()] of the package is 96%.
+The test coverage [devtools::test_coverage()] of the package is 96%.
 
 ## Reverse dependencies
 Results from [revdepcheck::revdep_check()]:
@@ -52,7 +52,7 @@ There is one NOTE that is only found on Fedora Linux (R-devel, clang, gfortran):
 As noted in [R-hub issue #548](https://github.com/r-hub/rhub/issues/548), this
 issue appears to be independent of the configuration on the local machine.
 
-## winbulider
+## winbuilder
 Winbuilder might show errors regarding (possible) invalid URLs:
 
 ```
@@ -86,8 +86,15 @@ In this resubmission of the globaltrends package I have made the following updat
 * Changed time intervals for download functions
 * Added a function to clean up the SQLite file created by the package
 * Adapted functions in line with tidyselect version 1.2.0
+* Adapted functions in line with ggplot2 version 3.4.0
+* Adapted functions in line with dplyr version 1.1.0
 * Facilitated handling of location = "NA - Namibia"
 * Dropped dependency on `WDI` package
+
+Excluding the dependency on `WDI` from `globaltrends` will also resolve the
+failed CRAN checks for the current version of the package (0.0.12), since
+these failures relate to failed downloads from the World Bank servers attempted
+by the `WDI` package.
 
 Thanks!
 Harald Puhr
@@ -106,7 +113,7 @@ Harald Puhr
 * ubuntu-latest (oldrel-1) on GitHub
 
 ## Test coverage
-The test coverage [devtools:::test_coverage()] of the package is 96%.
+The test coverage [devtools::test_coverage()] of the package is 96%.
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
@@ -135,7 +142,7 @@ There is one NOTE that is only found on Windows (Server 2022, R-devel 64-bit):
 ```
 As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
 
-## winbulider
+## winbuilder
 Winbuilder might show errors regarding (possible) invalid URLs:
 
 ```

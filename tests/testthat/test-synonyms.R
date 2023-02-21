@@ -21,7 +21,7 @@ add_object_keyword(
   time = "2010-01-01 2019-12-31"
 )
 
-test_locations <- c("US", "CN", "JP")
+location_set <- c("US", "CN", "JP")
 
 # add synonyms -----------------------------------------------------------------
 test_that("add_synonyms1", {
@@ -48,25 +48,25 @@ test_that("add_synonyms1", {
 })
 
 # enter data -------------------------------------------------------------------
-data <- filter(example_control, batch == 1 & location %in% test_locations[1:3])
+data <- filter(example_control, batch == 1 & location %in% location_set[1:3])
 dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
 data <- filter(
   example_object,
-  batch_c == 1 & batch_o == 1 & location %in% test_locations[1:2]
+  batch_c == 1 & batch_o == 1 & location %in% location_set[1:2]
 ) %>%
   mutate(batch_o = 1)
 dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 data <- filter(
   example_object,
-  batch_c == 1 & batch_o == 2 & location %in% test_locations[2:3]
+  batch_c == 1 & batch_o == 2 & location %in% location_set[2:3]
 ) %>%
   mutate(batch_o = 2)
 dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 
-compute_score(object = 1, locations = test_locations[1:2])
+compute_score(object = 1, locations = location_set[1:2])
 out1 <- export_score(keyword = "fc bayern")
 
-compute_score(object = 2, locations = test_locations[1:3])
+compute_score(object = 2, locations = location_set[1:3])
 out2 <- export_score(keyword = "fc bayern")
 
 # compare results --------------------------------------------------------------

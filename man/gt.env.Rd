@@ -13,7 +13,7 @@ gt.env
 \description{
 The environment \code{gt.env} contains all package-related data objects, such as
 the handle for the SQLite database file or connections to tables. The object
-involve:
+contains:
 \itemize{
 \item globaltrends_db: Handle for the SQLite database file.
 \item tbl_locations: Connection to table that contains the lists of locations saved in the database.

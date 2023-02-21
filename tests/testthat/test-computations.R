@@ -8,7 +8,7 @@ Sys.setenv("LANGUAGE" = "EN")
 initialize_db()
 start_db()
 
-test_locations <- c("US", "CN", "JP")
+location_set <- c("US", "CN", "JP")
 
 # enter data -------------------------------------------------------------------
 add_control_keyword(
@@ -21,14 +21,14 @@ add_object_keyword(
   time = "2010-01-01 2019-12-31"
 )
 
-data <- filter(example_control, batch == 1 & location %in% c(test_locations[1:3], "world"))
+data <- filter(example_control, batch == 1 & location %in% c(location_set[1:3], "world"))
 dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
-data <- filter(example_object, batch_c == 1 & batch_o == 1 & location %in% c(test_locations[1:3], "world"))
+data <- filter(example_object, batch_c == 1 & batch_o == 1 & location %in% c(location_set[1:3], "world"))
 dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
-  out <- capture_messages(compute_score(control = 1, object = 1, locations = test_locations[1:3]))
+  out <- capture_messages(compute_score(control = 1, object = 1, locations = location_set[1:3]))
 
   expect_match(
     out,
@@ -230,8 +230,10 @@ test_that("remove_data5", {
 # remove data vacuum -----------------------------------------------------------
 test_that("remove_data6", {
   size_t0 <- file.size("db/globaltrends_db.sqlite")
+  expect_equal(size_t0, 483328)
   expect_message(vacuum_data(), "Vacuum completed successfully.")
   size_t1 <- file.size("db/globaltrends_db.sqlite")
+  expect_equal(size_t1, 65536)
   expect_true(size_t0 > size_t1)
 })
 

@@ -80,7 +80,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
   data_doi <- filter(data_doi, .data$type == in_type)
   data_doi <- filter(data_doi, .data$locations == in_locations)
   data_voi$hits <- data_voi[paste0("score_", type)][[1]]
-  data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"))
+  data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"), multiple = "error")
 
   if (all(is.na(data_voi$hits)) | all(is.na(data_doi$measure))) {
     text <- "Plot cannot be created."
