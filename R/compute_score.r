@@ -197,7 +197,8 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
               "date",
               "key"
             ),
-            suffix = c("_o", "_c")
+            suffix = c("_o", "_c"),
+			multiple = "error"
           )
           data_control <- mutate(
             data_control,
@@ -239,7 +240,8 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
           data_object <- left_join(
             data_object,
             data_control,
-            by = c("location", "date", "key")
+            by = c("location", "date", "key"),
+			multiple = "error"
           )
           data_object <- mutate(
             data_object,
@@ -366,8 +368,8 @@ compute_voi <- function(object, control = 1) {
 
 .aggregate_synonym <- function(object) {
   lst_synonym <- filter(gt.env$keywords_object, .data$batch == object)
-  lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword")
-  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"))
+  lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword", multiple = "all")
+  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"), multiple = "error")
   lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
   if (length(lst_synonym) > 0) {
@@ -390,7 +392,8 @@ compute_voi <- function(object, control = 1) {
           sub_main,
           sub_synonym,
           by = c("location", "date", "batch_c"),
-          suffix = c("", "_s")
+          suffix = c("", "_s"),
+		  multiple = "error"
         )
 
         sub_main <- mutate(
@@ -420,7 +423,8 @@ compute_voi <- function(object, control = 1) {
             date,
             batch_c
           ),
-          by = c("location", "date", "batch_c")
+          by = c("location", "date", "batch_c"),
+		  multiple = "error"
         )
         data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
         data_synonym_nagg <- anti_join(

@@ -73,7 +73,7 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
     }
     warning(text)
   } else {
-    data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"))
+    data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"), multiple = "error")
     data <- select(
       data,
       country,
@@ -84,7 +84,7 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
     data_map <- map_data("world")
     data_map <- filter(data_map, .data$region != "Antarctica")
 
-    data <- left_join(data_map, data, by = c("region" = "country"))
+    data <- left_join(data_map, data, by = c("region" = "country"), multiple = "error")
 
     plot <- ggplot(
       data = data,
@@ -131,7 +131,7 @@ plot_map.abnorm_score <- function(data, ...) {
   data <- group_by(data, .data$location)
   data <- summarise(data, score_abnorm = mean(.data$score_abnorm), .groups = "drop")
 
-  data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"))
+  data <- inner_join(globaltrends::countries_wdi, data, by = c("iso2c" = "location"), multiple = "error")
   data <- select(
     data,
     country,
@@ -142,7 +142,7 @@ plot_map.abnorm_score <- function(data, ...) {
   data_map <- map_data("world")
   data_map <- filter(data_map, .data$region != "Antarctica")
 
-  data <- left_join(data_map, data, by = c("region" = "country"))
+  data <- left_join(data_map, data, by = c("region" = "country"), multiple = "error")
 
   plot <- ggplot(
     data = data,
