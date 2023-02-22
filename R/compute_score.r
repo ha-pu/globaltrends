@@ -352,7 +352,6 @@ compute_voi <- function(object, control = 1) {
 #' @keywords internal
 #' @noRd
 #'
-#' @export
 #' @importFrom DBI dbExecute
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr anti_join
