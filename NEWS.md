@@ -1,4 +1,4 @@
-# globaltrends 0.0.13
+# globaltrends 0.0.12.9000
 
 * Set minimum dependency of `stats` and `utils` to version `3.5.0` in line with minimum `R` dependency
 
