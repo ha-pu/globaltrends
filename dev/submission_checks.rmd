@@ -3,6 +3,8 @@ title: "Submission checks"
 output: html_notebook
 ---
 
+Checks based on: https://www.marinedatascience.co/blog/2020/01/09/checklist-for-r-package-re-submissions-on-cran/
+
 # See if there are any new requirements, policies or recommendations
 
 * Check latest CRAN policies on http://cran.r-project.org/web/packages/policies.html
@@ -88,7 +90,6 @@ devtools::spell_check()
 ```{r}
 devtools::check()
 ```
-
 
 # Re-submission
 
