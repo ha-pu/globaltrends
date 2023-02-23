@@ -40,8 +40,8 @@ period for which data will be downloaded. To change the time period for an
 existing batch, all downloads and computations must be rerun.
 If you use search topics for object keywords, make sure to use search topics
 for control keywords and vice versa. See Google's
-\href{https://support.google.com/trends/answer/4359550/}{FAQ} for additional
-information on search topics.
+\href{https://web.archive.org/web/20230117193147/https://support.google.com/trends/answer/4359550/}{FAQ}
+for additional information on search topics.
 \emph{Note}: To avoid trailing spaces \code{stringr::str_squish} is automatically
 applied to all keywords.
 }

@@ -17,8 +17,8 @@
 #' existing batch, all downloads and computations must be rerun.
 #' If you use search topics for object keywords, make sure to use search topics
 #' for control keywords and vice versa. See Google's
-#' [FAQ](https://support.google.com/trends/answer/4359550/) for additional
-#' information on search topics.
+#' [FAQ](https://web.archive.org/web/20230117193147/https://support.google.com/trends/answer/4359550/)
+#' for additional information on search topics.
 #' *Note*: To avoid trailing spaces `stringr::str_squish` is automatically
 #' applied to all keywords.
 #'
