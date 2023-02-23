@@ -1,7 +1,7 @@
 Type: Package
 Package: globaltrends
 Title: Download and Measure Global Trends Through Google Search Volumes
-Version: 0.0.12.9000
+Version: 0.0.13
 Authors@R: c(
     person("Harald", "Puhr", , "harald.puhr@gmail.com", role = c("aut", "cre")),
     person("Jakob", "Muellner", role = "ccp")
@@ -17,7 +17,7 @@ Description: Google offers public access to global search volumes from its
     political, social, or technological trends across the globe or within
     single countries.  An outline of the package's methodological
     foundations and potential applications is available as a working
-    paper: <https://www.ssrn.com/abstract=3969013>.
+    paper: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013>.
 License: MIT + file LICENSE
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/

@@ -1,5 +1,5 @@
 * using log directory 'd:/RCompile/CRANguest/R-devel/globaltrends.Rcheck'
-* using R Under development (unstable) (2023-02-20 r83877 ucrt)
+* using R Under development (unstable) (2023-02-21 r83888 ucrt)
 * using platform: x86_64-w64-mingw32 (64-bit)
 * R was compiled by
     gcc.exe (GCC) 12.2.0
@@ -10,7 +10,7 @@
 * checking extension type ... Package
 * this is package 'globaltrends' version '0.0.12.9000'
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ... [15s] NOTE
+* checking CRAN incoming feasibility ... [10s] NOTE
 Maintainer: 'Harald Puhr <harald.puhr@gmail.com>'
 
 Version contains large components (0.0.12.9000)
@@ -44,23 +44,21 @@ Found the following (possibly) invalid URLs:
 * checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
-* checking package subdirectories ... NOTE
-Problems with news in 'NEWS.md':
-No news entries found.
+* checking package subdirectories ... OK
 * checking R files for non-ASCII characters ... OK
 * checking R files for syntax errors ... OK
-* checking whether the package can be loaded ... [3s] OK
-* checking whether the package can be loaded with stated dependencies ... [3s] OK
-* checking whether the package can be unloaded cleanly ... [3s] OK
-* checking whether the namespace can be loaded with stated dependencies ... [3s] OK
-* checking whether the namespace can be unloaded cleanly ... [3s] OK
-* checking loading without being on the library search path ... [3s] OK
+* checking whether the package can be loaded ... [2s] OK
+* checking whether the package can be loaded with stated dependencies ... [1s] OK
+* checking whether the package can be unloaded cleanly ... [1s] OK
+* checking whether the namespace can be loaded with stated dependencies ... [1s] OK
+* checking whether the namespace can be unloaded cleanly ... [2s] OK
+* checking loading without being on the library search path ... [2s] OK
 * checking use of S3 registration ... OK
 * checking dependencies in R code ... OK
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... [18s] OK
+* checking R code for possible problems ... [10s] OK
 * checking Rd files ... [1s] OK
 * checking Rd metadata ... OK
 * checking Rd line widths ... OK
@@ -76,16 +74,16 @@ No news entries found.
 * checking data for ASCII and uncompressed saves ... OK
 * checking installed files from 'inst/doc' ... OK
 * checking files in 'vignettes' ... OK
-* checking examples ... [6s] OK
+* checking examples ... [3s] OK
 * checking for unstated dependencies in 'tests' ... OK
-* checking tests ... [144s] OK
+* checking tests ... [68s] OK
   Running 'test_functions.r' [0s]
-  Running 'testthat.r' [143s]
+  Running 'testthat.r' [67s]
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes in 'inst/doc' ... OK
-* checking re-building of vignette outputs ... [4s] OK
-* checking PDF version of manual ... [33s] OK
+* checking re-building of vignette outputs ... [2s] OK
+* checking PDF version of manual ... [18s] OK
 * checking HTML version of manual ... [6s] OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 2 NOTEs
+Status: 1 NOTE

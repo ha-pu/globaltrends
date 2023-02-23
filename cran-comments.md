@@ -1,4 +1,4 @@
-# Resubmission
+# Resubmission 0.0.13
 
 ## Test environments
 * local Windows 10 Enterprise, 64 bit (R 4.2.2)
@@ -53,18 +53,7 @@ As noted in [R-hub issue #548](https://github.com/r-hub/rhub/issues/548), this
 issue appears to be independent of the configuration on the local machine.
 
 ## winbuilder
-Winbuilder might show errors regarding (possible) invalid URLs:
-
-```
-URL: https://support.google.com/trends/answer/4359550
-  From: man/add_keyword.Rd
-        inst/doc/globaltrends.html
-  Status: 404
-  Message: Not Found
-```
-
-Unlike indicated by winbuilder, the URL is available and can be accessed in the
-browser. The same note was reported in the initial submission.
+Winbuilder might show a note regarding (possible) invalid URLs:
 
 ```
 URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
@@ -90,6 +79,7 @@ In this resubmission of the globaltrends package I have made the following updat
 * Adapted functions in line with dplyr version 1.1.0
 * Facilitated handling of location = "NA - Namibia"
 * Dropped dependency on `WDI` package
+* Updated URLs in package to avoid notes from CRAN checks
 
 Excluding the dependency on `WDI` from `globaltrends` will also resolve the
 failed CRAN checks for the current version of the package (0.0.12), since
@@ -99,7 +89,7 @@ by the `WDI` package.
 Thanks!
 Harald Puhr
 
-# Submission
+# Submission 0.0.12
 
 ## Test environments
 * local Windows 10 Enterprise, 64 bit (R 4.1.3)
