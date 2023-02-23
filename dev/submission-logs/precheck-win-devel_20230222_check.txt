@@ -1,5 +1,5 @@
 * using log directory 'd:/RCompile/CRANincoming/R-devel/globaltrends.Rcheck'
-* using R Under development (unstable) (2023-02-20 r83877 ucrt)
+* using R Under development (unstable) (2023-02-21 r83888 ucrt)
 * using platform: x86_64-w64-mingw32 (64-bit)
 * R was compiled by
     gcc.exe (GCC) 12.2.0
@@ -10,7 +10,7 @@
 * checking extension type ... Package
 * this is package 'globaltrends' version '0.0.13'
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ... [9s] NOTE
+* checking CRAN incoming feasibility ... [10s] NOTE
 Maintainer: 'Harald Puhr <harald.puhr@gmail.com>'
 
 Found the following (possibly) invalid URLs:
@@ -23,6 +23,10 @@ Found the following (possibly) invalid URLs:
           inst/doc/globaltrends.html
     Status: 404
     Message: Not Found
+  URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
+    From: inst/doc/globaltrends.html
+    Status: 429
+    Message: Too Many Requests
 * checking package namespace information ... OK
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
@@ -38,9 +42,7 @@ Found the following (possibly) invalid URLs:
 * checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
-* checking package subdirectories ... NOTE
-Problems with news in 'NEWS.md':
-No news entries found.
+* checking package subdirectories ... OK
 * checking R files for non-ASCII characters ... OK
 * checking R files for syntax errors ... OK
 * checking whether the package can be loaded ... [2s] OK
@@ -54,7 +56,7 @@ No news entries found.
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... [10s] OK
+* checking R code for possible problems ... [9s] OK
 * checking Rd files ... [1s] OK
 * checking Rd metadata ... OK
 * checking Rd line widths ... OK
@@ -72,14 +74,14 @@ No news entries found.
 * checking files in 'vignettes' ... OK
 * checking examples ... [3s] OK
 * checking for unstated dependencies in 'tests' ... OK
-* checking tests ... [66s] OK
+* checking tests ... [67s] OK
   Running 'test_functions.r' [0s]
   Running 'testthat.r' [66s]
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes in 'inst/doc' ... OK
 * checking re-building of vignette outputs ... [2s] OK
-* checking PDF version of manual ... [18s] OK
+* checking PDF version of manual ... [17s] OK
 * checking HTML version of manual ... [6s] OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 2 NOTEs
+Status: 1 NOTE
