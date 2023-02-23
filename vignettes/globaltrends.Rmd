@@ -505,7 +505,7 @@ dplyr::count(data, location)
 ```
 
 # Search topics vs search terms
-Results for individual keywords as search terms (e.g., *weather*, *apple*, *coca cola*) might be distorted by translation issues (i.e., keywords are search for in different languages), keyword contamination (i.e., keywords relate to different queries: apple vs. Apple Inc.), and keyword dilution (i.e., multiple keywords relate to the same query: election, vote). Search topics allow users to partly overcome these issues. [Google](https://support.google.com/trends/answer/4359550) defines a search topic as “a group of terms that share the same concept in any language.” Thereby, queries that use search topics are language-independent, cover queries for different terms, and differentiate between queries.  
+Results for individual keywords as search terms (e.g., *weather*, *apple*, *coca cola*) might be distorted by translation issues (i.e., keywords are search for in different languages), keyword contamination (i.e., keywords relate to different queries: apple vs. Apple Inc.), and keyword dilution (i.e., multiple keywords relate to the same query: election, vote). Search topics allow users to partly overcome these issues. [Google](https://support.google.com/trends/answer/4359550/) defines a search topic as “a group of terms that share the same concept in any language.” Thereby, queries that use search topics are language-independent, cover queries for different terms, and differentiate between queries.  
 
 Users can identify the codes of search topics on the Google Trends portal, by selecting the respective topic, rather than a search term (see the screenshot below).
 
@@ -538,7 +538,7 @@ The enormous detail of the data opens additional applications in research that a
 * Kupfer, A. & Zorn, J. 2020. A language-independent measurement of economic policy uncertainty in Eastern European countries. *Emerging Markets Finance and Trade*, 56(5): 1166-1180.
 * MacKinlay, A. C. 1997. Event studies in economics and finance. *Journal of Economic Literature*, 35(1): 13-39.
 * McWilliams, A. & Siegel, D. 1997. Event studies in management research: Theoretical and empirical issues. *Academy of Management Journal*, 40(3): 626-657.
-* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at [https://ssrn.com/abstract=3969013](https://ssrn.com/abstract=3969013).
+* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at [https://ssrn.com/abstract=3969013/](https://ssrn.com/abstract=3969013/).
 * Puhr, H., & Müllner, J. (2022). Foreign to all but fluent in many: The effect of multinationality on shock resilience. *Journal of World Business*, 57(6): 101370.
 
 # Appendix A
