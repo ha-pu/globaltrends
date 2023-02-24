@@ -149,7 +149,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
     return(g)
   }
   
-  out <- coalesce(1 - .gini(series), 0)
+  out <- coalesce(1 - gini(series), 0)
   return(out)
 }
 
