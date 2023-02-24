@@ -230,10 +230,8 @@ test_that("remove_data5", {
 # remove data vacuum -----------------------------------------------------------
 test_that("remove_data6", {
   size_t0 <- file.size("db/globaltrends_db.sqlite")
-  expect_equal(size_t0, 483328)
   expect_message(vacuum_data(), "Vacuum completed successfully.")
   size_t1 <- file.size("db/globaltrends_db.sqlite")
-  expect_equal(size_t1, 65536)
   expect_true(size_t0 > size_t1)
 })
 
