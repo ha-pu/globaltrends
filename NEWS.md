@@ -1,5 +1,7 @@
 # globaltrends 0.0.13.9000
 
+* Remove dependency on `glue` package, calls of `glue::glue` are replaced with `paste` and `paste0`
+
 # globaltrends 0.0.13
 
 * Set minimum dependency of `stats` and `utils` to version `3.5.0` in line with minimum `R` dependency
@@ -9,7 +11,7 @@
 	* Status == 500: wait 1 second
 	* All other responses: wait 60 seconds
 * Add function `vacuum_data` to free unused memory after `remove_data`
-* Removed all usage of `.data` to comply with `tidyselect 1.2.0`, this applies to calls of:
+* Remove all usage of `.data` to comply with `tidyselect 1.2.0`, this applies to calls of:
 	* `dplyr::rename`
 	* `dplyr::select`
 	* `purrr::map`
@@ -19,10 +21,10 @@
 	* `tidyr::pivot_wider`
 	* `tidyr::unnest`
 * As a consequence of the changes in `tidyselect 1.2.0`, several objects are defined as global variables (see `globals.r` for details) 
-* Replaced `size` with `linewidth` to comply with `ggplot2 3.4.0`
-* Added the argument `multiple = "all"` and `multiple = "error"` to comply with `dplyr 1.1.0`
-* Facilitated handling of location = "NA - Namibia", the function `add_locations` does automatically drop the location
-* Dropped dependency on `WDI` package, references to `WDI::WDI_data` were replaced by data objects `countries` and `countries_wdi`
+* Replace `size` with `linewidth` to comply with `ggplot2 3.4.0`
+* Add the argument `multiple = "all"` and `multiple = "error"` to comply with `dplyr 1.1.0`
+* Facilitate handling of location = "NA - Namibia", the function `add_locations` does automatically drop the location
+* Remove dependency on `WDI` package, references to `WDI::WDI_data` are replaced by data objects `countries` and `countries_wdi`
 
 # globaltrends 0.0.12
 

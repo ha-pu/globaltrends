@@ -30,7 +30,6 @@ Imports:
     forcats (>= 0.5.0),
     forecast (>= 8.12),
     ggplot2 (>= 3.3.2),
-    glue (>= 1.4.2),
     gtrendsR (>= 1.5.1),
     ineq (>= 0.2.13),
     lubridate (>= 1.7.9),
