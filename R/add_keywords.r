@@ -107,7 +107,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom glue glue
 #' @importFrom purrr map
 #' @importFrom rlang .data
 #' @importFrom stringr str_squish
@@ -170,7 +169,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", "time_control")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully created new control batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
+    message(paste0("Successfully created new control batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", time, ")."))
     return(new_batch)
   } else if (type == "object") {
     if (nrow(gt.env$keywords_object) == 0) {
@@ -194,7 +193,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", "time_object")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully created new object batch {new_batch} ({keyword_collapse}, {time}).", keyword_collapse = paste(keyword, collapse = ", ")))
+    message(paste0("Successfully created new object batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", time, ")."))
     return(new_batch)
   } else {
     stop("Error: 'type' allows only 'control' or 'object'.\nYou provided another value.")
@@ -240,7 +239,6 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @export
 #' @rdname add_synonym
 #' @importFrom DBI dbWriteTable
-#' @importFrom glue glue
 #' @importFrom purrr walk
 #' @importFrom stringr str_squish
 #' @importFrom tibble tibble
@@ -256,7 +254,7 @@ add_synonym.character <- function(keyword, synonym) {
   if (length(synonym) > 1) {
     add_synonym(keyword = keyword, synonym = as.list(synonym))
   } else {
-    if (!is.character(synonym)) stop(glue("Error:'synonym' must of type 'character'.\nYou provided an object of type {typeof(synonym)}."))
+    if (!is.character(synonym)) stop(paste0("Error:'synonym' must of type 'character'.\nYou provided an object of type ", typeof(synonym), "."))
     keyword <- str_squish(keyword)
     synonym <- str_squish(synonym)
     out <- tibble(keyword, synonym)
@@ -270,7 +268,7 @@ add_synonym.character <- function(keyword, synonym) {
     lst_export <- list(keyword_synonyms, keyword_synonyms)
     names(lst_export) <- list("keyword_synonyms", "keyword_synonyms")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully added synonym | keyword: {keyword} | synonym: {synonym}"))
+    message(paste0("Successfully added synonym | keyword: ", keyword, " | synonym: ", synonym, "."))
   }
 }
 

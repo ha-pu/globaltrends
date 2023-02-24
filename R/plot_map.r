@@ -39,7 +39,6 @@
 #' @importFrom ggplot2 scale_y_continuous
 #' @importFrom ggplot2 scale_x_continuous
 #' @importFrom ggplot2 theme
-#' @importFrom glue glue
 #' @importFrom maps area.map
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
@@ -58,7 +57,7 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+    warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
 
@@ -67,9 +66,9 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
   data <- summarise(data, measure = mean(.data$measure), .groups = "drop")
 
   if (all(is.na(data$measure))) {
-    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
     if (type != "obs") {
-      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
     }
     warning(text)
   } else {
@@ -107,7 +106,7 @@ plot_map.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
         x = NULL,
         y = NULL,
         title = keyword,
-        caption = glue("Search score as {str_to_upper(type)} time series."),
+        caption = paste0("Search score as ", str_to_upper(type), " time series."),
         fill = "Search score"
       ) +
       theme(legend.position = "bottom")
@@ -124,7 +123,7 @@ plot_map.abnorm_score <- function(data, ...) {
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+    warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
   data <- na.omit(data)

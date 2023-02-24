@@ -97,7 +97,6 @@
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
 #' @importFrom rlang .data
-#' @importFrom glue glue
 
 export_control <- function(control = NULL, location = NULL) {
   out <- .export_data(

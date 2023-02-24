@@ -60,7 +60,6 @@
 #' @rdname download_object
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
-#' @importFrom glue glue
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
@@ -116,16 +115,12 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
             i <- i + 1
           }
           if (!success) stop("Error: Too little signal in search volumes for control keywords.\nReconsider choice of control keywords.")
-          message(glue("Successfully downloaded object data | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
-            current = which(locations == .x), total = length(locations)
-          ))
+          message(paste0("Successfully downloaded object data | object: ", object, " | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
         } else {
-          message(glue("Download for object data failed.\nThere is no data in 'data_control' for control batch {control} and location {in_location}."))
+          message(paste0("Download for object data failed.\nThere is no data in 'data_control' for control batch ", control, " and location ", in_location, "."))
         }
       } else {
-        message(glue("Object data already available | object: {object} | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)
-        ))
+        message(paste0("Object data already available | object: ", object, " | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
       }
     })
   }

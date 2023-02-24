@@ -40,7 +40,6 @@
 #' @importFrom ggplot2 geom_boxplot
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 labs
-#' @importFrom glue glue
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @importFrom stats quantile
@@ -56,7 +55,7 @@ plot_box.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
-    warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
+    warning(paste0("The plot function is limited to 9 keywords.\nYou use ", len_keywords, " keywords.\nOnly the first 9 keywords are used."))
     data <- filter(data, .data$keyword %in% unique(data$keyword)[1:9])
   }
 
@@ -64,21 +63,21 @@ plot_box.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
   location <- unique(data$location)[[1]]
   if (len_location > 1) {
     data <- filter(data, .data$location == !!location)
-    warning(glue("The plot function is limited to 1 location.\nYou use {len_location} locations.\nOnly '{location}' is used."))
+    warning(paste0("The plot function is limited to 1 location.\nYou use ", len_location, " locations.\nOnly '", location, "' is used."))
   }
 
   data$measure <- data[paste0("score_", type)][[1]]
 
   if (all(is.na(data$measure))) {
-    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
     if (type != "obs") {
-      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
     }
     warning(text)
   } else {
     plot <- ggplot(data, aes(x = .data$keyword)) +
       geom_boxplot(aes(y = .data$measure)) +
-      labs(x = NULL, y = glue("Search score for {location}"))
+      labs(x = NULL, y = paste0("Search score for ", location, ""))
 
     return(plot)
   }
@@ -96,14 +95,14 @@ plot_box.abnorm_score <- function(data, ci = 0.95, ...) {
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+    warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
   len_location <- length(unique(data$location))
   location <- unique(data$location)[[1]]
   if (len_location > 1) {
     data <- filter(data, .data$location == !!location)
-    warning(glue("The plot function is limited to 1 location.\nYou use {len_location} locations.\nOnly '{location}' is used."))
+    warning(paste0("The plot function is limited to 1 location.\nYou use ", len_location, " locations.\nOnly '", location, "' is used."))
   }
 
   data <- na.omit(data)
@@ -116,7 +115,7 @@ plot_box.abnorm_score <- function(data, ci = 0.95, ...) {
     geom_point(data = filter(data, .data$quantile < ci1 | .data$quantile > ci2), colour = "firebrick") +
     labs(
       x = NULL,
-      y = glue("Abnormal changes in search score for {location}"),
+      y = paste0("Abnormal changes in search score for ", location, ""),
       title = keyword
     )
 }
@@ -129,16 +128,16 @@ plot_box.exp_voi <- function(data, type = c("obs", "sad", "trd"), ...) {
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
-    warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
+    warning(paste0("The plot function is limited to 9 keywords.\nYou use ", len_keywords, " keywords.\nOnly the first 9 keywords are used."))
     data <- filter(data, .data$keyword %in% unique(data$keyword)[1:9])
   }
   data$measure <- data[paste0("score_", type)][[1]]
   plot <- ggplot(data, aes(x = .data$date))
 
   if (all(is.na(data$measure))) {
-    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
     if (type != "obs") {
-      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
     }
     warning(text)
   } else {
@@ -162,7 +161,7 @@ plot_box.abnorm_voi <- function(data, ci = 0.95, ...) {
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+    warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
   data <- na.omit(data)
@@ -190,7 +189,7 @@ plot_box.exp_doi <- function(data, type = c("obs", "sad", "trd"), measure = c("g
 
   len_keywords <- length(unique(data$keyword))
   if (len_keywords > 9) {
-    warning(glue("The plot function is limited to 9 keywords.\nYou use {len_keywords} keywords.\nOnly the first 9 keywords are used."))
+    warning(paste0("The plot function is limited to 9 keywords.\nYou use ", len_keywords, " keywords.\nOnly the first 9 keywords are used."))
     data <- filter(data, .data$keyword %in% unique(data$keyword)[1:9])
   }
   data$measure <- data[measure][[1]]
@@ -198,15 +197,15 @@ plot_box.exp_doi <- function(data, type = c("obs", "sad", "trd"), measure = c("g
   data <- filter(data, .data$locations == !!locations)
 
   if (all(is.na(data$measure))) {
-    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
     if (type != "obs") {
-      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
     }
     warning(text)
   } else {
     plot <- ggplot(data, aes(x = .data$keyword)) +
       geom_boxplot(aes(y = .data$measure)) +
-      labs(x = NULL, y = "Degree of internationalization", caption = glue("DOI computed as {str_to_upper(measure)}."))
+      labs(x = NULL, y = "Degree of internationalization", caption = paste0("DOI computed as ", str_to_upper(measure), "."))
 
     return(plot)
   }
@@ -226,7 +225,7 @@ plot_box.abnorm_doi <- function(data, type = c("obs", "sad", "trd"), locations =
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
     data <- filter(data, .data$keyword == !!keyword)
-    warning(glue("The plot function is limited to 1 keyword.\nYou use {len_keywords} keywords.\nOnly '{keyword}' is used."))
+    warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
   data <- filter(data, .data$locations == !!locations)
@@ -237,9 +236,9 @@ plot_box.abnorm_doi <- function(data, type = c("obs", "sad", "trd"), locations =
   q2 <- quantile(data$doi_abnorm, ci2)
 
   if (all(is.na(data$doi_abnorm))) {
-    text <- glue("Plot cannot be created.\nThere is no non-missing data for score_{type}.")
+    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
     if (type != "obs") {
-      text <- glue("{text}\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
     }
     warning(text)
   } else {
