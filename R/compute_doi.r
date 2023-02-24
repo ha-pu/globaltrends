@@ -57,7 +57,6 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
-#' @importFrom glue glue
 #' @importFrom purrr map_dbl
 #' @importFrom purrr map_lgl
 #' @importFrom purrr walk
@@ -124,7 +123,7 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       )
       dbWriteTable(conn = gt.env$globaltrends_db, name = "data_doi", value = out, append = TRUE)
     }
-    message(glue("Successfully computed DOI | control: {control} | object: {object} [{object}/{total}]", total = max(gt.env$keywords_object$batch)))
+    message(paste0("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "/", max(gt.env$keywords_object$batch), "]"))
   }
 }
 

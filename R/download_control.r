@@ -54,7 +54,6 @@
 #' @rdname download_control
 #' @importFrom DBI dbWriteTable
 #' @importFrom dplyr mutate
-#' @importFrom glue glue
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
@@ -85,13 +84,9 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
           out <- mutate(out, batch = control)
           dbWriteTable(conn = gt.env$globaltrends_db, name = "data_control", value = out, append = TRUE)
         }
-        message(glue("Successfully downloaded control data | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)
-        ))
+        message(paste0("Successfully downloaded control data | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
       } else {
-        message(glue("Control data already available | control: {control} | location: {in_location} [{current}/{total}]",
-          current = which(locations == .x), total = length(locations)
-        ))
+        message(paste0("Control data already available | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
       }
     })
   }

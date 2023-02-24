@@ -39,7 +39,6 @@
 #' @importFrom dplyr distinct
 #' @importFrom dplyr filter
 #' @importFrom dplyr pull
-#' @importFrom glue glue
 #' @importFrom purrr map
 #' @importFrom purrr walk
 #' @importFrom rlang .data
@@ -58,7 +57,7 @@ add_locations <- function(locations, type, export = TRUE) {
   codes <- unique(codes)
   codes <- na.omit(codes)
   walk(locations, ~ {
-    if (!(.x %in% codes)) stop(glue("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided {.x}."))
+    if (!(.x %in% codes)) stop(paste0("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided ", .x, "."))
   })
 
   # handle Namibia
@@ -77,7 +76,7 @@ add_locations <- function(locations, type, export = TRUE) {
 
   if (export) .export_locations()
 
-  message(glue("Successfully created new location set {type} ({locations_collapse}).", locations_collapse = paste(locations, collapse = ", ")))
+  message(paste0("Successfully created new location set ", type, " (", paste(locations, collapse = ", "), ")."))
 }
 
 #' @title Export locations to package environment gt.env

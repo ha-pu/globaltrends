@@ -92,7 +92,7 @@ get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, typ
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
   type <- match.arg(type)
-  data$score <- data[glue("score_{type}")][[1]]
+  data$score <- data[paste0("score_", type)][[1]]
   data <- group_by(data, .data$keyword, .data$control, .data$location)
   data <- mutate(data, base = rollmean(.data$score, k = train_win, align = "right", fill = NA))
   data <- mutate(data, base = lag(.data$base, n = train_break + 1))
@@ -123,7 +123,7 @@ get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type 
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
   type <- match.arg(type)
-  data$voi <- data[glue("score_{type}")][[1]]
+  data$voi <- data[paste0("score_", type)][[1]]
   data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, base = rollmean(.data$voi, k = train_win, align = "right", fill = NA))
   data <- mutate(data, base = lag(.data$base, n = train_break + 1))

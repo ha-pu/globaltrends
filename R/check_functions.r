@@ -3,15 +3,14 @@
 #' @keywords internal
 #' @noRd
 #'
-#' @importFrom glue glue
 #' @importFrom rlang as_name
 #' @importFrom rlang enquo
 
 .check_input <- function(input, type) {
   name_input <- as_name(enquo(input))
-  check <- do.call(glue("is.{type}"), list(input))
+  check <- do.call(paste0("is.", type), list(input))
   if (!check) {
-    stop(glue("Error: '{name_input}' must be object of type {type}.\nYou provided an object of type {typeof(input)}."))
+    stop(paste0("Error: '", name_input, "' must be object of type ", type, ".\nYou provided an object of type ", typeof(input), "."))
   }
 }
 
@@ -23,7 +22,7 @@
 .check_length <- function(input, max) {
   name_input <- as_name(enquo(input))
   if (length(input) > max) {
-    stop(glue("Error: '{name_input}' must be object of length {max}.\nYou provided an object of length {length(input)}."))
+    stop(paste0("Error: '", name_input, "' must be object of length ", max, ".\nYou provided an object of length ", length(input), "."))
   }
 }
 
@@ -36,7 +35,7 @@
 .check_ci <- function(ci) {
   .check_length(input = ci, max = 1)
   .check_input(input = ci, type = "double")
-  if (ci <= 0 | ci >= 1) stop(glue("Error: 'ci' must be greater than 0 and less than 1.\nYou provided {ci}."))
+  if (ci <= 0 | ci >= 1) stop(paste0("Error: 'ci' must be greater than 0 and less than 1.\nYou provided ", ci, "."))
 }
 
 #' @title Check locations

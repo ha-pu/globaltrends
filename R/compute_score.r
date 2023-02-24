@@ -81,7 +81,6 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
-#' @importFrom glue glue
 #' @importFrom lubridate as_date
 #' @importFrom purrr walk
 #' @importFrom rlang .data
@@ -274,7 +273,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
         }
       }
       in_location <- .x
-      message(glue("Successfully computed search score | control: {control} | object: {object} | location: {in_location} [{current}/{total}]", current = which(locations == .x), total = length(locations)))
+      message(paste0("Successfully computed search score | control: ", control, " | object: ", object, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
     })
     .aggregate_synonym(object = object)
     if (!ts_control | !ts_object) {
@@ -283,7 +282,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
         first(!c(ts_control, ts_object)) ~ "control",
         last(!c(ts_control, ts_object)) ~ "object"
       )
-      warning(glue("You provided {text} data for less than 24 months.\nNo time series adjustments possible."))
+      warning(paste0("You provided ", text, " data for less than 24 months.\nNo time series adjustments possible."))
     }
   }
 }
@@ -322,7 +321,7 @@ compute_voi <- function(object, control = 1) {
   out <- mutate(data, day = 1, month = month(.data$date), year = year(.data$date))
   out <- group_by(out, .data$location, .data$keyword, .data$year, .data$month, .data$day)
   out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
-  out <- mutate(out, date = ymd(glue("{.data$year}-{.data$month}-{.data$day}")))
+  out <- mutate(out, date = ymd(paste(.data$year, .data$month, .data$day, sep = "-")))
   out <- select(out, location, keyword, date, hits)
   return(out)
 }

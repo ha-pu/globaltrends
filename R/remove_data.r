@@ -49,7 +49,6 @@
 #' @importFrom DBI dbExecute
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
-#' @importFrom glue glue
 #' @importFrom rlang .data
 #' @rdname remove_data
 
@@ -87,7 +86,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
       .remove_data_doi(batch_c = control, batch_o = object)
     }
   } else {
-    stop(glue("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou provided {table}."))
+    stop(paste0("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou provided ", table, "."))
   }
 }
 
@@ -114,7 +113,7 @@ vacuum_data <- function() {
     lst_export <- list(keywords_control, keywords_control)
     names(lst_export) <- list("keywords_control", "keywords_control")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully deleted control batch {batch_c} from 'batch_keywords'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " from 'batch_keywords'."))
 
     .remove_data_control(batch_c = batch_c)
   } else if (type == "object") {
@@ -125,7 +124,7 @@ vacuum_data <- function() {
     lst_export <- list(keywords_object, keywords_object)
     names(lst_export) <- list("keywords_object", "keywords_object")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully deleted object batch {batch_o} from 'batch_keywords'."))
+    message(paste0("Successfully deleted object batch ", batch_o, " from 'batch_keywords'."))
 
     .remove_data_object(batch_o = batch_o)
   }
@@ -147,7 +146,7 @@ vacuum_data <- function() {
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", "time_control")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully deleted control batch {batch_c} from 'batch_time'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " from 'batch_time'."))
   } else if (type == "object") {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_o))
     time_object <- filter(gt.env$tbl_time, .data$type == "object")
@@ -156,7 +155,7 @@ vacuum_data <- function() {
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", "time_object")
     invisible(list2env(lst_export, envir = gt.env))
-    message(glue("Successfully deleted object batch {batch_o} from 'batch_time'."))
+    message(paste0("Successfully deleted object batch ", batch_o, " from 'batch_time'."))
   }
 }
 
@@ -167,7 +166,7 @@ vacuum_data <- function() {
 .remove_data_control <- function(batch_c = NULL, batch_o = NULL) {
   walk(list(batch_c, batch_o), .check_batch)
   dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch_c))
-  message(glue("Successfully deleted control batch {batch_c} from 'data_control'."))
+  message(paste0("Successfully deleted control batch ", batch_c, " from 'data_control'."))
 
   .remove_data_object(batch_c = batch_c)
 }
@@ -180,13 +179,13 @@ vacuum_data <- function() {
   walk(list(batch_c, batch_o), .check_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_object'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_object'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_object'."))
+    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_object'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_object'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_object'."))
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
@@ -200,13 +199,13 @@ vacuum_data <- function() {
   walk(list(batch_c, batch_o), .check_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_score'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_score'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_score'."))
+    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_score'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_score'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_score'."))
   }
 
   .remove_data_doi(batch_c = batch_c, batch_o = batch_o)
@@ -220,13 +219,13 @@ vacuum_data <- function() {
   walk(list(batch_c, batch_o), .check_batch)
   if (is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
-    message(glue("Successfully deleted control batch {batch_c} from 'data_doi'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_doi'."))
   } else if (is.null(batch_c) & !is.null(batch_o)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=?", params = list(batch_o))
-    message(glue("Successfully deleted object batch {batch_o} from 'data_doi'."))
+    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_doi'."))
   } else if (!is.null(batch_o) & !is.null(batch_c)) {
     dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(glue("Successfully deleted control batch {batch_c} and object batch {batch_o} from 'data_doi'."))
+    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_doi'."))
   }
 }
 
@@ -237,5 +236,5 @@ vacuum_data <- function() {
 .remove_data_global <- function(batch_c = NULL, batch_o = NULL) {
   walk(list(batch_c, batch_o), .check_batch)
   dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch_o))
-  message(glue("Successfully deleted object batch {batch_o} from 'data_global'."))
+  message(paste0("Successfully deleted object batch ", batch_o, " from 'data_global'."))
 }
