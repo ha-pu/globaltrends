@@ -32,15 +32,12 @@ keywords. Degree of internationalization is measured based on the
 distribution of country search scores.
 }
 \details{
-The function uses an inverted Gini-coefficient
-\code{dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)}
-as measure for the degree of internationalization. The more uniform the
-distribution of search scores across all countries, the higher the inverted
-Gini-coefficient and the greater the degree of internationalization. In
-addition to the Gini-coefficient, the package uses inverted Herfindahl index
-\code{coalesce(1 - sum((series / sum(series))^2), 0)} and inverted Entropy
-\code{dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)}
-as measures for internationalization.
+The function uses an inverted Gini-coefficient as measure for the degree of
+internationalization. The more uniform the distribution of search scores
+across all countries, the higher the inverted Gini-coefficient and the
+greater the degree of internationalization. In addition to the
+Gini-coefficient, the package uses inverted Herfindahl index and inverted
+Entropy as measures for internationalization.
 }
 \examples{
 \dontrun{
@@ -60,6 +57,5 @@ compute_doi(
 \seealso{
 \itemize{
 \item \code{\link[=example_doi]{example_doi()}}
-\item \code{\link[ineq:ineq]{ineq::ineq()}}
 }
 }
