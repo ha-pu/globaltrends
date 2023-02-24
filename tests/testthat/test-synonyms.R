@@ -34,13 +34,13 @@ test_that("add_synonyms1", {
 
   expect_match(
     out,
-    "Successfully added synonym | keyword: fc bayern | synonym: bayern munich",
+    "Successfully added synonym | keyword: fc bayern | synonym: bayern munich\\.",
     all = FALSE
   )
 
   expect_match(
     out,
-    "Successfully added synonym | keyword: fc bayern | synonym: bayern munchen",
+    "Successfully added synonym | keyword: fc bayern | synonym: bayern munchen\\.",
     all = FALSE
   )
 
