@@ -11,15 +11,12 @@
 #' distribution of country search scores.
 #'
 #' @details
-#' The function uses an inverted Gini-coefficient
-#' `dplyr::coalesce(1 - ineq::ineq(series, type = "Gini"), 0)`
-#' as measure for the degree of internationalization. The more uniform the
-#' distribution of search scores across all countries, the higher the inverted
-#' Gini-coefficient and the greater the degree of internationalization. In
-#' addition to the Gini-coefficient, the package uses inverted Herfindahl index
-#' `coalesce(1 - sum((series / sum(series))^2), 0)` and inverted Entropy
-#' `dplyr::coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)`
-#' as measures for internationalization.
+#' The function uses an inverted Gini-coefficient as measure for the degree of
+#' internationalization. The more uniform the distribution of search scores
+#' across all countries, the higher the inverted Gini-coefficient and the
+#' greater the degree of internationalization. In addition to the
+#' Gini-coefficient, the package uses inverted Herfindahl index and inverted
+#' Entropy as measures for internationalization.
 #'
 #' @param control Control batch for which the search score is used. Object
 #' of type `numeric`.
@@ -30,7 +27,6 @@
 #'
 #' @seealso
 #' * [example_doi()]
-#' * [ineq::ineq()]
 #'
 #' @return
 #' Message that data was aggregated successfully. Data is written to table
@@ -144,7 +140,16 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #' @importFrom dplyr coalesce
 
 .compute_gini <- function(series) {
-  out <- coalesce(1 - ineq::ineq(series, type = "Gini"), 0)
+  gini <- function (x) {
+    n <- length(x)
+    x <- sort(x)
+    g <- sum(x * seq(n))
+    g <- 2 * g / sum(x) - (n + 1)
+    g <- g / n
+    return(g)
+  }
+  
+  out <- coalesce(1 - gini(series), 0)
   return(out)
 }
 
@@ -166,7 +171,15 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #' @noRd
 
 .compute_entropy <- function(series) {
-  out <- coalesce(-1 * ineq::ineq(series, parameter = 1, type = "entropy"), 0)
+  entropy <- function (x) {
+    x <- x[!(x == 0)]
+    e <- x / mean(x)
+    e <- sum(x * log(e))
+    e <- e / sum(x)
+    return(e)
+  }
+  
+  out <- coalesce(-1 * entropy(series), 0)
   if (out == -Inf) {
     out <- 0
   }

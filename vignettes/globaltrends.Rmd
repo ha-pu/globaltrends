@@ -447,15 +447,6 @@ get_abnorm_hist(data_voi, type = "obs")
 ### Alternative dispersion measures
 The `globaltrends` package computes degree of internationalization based on the across-location distribution of search scores. By default, the package uses an inverted Gini-coefficient. In addition, the package provides inverted Herfindahl index and inverted Entropy as robustness checks. In general, outcomes for all three dispersion measures are similar.
 
-```{r, eval = FALSE}
-# computation inverted gini coefficient ----------------------------------------
-dplyr::coalesce(1 - ineq::ineq(search_score, type = "Gini"), 0)
-# computation inverted herfindahl index ----------------------------------------
-dplyr::coalesce(1 - sum((search_score / sum(search_score))^2), 0)
-# computation inverted entropy -------------------------------------------------
-dplyr::coalesce(-1 * ineq::ineq(search_score, parameter = 1, type = "entropy"), 0)
-```
-
 <center>
 ![](plot011.png){height=45%, width=45%}
 ![](plot012.png){height=45%, width=45%}
