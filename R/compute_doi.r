@@ -140,7 +140,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #' @importFrom dplyr coalesce
 
 .compute_gini <- function(series) {
-  .gini <- function (x) {
+  gini <- function (x) {
     n <- length(x)
     x <- sort(x)
     g <- sum(x * seq(n))
