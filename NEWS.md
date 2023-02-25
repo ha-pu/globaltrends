@@ -2,6 +2,7 @@
 
 * Remove dependency on `glue` package, calls of `glue::glue` are replaced with `paste` and `paste0`
 * Remove dependency on `ineq` package, calls of `ineq::ineq` are replaced with internal functions
+* Use functions from `DBI 1.1.0`: `dbCreateTable` and `dbAppendTable`
 
 # globaltrends 0.0.13
 
