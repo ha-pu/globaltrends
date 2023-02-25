@@ -104,7 +104,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @keywords internal
 #' @noRd
 #'
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
 #' @importFrom purrr map
@@ -154,9 +154,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     }
     keyword <- str_squish(keyword)
     data <- tibble(batch = new_batch, keyword, type = "control")
-    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
+    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
     data <- tibble(batch = new_batch, time = time, type = "control")
-    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data, append = TRUE)
+    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
     keywords_control <- filter(gt.env$tbl_keywords, .data$type == "control")
     keywords_control <- select(keywords_control, -type)
     keywords_control <- collect(keywords_control)
@@ -178,9 +178,9 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
       new_batch <- max(gt.env$keywords_object$batch) + 1
     }
     data <- tibble(batch = new_batch, keyword, type = "object")
-    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data, append = TRUE)
+    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
     data <- tibble(batch = new_batch, time = time, type = "object")
-    dbWriteTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data, append = TRUE)
+    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
     keywords_object <- filter(gt.env$tbl_keywords, .data$type == "object")
     keywords_object <- select(keywords_object, -type)
     keywords_object <- collect(keywords_object)
@@ -238,7 +238,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #'
 #' @export
 #' @rdname add_synonym
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom purrr walk
 #' @importFrom stringr str_squish
 #' @importFrom tibble tibble
@@ -258,7 +258,7 @@ add_synonym.character <- function(keyword, synonym) {
     keyword <- str_squish(keyword)
     synonym <- str_squish(synonym)
     out <- tibble(keyword, synonym)
-    dbWriteTable(
+    dbAppendTable(
       conn = gt.env$globaltrends_db,
       name = "keyword_synonyms",
       value = out,

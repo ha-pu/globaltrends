@@ -46,6 +46,7 @@
 #'
 #' @export
 #' @importFrom DBI dbConnect
+#' @importFrom DBI dbCreateTable
 #' @importFrom DBI dbDisconnect
 #' @importFrom DBI dbExecute
 #' @importFrom dbplyr sql
@@ -62,89 +63,58 @@ initialize_db <- function() {
   message("Successfully created database.")
 
   # batch_keywords -------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_keywords (
-  type TEXT,
-  batch INTEGER,
-  keyword TEXT
-          )")
+  db_cols <- c("TEXT", "INTEGER", "TEXT")
+  names(db_cols) <- c("type", "batch", "keyword")
+  dbCreateTable(conn = globaltrends_db, name = "batch_keywords", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
   message("Successfully created table 'batch_keywords'.")
 
   # batch_time -----------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE batch_time (
-  type TEXT,
-  batch INTEGER,
-  time TEXT
-          )")
+  db_cols <- c("TEXT", "INTEGER", "TEXT")
+  names(db_cols) <- c("type", "batch", "time")
+  dbCreateTable(conn = globaltrends_db, name = "batch_time", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Successfully created table 'batch_time'.")
 
   # keyword_synonyms -----------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE keyword_synonyms (
-  keyword TEXT,
-  synonym TEXT
-          )")
+  db_cols <- c("TEXT", "TEXT")
+  names(db_cols) <- c("keyword", "synonym")
+  dbCreateTable(conn = globaltrends_db, name = "keyword_synonyms", fields = db_cols)
   message("Successfully created table 'keyword_synonyms'.")
 
   # data_locations -------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_locations (
-  location TEXT,
-  type TEXT
-          )")
+  db_cols <- c("TEXT", "TEXT")
+  names(db_cols) <- c("location", "type")
+  dbCreateTable(conn = globaltrends_db, name = "data_locations", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_location ON data_locations (location);")
   message("Successfully created table 'data_locations'.")
   .enter_location(globaltrends_db = globaltrends_db)
 
   # data_control ---------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_control (
-  location TEXT,
-  keyword TEXT,
-  date INTEGER,
-  hits REAL,
-  batch INTEGER
-          )")
+  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER")
+  names(db_cols) <- c("location", "keyword", "date", "hits", "batch")
+  dbCreateTable(conn = globaltrends_db, name = "data_control", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
   message("Successfully created table 'batch_keywords'.")
 
   # data_object ----------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_object (
-  location TEXT,
-  keyword TEXT,
-  date INTEGER,
-  hits REAL,
-  batch_c INTEGER,
-  batch_o INTEGER
-          )")
+  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER", "INTEGER")
+  names(db_cols) <- c("location", "keyword", "date", "hits", "batch_c", "batch_o")
+  dbCreateTable(conn = globaltrends_db, name = "data_object", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
   message("Successfully created table 'data_control'.")
 
   # data_score -----------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_score (
-  location TEXT,
-  keyword TEXT,
-  date INTEGER,
-  score_obs REAL,
-  score_sad REAL,
-  score_trd REAL,
-  batch_c INTEGER,
-  batch_o INTEGER,
-  synonym INTEGER
-          )")
+  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "INTEGER")
+  names(db_cols) <- c("location", "keyword", "date", "score_obs", "score_sad", "score_trd", "batch_c", "batch_o", "synonym")
+  dbCreateTable(conn = globaltrends_db, name = "data_score", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Successfully created table 'data_score'.")
 
   # data_doi -------------------------------------------------------------------
-  dbExecute(conn = globaltrends_db, statement = "CREATE TABLE data_doi (
-  keyword TEXT,
-  date INTEGER,
-  type TEXT,
-  gini REAL,
-  hhi REAL,
-  entropy REAL,
-  batch_c INTEGER,
-  batch_o INTEGER,
-  locations TEXT
-          )")
+  db_cols <- c("TEXT", "INTEGER", "TEXT", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "TEXT")
+  names(db_cols) <- c("keyword", "date", "type", "gini", "hhi", "entropy", "batch_c", "batch_o", "locations")
+  dbCreateTable(conn = globaltrends_db, name = "data_doi", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
   message("Successfully created table 'data_doi'.")
 
@@ -158,7 +128,7 @@ initialize_db <- function() {
 #' @keywords internal
 #' @noRd
 #'
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr arrange
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr case_when

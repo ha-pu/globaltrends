@@ -58,7 +58,7 @@
 #'
 #' @export
 #' @rdname download_object
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr mutate
 #' @importFrom purrr walk
 #' @importFrom rlang .data
@@ -108,7 +108,7 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
                 batch_c = control,
                 batch_o = object
               )
-              dbWriteTable(conn = gt.env$globaltrends_db, name = "data_object", value = out, append = TRUE)
+              dbAppendTable(conn = gt.env$globaltrends_db, name = "data_object", value = out)
               success <- TRUE
               break()
             }

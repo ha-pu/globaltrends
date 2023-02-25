@@ -67,8 +67,8 @@ add_object_keyword(
   time = "2010-01-01 2019-12-31"
 )
 
-dbWriteTable(gt.env$globaltrends_db, "data_control", example_control, append = TRUE)
-dbWriteTable(gt.env$globaltrends_db, "data_object", example_object, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_control", example_control)
+dbAppendTable(gt.env$globaltrends_db, "data_object", example_object)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {

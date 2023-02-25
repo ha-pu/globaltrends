@@ -52,7 +52,7 @@
 #'
 #' @export
 #' @rdname download_control
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr mutate
 #' @importFrom purrr walk
 #' @importFrom rlang .data
@@ -82,7 +82,7 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
         out <- do.call(.get_trend, c(args, location = .x, term = list(terms), time = time))
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
-          dbWriteTable(conn = gt.env$globaltrends_db, name = "data_control", value = out, append = TRUE)
+          dbAppendTable(conn = gt.env$globaltrends_db, name = "data_control", value = out)
         }
         message(paste0("Successfully downloaded control data | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
       } else {
