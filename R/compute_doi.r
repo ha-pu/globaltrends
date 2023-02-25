@@ -140,7 +140,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #' @importFrom dplyr coalesce
 
 .compute_gini <- function(series) {
-  gini <- function (x) {
+  gini <- function(x) {
     n <- length(x)
     x <- sort(x)
     g <- sum(x * seq(n))
@@ -148,7 +148,7 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
     g <- g / n
     return(g)
   }
-  
+
   out <- coalesce(1 - gini(series), 0)
   return(out)
 }
@@ -171,14 +171,14 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #' @noRd
 
 .compute_entropy <- function(series) {
-  entropy <- function (x) {
+  entropy <- function(x) {
     x <- x[!(x == 0)]
     e <- x / mean(x)
     e <- sum(x * log(e))
     e <- e / sum(x)
     return(e)
   }
-  
+
   out <- coalesce(-1 * entropy(series), 0)
   if (out == -Inf) {
     out <- 0
