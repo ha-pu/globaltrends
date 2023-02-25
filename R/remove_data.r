@@ -91,7 +91,6 @@ remove_data <- function(table, control = NULL, object = NULL) {
 }
 
 #' @export
-#' @importFrom DBI dbExecute
 #' @rdname remove_data
 
 vacuum_data <- function() {

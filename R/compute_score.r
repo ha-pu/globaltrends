@@ -68,7 +68,7 @@
 #'
 #' @export
 #' @rdname compute_score
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr anti_join
 #' @importFrom dplyr case_when
 #' @importFrom dplyr coalesce
@@ -264,7 +264,7 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
               TRUE ~ FALSE
             )
           )
-          dbWriteTable(
+          dbAppendTable(
             conn = gt.env$globaltrends_db,
             name = "data_score",
             value = out,
@@ -352,7 +352,7 @@ compute_voi <- function(object, control = 1) {
 #' @noRd
 #'
 #' @importFrom DBI dbExecute
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr anti_join
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr collect
@@ -439,7 +439,7 @@ compute_voi <- function(object, control = 1) {
         data <- bind_rows(sub_main, data_synonym_agg, data_synonym_nagg)
         dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
         dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
-        dbWriteTable(conn = gt.env$globaltrends_db, name = "data_score", value = data, append = TRUE)
+        dbAppendTable(conn = gt.env$globaltrends_db, name = "data_score", value = data)
       })
     }
   }

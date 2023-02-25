@@ -49,19 +49,19 @@ test_that("add_synonyms1", {
 
 # enter data -------------------------------------------------------------------
 data <- filter(example_control, batch == 1 & location %in% location_set[1:3])
-dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_control", data)
 data <- filter(
   example_object,
   batch_c == 1 & batch_o == 1 & location %in% location_set[1:2]
 ) %>%
   mutate(batch_o = 1)
-dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 data <- filter(
   example_object,
   batch_c == 1 & batch_o == 2 & location %in% location_set[2:3]
 ) %>%
   mutate(batch_o = 2)
-dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
 compute_score(object = 1, locations = location_set[1:2])
 out1 <- export_score(keyword = "fc bayern")

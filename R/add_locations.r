@@ -34,7 +34,7 @@
 #' add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
 #' }
 #' @export
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr distinct
 #' @importFrom dplyr filter
@@ -72,7 +72,7 @@ add_locations <- function(locations, type, export = TRUE) {
   }
 
   data <- tibble(location = locations, type = type)
-  dbWriteTable(conn = gt.env$globaltrends_db, name = "data_locations", value = data, append = TRUE)
+  dbAppendTable(conn = gt.env$globaltrends_db, name = "data_locations", value = data)
 
   if (export) .export_locations()
 

@@ -48,7 +48,7 @@
 #'
 #' @export
 #' @rdname compute_doi
-#' @importFrom DBI dbWriteTable
+#' @importFrom DBI dbAppendTable
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
@@ -117,7 +117,7 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         batch_o = object,
         locations = locations
       )
-      dbWriteTable(conn = gt.env$globaltrends_db, name = "data_doi", value = out, append = TRUE)
+      dbAppendTable(conn = gt.env$globaltrends_db, name = "data_doi", value = out)
     }
     message(paste0("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "/", max(gt.env$keywords_object$batch), "]"))
   }

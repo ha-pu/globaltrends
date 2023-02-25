@@ -22,9 +22,9 @@ add_object_keyword(
 )
 
 data <- filter(example_control, batch == 1 & location %in% c(location_set[1:3], "world"))
-dbWriteTable(gt.env$globaltrends_db, "data_control", data, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_control", data)
 data <- filter(example_object, batch_c == 1 & batch_o == 1 & location %in% c(location_set[1:3], "world"))
-dbWriteTable(gt.env$globaltrends_db, "data_object", data, append = TRUE)
+dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
