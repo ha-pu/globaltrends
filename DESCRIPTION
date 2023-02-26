@@ -32,7 +32,6 @@ Imports:
     ggplot2 (>= 3.3.2),
     gtrendsR (>= 1.5.1),
     lubridate (>= 1.7.9),
-    maps (>= 3.4.0),
     purrr (>= 0.3.4),
     rlang (>= 0.4.7),
     RSQLite (>= 2.2.0),
