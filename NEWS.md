@@ -3,6 +3,10 @@
 * Remove dependency on `glue` package, calls of `glue::glue` are replaced with `paste` and `paste0`
 * Remove dependency on `ineq` package, calls of `ineq::ineq` are replaced with internal functions
 * Use functions from `DBI 1.1.0`: `dbCreateTable` and `dbAppendTable`
+* Remove the function `plot_map` from the package:
+  * The function proofed too inflexible, only world map was included
+  * We point users to the functions from the packages `maps` and `ggmap`
+  * Remove dependency on the `maps` package
 
 # globaltrends 0.0.13
 
