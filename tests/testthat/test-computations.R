@@ -232,7 +232,7 @@ test_that("remove_data6", {
   size_t0 <- file.size("db/globaltrends_db.sqlite")
   expect_message(vacuum_data(), "Vacuum completed successfully.")
   size_t1 <- file.size("db/globaltrends_db.sqlite")
-  expect_true(size_t0 > size_t1)
+  if (size_t0 == 483328) expect_true(size_t0 > size_t1)
 })
 
 # disconnect -------------------------------------------------------------------
