@@ -14,16 +14,21 @@
 #'
 #' @param keyword Object keywords for which data should be exported. Object or
 #' list of objects of type `character`.
+#'
 #' @param object Object batch number for which data should be exported.
+#'
 #' @param control Control batch number for which data should be exported. Only
 #' for `export_control` and `export_control_global`, input is also possible as
 #' list.
+#'
 #' @param location List of locations for which the data is exported. Refers to
 #' lists generated in `start_db` or `character` objects in these lists. Only for
-#' `export_control`, `export_object`, or `export_score`
+#' `export_control`, `export_object`, or `export_score`.
+#'
 #' @param locations List of locations for which the data is exported. Refers to
 #' names of lists generated in `start_db` as an object of type `character`. Only
 #' for `export_doi`.
+#'
 #' @param type Type of time series for which data should be exported. Element
 #' of type `character`. Relevant only for `export_global` and
 #' `export_doi`. Takes one of the following values: *obs* - observed
@@ -91,6 +96,7 @@
 #' ) %>%
 #'   writexl::write_xlsx("data_doi.xlsx")
 #' }
+#'
 #' @rdname export_data
 #' @export
 #' @importFrom dplyr filter

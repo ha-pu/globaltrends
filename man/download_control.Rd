@@ -47,6 +47,15 @@ the frequency of downloads, Google Trends might block users for some time. In
 this case, \code{download_control} waits 60 minutes before it retries the
 download.
 }
+\section{Warning}{
+
+We advise against the usage of \emph{category codes} in
+downloads. If you use \emph{categories} to narrow the context of keyword usage,
+these categories are applied to \strong{ALL} keywords in the batch. This applies
+to \emph{control} keywords as well as \emph{object} keywords and can result in
+unintended behavior.
+}
+
 \examples{
 \dontrun{
 download_control(

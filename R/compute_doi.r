@@ -20,8 +20,10 @@
 #'
 #' @param control Control batch for which the search score is used. Object
 #' of type `numeric`.
+#'
 #' @param object Object batch for which the keyword-country data
 #' is aggregated and DOI is computed.  Object of type `numeric`.
+#'
 #' @param locations List of locations for which the search score is used.
 #' Object of type `character`. Defaults to *"countries"*.
 #'

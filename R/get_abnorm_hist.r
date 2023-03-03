@@ -25,16 +25,21 @@
 #'
 #' @param data Object of class `exp_score`, `exp_voi` or
 #' `exp_doi` generated through `export_...` functions.
+#'
 #' @param train_win Object of type `numeric`. Length of rolling average
 #' training window in months. Defaults to 12.
+#'
 #' @param train_break Object of type `numeric`. Length of break between
 #' rolling average training window and date in months. Defaults to 1.
+#'
 #' @param type Object of type `character` indicating the type of time
 #' series-column from data_score, takes either *obs*, *sad*, or
 #' *trd*. Defaults to *"obs"*.
+#'
 #' @param measure Object of type `character` indicating the measure used
 #' for DOI computation for which abnormal changes should be analyzed. Takes
 #' either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
+#'
 #' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return

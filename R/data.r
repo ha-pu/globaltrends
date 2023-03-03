@@ -24,6 +24,7 @@
 #'
 #' @seealso
 #' * [globaltrends::add_control_keyword()]
+#'
 #' @name batch_keywords
 "example_keywords"
 
@@ -53,6 +54,7 @@
 #'
 #' @seealso
 #' * [globaltrends::add_control_keyword()]
+#'
 #' @name batch_time
 "example_time"
 
@@ -88,9 +90,11 @@
 #'   batch.}
 #' }
 #' @source \url{https://trends.google.com/trends/}
+#'
 #' @seealso
 #' * [download_control()]
 #' * [dplyr::tbl()]
+#'
 #' @name data_control
 "example_control"
 
@@ -130,9 +134,11 @@
 #'   object batch.}
 #' }
 #' @source \url{https://trends.google.com/trends/}
+#'
 #' @seealso
 #' * [download_object()]
 #' * [dplyr::tbl()]
+#'
 #' @name data_object
 "example_object"
 
@@ -180,10 +186,12 @@
 #'   \item{synonym}{Column of type `integer` showing whether the line will
 #'   be aggregated as synonym.}
 #' }
+#'
 #' @seealso
 #' * [compute_score()]
 #' * [compute_voi()]
 #' * [dplyr::tbl()]
+#'
 #' @name data_score
 "example_score"
 
@@ -231,9 +239,11 @@
 #'   \item{locations}{Column of type `character` showing the list of
 #'   locations for which the search score distribution is used.}
 #' }
+#'
 #' @seealso
 #' * [compute_doi()]
 #' * [dplyr::tbl()]
+#'
 #' @name data_doi
 "example_doi"
 
@@ -314,6 +324,7 @@
 #' * UZ
 #' * VN
 #' * ZA
+#'
 #' @name countries
 "countries"
 
@@ -322,6 +333,7 @@
 #' @description
 #' A data.frame that includes ISO2 codes and country names for all countries and
 #' locations in the World Bank's World Development Indicators database.
+#'
 #' @name countries_wdi
 "countries_wdi"
 
@@ -381,5 +393,6 @@
 #' * US-WI
 #' * US-WY
 #' * US-DC
+#'
 #' @name us_states
 "us_states"

@@ -22,12 +22,21 @@
 #' this case, `download_control` waits 60 minutes before it retries the
 #' download.
 #'
+#' @section Warning:
+#' We advise against the usage of *category codes* in
+#' downloads. If you use *categories* to narrow the context of keyword usage,
+#' these categories are applied to **ALL** keywords in the batch. This applies
+#' to *control* keywords as well as *object* keywords and can result in
+#' unintended behavior.
+#'
 #' @param control Control batch for which the data is downloaded. Object
 #' of type `numeric` or object of type `list` containing single
 #' objects of type `numeric`.
+#'
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `gt.env$countries`.
+#'
 #' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
 #'
 #' @seealso

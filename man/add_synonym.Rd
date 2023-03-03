@@ -28,9 +28,13 @@ of interest can be searched with different keywords on Google e.g., FC Bayern
 for Bayern Munich. Search scores for keywords that are added as synonyms are
 aggregated when running \code{compute_score}. The function allows to add
 synonyms for a single keyword at a time.
-\emph{Note}: To avoid trailing spaces \code{stringr::str_squish} is automatically
+}
+\section{Note}{
+
+To avoid trailing spaces \code{stringr::str_squish} is automatically
 applied to all keywords and synonyms.
 }
+
 \examples{
 \dontrun{
 add_synonym(

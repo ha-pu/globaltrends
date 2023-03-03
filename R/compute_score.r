@@ -21,20 +21,23 @@
 #' the mapping, object search volumes are divided by the sum of control search
 #' volumes in the respective control batch. We use the sum of search volumes for
 #' a set of control keywords, rather than the search volumes for a single
-#' control keyword, to smooth-out variation in the underlying control data. When
-#' synonyms were specified through `add_synonym`, search scores for
-#' synonyms are added to the main keyword.
+#' control keyword, to smooth-out variation in the underlying control data.
 #'
 #' *Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 #' Uncertainty index for the United States and Australia. Economics Letters,
 #' 161: 149-153.*
 #'
+#' @section Note:
+#' When synonyms were specified through `add_synonym`, search
+#' scores for synonyms are added to the main keyword.
 #'
 #' @param control Control batch for which the data is downloaded. Object
 #' of type `numeric`. Defaults to 1.
+#'
 #' @param object Object batch for which the data is downloaded. Object
 #' of type `numeric` or object of type `list` containing single
 #' objects of type `numeric`.
+#'
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `countries`.

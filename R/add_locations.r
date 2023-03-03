@@ -14,13 +14,17 @@
 #' and computation functions check whether data for a location already exists.
 #' Therefore, data will not be duplicated when location data already exists from
 #' another set.
+#'
+#' @section Warning:
 #' Unfortunately, the Google Trends API cannot handle the location
 #' "NA - Namibia". Therefore, the location will be dropped automatically.
 #'
 #' @param locations Locations that should be added as set of locations. Vector of
 #' type `character`.
+#'
 #' @param type Name of the location set that should be added. Object of type
 #' `character` of length 1.
+#'
 #' @param export Indicator whether the new location set should be directly
 #' exported to the package environment `gt.env`. Object of type `logical`,
 #' defaults to `TRUE`.
@@ -33,6 +37,7 @@
 #' \dontrun{
 #' add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
 #' }
+#'
 #' @export
 #' @importFrom DBI dbAppendTable
 #' @importFrom dplyr collect

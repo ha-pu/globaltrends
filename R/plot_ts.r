@@ -13,17 +13,23 @@
 #' to highlight abnormal changes in the data.
 #'
 #' @param data Data exported from `export_...` or `compute_abnorm` functions.
+#'
 #' @param type Object of type `character` indicating the type of time
 #' series-column from data_score, takes either *obs*, *sad*, or *trd*. Defaults
 #' to *"obs"*.
+#'
 #' @param measure Object of type `character` indicating the DOI measure,
 #' takes either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
+#'
 #' @param locations Object of type `character` indicating for which
 #' set of locations should be filtered. Defaults to *"countries"*.
+#'
 #' @param smooth Object of type `logical` indicating whether the `geom_smooth`
 #' function of `ggplot2` should be used. Defaults to `TRUE`.
+#'
 #' @param ci Confidence interval within which changes are assumed to be normal.
 #' Object of type `double, 0 < ci < 1`. Defaults to *0.95*.
+#'
 #' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return
