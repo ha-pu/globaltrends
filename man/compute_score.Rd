@@ -47,14 +47,18 @@ Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
 the mapping, object search volumes are divided by the sum of control search
 volumes in the respective control batch. We use the sum of search volumes for
 a set of control keywords, rather than the search volumes for a single
-control keyword, to smooth-out variation in the underlying control data. When
-synonyms were specified through \code{add_synonym}, search scores for
-synonyms are added to the main keyword.
+control keyword, to smooth-out variation in the underlying control data.
 
 \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 Uncertainty index for the United States and Australia. Economics Letters,
 161: 149-153.}
 }
+\section{Note}{
+
+When synonyms were specified through \code{add_synonym}, search
+scores for synonyms are added to the main keyword.
+}
+
 \examples{
 \dontrun{
 compute_score(

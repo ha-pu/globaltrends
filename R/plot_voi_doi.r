@@ -7,7 +7,9 @@
 #' keyword is used.
 #'
 #' @inheritParams plot_ts
+#'
 #' @param data_voi Data exported from `export_voi` function.
+#'
 #' @param data_doi Data exported from `export_doi` function.
 #'
 #' @return Line plot of VOI and DOI time series as `ggplot2` object.

@@ -32,6 +32,7 @@ data is removed. For example, when data from \emph{data_control} is removed
 data in \emph{data_object} that maps to this control batch is also removed.
 The dependency structure works as follows: \emph{batch_keyword} / \emph{batch_time} ->
 \emph{data_control} -> \emph{data_object} -> \emph{data_score} -> \emph{data_doi}.
+
 After using \code{remove_data}, run \code{vacuum_data} to free-up unused memory in
 the database file. Depending on the database size, \code{vacuum_data} might
 take some minutes for execution.

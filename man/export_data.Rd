@@ -37,7 +37,7 @@ list.}
 
 \item{location}{List of locations for which the data is exported. Refers to
 lists generated in \code{start_db} or \code{character} objects in these lists. Only for
-\code{export_control}, \code{export_object}, or \code{export_score}}
+\code{export_control}, \code{export_object}, or \code{export_score}.}
 
 \item{keyword}{Object keywords for which data should be exported. Object or
 list of objects of type \code{character}.}
@@ -112,6 +112,7 @@ export_doi(
 ) \%>\%
   writexl::write_xlsx("data_doi.xlsx")
 }
+
 }
 \seealso{
 \itemize{

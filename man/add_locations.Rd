@@ -35,11 +35,16 @@ a set) or single countries (e.g., adding regions of France as a set). Download
 and computation functions check whether data for a location already exists.
 Therefore, data will not be duplicated when location data already exists from
 another set.
+}
+\section{Warning}{
+
 Unfortunately, the Google Trends API cannot handle the location
 "NA - Namibia". Therefore, the location will be dropped automatically.
 }
+
 \examples{
 \dontrun{
 add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
 }
+
 }

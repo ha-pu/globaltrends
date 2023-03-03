@@ -26,14 +26,24 @@
 #' for some time. In this case, `download_object` waits 60 minutes
 #' before it retries the download.
 #'
+#' @section Warning:
+#' We advise against the usage of *category codes* in
+#' downloads. If you use *categories* to narrow the context of keyword usage,
+#' these categories are applied to **ALL** keywords in the batch. This applies
+#' to *control* keywords as well as *object* keywords and can result in
+#' unintended behavior.
+#'
 #' @param object Object batch for which the data is downloaded. Object
 #' of type `numeric` or object of type `list` containing single
 #' object of type `numeric`.
+#'
 #' @param control Control batch that is used for mapping. Object of type
 #' `numeric`. Defaults to `1`.
+#'
 #' @param locations List of countries or regions for which the data is
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `countries`.
+#'
 #' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
 #'
 #' @seealso

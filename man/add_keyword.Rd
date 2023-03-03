@@ -38,13 +38,21 @@ more than four (five) keywords, the vector is split into four-keyword
 of length four (five) or less. Each batch of keywords is combined with a time
 period for which data will be downloaded. To change the time period for an
 existing batch, all downloads and computations must be rerun.
+}
+\section{Warning}{
+
 If you use search topics for object keywords, make sure to use search topics
 for control keywords and vice versa. See Google's
 \href{https://web.archive.org/web/20230117193147/https://support.google.com/trends/answer/4359550/}{FAQ}
 for additional information on search topics.
-\emph{Note}: To avoid trailing spaces \code{stringr::str_squish} is automatically
+}
+
+\section{Note}{
+
+To avoid trailing spaces \code{stringr::str_squish} is automatically
 applied to all keywords.
 }
+
 \examples{
 \dontrun{
 add_control_keyword(
@@ -87,6 +95,7 @@ add_control_keyword(
 )
 # This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 }
+
 }
 \seealso{
 \itemize{
