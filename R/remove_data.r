@@ -230,13 +230,3 @@ vacuum_data <- function() {
     message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_doi'."))
   }
 }
-
-#' @title Remove from data_global
-#' @keywords internal
-#' @noRd
-
-.remove_data_global <- function(batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_global WHERE batch=?", params = list(batch_o))
-  message(paste0("Successfully deleted object batch ", batch_o, " from 'data_global'."))
-}
