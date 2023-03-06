@@ -7,6 +7,7 @@
   * The function proofed too inflexible, only world map was included
   * We point users to the functions from the packages `maps` and `ggmap`
   * Remove dependency on the `maps` package
+* Remove reference to non-existent table `data_global` in function `remove_data`
 
 # globaltrends 0.0.13
 
