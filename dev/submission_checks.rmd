@@ -65,6 +65,16 @@ revdepcheck::revdep_check(pkg = "..")
 devtools::check_win_devel()
 ```
 
+* devtools::check_win_release()
+```{r}
+devtools::check_win_release()
+```
+
+* devtools::check_win_oldrelease()
+```{r}
+devtools::check_win_oldrelease()
+```
+
 * devtools::check_rhub()
 ```{r}
 devtools::check_rhub(pkg = "..", email = "harald.puhr@gmail.com")
