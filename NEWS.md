@@ -1,3 +1,5 @@
+# globaltrends 0.0.14.9000
+
 # globaltrends 0.0.14
 
 * Remove dependency on `glue` package, calls of `glue::glue` are replaced with `paste` and `paste0`
