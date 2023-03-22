@@ -3,8 +3,8 @@ Package: globaltrends
 Title: Download and Measure Global Trends Through Google Search Volumes
 Version: 0.0.14.9000
 Authors@R: c(
-    person("Harald", "Puhr", , "harald.puhr@gmail.com", role = c("aut", "cre")),
-    person("Jakob", "Muellner", role = "ccp")
+    person("Harald", "Puhr", email = "harald.puhr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3308-9553")),
+    person("Jakob", "Muellner", role = "ccp", comment = c(ORCID = "0000-0002-3443-0469"))
   )
 Description: Google offers public access to global search volumes from its
     search engine through the Google Trends portal. The package downloads
