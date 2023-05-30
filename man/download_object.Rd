@@ -51,8 +51,8 @@ mapping between search volumes for control keywords stored in
 a single keyword batch for a single location takes about 30 seconds. This
 includes a randomized waiting period of 5-10 seconds between downloads.
 Depending on the frequency of downloads, Google Trends might block users
-for some time. In this case, \code{download_object} waits 60 minutes
-before it retries the download.
+for some time (about 1,500 downloads within 24 hours). In this case,
+\code{download_object} waits 60 minutes before it retries the download.
 }
 \section{Warning}{
 
