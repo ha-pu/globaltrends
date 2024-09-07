@@ -2,6 +2,8 @@ library(tidyverse)
 
 # lst_dates --------------------------------------------------------------------
 lst_dates <- list(seq.Date(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), by = "month"))
+lst_dates[[1]] <- as.character(lst_dates[[1]])
+lst_dates[[1]] <- str_sub(lst_dates[[1]], 1, 7)
 
 # trunc_rnorm ------------------------------------------------------------------
 trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
@@ -40,13 +42,13 @@ usethis::use_data(example_keywords, overwrite = TRUE)
 ti_control <- tibble(
   type = "control",
   batch = 1,
-  time = "2010-01-01 2019-12-31"
+  time = "2010-01 2019-12"
 )
 
 ti_object <- tibble(
   type = "object",
   batch = 1:4,
-  time = "2010-01-01 2019-12-31"
+  time = "2010-01 2019-12"
 )
 
 example_time <- bind_rows(ti_control, ti_object)
@@ -71,10 +73,7 @@ example_control <- stat_control %>%
     batch = 1L
   ) %>%
   unnest(cols = c(hits, date)) %>%
-  mutate(
-    hits = as.integer(hits),
-    date = as.integer(date)
-  )
+  mutate(hits = as.integer(hits))
 
 usethis::use_data(example_control, overwrite = TRUE)
 
@@ -94,13 +93,10 @@ example_object <- stat_object %>%
   mutate(
     hits = out,
     date = lst_dates,
-    batch_c = 1L
+    batch = 1L
   ) %>%
   unnest(cols = c(hits, date)) %>%
-  mutate(
-    hits = as.integer(hits),
-    date = as.integer(date)
-  )
+  mutate(hits = as.integer(hits))
 
 usethis::use_data(example_object, overwrite = TRUE)
 
@@ -122,11 +118,9 @@ example_score <- stat_score %>%
   mutate(
     score = out,
     date = lst_dates,
-    batch_c = 1L,
-    synonym = 0L
+    batch = 1L
   ) %>%
   unnest(cols = c(score, date)) %>%
-  mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = type, values_from = score)
 
 usethis::use_data(example_score, overwrite = TRUE)
@@ -153,7 +147,6 @@ example_doi <- stat_doi %>%
     locations = "countries"
   ) %>%
   unnest(cols = c(doi, date)) %>%
-  mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = measure, values_from = doi)
 
 usethis::use_data(example_doi, overwrite = TRUE)
