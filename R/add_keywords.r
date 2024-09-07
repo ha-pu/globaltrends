@@ -31,12 +31,12 @@
 #' usage of codes for search topics instead of search terms.
 #'
 #' @param start_date Start of time frame for which the batch data should be downloaded. Object
-#' of type `character` that takes the from "YYYY-MM-DD".
-#' Defaults to *"2010-01-01"*.
+#' of type `character` that takes the from "YYYY-MM".
+#' Defaults to *"2010-01"*.
 #'
 #' @param end_date End of time frame for which the batch data should be downloaded. Object
-#' of type `character` that takes the from "YYYY-MM-DD".
-#' Defaults to *"2020-12-31"*.
+#' of type `character` that takes the from "YYYY-MM".
+#' Defaults to *"2020-12"*.
 #'
 #' @return
 #' Message that the batch has been created successfully. Batch data is
@@ -47,20 +47,20 @@
 #' \dontrun{
 #' add_control_keyword(
 #'   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_object_keyword(
 #'   keyword = c("apple", "facebook", "google", "microsoft"),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' add_control_keyword(
 #'   keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_control_keyword(
 #'   keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' add_control_keyword(
@@ -68,20 +68,20 @@
 #'     c("gmail", "maps", "news"),
 #'     c("translate", "weather", "wikipedia", "youtube")
 #'   ),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_control_keyword(
 #'   keyword = list(
 #'     c("amazon", "apple", "facebook", "google"),
 #'     c("microsoft", "netflix", "twitter")
 #'   ),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' # search topics
 #' add_control_keyword(
 #'   keyword = c("%2Fm%2F02q_bk", "%2Fm%2F055t58", "%2Fm%2F025sndk", "%2Fm%2F0d07ph", "%2Fm%2F09jcvs"),
-#'   start_date = "2016-01-01", end_date = "2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' # This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 #' }
@@ -94,7 +94,7 @@
 #' @rdname add_keyword
 #' @export
 
-add_control_keyword <- function(keyword, start_date = "2010-01-01", end_date = "2020-12-31") {
+add_control_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
   out <- .add_batch(type = "control", keyword = keyword, start_date = start_date, end_date = end_date, max = 5)
   return(out)
 }
@@ -104,7 +104,7 @@ add_control_keyword <- function(keyword, start_date = "2010-01-01", end_date = "
 #' @rdname add_keyword
 #' @export
 
-add_object_keyword <- function(keyword, start_date = "2010-01-01", end_date = "2020-12-31") {
+add_object_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
   out <- .add_batch(type = "object", keyword = keyword, start_date = start_date, end_date = end_date, max = 4)
   return(out)
 }
