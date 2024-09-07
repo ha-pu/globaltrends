@@ -3,38 +3,38 @@
 #' @keywords internal
 #' @noRd
 #'
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom gtrendsR gtrends
-#' @importFrom lubridate as_date
-#' @importFrom rlang .data
-#' @importFrom stringr str_detect
-#' @importFrom stringr str_replace
+#' @importFrom purrr map_dfr
+#' @importFrom purrr map_dbl
+#' @importFrom purrr map_chr
+#' @importFrom tibble tibble
 
-.get_trend <- function(location, term, time = "all", ...) {
-  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE, ...))
-  while (inherits(out, "try-error")) {
-    if (str_detect(attr(out, "condition")$message, "Status code was not 200. Returned status code:500")) {
-      message("globaltrends automatically retries download in 1s.")
-      Sys.sleep(1)
-    } else {
-      message("globaltrends automatically retries download in 60s.")
-      Sys.sleep(60)
-    }
-    out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
+.get_trend <- function(location, term, start_date = "2020-01-01", end_date = "2020-12-31") {
+  if (exists("gt.env") == FALSE) {
+      stop("Error: gtrends Python module not initialized. Please run 'initialize_python()' first.")
   }
-  if (is.null(out$interest_over_time)) {
-    return(NULL)
-  } else {
-    out <- out$interest_over_time
-    out <- mutate(out,
-      hits = as.double(str_replace(.data$hits, "<1", "0.1")),
-      date = as_date(.data$date)
+
+  out <- gt.env$query_gtrends(
+      terms = term,
+      start_date = start_date,
+      end_date = end_date,
+      geo = location,
+      api_key = gt.env$api_key
     )
-    out <- select(out, location = geo, keyword, date, hits)
-    Sys.sleep(stats::runif(1, min = 5, max = 10))
-    return(out)
-  }
+  out <- map_dfr(
+      out$lines,
+      ~ {
+        term <- .x$term
+        values <- map_dbl(.x$points, ~ .x$value)
+        dates <- map_chr(.x$points, ~ .x$date)
+        dates <- as.Date(dates)
+        out <- tibble(keyword = term, date = dates, hits = values)
+        return(out)
+      }
+  )
+  out$location <- location
+
+  Sys.sleep(stats::runif(1, min = 5, max = 10))
+  return(out)
 }
 
 #' @title Test whether table has entries for given criteria

@@ -5,18 +5,26 @@
 \alias{add_object_keyword}
 \title{Add batches of control or object keywords}
 \usage{
-add_control_keyword(keyword, time = "2010-01-01 2020-12-31")
+add_control_keyword(
+  keyword,
+  start_date = "2010-01-01",
+  end_date = "2020-12-31"
+)
 
-add_object_keyword(keyword, time = "2010-01-01 2020-12-31")
+add_object_keyword(keyword, start_date = "2010-01-01", end_date = "2020-12-31")
 }
 \arguments{
 \item{keyword}{Keywords that should be added as batch. Vector of type
 \code{character} or a \code{list} of \code{character} vectors. The function also allows the
 usage of codes for search topics instead of search terms.}
 
-\item{time}{Time frame for which the batch data should be downloaded. Object
-of type \code{character} that takes the from "YYYY-MM-DD YYYY-MM-DD".
-Defaults to \emph{"2010-01-01 2020-12-31"}.}
+\item{start_date}{Start of time frame for which the batch data should be downloaded. Object
+of type \code{character} that takes the from "YYYY-MM-DD".
+Defaults to \emph{"2010-01-01"}.}
+
+\item{time}{End of time frame for which the batch data should be downloaded. Object
+of type \code{character} that takes the from "YYYY-MM-DD".
+Defaults to \emph{"2020-12-31"}.}
 }
 \value{
 Message that the batch has been created successfully. Batch data is
@@ -57,20 +65,20 @@ applied to all keywords.
 \dontrun{
 add_control_keyword(
   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 add_object_keyword(
   keyword = c("apple", "facebook", "google", "microsoft"),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 
 add_control_keyword(
   keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 add_control_keyword(
   keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 
 add_control_keyword(
@@ -78,20 +86,20 @@ add_control_keyword(
     c("gmail", "maps", "news"),
     c("translate", "weather", "wikipedia", "youtube")
   ),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 add_control_keyword(
   keyword = list(
     c("amazon", "apple", "facebook", "google"),
     c("microsoft", "netflix", "twitter")
   ),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 
 # search topics
 add_control_keyword(
   keyword = c("\%2Fm\%2F02q_bk", "\%2Fm\%2F055t58", "\%2Fm\%2F025sndk", "\%2Fm\%2F0d07ph", "\%2Fm\%2F09jcvs"),
-  time = "2016-01-01 2019-12-31"
+  start_date = "2016-01-01", end_date = "2019-12-31"
 )
 # This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 }

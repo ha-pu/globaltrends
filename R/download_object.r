@@ -88,7 +88,8 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
   } else {
     walk(list(control, object), .check_batch)
     terms_obj <- gt.env$keywords_object$keyword[gt.env$keywords_object$batch == object]
-    time <- gt.env$time_object$time[gt.env$time_object$batch == object]
+    start_date <- gt.env$time_object$start_date[gt.env$time_object$batch == object]
+    end_date <- gt.env$time_object$end_date[gt.env$time_object$batch == object]
 
     walk(locations, ~ {
       if (.x == "") {
@@ -111,7 +112,7 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
           i <- 1
           success <- FALSE
           while (i <= length(terms_con)) {
-            out <- do.call(.get_trend, c(args, location = .x, term = list(c(terms_con[[i]], terms_obj)), time = time))
+            out <- do.call(.get_trend, c(args, location = .x, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
             if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0) {
               out <- mutate(
                 out,

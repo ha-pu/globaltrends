@@ -80,7 +80,8 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
   } else {
     .check_batch(control)
     terms <- gt.env$keywords_control$keyword[gt.env$keywords_control$batch == control]
-    time <- gt.env$time_control$time[gt.env$time_control$batch == control]
+    start_date <- gt.env$time_control$start_date[gt.env$time_control$batch == control]
+    end_date <- gt.env$time_control$end_date[gt.env$time_control$batch == control]
     walk(locations, ~ {
       if (.x == "") {
         in_location <- "world"
@@ -88,7 +89,7 @@ download_control.numeric <- function(control, locations = gt.env$countries, ...)
         in_location <- .x
       }
       if (.test_empty(table = "data_control", batch_c = control, location = in_location)) {
-        out <- do.call(.get_trend, c(args, location = .x, term = list(terms), time = time))
+        out <- do.call(.get_trend, c(args, location = .x, term = list(terms), start_date = start_date, end_date = end_date))
         if (!is.null(out)) {
           out <- mutate(out, batch = control)
           dbAppendTable(conn = gt.env$globaltrends_db, name = "data_control", value = out)

@@ -70,8 +70,8 @@ initialize_db <- function() {
   message("Successfully created table 'batch_keywords'.")
 
   # batch_time -----------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT")
-  names(db_cols) <- c("type", "batch", "time")
+  db_cols <- c("TEXT", "INTEGER", "TEXT", "TEXT")
+  names(db_cols) <- c("type", "batch", "start_date", "end_date")
   dbCreateTable(conn = globaltrends_db, name = "batch_time", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
   message("Successfully created table 'batch_time'.")
