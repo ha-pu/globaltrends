@@ -14,14 +14,13 @@
 #'
 #' @details
 #' The search score computation proceeds in four steps. First, the function
-#' aggregates all search volumes to monthly data. Then, it applies some optional
-#' time series adjustments: seasonally adjusted [`forecast::seasadj`] and
-#' trend only [`stats::stl`]. Next, it follows the procedure outlined by
-#' Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
-#' the mapping, object search volumes are divided by the sum of control search
-#' volumes in the respective control batch. We use the sum of search volumes for
-#' a set of control keywords, rather than the search volumes for a single
-#' control keyword, to smooth-out variation in the underlying control data.
+#' aggregates all search volumes to monthly data. Next, it follows the procedure
+#' outlined by Castelnuovo and Tran (2017, pp. A1-A2) to map control and object
+#' data. After the mapping, object search volumes are divided by the sum of
+#' control search volumes in the respective control batch. We use the sum of
+#' search volumes for a set of control keywords, rather than the search volumes
+#' for a single control keyword, to smooth-out variation in the underlying
+#' control data.
 #'
 #' *Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 #' Uncertainty index for the United States and Australia. Economics Letters,
@@ -46,7 +45,6 @@
 #' * [example_score()]
 #' * [add_synonym()]
 #' * [stats::stl()]
-#' * [forecast::seasadj()]
 #'
 #' @return Message that data has been computed successfully. Data is written to
 #' table *data_score*.
@@ -133,62 +131,6 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
           qry_control <- .reset_date(qry_control)
           qry_object <- .reset_date(qry_object)
 
-          if (
-            min(
-              nrow(count(qry_control, .data$date)),
-              nrow(count(qry_object, .data$date))
-            ) >= 24
-          ) {
-            # adjust to time series and impute negative values
-            qry_control <- nest(qry_control, data = c(date, hits))
-            qry_control <- mutate(qry_control, data = map(data, .adjust_ts))
-            qry_control <- unnest(qry_control, data)
-            qry_control <- mutate(
-              qry_control,
-              hits_trd = case_when(
-                .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
-                .data$hits_trd < 0 ~ (.data$hits_obs + .data$hits_sad) / 2,
-                TRUE ~ .data$hits_trd
-              ),
-              hits_sad = case_when(
-                .data$hits_sad < 0 & .data$hits_trd < 0 ~ 0.1,
-                .data$hits_sad < 0 ~ (.data$hits_obs + .data$hits_trd) / 2,
-                TRUE ~ .data$hits_sad
-              )
-            )
-            qry_object <- nest(qry_object, data = c(date, hits))
-            qry_object <- mutate(qry_object, data = map(data, .adjust_ts))
-            qry_object <- unnest(qry_object, data)
-            qry_object <- mutate(
-              qry_object,
-              hits_trd = case_when(
-                .data$hits_trd < 0 & .data$hits_sad < 0 ~ 0.1,
-                .data$hits_trd < 0 ~ (.data$hits_obs + .data$hits_sad) / 2,
-                TRUE ~ .data$hits_trd
-              ),
-              hits_sad = case_when(
-                .data$hits_sad < 0 & .data$hits_trd < 0 ~ 0.1,
-                .data$hits_sad < 0 ~ (.data$hits_obs + .data$hits_trd) / 2,
-                TRUE ~ .data$hits_sad
-              )
-            )
-          } else {
-            if (nrow(count(qry_control, .data$date)) < 24) assign("ts_control", FALSE, envir = env_parent())
-            if (nrow(count(qry_object, .data$date)) < 24) assign("ts_object", FALSE, envir = env_parent())
-          }
-          qry_control <- pivot_longer(
-            qry_control,
-            cols = contains("hits"),
-            names_to = "key",
-            values_to = "value"
-          )
-          qry_object <- pivot_longer(
-            qry_object,
-            cols = contains("hits"),
-            names_to = "key",
-            values_to = "value"
-          )
-
           # set to benchmark
           data_control <- inner_join(
             qry_object,
@@ -196,70 +138,60 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
             by = c(
               "location",
               "keyword",
-              "date",
-              "key"
+              "date"
             ),
             suffix = c("_o", "_c"),
-            multiple = "error"
+            relationship = "many-to-one"
           )
           data_control <- mutate(
             data_control,
-            value_o = case_when(
-              .data$value_o == 0 ~ 1,
-              TRUE ~ .data$value_o
+            hits_o = case_when(
+              .data$hits_o == 0 ~ 1,
+              TRUE ~ .data$hits_o
             ),
-            value_c = case_when(
-              .data$value_c == 0 ~ 1,
-              TRUE ~ .data$value_c
+            hits_c = case_when(
+              .data$hits_c == 0 ~ 1,
+              TRUE ~ .data$hits_c
             )
           )
           data_control <- mutate(
             data_control,
-            benchmark = coalesce(.data$value_o / .data$value_c, 0)
+            benchmark = coalesce(.data$hits_o / .data$hits_c, 0)
           )
-          data_control <- select(data_control, location, date, key, benchmark)
+          data_control <- select(data_control, location, date, benchmark)
           data_control <- inner_join(
             data_control,
             qry_control,
-            by = c("location", "date", "key"),
-            multiple = "all"
+            by = c("location", "date"),
+            relationship = "many-to-many"
           )
-          data_control <- mutate(data_control, value = .data$value * .data$benchmark)
+          data_control <- mutate(data_control, hits = .data$hits * .data$benchmark)
           data_control <- select(
             data_control,
             location,
             date,
-            key,
             keyword,
-            value
+            hits
           )
 
           data_object <- anti_join(qry_object, data_control, by = c("keyword"))
 
           # compute score
-          data_control <- group_by(data_control, .data$location, .data$date, .data$key)
-          data_control <- summarise(data_control, value_c = sum(.data$value), .groups = "drop")
+          data_control <- group_by(data_control, .data$location, .data$date)
+          data_control <- summarise(data_control, hits_c = sum(.data$hits), .groups = "drop")
           data_object <- left_join(
             data_object,
             data_control,
-            by = c("location", "date", "key"),
-            multiple = "error"
+            by = c("location", "date"),
+            relationship = "many-to-one"
           )
           data_object <- mutate(
             data_object,
-            score = coalesce(.data$value / .data$value_c, 0),
-            key = str_replace(.data$key, "hits$", "score_obs"),
-            key = str_replace(.data$key, "hits_", "score_")
+            score = coalesce(.data$hits / .data$hits_c, 0)
           )
-          data_object <- select(data_object, location, date, keyword, key, score)
-          out <- pivot_wider(
-            data_object,
-            names_from = key,
-            values_from = score,
-            values_fill = 0
-          )
+          data_object <- select(data_object, location, date, keyword, score)
           out <- mutate(
-            out,
+            data_object,
             batch_c = control,
             batch_o = object,
             synonym = case_when(
@@ -279,14 +211,6 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
       message(paste0("Successfully computed search score | control: ", control, " | object: ", object, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
     })
     .aggregate_synonym(object = object)
-    if (!ts_control | !ts_object) {
-      text <- case_when(
-        all(!c(ts_control, ts_object)) ~ "control and object",
-        first(!c(ts_control, ts_object)) ~ "control",
-        last(!c(ts_control, ts_object)) ~ "object"
-      )
-      warning(paste0("You provided ", text, " data for less than 24 months.\nNo time series adjustments possible."))
-    }
   }
 }
 
@@ -326,25 +250,6 @@ compute_voi <- function(object, control = 1) {
   out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
   out <- mutate(out, date = ymd(paste(.data$year, .data$month, .data$day, sep = "-")))
   out <- select(out, location, keyword, date, hits)
-  return(out)
-}
-
-#' @title Adjust time series
-#'
-#' @rdname hlprs
-#' @keywords internal
-#' @noRd
-#'
-#' @importFrom lubridate month
-#' @importFrom lubridate year
-#' @importFrom tibble tibble
-
-.adjust_ts <- function(data) {
-  myts <- stats::ts(data$hits, start = c(year(min(data$date)), month(min(data$date))), end = c(year(max(data$date)), month(max(data$date))), frequency = 12)
-  fit <- stats::stl(myts, s.window = "period")
-  trend <- fit$time.series[, "trend"]
-  seasad <- forecast::seasadj(fit)
-  out <- tibble(date = data$date, hits_obs = data$hits, hits_trd = as.double(trend), hits_sad = as.double(seasad))
   return(out)
 }
 
@@ -399,18 +304,14 @@ compute_voi <- function(object, control = 1) {
 
         sub_main <- mutate(
           sub_main,
-          score_obs = .data$score_obs + coalesce(.data$score_obs_s, 0),
-          score_sad = .data$score_sad + coalesce(.data$score_sad_s, 0),
-          score_trd = .data$score_trd + coalesce(.data$score_trd_s, 0)
+          score = .data$score + coalesce(.data$score_s, 0)
         )
         sub_main <- select(
           sub_main,
           location,
           keyword,
           date,
-          score_obs,
-          score_sad,
-          score_trd,
+          score,
           batch_c,
           batch_o,
           synonym

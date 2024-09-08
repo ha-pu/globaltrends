@@ -29,21 +29,18 @@
 #' plot_voi_doi(
 #'   data_voi = data1,
 #'   data_doi = data2,
-#'   type = "obs",
 #'   measure = "gini",
 #'   smooth = TRUE
 #' )
 #' plot_voi_doi(
 #'   data_voi = data1,
 #'   data_doi = data2,
-#'   type = "sad",
 #'   measure = "hhi",
 #'   smooth = FALSE
 #' )
 #' plot_voi_doi(
 #'   data_voi = data1,
 #'   data_doi = data2,
-#'   type = "trd",
 #'   measure = "entropy",
 #'   smooth = TRUE
 #' )
@@ -66,33 +63,25 @@
 #' @importFrom stringr str_to_upper
 #' @importFrom tidyr pivot_longer
 
-plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), measure = c("gini", "hhi", "entropy"), locations = "countries", smooth = TRUE) {
+plot_voi_doi <- function(data_voi, data_doi, measure = c("gini", "hhi", "entropy"), locations = "countries", smooth = TRUE) {
   .check_input(data_voi, "data.frame")
   .check_input(data_doi, "data.frame")
-  type <- match.arg(type)
   measure <- match.arg(measure)
   .check_locations(locations)
   stopifnot("`smooth` must be a logical." = is.logical(smooth))
 
-  in_type <- type
   in_locations <- locations
-  data_doi <- mutate(data_doi, type = str_replace(.data$type, "score_", ""))
   data_doi$measure <- data_doi[measure][[1]]
-  data_doi <- filter(data_doi, .data$type == in_type)
   data_doi <- filter(data_doi, .data$locations == in_locations)
-  data_voi$hits <- data_voi[paste0("score_", type)][[1]]
   data <- full_join(data_doi, data_voi, by = c("keyword", "date", "object"), multiple = "error")
 
-  if (all(is.na(data_voi$hits)) | all(is.na(data_doi$measure))) {
+  if (all(is.na(data_voi$score)) | all(is.na(data_doi$measure))) {
     text <- "Plot cannot be created."
-    if (all(is.na(data_voi$hits))) {
-      text <- paste0(text, "\nThere is no non-missing data for score_", type, " in data_voi.")
+    if (all(is.na(data_voi$score))) {
+      text <- paste0(text, "\nThere is no non-missing data for score in data_voi.")
     }
     if (all(is.na(data_doi$measure))) {
-      text <- paste0(text, "\nThere is no non-missing data for score_", type, " in data_doi.")
-    }
-    if (type != "obs") {
-      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
+      text <- paste0(text, "\nThere is no non-missing data for score in data_doi.")
     }
     warning(text)
   } else {
@@ -100,7 +89,7 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
       data,
       keyword,
       date,
-      hits,
+      score,
       measure
     )
     data <- stats::na.omit(data)
@@ -112,9 +101,9 @@ plot_voi_doi <- function(data_voi, data_doi, type = c("obs", "sad", "trd"), meas
       data <- filter(data, .data$keyword %in% unique(data$keyword)[[1]])
     }
 
-    data <- pivot_longer(data, cols = c(hits, measure), names_to = "plot", values_to = "trend")
+    data <- pivot_longer(data, cols = c(score, measure), names_to = "plot", values_to = "trend")
     data <- mutate(data, plot = as_factor(.data$plot))
-    data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "hits", "Degree of internationalization" = "measure"))
+    data <- mutate(data, plot = fct_recode(.data$plot, "Volume of internationalization" = "score", "Degree of internationalization" = "measure"))
     plot <- ggplot(data, aes(x = .data$date)) +
       geom_line(aes(y = .data$trend)) +
       facet_wrap(~ .data$plot, scales = "free")

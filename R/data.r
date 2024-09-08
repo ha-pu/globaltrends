@@ -146,10 +146,8 @@
 #'
 #' @description
 #' The table *data_score* contains the search scores for each object batch.
-#' Each line contains the observed search score (*score_obs*), the
-#' seasonally adjusted search score (*score_sad*), and the trend only
-#' search score (*score_trd*) for each *keyword* in an object
-#' *batch_o* for a given *location* and *date*. The column
+#' Each line contains the search score (*score*) for each *keyword* in an
+#' object *batch_o* for a given *location* and *date*. The column
 #' *batch_c* indicates the control batch that has been used as baseline
 #' for mapping. Global data takes the value *world* as location. Search
 #' scores are computed and automatically written to the table with the function
@@ -172,13 +170,8 @@
 #'   \item{date}{Column of type `integer` showing the date for which the
 #'   data was computed Can be transformed into date format with
 #'   `lubridate::as_date`.}
-#'   \item{score_obs}{Column of type `double` showing search score for the
-#'   respective location-keyword-date combination - no time series adjustment.}
-#'   \item{score_sad}{Column of type `double` showing the search score for
-#'   the respective location-keyword-date combination - seasonally adjusted time
-#'   series.}
-#'   \item{score_trd}{Column of type `double` showing the search score for
-#'   the respective location-keyword-date combination - trend-only time series.}
+#'   \item{score}{Column of type `double` showing search score for the
+#'   respective location-keyword-date combination.}
 #'   \item{batch_c}{Column of type `integer` showing the number of each
 #'   control batch.}
 #'   \item{batch_o}{Column of type `integer` showing the number of each
@@ -201,15 +194,14 @@
 #' The table *data_doi* contains the degree of internationalization (DOI)
 #' for each object batch. Each line contains the DOI computed as inverted
 #' *gini* coefficient, as inverted *hhi*, or inverted *entropy*
-#' for each *keyword* in an object *batch_o* for a given *date*
-#' and *type* of search score. The column *batch_c* indicates the
-#' control batch that has been used as baseline for mapping. Column
-#' *locations* indicates which set of locations was used to compute the
-#' distribution of search scores. DOI is computed and automatically written to
-#' the table with the function `compute_doi`. The function `start_db`
-#' exports the table *data_doi* as database connection `tbl_doi` to
-#' the package environment `gt.env`. Users can access the database table
-#' through `dplyr::tbl`.
+#' for each *keyword* in an object *batch_o* for a given *date*.
+#' The column *batch_c* indicates the control batch that has been used
+#' as baseline for mapping. Column *locations* indicates which set of
+#' locations was used to compute the distribution of search scores.
+#' DOI is computed and automatically written to the table with the
+#' function `compute_doi`. The function `start_db` exports the table
+#' *data_doi* as database connection `tbl_doi` to the package environment
+#' `gt.env`. Users can access the database table through `dplyr::tbl`.
 #' The sample data included in `data_doi` was simulated based on actual
 #' Google Trends data.
 #'
@@ -220,9 +212,6 @@
 #'   \item{date}{Column of type `integer` showing the date for which the
 #'   data was computed Can be transformed into date format with
 #'   `lubridate::as_date`.}
-#'   \item{type}{Column of type `character` indicating the type of time
-#'   series-column from `data_score` that is used for DOI computation,
-#'   takes either "score_obs", "score_sad", or "score_trd".}
 #'   \item{gini}{Column of type `double` showing the DOI computed as
 #'   inverted Gini coefficient of the search score distribution from
 #'   `data_score`.}

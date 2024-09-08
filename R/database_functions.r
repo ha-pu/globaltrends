@@ -105,15 +105,15 @@ initialize_db <- function() {
   message("Successfully created table 'data_control'.")
 
   # data_score -----------------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "INTEGER")
-  names(db_cols) <- c("location", "keyword", "date", "score_obs", "score_sad", "score_trd", "batch_c", "batch_o", "synonym")
+  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER", "INTEGER", "INTEGER")
+  names(db_cols) <- c("location", "keyword", "date", "score", "batch_c", "batch_o", "synonym")
   dbCreateTable(conn = globaltrends_db, name = "data_score", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
   message("Successfully created table 'data_score'.")
 
   # data_doi -------------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "TEXT")
-  names(db_cols) <- c("keyword", "date", "type", "gini", "hhi", "entropy", "batch_c", "batch_o", "locations")
+  db_cols <- c("TEXT", "INTEGER", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "TEXT")
+  names(db_cols) <- c("keyword", "date", "gini", "hhi", "entropy", "batch_c", "batch_o", "locations")
   dbCreateTable(conn = globaltrends_db, name = "data_doi", fields = db_cols)
   dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
   message("Successfully created table 'data_doi'.")

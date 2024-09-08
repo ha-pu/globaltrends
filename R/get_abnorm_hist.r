@@ -91,13 +91,11 @@ get_abnorm_hist <- function(data, ...) UseMethod("get_abnorm_hist", data)
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, type = c("obs", "sad", "trd"), ...) {
+get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
-  type <- match.arg(type)
-  data$score <- data[paste0("score_", type)][[1]]
   data <- group_by(data, .data$keyword, .data$control, .data$location)
   data <- mutate(data, base = rollmean(.data$score, k = train_win, align = "right", fill = NA))
   data <- mutate(data, base = lag(.data$base, n = train_break + 1))
@@ -122,13 +120,11 @@ get_abnorm_hist.exp_score <- function(data, train_win = 12, train_break = 0, typ
 #' @rdname get_abnorm_hist
 #' @export
 
-get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, type = c("obs", "sad", "trd"), ...) {
+get_abnorm_hist.exp_voi <- function(data, train_win = 12, train_break = 0, ...) {
   .check_length(train_win, 1)
   .check_input(train_win, "numeric")
   .check_length(train_break, 1)
   .check_input(train_break, "numeric")
-  type <- match.arg(type)
-  data$voi <- data[paste0("score_", type)][[1]]
   data <- group_by(data, .data$keyword, .data$control)
   data <- mutate(data, base = rollmean(.data$voi, k = train_win, align = "right", fill = NA))
   data <- mutate(data, base = lag(.data$base, n = train_break + 1))
@@ -159,7 +155,7 @@ get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measu
   .check_input(train_break, "numeric")
   measure <- match.arg(measure)
   data$doi <- data[measure][[1]]
-  data <- group_by(data, .data$keyword, .data$type, .data$control, .data$locations)
+  data <- group_by(data, .data$keyword, .data$control, .data$locations)
   data <- mutate(data, base = rollmean(.data$doi, k = train_win, align = "right", fill = NA))
   data <- mutate(data, base = lag(.data$base, n = train_break + 1))
   data <- mutate(data, doi_abnorm = .data$doi - .data$base)
@@ -169,7 +165,6 @@ get_abnorm_hist.exp_doi <- function(data, train_win = 12, train_break = 0, measu
     data,
     keyword,
     date,
-    type,
     control,
     object,
     locations,

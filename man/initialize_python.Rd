@@ -4,7 +4,7 @@
 \alias{initialize_python}
 \title{Initialize gtrends Python module}
 \usage{
-initialize_python(api_code, conda_env)
+initialize_python(api_key, conda_env)
 }
 \description{
 Initialize gtrends Python module

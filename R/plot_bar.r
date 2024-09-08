@@ -15,10 +15,10 @@
 #' @examples
 #' \dontrun{
 #' data <- export_score(keyword = "amazon")
-#' plot_bar(data, type = "obs")
+#' plot_bar(data)
 #'
 #' data <- export_score(keyword = "amazon")
-#' data <- get_abnorm_hist(data, train_win = 12, train_break = 0, type = "obs")
+#' data <- get_abnorm_hist(data, train_win = 12, train_break = 0)
 #' plot_bar(data)
 #' }
 #'
@@ -46,9 +46,7 @@ plot_bar <- function(data, ...) UseMethod("plot_bar", data)
 #' @rdname plot_bar
 #' @export
 
-plot_bar.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
-  type <- match.arg(type)
-
+plot_bar.exp_score <- function(data, ...) {
   len_keywords <- length(unique(data$keyword))
   keyword <- unique(data$keyword)[[1]]
   if (len_keywords > 1) {
@@ -56,16 +54,12 @@ plot_bar.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
     warning(paste0("The plot function is limited to 1 keyword.\nYou use ", len_keywords, " keywords.\nOnly '", keyword, "' is used."))
   }
 
-  data$measure <- data[paste0("score_", type)][[1]]
+  data$measure <- data$score
   data <- group_by(data, .data$location)
   data <- summarise(data, measure = mean(.data$measure), .groups = "drop")
 
   if (all(is.na(data$measure))) {
-    text <- paste0("Plot cannot be created.\nThere is no non-missing data for score_", type, ".")
-    if (type != "obs") {
-      text <- paste0(text, "\nMaybe time series adjustments were impossible in compute_score due to less than 24 months of data.")
-    }
-    warning(text)
+    warning("Plot cannot be created.\nThere is no non-missing data for score.")
   } else {
     data <- arrange(data, -.data$measure)
     data <- slice(data, 1:10)
@@ -76,8 +70,7 @@ plot_bar.exp_score <- function(data, type = c("obs", "sad", "trd"), ...) {
       labs(
         x = NULL,
         y = "Search score",
-        title = keyword,
-        caption = paste0("Search score as ", str_to_upper(type), " time series.")
+        title = keyword
       )
 
     return(plot)

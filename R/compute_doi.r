@@ -84,7 +84,6 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       data <- filter(data, .data$location %in% tmp_locations & .data$synonym == 0)
 
       # compute doi measures
-      data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
       data <- nest(data, data = c(location, score))
       data <- mutate(data, check = map_lgl(data, ~ !all(is.na(.x$score))))
       out1 <- filter(data, .data$check)
@@ -106,7 +105,6 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         out,
         date,
         keyword,
-        type,
         gini,
         hhi,
         entropy

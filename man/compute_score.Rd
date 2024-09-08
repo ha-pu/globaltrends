@@ -40,14 +40,13 @@ internationalization (VOI) as global search scores.
 }
 \details{
 The search score computation proceeds in four steps. First, the function
-aggregates all search volumes to monthly data. Then, it applies some optional
-time series adjustments: seasonally adjusted \code{\link[forecast:seasadj]{forecast::seasadj}} and
-trend only \code{\link[stats:stl]{stats::stl}}. Next, it follows the procedure outlined by
-Castelnuovo and Tran (2017, pp. A1-A2) to map control and object data. After
-the mapping, object search volumes are divided by the sum of control search
-volumes in the respective control batch. We use the sum of search volumes for
-a set of control keywords, rather than the search volumes for a single
-control keyword, to smooth-out variation in the underlying control data.
+aggregates all search volumes to monthly data. Next, it follows the procedure
+outlined by Castelnuovo and Tran (2017, pp. A1-A2) to map control and object
+data. After the mapping, object search volumes are divided by the sum of
+control search volumes in the respective control batch. We use the sum of
+search volumes for a set of control keywords, rather than the search volumes
+for a single control keyword, to smooth-out variation in the underlying
+control data.
 
 \emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
 Uncertainty index for the United States and Australia. Economics Letters,
@@ -83,6 +82,5 @@ compute_score(
 \item \code{\link[=example_score]{example_score()}}
 \item \code{\link[=add_synonym]{add_synonym()}}
 \item \code{\link[stats:stl]{stats::stl()}}
-\item \code{\link[forecast:seasadj]{forecast::seasadj()}}
 }
 }

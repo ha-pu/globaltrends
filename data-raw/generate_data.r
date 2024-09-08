@@ -112,16 +112,15 @@ out <- map(
 )
 
 example_score <- stat_score %>%
-  select(location, keyword, type) %>%
+  select(location, keyword) %>%
   left_join(example_keywords, by = "keyword") %>%
-  select(-type.y, type = type.x, batch_o = batch) %>%
+  rename(batch_o = batch) %>%
   mutate(
     score = out,
     date = lst_dates,
-    batch = 1L
+    batch_c = 1L
   ) %>%
-  unnest(cols = c(score, date)) %>%
-  pivot_wider(names_from = type, values_from = score)
+  unnest(cols = c(score, date))
 
 usethis::use_data(example_score, overwrite = TRUE)
 
@@ -137,9 +136,10 @@ out <- map(
 )
 
 example_doi <- stat_doi %>%
-  select(keyword, type, measure) %>%
+  select(keyword, measure) %>%
   left_join(example_keywords, by = "keyword") %>%
-  select(-type.y, type = type.x, batch_o = batch) %>%
+  rename(batch_o = batch) %>%
+  select(-type) %>%
   mutate(
     doi = out,
     date = lst_dates,
