@@ -32,7 +32,7 @@ Imports:
     ggplot2 (>= 3.3.2),
     lubridate (>= 1.7.9),
     purrr (>= 0.3.4),
-    reticulate (>= 1.39),
+    reticulate (>= 1.38),
     rlang (>= 0.4.7),
     RSQLite (>= 2.2.0),
     stats (>= 3.5.0),
