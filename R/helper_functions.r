@@ -33,7 +33,7 @@
   )
   out$location <- ifelse(is.null(location), "world", location)
 
-  Sys.sleep(stats::runif(1, min = 5, max = 10))
+  Sys.sleep(10)
   return(out)
 }
 
