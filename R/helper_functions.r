@@ -8,7 +8,7 @@
 #' @importFrom purrr map_chr
 #' @importFrom tibble tibble
 
-.get_trend <- function(location, term, start_date = "2020-01-01", end_date = "2020-12-31") {
+.get_trend <- function(location, term, start_date = "2020-01", end_date = "2020-12") {
   if (exists("gt.env") == FALSE) {
       stop("Error: gtrends Python module not initialized. Please run 'initialize_python()' first.")
   }
