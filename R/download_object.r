@@ -92,11 +92,7 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
     end_date <- gt.env$time_object$end_date[gt.env$time_object$batch == object]
 
     walk(locations, ~ {
-      if (.x == "") {
-        in_location <- "world"
-      } else {
-        in_location <- .x
-      }
+      in_location <- ifelse(.x == "", "world", .x)
       if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
         qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == in_location)
         qry_control <- collect(qry_control)
@@ -112,7 +108,11 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
           i <- 1
           success <- FALSE
           while (i <= length(terms_con)) {
-            out <- do.call(.get_trend, c(args, location = .x, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
+            if (in_location == "world") {
+              out <- do.call(.get_trend, c(args, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
+            } else {
+              out <- do.call(.get_trend, c(args, location = .x, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
+            }
             if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0) {
               out <- mutate(
                 out,
