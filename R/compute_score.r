@@ -275,7 +275,7 @@ compute_voi <- function(object, control = 1) {
 .aggregate_synonym <- function(object) {
   lst_synonym <- filter(gt.env$keywords_object, .data$batch == object)
   lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword", multiple = "all")
-  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"), multiple = "error")
+  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"), relationship = "many-to-one")
   lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
   if (length(lst_synonym) > 0) {
@@ -299,7 +299,7 @@ compute_voi <- function(object, control = 1) {
           sub_synonym,
           by = c("location", "date", "batch_c"),
           suffix = c("", "_s"),
-          multiple = "error"
+          relationship = "many-to-one"
         )
 
         sub_main <- mutate(
@@ -326,7 +326,7 @@ compute_voi <- function(object, control = 1) {
             batch_c
           ),
           by = c("location", "date", "batch_c"),
-          multiple = "error"
+          relationship = "many-to-one"
         )
         data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
         data_synonym_nagg <- anti_join(
