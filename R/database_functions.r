@@ -271,7 +271,8 @@ start_db <- function() {
     time_control,
     keywords_object,
     time_object,
-    keyword_synonyms
+    keyword_synonyms,
+    9
   )
   names(lst_object) <- list(
     "globaltrends_db",
@@ -287,7 +288,8 @@ start_db <- function() {
     "time_control",
     "keywords_object",
     "time_object",
-    "keyword_synonyms"
+    "keyword_synonyms",
+    "query_wait"
   )
   invisible(list2env(lst_object, envir = gt.env))
 

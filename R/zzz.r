@@ -19,6 +19,7 @@
 #'   \item keywords_object: Tibble that contains all keywords per object batch.
 #'   \item time_object: Tibble that contains all batch times per object batch.
 #'   \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
+#'   \item query_wait: Number of seconds to wait between queries.
 #' }
 #'
 #' @seealso
@@ -45,7 +46,8 @@ gt.env <- new.env(parent = emptyenv())
     "time_control",
     "keywords_object",
     "time_object",
-    "keyword_synonyms"
+    "keyword_synonyms",
+    "query_wait"
   )
   lst_object <- as.list(rep(TRUE, length(lst_name)))
   names(lst_object) <- lst_name

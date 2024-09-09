@@ -33,7 +33,7 @@
   )
   out$location <- ifelse(is.null(location), "world", location)
 
-  Sys.sleep(10)
+  Sys.sleep(gt.env$query_wait)
   return(out)
 }
 
