@@ -10,7 +10,8 @@ start_db()
 
 add_control_keyword(
   keyword = c("gmail", "map", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 add_object_keyword(
@@ -18,7 +19,8 @@ add_object_keyword(
     c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
     c("bayern munich", "bayern munchen")
   ),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 location_set <- c("US", "CN", "JP")
@@ -73,11 +75,11 @@ out2 <- export_score(keyword = "fc bayern")
 test_that("keyword_score", {
   out1_cn <- out1 %>%
     filter(location == "CN") %>%
-    summarise(score = mean(score_obs), .groups = "drop")
+    summarise(score = mean(score), .groups = "drop")
 
   out2_cn <- out2 %>%
     filter(location == "CN") %>%
-    summarise(score = mean(score_obs), .groups = "drop")
+    summarise(score = mean(score), .groups = "drop")
 
   expect_gt(out2_cn$score, out1_cn$score)
 })

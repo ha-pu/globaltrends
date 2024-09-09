@@ -12,12 +12,14 @@ location_set <- c("US", "CN", "JP")
 
 add_control_keyword(
   keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 add_object_keyword(
   keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 # try download object ----------------------------------------------------------

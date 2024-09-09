@@ -13,12 +13,14 @@ location_set <- c("US", "CN", "JP")
 # enter data -------------------------------------------------------------------
 add_control_keyword(
   keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 add_object_keyword(
   keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 data <- filter(example_control, batch == 1 & location %in% c(location_set[1:3], "world"))
@@ -93,7 +95,6 @@ test_that("compute_doi1", {
   out <- collect(out)
   expect_equal(nrow(out), 1440)
 })
-
 
 # compute doi signals ----------------------------------------------------------
 test_that("compute_doi2", {

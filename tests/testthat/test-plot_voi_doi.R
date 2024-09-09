@@ -16,13 +16,13 @@ dbAppendTable(gt.env$globaltrends_db, "data_doi", example_doi)
 test_that("plot_voi_doi-gini1", {
   data1 <- export_voi(keyword = "fc barcelona")
   data2 <- export_doi(keyword = "fc barcelona", locations = "countries")
-  out1 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE)
+  out1 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE)
   expect_s3_class(out1, "ggplot")
 
   data1 <- export_voi(object = 1)
   data2 <- export_doi(object = 1, locations = "countries")
   expect_warning(
-    out2 <- plot_voi_doi(data1, data2, type = "obs", measure = "gini", smooth = TRUE),
+    out2 <- plot_voi_doi(data1, data2, measure = "gini", smooth = TRUE),
     "The plot function is limited to 1 keyword\\.\nYou use 4 keywords\\.\nOnly the first keyword is used\\."
   )
   expect_s3_class(out2, "ggplot")

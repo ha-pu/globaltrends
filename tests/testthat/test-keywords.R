@@ -12,9 +12,10 @@ test_that("keywords_control1", {
   expect_message(
     add_control_keyword(
       keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-      time = "2010-01-01 2019-12-31"
+        start_date = "2010-01",
+        end_date = "2019-12"
     ),
-    "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\."
+    "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-2019-12\\)\\."
   )
   out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "control") %>%
     collect() %>%
@@ -31,17 +32,18 @@ test_that("keywords_control2", {
   out <- capture_messages(
     new_batch <- add_control_keyword(
       keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
-      time = "2010-01-01 2019-12-31"
+        start_date = "2010-01",
+        end_date = "2019-12"
     )
   )
   expect_match(
     out,
-    "Successfully created new control batch 2 \\(gmail, maps, news, translate, weather, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new control batch 2 \\(gmail, maps, news, translate, weather, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
   expect_match(
     out,
-    "Successfully created new control batch 3 \\(wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new control batch 3 \\(wikipedia, youtube, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
 
@@ -67,17 +69,18 @@ test_that("keywords_control3", {
         c("gmail", "maps", "news"),
         c("translate", "weather", "wikipedia", "youtube")
       ),
-      time = "2010-01-01 2019-12-31"
+      start_date = "2010-01",
+      end_date = "2019-12"
     )
   )
   expect_match(
     out,
-    "Successfully created new control batch 4 \\(gmail, maps, news, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new control batch 4 \\(gmail, maps, news, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
   expect_match(
     out,
-    "Successfully created new control batch 5 \\(translate, weather, wikipedia, youtube, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new control batch 5 \\(translate, weather, wikipedia, youtube, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
 
@@ -100,9 +103,10 @@ test_that("keywords_object1", {
   expect_message(
     add_object_keyword(
       keyword = c("apple", "facebook", "google", "microsoft"),
-      time = "2010-01-01 2019-12-31"
+      start_date = "2010-01",
+      end_date = "2019-12"
     ),
-    "Successfully created new object batch 1 \\(apple, facebook, google, microsoft, 2010-01-01 2019-12-31\\)\\."
+    "Successfully created new object batch 1 \\(apple, facebook, google, microsoft, 2010-01-2019-12\\)\\."
   )
   out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "object") %>%
     collect() %>%
@@ -119,17 +123,18 @@ test_that("keywords_object2", {
   out <- capture_messages(
     new_batch <- add_object_keyword(
       keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
-      time = "2010-01-01 2019-12-31"
+      start_date = "2010-01",
+      end_date = "2019-12"
     )
   )
   expect_match(
     out,
-    "Successfully created new object batch 2 \\(amazon, apple, facebook, google, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new object batch 2 \\(amazon, apple, facebook, google, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
   expect_match(
     out,
-    "Successfully created new object batch 3 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new object batch 3 \\(microsoft, netflix, twitter, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
 
@@ -155,17 +160,18 @@ test_that("keywords_object3", {
         c("amazon", "apple", "facebook", "google"),
         c("microsoft", "netflix", "twitter")
       ),
-      time = "2010-01-01 2019-12-31"
+      start_date = "2010-01",
+      end_date = "2019-12"
     )
   )
   expect_match(
     out,
-    "Successfully created new object batch 4 \\(amazon, apple, facebook, google, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new object batch 4 \\(amazon, apple, facebook, google, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
   expect_match(
     out,
-    "Successfully created new object batch 5 \\(microsoft, netflix, twitter, 2010-01-01 2019-12-31\\)\\.",
+    "Successfully created new object batch 5 \\(microsoft, netflix, twitter, 2010-01-2019-12\\)\\.",
     all = FALSE
   )
 
