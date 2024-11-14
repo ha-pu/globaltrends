@@ -7,7 +7,6 @@
 plot_voi_doi(
   data_voi,
   data_doi,
-  type = c("obs", "sad", "trd"),
   measure = c("gini", "hhi", "entropy"),
   locations = "countries",
   smooth = TRUE
@@ -17,10 +16,6 @@ plot_voi_doi(
 \item{data_voi}{Data exported from \code{export_voi} function.}
 
 \item{data_doi}{Data exported from \code{export_doi} function.}
-
-\item{type}{Object of type \code{character} indicating the type of time
-series-column from data_score, takes either \emph{obs}, \emph{sad}, or \emph{trd}. Defaults
-to \emph{"obs"}.}
 
 \item{measure}{Object of type \code{character} indicating the DOI measure,
 takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini"}.}
@@ -50,21 +45,18 @@ data2 <- export_doi(
 plot_voi_doi(
   data_voi = data1,
   data_doi = data2,
-  type = "obs",
   measure = "gini",
   smooth = TRUE
 )
 plot_voi_doi(
   data_voi = data1,
   data_doi = data2,
-  type = "sad",
   measure = "hhi",
   smooth = FALSE
 )
 plot_voi_doi(
   data_voi = data1,
   data_doi = data2,
-  type = "trd",
   measure = "entropy",
   smooth = TRUE
 )

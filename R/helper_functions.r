@@ -10,26 +10,26 @@
 
 .get_trend <- function(location = NULL, term, start_date = "2020-01", end_date = "2020-12") {
   if (exists("gt.env") == FALSE) {
-      stop("Error: gtrends Python module not initialized. Please run 'initialize_python()' first.")
+    stop("Error: gtrends Python module not initialized. Please run 'initialize_python()' first.")
   }
 
   out <- gt.env$query_gtrends(
-      terms = term,
-      start_date = start_date,
-      end_date = end_date,
-      geo = location,
-      api_key = gt.env$api_key
-    )
+    terms = term,
+    start_date = start_date,
+    end_date = end_date,
+    geo = location,
+    api_key = gt.env$api_key
+  )
   out <- map_dfr(
-      out$lines,
-      ~ {
-        term <- .x$term
-        values <- map_dbl(.x$points, ~ .x$value)
-        dates <- map_chr(.x$points, ~ .x$date)
-        dates <- as.Date(dates)
-        out <- tibble(keyword = term, date = dates, hits = values)
-        return(out)
-      }
+    out$lines,
+    ~ {
+      term <- .x$term
+      values <- map_dbl(.x$points, ~ .x$value)
+      dates <- map_chr(.x$points, ~ .x$date)
+      dates <- as.Date(dates)
+      out <- tibble(keyword = term, date = dates, hits = values)
+      return(out)
+    }
   )
   out$location <- ifelse(is.null(location), "world", location)
 

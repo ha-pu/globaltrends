@@ -5,7 +5,7 @@
 \alias{gt.env}
 \title{globaltrends package environment}
 \format{
-An object of class \code{environment} of length 14.
+An object of class \code{environment} of length 15.
 }
 \usage{
 gt.env
@@ -29,6 +29,7 @@ contains:
 \item keywords_object: Tibble that contains all keywords per object batch.
 \item time_object: Tibble that contains all batch times per object batch.
 \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
+\item query_wait: Number of seconds to wait between queries.
 }
 }
 \seealso{

@@ -12,8 +12,8 @@ test_that("keywords_control1", {
   expect_message(
     add_control_keyword(
       keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-        start_date = "2010-01",
-        end_date = "2019-12"
+      start_date = "2010-01",
+      end_date = "2019-12"
     ),
     "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-2019-12\\)\\."
   )
@@ -32,8 +32,8 @@ test_that("keywords_control2", {
   out <- capture_messages(
     new_batch <- add_control_keyword(
       keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
-        start_date = "2010-01",
-        end_date = "2019-12"
+      start_date = "2010-01",
+      end_date = "2019-12"
     )
   )
   expect_match(
