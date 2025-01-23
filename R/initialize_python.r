@@ -2,6 +2,8 @@
 #'
 #' @importFrom reticulate use_condaenv
 #' @importFrom reticulate source_python
+#' @noRd
+#' @export
 
 initialize_python <- function(api_key, conda_env) {
   Sys.unsetenv("RETICULATE_PYTHON")
