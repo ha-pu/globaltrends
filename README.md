@@ -57,7 +57,7 @@ compute_doi(control = new_control, object = new_object)
 # export data ------------------------------------------------------------------
 out_score <- export_score(keyword = "manchester united")
 out_voi <- export_voi(keyword = "manchester united")
-out_doi <- export_doi(type = "obs", locations = "countries")
+out_doi <- export_doi(locations = "countries")
 
 # plot data --------------------------------------------------------------------
 plot_bar(data = out_score)
