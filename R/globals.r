@@ -9,7 +9,6 @@ global_vars <- c(
   "control",
   "country",
   "doi",
-  "doi_abnorm",
   "entropy",
   "geo",
   "gini",
@@ -22,11 +21,9 @@ global_vars <- c(
   "measure",
   "object",
   "score",
-  "score_abnorm",
   "synonym",
   "type",
-  "voi",
-  "voi_abnorm"
+  "voi"
 )
 
 globalVariables(global_vars)

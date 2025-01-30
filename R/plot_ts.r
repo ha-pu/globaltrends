@@ -9,7 +9,7 @@
 #' When date for more than one location is provided, the function selects only
 #' the first location.
 #'
-#' @param data Data exported from `export_...` or `compute_abnorm` functions.
+#' @param data Data exported from `export_...` functions.
 #'
 #' @param measure Object of type `character` indicating the DOI measure,
 #' takes either *gini*, *hhi*, or *entropy*. Defaults to *"gini"*.
@@ -23,8 +23,7 @@
 #' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return
-#' Line plot of time series as `ggplot2` object. For plots for output from
-#' `get_abnorm_hist` the provided confidence interval is indicated by red dots.
+#' Line plot of time series as `ggplot2` object.
 #'
 #' @examples
 #' \dontrun{

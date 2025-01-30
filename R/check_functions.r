@@ -26,18 +26,6 @@
   }
 }
 
-#' @title Check confidence interval
-#'
-#' @keywords internal
-#' @noRd
-#'
-
-.check_ci <- function(ci) {
-  .check_length(input = ci, max = 1)
-  .check_input(input = ci, type = "double")
-  if (ci <= 0 | ci >= 1) stop(paste0("Error: 'ci' must be greater than 0 and less than 1.\nYou provided ", ci, "."))
-}
-
 #' @title Check locations
 #'
 #' @keywords internal
