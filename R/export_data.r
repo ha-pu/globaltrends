@@ -236,7 +236,6 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   if (!is.null(in_location)) .check_input(location, "character")
   if (!is.null(in_locations)) .check_input(locations, "character")
 
-  if (!is.null(in_type)) in_type <- paste0("score_", in_type)
   if (!is.null(in_keyword)) table <- filter(table, .data$keyword %in% in_keyword)
   if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch_o %in% in_object)
   if (!is.null(in_control)) table <- filter(table, .data$batch_c %in% in_control)
