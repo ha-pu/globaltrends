@@ -22,7 +22,7 @@ plot_ts(data, ...)
 )
 }
 \arguments{
-\item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
+\item{data}{Data exported from \code{export_...} functions.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
@@ -36,8 +36,7 @@ takes either \emph{gini}, \emph{hhi}, or \emph{entropy}. Defaults to \emph{"gini
 set of locations should be filtered. Defaults to \emph{"countries"}.}
 }
 \value{
-Line plot of time series as \code{ggplot2} object. For plots for output from
-\code{get_abnorm_hist} the provided confidence interval is indicated by red dots.
+Line plot of time series as \code{ggplot2} object.
 }
 \description{
 The function creates line plots for time series globaltrends data. It uses

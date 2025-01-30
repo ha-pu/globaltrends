@@ -21,7 +21,7 @@ plot_box(data, ...)
 )
 }
 \arguments{
-\item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
+\item{data}{Data exported from \code{export_...} functions.}
 
 \item{...}{Further arguments passed to or from other methods.}
 

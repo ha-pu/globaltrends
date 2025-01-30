@@ -22,13 +22,7 @@ export_score(keyword = NULL, object = NULL, control = NULL, location = NULL)
 
 export_voi(keyword = NULL, object = NULL, control = NULL)
 
-export_doi(
-  keyword = NULL,
-  object = NULL,
-  control = NULL,
-  locations = NULL,
-  type = c("obs", "sad", "trd")
-)
+export_doi(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 }
 \arguments{
 \item{control}{Control batch number for which data should be exported. Only
@@ -60,11 +54,11 @@ The functions export and filter the respective database tables.
 \item \code{export_control} and \code{export_control_global} export data from table
 *data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. Methods are applied based on input *control*. \\item }export_object\code{and}export_object_global\verb{ export data from table *data_object} with columns location, keyword, date, hits, object. Object of
 class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
-\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score_obs, score_sad, score_trd, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
-columns keyword, date, hits, control, filters for
+\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
+columns keyword, date, score, control, filters for
 \code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
 Methods are applied based on input \emph{keyword}.
-\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, type, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`. Methods are applied based on input
+\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`. Methods are applied based on input
 \emph{keyword}.
 }
 }

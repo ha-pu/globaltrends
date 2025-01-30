@@ -10,7 +10,7 @@ plot_bar(data, ...)
 \method{plot_bar}{exp_score}(data, ...)
 }
 \arguments{
-\item{data}{Data exported from \code{export_...} or \code{compute_abnorm} functions.}
+\item{data}{Data exported from \code{export_...} functions.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
