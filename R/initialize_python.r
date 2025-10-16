@@ -5,9 +5,15 @@
 #' @noRd
 #' @export
 
-initialize_python <- function(api_key, conda_env) {
+initialize_python <- function(api_key, conda_env, python_env) {
   Sys.unsetenv("RETICULATE_PYTHON")
-  use_condaenv(conda_env)
+  if (!is.null(conda_env)) {
+    use_condaenv(conda_env)
+  } else if (!is.null(python_env)) {
+    use_virtualenv(python_env)
+  } else {
+    error("Specify 'env'!")
+  }
   assign("api_key", api_key, envir = gt.env)
   source_python(file = system.file("python/query_gtrends.py", package = "globaltrends"), envir = gt.env)
 }
