@@ -18,12 +18,27 @@ The enormous detail of the data opens additional applications in research that a
 
 `globaltrends` provides user-friendly access to Google Trends. The [package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf) offers additional technical details and a basic tutorial. Please, refer to the [package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md) for change log.
 
+**This version of the `globaltrends` package uses the Google Trends Research**
+**API provided by Google.** To use this version of the package, you must:
+
+1. Apply for API access [online](https://support.google.com/trends/contact/trends_api).
+   and generate an API key in your Google developer console.
+2. Create a Python or Conda environment where you install the `google-api-python-client`
+  package from pip.
+
+To interact with the API (i.e., to download data from Google Trends), you must
+first initialize your Python session and run `initialize_python()` before the
+downloads (see below).
+
 ````
 # install ----------------------------------------------------------------------
-# current cran version
-install.packages("globaltrends")
-# current dev version
-devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
+# The API-based version of `globaltrends` is not available on CRAN!
+# Install the current dev version directly from GitHub:
+devtools::install_github(
+  repo = "ha-pu/globaltrends",
+  ref = "Google-Trends-API",
+  build_vignettes = TRUE
+)
 
 # packages ---------------------------------------------------------------------
 library(dplyr)
@@ -38,6 +53,13 @@ new_control <- add_control_keyword(keyword = c("gmail", "map", "translate", "wik
 
 # add new object batch ---------------------------------------------------------
 new_object <- add_object_keyword(keyword = c("manchester united", "real madrid"))
+
+# initialize python ------------------------------------------------------------
+initialize_python(
+  api_key = Sys.getenv("GOOGLE_API_KEY"), # Google Trends API key
+  conda_env = Sys.getenv("CONDDA_ENV"), # Location of conda environment OR
+  python_env = Sys.getenv("PYTHON_ENV") # Location of Python environment
+)
 
 # run control download ---------------------------------------------------------
 download_control(control = new_control)
