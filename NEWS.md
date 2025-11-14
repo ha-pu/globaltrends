@@ -6,9 +6,11 @@
   * `globaltrends`uses `reticulate` to run the respective Python script
 * Remove dependency on `gtrendsr`package
 * Remove time-series adjustments from `compute_score` for package simplification
-* Control the waiting time between queries through the environmental variable `gt.env$query_wait`
-* Remove `get_abnorm_hist` function for package simplicfaction
-* Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by `relationship`
+* Control the waiting time between queries through the environmental variable
+  `gt.env$query_wait` (default value = `0.1s`)
+* Remove `get_abnorm_hist` function for package simplification
+* Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by
+  `relationship`
 
 # globaltrends 0.0.14
 

@@ -19,7 +19,7 @@
 #'   \item keywords_object: Tibble that contains all keywords per object batch.
 #'   \item time_object: Tibble that contains all batch times per object batch.
 #'   \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
-#'   \item query_wait: Number of seconds to wait between queries.
+#'   \item query_wait: Number of seconds to wait between queries (default = 0.1s).
 #' }
 #'
 #' @seealso
