@@ -41,12 +41,6 @@ list of objects of type \code{character}.}
 \item{locations}{List of locations for which the data is exported. Refers to
 names of lists generated in \code{start_db} as an object of type \code{character}. Only
 for \code{export_doi}.}
-
-\item{type}{Type of time series for which data should be exported. Element
-of type \code{character}. Relevant only for \code{export_global} and
-\code{export_doi}. Takes one of the following values: \emph{obs} - observed
-search scores, \emph{sad} - seasonally adjusted search scores, \emph{trd} -
-trend only search scores.}
 }
 \value{
 The functions export and filter the respective database tables.
@@ -110,7 +104,6 @@ export_score(
 export_doi(
   keyword = "manchester united",
   control = 2,
-  type = "sad",
   locations = "us_states"
 ) \%>\%
   writexl::write_xlsx("data_doi.xlsx")

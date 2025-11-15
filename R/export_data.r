@@ -29,12 +29,6 @@
 #' names of lists generated in `start_db` as an object of type `character`. Only
 #' for `export_doi`.
 #'
-#' @param type Type of time series for which data should be exported. Element
-#' of type `character`. Relevant only for `export_global` and
-#' `export_doi`. Takes one of the following values: *obs* - observed
-#' search scores, *sad* - seasonally adjusted search scores, *trd* -
-#' trend only search scores.
-#'
 #' @return
 #' The functions export and filter the respective database tables.
 #' \itemize{
@@ -91,7 +85,6 @@
 #' export_doi(
 #'   keyword = "manchester united",
 #'   control = 2,
-#'   type = "sad",
 #'   locations = "us_states"
 #' ) %>%
 #'   writexl::write_xlsx("data_doi.xlsx")
