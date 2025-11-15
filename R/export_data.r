@@ -39,20 +39,20 @@
 #' The functions export and filter the respective database tables.
 #' \itemize{
 #'   \item `export_control` and `export_control_global` export data from table
-#'   *data_control` with columns location, keyword, date, hits, control. Object
+#'   `data_control` with columns location, keyword, date, hits, control. Object
 #'   of class `"data.frame"`. Methods are applied based on input *control*.
 #'   \item `export_object` and `export_object_global` export data from table
-#'   *data_object` with columns location, keyword, date, hits, object. Object of
+#'   `data_object` with columns location, keyword, date, hits, object. Object of
 #'   class `"data.frame"`. Methods are applied based on input *keyword*.
-#'   \item `export_score` exports data from table *data_score` with
+#'   \item `export_score` exports data from table `data_score` with
 #'   columns location, keyword, date, score, control,
 #'   object. Object of class `c("exp_score", "data.frame")`. Methods are
 #'   applied based on input *keyword*.
-#'   \item `export_voi` exports data from table *data_score` with
+#'   \item `export_voi` exports data from table `data_score` with
 #'   columns keyword, date, score, control, filters for
 #'   `location == "world"`. Object of class `c("exp_voi", "data.frame")`.
 #'   Methods are applied based on input *keyword*.
-#'   \item `export_doi` exports data from table *data_doi` with columns
+#'   \item `export_doi` exports data from table `data_doi` with columns
 #'   keyword, date, gini, hhi, entropy, control, object, locations. Object
 #'   of class `c("exp_doi", "data.frame")`. Methods are applied based on input
 #'   *keyword*.
@@ -131,7 +131,12 @@ export_control_global <- function(control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_object <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+export_object <- function(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -147,7 +152,11 @@ export_object <- function(keyword = NULL, object = NULL, control = NULL, locatio
 #' @rdname export_data
 #' @export
 
-export_object_global <- function(keyword = NULL, object = NULL, control = NULL) {
+export_object_global <- function(
+  keyword = NULL,
+  object = NULL,
+  control = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -162,7 +171,12 @@ export_object_global <- function(keyword = NULL, object = NULL, control = NULL) 
 #' @rdname export_data
 #' @export
 
-export_score <- function(keyword = NULL, object = NULL, control = NULL, location = NULL) {
+export_score <- function(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
@@ -198,7 +212,12 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @rdname export_data
 #' @export
 
-export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations = NULL) {
+export_doi <- function(
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_doi,
     in_keyword = unlist(keyword),
@@ -221,7 +240,15 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
 #' @importFrom dplyr mutate
 #' @importFrom lubridate as_date
 
-.export_data <- function(table, in_keyword = NULL, in_object = NULL, in_control = NULL, in_batch = NULL, in_location = NULL, in_locations = NULL) {
+.export_data <- function(
+  table,
+  in_keyword = NULL,
+  in_object = NULL,
+  in_control = NULL,
+  in_batch = NULL,
+  in_location = NULL,
+  in_locations = NULL
+) {
   keyword <- in_keyword
   object <- in_object
   control <- in_control
@@ -229,19 +256,43 @@ export_doi <- function(keyword = NULL, object = NULL, control = NULL, locations 
   location <- in_location
   locations <- in_locations
 
-  if (!is.null(in_keyword)) .check_input(keyword, "character")
-  if (is.null(in_keyword) & !is.null(in_object)) .check_batch(in_object)
-  if (!is.null(in_control)) .check_batch(in_control)
-  if (!is.null(in_batch)) .check_batch(in_batch)
-  if (!is.null(in_location)) .check_input(location, "character")
-  if (!is.null(in_locations)) .check_input(locations, "character")
+  if (!is.null(in_keyword)) {
+    .check_input(keyword, "character")
+  }
+  if (is.null(in_keyword) & !is.null(in_object)) {
+    .check_batch(in_object)
+  }
+  if (!is.null(in_control)) {
+    .check_batch(in_control)
+  }
+  if (!is.null(in_batch)) {
+    .check_batch(in_batch)
+  }
+  if (!is.null(in_location)) {
+    .check_input(location, "character")
+  }
+  if (!is.null(in_locations)) {
+    .check_input(locations, "character")
+  }
 
-  if (!is.null(in_keyword)) table <- filter(table, .data$keyword %in% in_keyword)
-  if (is.null(in_keyword) & !is.null(in_object)) table <- filter(table, .data$batch_o %in% in_object)
-  if (!is.null(in_control)) table <- filter(table, .data$batch_c %in% in_control)
-  if (!is.null(in_batch)) table <- filter(table, .data$batch == in_batch)
-  if (!is.null(in_location)) table <- filter(table, .data$location %in% in_location)
-  if (!is.null(in_locations)) table <- filter(table, .data$locations %in% in_locations)
+  if (!is.null(in_keyword)) {
+    table <- filter(table, .data$keyword %in% in_keyword)
+  }
+  if (is.null(in_keyword) & !is.null(in_object)) {
+    table <- filter(table, .data$batch_o %in% in_object)
+  }
+  if (!is.null(in_control)) {
+    table <- filter(table, .data$batch_c %in% in_control)
+  }
+  if (!is.null(in_batch)) {
+    table <- filter(table, .data$batch == in_batch)
+  }
+  if (!is.null(in_location)) {
+    table <- filter(table, .data$location %in% in_location)
+  }
+  if (!is.null(in_locations)) {
+    table <- filter(table, .data$locations %in% in_locations)
+  }
 
   table <- collect(table)
   table <- mutate(table, date = as_date(.data$date))

@@ -52,13 +52,22 @@ trend only search scores.}
 The functions export and filter the respective database tables.
 \itemize{
 \item \code{export_control} and \code{export_control_global} export data from table
-*data_control\verb{with columns location, keyword, date, hits, control. Object of class}"data.frame"\verb{. Methods are applied based on input *control*. \\item }export_object\code{and}export_object_global\verb{ export data from table *data_object} with columns location, keyword, date, hits, object. Object of
+\code{data_control} with columns location, keyword, date, hits, control. Object
+of class \code{"data.frame"}. Methods are applied based on input \emph{control}.
+\item \code{export_object} and \code{export_object_global} export data from table
+\code{data_object} with columns location, keyword, date, hits, object. Object of
 class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
-\item \code{export_score} exports data from table *data_score\verb{with columns location, keyword, date, score, control, object. Object of class}c("exp_score", "data.frame")\verb{. Methods are applied based on input *keyword*. \\item }export_voi\verb{ exports data from table *data_score} with
+\item \code{export_score} exports data from table \code{data_score} with
+columns location, keyword, date, score, control,
+object. Object of class \code{c("exp_score", "data.frame")}. Methods are
+applied based on input \emph{keyword}.
+\item \code{export_voi} exports data from table \code{data_score} with
 columns keyword, date, score, control, filters for
 \code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
 Methods are applied based on input \emph{keyword}.
-\item \code{export_doi} exports data from table *data_doi\verb{with columns keyword, date, gini, hhi, entropy, control, object, locations. Object of class}c("exp_doi", "data.frame")`. Methods are applied based on input
+\item \code{export_doi} exports data from table \code{data_doi} with columns
+keyword, date, gini, hhi, entropy, control, object, locations. Object
+of class \code{c("exp_doi", "data.frame")}. Methods are applied based on input
 \emph{keyword}.
 }
 }
