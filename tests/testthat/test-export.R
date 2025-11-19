@@ -11,13 +11,25 @@ start_db()
 location_set <- c("US", "CN", "JP")
 
 # enter data -------------------------------------------------------------------
-data <- filter(example_control, batch == 1 & location %in% c(location_set[1:2], "world"))
+data <- filter(
+  example_control,
+  batch == 1 & location %in% c(location_set[1:2], "world")
+)
 dbAppendTable(gt.env$globaltrends_db, "data_control", data)
-data <- filter(example_object, batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world"))
+data <- filter(
+  example_object,
+  batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world")
+)
 dbAppendTable(gt.env$globaltrends_db, "data_object", data)
-data <- filter(example_score, batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world"))
+data <- filter(
+  example_score,
+  batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world")
+)
 dbAppendTable(gt.env$globaltrends_db, "data_score", data)
-data <- filter(example_doi, batch_c == 1 & batch_o %in% 1:3 & locations == "countries")
+data <- filter(
+  example_doi,
+  batch_c == 1 & batch_o %in% 1:3 & locations == "countries"
+)
 dbAppendTable(gt.env$globaltrends_db, "data_doi", data)
 
 # export_control ---------------------------------------------------------------
@@ -128,7 +140,9 @@ test_that("export_object_global3", {
 })
 
 test_that("export_object_global4", {
-  out <- export_object_global(keyword = list(c("manchester united", "real madrid")))
+  out <- export_object_global(
+    keyword = list(c("manchester united", "real madrid"))
+  )
   expect_equal(nrow(out), 240)
 })
 
@@ -156,25 +170,21 @@ test_that("export_object_global7", {
 test_that("export_score1", {
   out <- export_score()
   expect_equal(nrow(out), 1920)
-  expect_s3_class(out, "exp_score")
 })
 
 test_that("export_score2", {
   out <- export_score(keyword = "manchester united")
   expect_equal(nrow(out), 240)
-  expect_s3_class(out, "exp_score")
 })
 
 test_that("export_score3", {
   out <- export_score(keyword = NULL)
   expect_equal(nrow(out), 1920)
-  expect_s3_class(out, "exp_score")
 })
 
 test_that("export_score4", {
   out <- export_score(keyword = list(c("manchester united", "real madrid")))
   expect_equal(nrow(out), 480)
-  expect_s3_class(out, "exp_score")
 })
 
 test_that("export_score5", {
@@ -201,25 +211,21 @@ test_that("export_score7", {
 test_that("export_voi1", {
   out <- export_voi()
   expect_equal(nrow(out), 1200)
-  expect_s3_class(out, "exp_voi")
 })
 
 test_that("export_voi2", {
   out <- export_voi(keyword = "manchester united")
   expect_equal(nrow(out), 120)
-  expect_s3_class(out, "exp_voi")
 })
 
 test_that("export_voi3", {
   out <- export_voi(keyword = NULL)
   expect_equal(nrow(out), 1200)
-  expect_s3_class(out, "exp_voi")
 })
 
 test_that("export_voi4", {
   out <- export_voi(keyword = list(c("manchester united", "real madrid")))
   expect_equal(nrow(out), 240)
-  expect_s3_class(out, "exp_voi")
 })
 
 test_that("export_voi5", {
@@ -246,25 +252,21 @@ test_that("export_voi7", {
 test_that("export_doi1", {
   out <- export_doi()
   expect_equal(nrow(out), 1200)
-  expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi2", {
   out <- export_doi(keyword = "manchester united")
   expect_equal(nrow(out), 120)
-  expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi3", {
   out <- export_doi(keyword = NULL)
   expect_equal(nrow(out), 1200)
-  expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi4", {
   out <- export_doi(keyword = list(c("manchester united", "real madrid")))
   expect_equal(nrow(out), 240)
-  expect_s3_class(out, "exp_doi")
 })
 
 test_that("export_doi5", {

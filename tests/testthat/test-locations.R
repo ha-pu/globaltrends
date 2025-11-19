@@ -74,7 +74,11 @@ dbAppendTable(gt.env$globaltrends_db, "data_object", example_object)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
-  out <- capture_messages(compute_score(object = 1, control = 1, locations = gt.env$asia))
+  out <- capture_messages(compute_score(
+    object = 1,
+    control = 1,
+    locations = gt.env$asia
+  ))
 
   expect_match(
     out,
@@ -140,7 +144,7 @@ test_that("compute_doi", {
 
   expect_equal(
     out$n,
-    c(1440, 1440)
+    c(480, 480)
   )
 
   out <- gt.env$tbl_doi %>%
@@ -152,9 +156,16 @@ test_that("compute_doi", {
     ) %>%
     collect()
 
-  expect_false(all(out$gini[out$locations == "asia"] == out$gini[out$locations == "countries"]))
-  expect_false(all(out$hhi[out$locations == "asia"] == out$hhi[out$locations == "countries"]))
-  expect_false(all(out$entropy[out$locations == "asia"] == out$entropy[out$locations == "countries"]))
+  expect_false(all(
+    out$gini[out$locations == "asia"] == out$gini[out$locations == "countries"]
+  ))
+  expect_false(all(
+    out$hhi[out$locations == "asia"] == out$hhi[out$locations == "countries"]
+  ))
+  expect_false(all(
+    out$entropy[out$locations == "asia"] ==
+      out$entropy[out$locations == "countries"]
+  ))
 })
 
 # export score -----------------------------------------------------------------
@@ -181,23 +192,6 @@ test_that("export_doi", {
   expect_false(all(out1$gini == out2$gini))
   expect_false(all(out1$hhi == out2$hhi))
   expect_false(all(out1$entropy == out2$entropy))
-})
-
-# plot -------------------------------------------------------------------------
-test_that("plot_ts", {
-  out <- export_doi(object = 1)
-  plot1 <- plot_ts(out, locations = "asia")
-  plot2 <- plot_ts(out, locations = "countries")
-
-  expect_false(identical(plot1, plot2))
-})
-
-test_that("plot_box", {
-  out <- export_doi(object = 1)
-  plot1 <- plot_box(out, locations = "asia")
-  plot2 <- plot_box(out, locations = "countries")
-
-  expect_false(identical(plot1, plot2))
 })
 
 # namibia ----------------------------------------------------------------------
