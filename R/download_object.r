@@ -73,28 +73,56 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_object <- function(object, control = 1, locations = gt.env$countries, ...) UseMethod("download_object", object)
+download_object <- function(
+    object,
+    control = 1,
+    locations = gt.env$countries,
+    ...) {
+  UseMethod("download_object", object)
+}
 
 #' @rdname download_object
 #' @method download_object numeric
 #' @export
 
-download_object.numeric <- function(object, control = 1, locations = gt.env$countries, ...) {
+download_object.numeric <- function(
+    object,
+    control = 1,
+    locations = gt.env$countries,
+    ...) {
   args <- list(...)
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
-    download_object(control = control, object = as.list(object), locations = locations, ...)
+    download_object(
+      control = control,
+      object = as.list(object),
+      locations = locations,
+      ...
+    )
   } else {
     walk(list(control, object), .check_batch)
-    terms_obj <- gt.env$keywords_object$keyword[gt.env$keywords_object$batch == object]
-    start_date <- gt.env$time_object$start_date[gt.env$time_object$batch == object]
+    terms_obj <- gt.env$keywords_object$keyword[
+      gt.env$keywords_object$batch == object
+    ]
+    start_date <- gt.env$time_object$start_date[
+      gt.env$time_object$batch == object
+    ]
     end_date <- gt.env$time_object$end_date[gt.env$time_object$batch == object]
-
-    walk(locations, ~ {
-      in_location <- ifelse(.x == "", "world", .x)
-      if (.test_empty(table = "data_object", batch_o = object, batch_c = control, location = in_location)) {
-        qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == in_location)
+    lst_full <- .get_full(
+      table = "data_object",
+      batch_c = control,
+      batch_o = object
+    )
+    locations <- locations[!(locations %in% lst_full)]
+    walk(
+      locations,
+      ~ {
+        in_location <- ifelse(.x == "", "world", .x)
+        qry_control <- filter(
+          gt.env$tbl_control,
+          .data$batch == control & .data$location == in_location
+        )
         qry_control <- collect(qry_control)
         if (nrow(qry_control) > 0) {
           terms_con <- summarise(
@@ -109,31 +137,74 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
           success <- FALSE
           while (i <= length(terms_con)) {
             if (in_location == "world") {
-              out <- do.call(.get_trend, c(args, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
+              out <- do.call(
+                .get_trend,
+                c(
+                  args,
+                  term = list(c(terms_con[[i]], terms_obj)),
+                  start_date = start_date,
+                  end_date = end_date
+                )
+              )
             } else {
-              out <- do.call(.get_trend, c(args, location = .x, term = list(c(terms_con[[i]], terms_obj)), start_date = start_date, end_date = end_date))
+              out <- do.call(
+                .get_trend,
+                c(
+                  args,
+                  location = .x,
+                  term = list(c(terms_con[[i]], terms_obj)),
+                  start_date = start_date,
+                  end_date = end_date
+                )
+              )
             }
-            if (!is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0) {
+            if (
+              !is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0
+            ) {
               out <- mutate(
                 out,
                 batch_c = control,
                 batch_o = object
               )
-              dbAppendTable(conn = gt.env$globaltrends_db, name = "data_object", value = out)
+              dbAppendTable(
+                conn = gt.env$globaltrends_db,
+                name = "data_object",
+                value = out
+              )
               success <- TRUE
               break()
             }
             i <- i + 1
           }
-          if (!success) stop("Error: Too little signal in search volumes for control keywords.\nReconsider choice of control keywords.")
-          message(paste0("Successfully downloaded object data | object: ", object, " | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
+          if (!success) {
+            stop(
+              "Error: Too little signal in search volumes for control keywords.\nReconsider choice of control keywords."
+            )
+          }
+          message(paste0(
+            "Successfully downloaded object data | object: ",
+            object,
+            " | control: ",
+            control,
+            " | location: ",
+            in_location,
+            " [",
+            which(locations == .x),
+            "/",
+            length(locations),
+            "]"
+          ))
         } else {
-          message(paste0("Download for object data failed.\nThere is no data in 'data_control' for control batch ", control, " and location ", in_location, "."))
+          message(paste0(
+            "Download for object data failed.\nThere is no data in 'data_control' for control batch ",
+            control,
+            " and location ",
+            in_location,
+            "."
+          ))
         }
-      } else {
-        message(paste0("Object data already available | object: ", object, " | control: ", control, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
       }
-    })
+    )
   }
 }
 
@@ -141,7 +212,11 @@ download_object.numeric <- function(object, control = 1, locations = gt.env$coun
 #' @method download_object list
 #' @export
 
-download_object.list <- function(object, control = 1, locations = gt.env$countries, ...) {
+download_object.list <- function(
+    object,
+    control = 1,
+    locations = gt.env$countries,
+    ...) {
   walk(object, download_object, control = control, locations = locations, ...)
 }
 
