@@ -1,7 +1,11 @@
 library(tidyverse)
 
 # lst_dates --------------------------------------------------------------------
-lst_dates <- list(seq.Date(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), by = "month"))
+lst_dates <- list(seq.Date(
+  from = as.Date("2010-01-01"),
+  to = as.Date("2019-12-31"),
+  by = "month"
+))
 lst_dates[[1]] <- as.character(lst_dates[[1]])
 lst_dates[[1]] <- str_sub(lst_dates[[1]], 1, 7)
 
@@ -12,7 +16,14 @@ trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
   if (length(samp) >= n) {
     return(sample(samp, n))
   } else {
-    trunc_rnorm(n = n, mean = mean, sd = sd, lwr = lwr, upr = upr, nnorm = nnorm * 1.1)
+    trunc_rnorm(
+      n = n,
+      mean = mean,
+      sd = sd,
+      lwr = lwr,
+      upr = upr,
+      nnorm = nnorm * 1.1
+    )
   }
 }
 
@@ -93,7 +104,7 @@ example_object <- stat_object %>%
   mutate(
     hits = out,
     date = lst_dates,
-    batch = 1L
+    batch_c = 1L
   ) %>%
   unnest(cols = c(hits, date)) %>%
   mutate(hits = as.integer(hits))
