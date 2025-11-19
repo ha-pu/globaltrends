@@ -83,6 +83,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom lubridate as_date
+#' @importFrom purrr map_dfr
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 #' @importFrom rlang env_parent
@@ -123,22 +124,20 @@ compute_score.numeric <- function(
       batch_o = object
     )
     locations <- locations[!(locations %in% lst_full)]
-    walk(
+    exp_object <- filter(
+      gt.env$tbl_object,
+      .data$batch_c == control &
+        .data$batch_o == object
+    )
+    exp_object <- collect(exp_object)
+    exp_control <- filter(gt.env$tbl_control, .data$batch == control)
+    exp_control <- collect(exp_control)
+    lst_out <- map_dfr(
       locations,
       ~ {
-        qry_object <- filter(
-          gt.env$tbl_object,
-          .data$batch_c == control &
-            .data$batch_o == object &
-            .data$location == .x
-        )
-        qry_object <- collect(qry_object)
+        qry_object <- filter(exp_object, .data$location == .x)
         if (nrow(qry_object) != 0) {
-          qry_control <- filter(
-            gt.env$tbl_control,
-            .data$batch == control & .data$location == .x
-          )
-          qry_control <- collect(qry_control)
+          qry_control <- filter(exp_control, .data$location == .x)
 
           qry_control <- mutate(
             qry_control,
@@ -233,12 +232,6 @@ compute_score.numeric <- function(
             ),
             date = str_sub(date, 1, 7)
           )
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "data_score",
-            value = out,
-            append = TRUE
-          )
         }
         in_location <- .x
         message(paste0(
@@ -254,7 +247,14 @@ compute_score.numeric <- function(
           length(locations),
           "]"
         ))
+        return(out)
       }
+    )
+    dbAppendTable(
+      conn = gt.env$globaltrends_db,
+      name = "data_score",
+      value = lst_out,
+      append = TRUE
     )
     .aggregate_synonym(object = object)
   }

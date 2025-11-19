@@ -1,16 +1,27 @@
 # globaltrends 0.1.0.9000
 
+## Change in downloading approach
+
 * Run downloads from Google Trends through the official Google Trends API
   * Access available from Google: [https://support.google.com/trends/contact/trends_api](https://support.google.com/trends/contact/trends_api)
   * Downloads are made with the [Google API Python Client](https://github.com/googleapis/google-api-python-client)
   * `globaltrends`uses `reticulate` to run the respective Python script
 * Remove dependency on `gtrendsr`package
-* Remove time-series adjustments from `compute_score` for package simplification
 * Control the waiting time between queries through the environmental variable
   `gt.env$query_wait` (default value = `0.1s`)
+
+## Package simplifications
+
+* Remove time-series adjustments from `compute_score` for package simplification
 * Remove `get_abnorm_hist` function for package simplification
+* Remove plotting functions and export classes for package simplification
+* Accelerate `compute_score`
+
+## Technical issues and bug fixes
+
 * Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by
   `relationship`
+* Fixed issues in sample data
 
 # globaltrends 0.0.14
 
