@@ -125,7 +125,11 @@ out <- map(
 example_score <- stat_score %>%
   select(location, keyword) %>%
   left_join(example_keywords, by = "keyword") %>%
-  rename(batch_o = batch) %>%
+  select(
+    location,
+    keyword,
+    batch_o = batch
+  ) %>%
   mutate(
     score = out,
     date = lst_dates,
