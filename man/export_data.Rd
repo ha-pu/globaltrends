@@ -53,16 +53,15 @@ of class \code{"data.frame"}. Methods are applied based on input \emph{control}.
 class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
 \item \code{export_score} exports data from table \code{data_score} with
 columns location, keyword, date, score, control,
-object. Object of class \code{c("exp_score", "data.frame")}. Methods are
-applied based on input \emph{keyword}.
+object. Object of class \code{"data.frame"}. Methods are applied based on input
+\emph{keyword}.
 \item \code{export_voi} exports data from table \code{data_score} with
 columns keyword, date, score, control, filters for
-\code{location == "world"}. Object of class \code{c("exp_voi", "data.frame")}.
-Methods are applied based on input \emph{keyword}.
+\code{location == "world"}. Object of class \code{"data.frame"}. Methods are applied
+based on input \emph{keyword}.
 \item \code{export_doi} exports data from table \code{data_doi} with columns
 keyword, date, gini, hhi, entropy, control, object, locations. Object
-of class \code{c("exp_doi", "data.frame")}. Methods are applied based on input
-\emph{keyword}.
+of class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
 }
 }
 \description{
