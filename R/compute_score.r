@@ -129,6 +129,8 @@ compute_score.numeric <- function(
       .data$batch_c == control &
         .data$batch_o == object
     )
+    lst_synonyms <- collect(gt.env$keyword_synonyms)
+    lst_synonyms <- lst_synonyms$synonym
     exp_object <- collect(exp_object)
     exp_control <- filter(gt.env$tbl_control, .data$batch == control)
     exp_control <- collect(exp_control)
@@ -138,19 +140,6 @@ compute_score.numeric <- function(
         qry_object <- filter(exp_object, .data$location == .x)
         if (nrow(qry_object) != 0) {
           qry_control <- filter(exp_control, .data$location == .x)
-
-          qry_control <- mutate(
-            qry_control,
-            date = as_date(paste0(.data$date, "-01"))
-          )
-          qry_object <- mutate(
-            qry_object,
-            date = as_date(paste0(.data$date, "-01"))
-          )
-
-          # adapt time series frequency
-          qry_control <- .reset_date(qry_control)
-          qry_object <- .reset_date(qry_object)
 
           # set to benchmark
           data_control <- inner_join(
@@ -227,35 +216,37 @@ compute_score.numeric <- function(
             batch_c = control,
             batch_o = object,
             synonym = case_when(
-              .data$keyword %in% gt.env$keyword_synonyms$synonym ~ TRUE,
+              .data$keyword %in% lst_synonyms ~ TRUE,
               TRUE ~ FALSE
             ),
             date = str_sub(date, 1, 7)
           )
+          in_location <- .x
+          message(paste0(
+            "Successfully computed search score | control: ",
+            control,
+            " | object: ",
+            object,
+            " | location: ",
+            in_location,
+            " [",
+            which(locations == .x),
+            "/",
+            length(locations),
+            "]"
+          ))
+          return(out)
         }
-        in_location <- .x
-        message(paste0(
-          "Successfully computed search score | control: ",
-          control,
-          " | object: ",
-          object,
-          " | location: ",
-          in_location,
-          " [",
-          which(locations == .x),
-          "/",
-          length(locations),
-          "]"
-        ))
-        return(out)
       }
     )
-    dbAppendTable(
-      conn = gt.env$globaltrends_db,
-      name = "data_score",
-      value = lst_out,
-      append = TRUE
-    )
+    if (length(lst_out) > 0) {
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "data_score",
+        value = lst_out,
+        append = TRUE
+      )
+    }
     .aggregate_synonym(object = object)
   }
 }
@@ -277,45 +268,6 @@ compute_score.list <- function(
 
 compute_voi <- function(object, control = 1) {
   compute_score(control = control, object = object, locations = "world")
-}
-
-#' @title Reset date
-#'
-#' @rdname hlprs
-#' @keywords internal
-#' @noRd
-#'
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom lubridate month
-#' @importFrom lubridate year
-#' @importFrom lubridate ymd
-#' @importFrom rlang .data
-
-.reset_date <- function(data) {
-  out <- mutate(
-    data,
-    day = 1,
-    month = month(.data$date),
-    year = year(.data$date)
-  )
-  out <- group_by(
-    out,
-    .data$location,
-    .data$keyword,
-    .data$year,
-    .data$month,
-    .data$day
-  )
-  out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
-  out <- mutate(
-    out,
-    date = ymd(paste(.data$year, .data$month, .data$day, sep = "-"))
-  )
-  out <- select(out, location, keyword, date, hits)
-  return(out)
 }
 
 #' Aggregate synonyms
