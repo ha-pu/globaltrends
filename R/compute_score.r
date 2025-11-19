@@ -92,124 +92,165 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr unnest
 
-compute_score <- function(object, control = 1, locations = gt.env$countries) UseMethod("compute_score", object)
+compute_score <- function(object, control = 1, locations = gt.env$countries) {
+  UseMethod("compute_score", object)
+}
 
 #' @rdname compute_score
 #' @method compute_score numeric
 #' @export
 
-compute_score.numeric <- function(object, control = 1, locations = gt.env$countries) {
+compute_score.numeric <- function(
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   control <- unlist(control)
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
-    compute_score(control = control, object = as.list(object), locations = locations)
+    compute_score(
+      control = control,
+      object = as.list(object),
+      locations = locations
+    )
   } else {
     walk(list(control, object), .check_batch)
-    ts_control <- TRUE
-    ts_object <- TRUE
-    walk(locations, ~ {
-      if (.test_empty(
-        table = "data_score",
-        batch_c = control,
-        batch_o = object,
-        location = .x
-      )) {
-        qry_object <- filter(
-          gt.env$tbl_object,
-          .data$batch_c == control & .data$batch_o == object & .data$location == .x
-        )
-        qry_object <- collect(qry_object)
-        if (nrow(qry_object) != 0) {
-          qry_control <- filter(gt.env$tbl_control, .data$batch == control & .data$location == .x)
-          qry_control <- collect(qry_control)
-
-          qry_control <- mutate(qry_control, date = as_date(.data$date))
-          qry_object <- mutate(qry_object, date = as_date(.data$date))
-
-          # adapt time series frequency
-          qry_control <- .reset_date(qry_control)
-          qry_object <- .reset_date(qry_object)
-
-          # set to benchmark
-          data_control <- inner_join(
-            qry_object,
-            qry_control,
-            by = c(
-              "location",
-              "keyword",
-              "date"
-            ),
-            suffix = c("_o", "_c"),
-            relationship = "many-to-one"
-          )
-          data_control <- mutate(
-            data_control,
-            hits_o = case_when(
-              .data$hits_o == 0 ~ 1,
-              TRUE ~ .data$hits_o
-            ),
-            hits_c = case_when(
-              .data$hits_c == 0 ~ 1,
-              TRUE ~ .data$hits_c
-            )
-          )
-          data_control <- mutate(
-            data_control,
-            benchmark = coalesce(.data$hits_o / .data$hits_c, 0)
-          )
-          data_control <- select(data_control, location, date, benchmark)
-          data_control <- inner_join(
-            data_control,
-            qry_control,
-            by = c("location", "date"),
-            relationship = "many-to-many"
-          )
-          data_control <- mutate(data_control, hits = .data$hits * .data$benchmark)
-          data_control <- select(
-            data_control,
-            location,
-            date,
-            keyword,
-            hits
-          )
-
-          data_object <- anti_join(qry_object, data_control, by = c("keyword"))
-
-          # compute score
-          data_control <- group_by(data_control, .data$location, .data$date)
-          data_control <- summarise(data_control, hits_c = sum(.data$hits), .groups = "drop")
-          data_object <- left_join(
-            data_object,
-            data_control,
-            by = c("location", "date"),
-            relationship = "many-to-one"
-          )
-          data_object <- mutate(
-            data_object,
-            score = coalesce(.data$hits / .data$hits_c, 0)
-          )
-          data_object <- select(data_object, location, date, keyword, score)
-          out <- mutate(
-            data_object,
+    walk(
+      locations,
+      ~ {
+        if (
+          .test_empty(
+            table = "data_score",
             batch_c = control,
             batch_o = object,
-            synonym = case_when(
-              .data$keyword %in% gt.env$keyword_synonyms$synonym ~ TRUE,
-              TRUE ~ FALSE
+            location = .x
+          )
+        ) {
+          qry_object <- filter(
+            gt.env$tbl_object,
+            .data$batch_c == control &
+              .data$batch_o == object &
+              .data$location == .x
+          )
+          qry_object <- collect(qry_object)
+          if (nrow(qry_object) != 0) {
+            qry_control <- filter(
+              gt.env$tbl_control,
+              .data$batch == control & .data$location == .x
             )
-          )
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "data_score",
-            value = out,
-            append = TRUE
-          )
+            qry_control <- collect(qry_control)
+
+            qry_control <- mutate(qry_control, date = as_date(.data$date))
+            qry_object <- mutate(qry_object, date = as_date(.data$date))
+
+            # adapt time series frequency
+            qry_control <- .reset_date(qry_control)
+            qry_object <- .reset_date(qry_object)
+
+            # set to benchmark
+            data_control <- inner_join(
+              qry_object,
+              qry_control,
+              by = c(
+                "location",
+                "keyword",
+                "date"
+              ),
+              suffix = c("_o", "_c"),
+              relationship = "many-to-one"
+            )
+            data_control <- mutate(
+              data_control,
+              hits_o = case_when(
+                .data$hits_o == 0 ~ 1,
+                TRUE ~ .data$hits_o
+              ),
+              hits_c = case_when(
+                .data$hits_c == 0 ~ 1,
+                TRUE ~ .data$hits_c
+              )
+            )
+            data_control <- mutate(
+              data_control,
+              benchmark = coalesce(.data$hits_o / .data$hits_c, 0)
+            )
+            data_control <- select(data_control, location, date, benchmark)
+            data_control <- inner_join(
+              data_control,
+              qry_control,
+              by = c("location", "date"),
+              relationship = "many-to-many"
+            )
+            data_control <- mutate(
+              data_control,
+              hits = .data$hits * .data$benchmark
+            )
+            data_control <- select(
+              data_control,
+              location,
+              date,
+              keyword,
+              hits
+            )
+
+            data_object <- anti_join(
+              qry_object,
+              data_control,
+              by = c("keyword")
+            )
+
+            # compute score
+            data_control <- group_by(data_control, .data$location, .data$date)
+            data_control <- summarise(
+              data_control,
+              hits_c = sum(.data$hits),
+              .groups = "drop"
+            )
+            data_object <- left_join(
+              data_object,
+              data_control,
+              by = c("location", "date"),
+              relationship = "many-to-one"
+            )
+            data_object <- mutate(
+              data_object,
+              score = coalesce(.data$hits / .data$hits_c, 0)
+            )
+            data_object <- select(data_object, location, date, keyword, score)
+            out <- mutate(
+              data_object,
+              batch_c = control,
+              batch_o = object,
+              synonym = case_when(
+                .data$keyword %in% gt.env$keyword_synonyms$synonym ~ TRUE,
+                TRUE ~ FALSE
+              )
+            )
+            dbAppendTable(
+              conn = gt.env$globaltrends_db,
+              name = "data_score",
+              value = out,
+              append = TRUE
+            )
+          }
         }
+        in_location <- .x
+        message(paste0(
+          "Successfully computed search score | control: ",
+          control,
+          " | object: ",
+          object,
+          " | location: ",
+          in_location,
+          " [",
+          which(locations == .x),
+          "/",
+          length(locations),
+          "]"
+        ))
       }
-      in_location <- .x
-      message(paste0("Successfully computed search score | control: ", control, " | object: ", object, " | location: ", in_location, " [", which(locations == .x), "/", length(locations), "]"))
-    })
+    )
     .aggregate_synonym(object = object)
   }
 }
@@ -218,7 +259,11 @@ compute_score.numeric <- function(object, control = 1, locations = gt.env$countr
 #' @method compute_score list
 #' @export
 
-compute_score.list <- function(object, control = 1, locations = gt.env$countries) {
+compute_score.list <- function(
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   walk(object, compute_score, control = control, locations = locations)
 }
 
@@ -245,10 +290,25 @@ compute_voi <- function(object, control = 1) {
 #' @importFrom rlang .data
 
 .reset_date <- function(data) {
-  out <- mutate(data, day = 1, month = month(.data$date), year = year(.data$date))
-  out <- group_by(out, .data$location, .data$keyword, .data$year, .data$month, .data$day)
+  out <- mutate(
+    data,
+    day = 1,
+    month = month(.data$date),
+    year = year(.data$date)
+  )
+  out <- group_by(
+    out,
+    .data$location,
+    .data$keyword,
+    .data$year,
+    .data$month,
+    .data$day
+  )
   out <- summarise(out, hits = mean(.data$hits), .groups = "drop")
-  out <- mutate(out, date = ymd(paste(.data$year, .data$month, .data$day, sep = "-")))
+  out <- mutate(
+    out,
+    date = ymd(paste(.data$year, .data$month, .data$day, sep = "-"))
+  )
   out <- select(out, location, keyword, date, hits)
   return(out)
 }
@@ -274,77 +334,109 @@ compute_voi <- function(object, control = 1) {
 
 .aggregate_synonym <- function(object) {
   lst_synonym <- filter(gt.env$keywords_object, .data$batch == object)
-  lst_synonym1 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = "keyword", multiple = "all")
-  lst_synonym2 <- inner_join(lst_synonym, gt.env$keyword_synonyms, by = c("keyword" = "synonym"), relationship = "many-to-one")
+  lst_synonym1 <- inner_join(
+    lst_synonym,
+    gt.env$keyword_synonyms,
+    by = "keyword",
+    multiple = "all"
+  )
+  lst_synonym2 <- inner_join(
+    lst_synonym,
+    gt.env$keyword_synonyms,
+    by = c("keyword" = "synonym"),
+    relationship = "many-to-one"
+  )
   lst_synonym <- unique(c(lst_synonym1$synonym, lst_synonym2$keyword))
 
   if (length(lst_synonym) > 0) {
     message("Checking for synonyms...")
-    data_synonym <- filter(gt.env$tbl_score, .data$keyword %in% lst_synonym & .data$synonym == 1)
+    data_synonym <- filter(
+      gt.env$tbl_score,
+      .data$keyword %in% lst_synonym & .data$synonym == 1
+    )
     data_synonym <- collect(data_synonym)
 
     if (nrow(data_synonym) > 0) {
       message("Aggregating scores for synonyms...")
-      lst_main <- unique(gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym %in% lst_synonym])
+      lst_main <- unique(gt.env$keyword_synonyms$keyword[
+        gt.env$keyword_synonyms$synonym %in% lst_synonym
+      ])
       data_main <- filter(gt.env$tbl_score, .data$keyword %in% lst_main)
       data_main <- collect(data_main)
 
-      walk(lst_synonym, ~ {
-        keyword_main <- gt.env$keyword_synonyms$keyword[gt.env$keyword_synonyms$synonym == .x][[1]]
-        sub_main <- filter(data_main, .data$keyword == keyword_main)
+      walk(
+        lst_synonym,
+        ~ {
+          keyword_main <- gt.env$keyword_synonyms$keyword[
+            gt.env$keyword_synonyms$synonym == .x
+          ][[1]]
+          sub_main <- filter(data_main, .data$keyword == keyword_main)
 
-        sub_synonym <- filter(data_synonym, .data$keyword == .x)
-        sub_main <- left_join(
-          sub_main,
-          sub_synonym,
-          by = c("location", "date", "batch_c"),
-          suffix = c("", "_s"),
-          relationship = "many-to-one"
-        )
+          sub_synonym <- filter(data_synonym, .data$keyword == .x)
+          sub_main <- left_join(
+            sub_main,
+            sub_synonym,
+            by = c("location", "date", "batch_c"),
+            suffix = c("", "_s"),
+            relationship = "many-to-one"
+          )
 
-        sub_main <- mutate(
-          sub_main,
-          score = .data$score + coalesce(.data$score_s, 0)
-        )
-        sub_main <- select(
-          sub_main,
-          location,
-          keyword,
-          date,
-          score,
-          batch_c,
-          batch_o,
-          synonym
-        )
-
-        data_synonym_agg <- inner_join(
-          sub_synonym,
-          select(
+          sub_main <- mutate(
+            sub_main,
+            score = .data$score + coalesce(.data$score_s, 0)
+          )
+          sub_main <- select(
             sub_main,
             location,
+            keyword,
             date,
-            batch_c
-          ),
-          by = c("location", "date", "batch_c"),
-          relationship = "many-to-one"
-        )
-        data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
-        data_synonym_nagg <- anti_join(
-          sub_synonym,
-          select(
-            sub_main,
-            location,
-            date,
-            batch_c
-          ),
-          by = c("location", "date", "batch_c")
-        )
+            score,
+            batch_c,
+            batch_o,
+            synonym
+          )
 
-        data <- bind_rows(sub_main, data_synonym_agg, data_synonym_nagg)
-        dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(keyword_main))
-        dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE keyword=?", params = list(.x))
-        dbAppendTable(conn = gt.env$globaltrends_db, name = "data_score", value = data)
-      })
+          data_synonym_agg <- inner_join(
+            sub_synonym,
+            select(
+              sub_main,
+              location,
+              date,
+              batch_c
+            ),
+            by = c("location", "date", "batch_c"),
+            relationship = "many-to-one"
+          )
+          data_synonym_agg <- mutate(data_synonym_agg, synonym = 2)
+          data_synonym_nagg <- anti_join(
+            sub_synonym,
+            select(
+              sub_main,
+              location,
+              date,
+              batch_c
+            ),
+            by = c("location", "date", "batch_c")
+          )
+
+          data <- bind_rows(sub_main, data_synonym_agg, data_synonym_nagg)
+          dbExecute(
+            conn = gt.env$globaltrends_db,
+            statement = "DELETE FROM data_score WHERE keyword=?",
+            params = list(keyword_main)
+          )
+          dbExecute(
+            conn = gt.env$globaltrends_db,
+            statement = "DELETE FROM data_score WHERE keyword=?",
+            params = list(.x)
+          )
+          dbAppendTable(
+            conn = gt.env$globaltrends_db,
+            name = "data_score",
+            value = data
+          )
+        }
+      )
     }
   }
 }
