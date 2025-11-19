@@ -40,16 +40,15 @@
 #'   class `"data.frame"`. Methods are applied based on input *keyword*.
 #'   \item `export_score` exports data from table `data_score` with
 #'   columns location, keyword, date, score, control,
-#'   object. Object of class `c("exp_score", "data.frame")`. Methods are
-#'   applied based on input *keyword*.
+#'   object. Object of class `"data.frame"`. Methods are applied based on input
+#'   *keyword*.
 #'   \item `export_voi` exports data from table `data_score` with
 #'   columns keyword, date, score, control, filters for
-#'   `location == "world"`. Object of class `c("exp_voi", "data.frame")`.
-#'   Methods are applied based on input *keyword*.
+#'   `location == "world"`. Object of class `"data.frame"`. Methods are applied
+#'   based on input *keyword*.
 #'   \item `export_doi` exports data from table `data_doi` with columns
 #'   keyword, date, gini, hhi, entropy, control, object, locations. Object
-#'   of class `c("exp_doi", "data.frame")`. Methods are applied based on input
-#'   *keyword*.
+#'   of class `"data.frame"`. Methods are applied based on input *keyword*.
 #' }
 #'
 #' @seealso
@@ -180,7 +179,6 @@ export_score <- function(
   out <- filter(out, .data$location != "world" & .data$synonym == 0)
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
-  class(out) <- c("exp_score", class(out))
   return(out)
 }
 
@@ -198,7 +196,6 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- filter(out, .data$synonym == 0)
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
-  class(out) <- c("exp_voi", class(out))
   return(out)
 }
 
@@ -219,7 +216,6 @@ export_doi <- function(
     in_locations = unlist(locations)
   )
   out <- rename(out, control = batch_c, object = batch_o)
-  class(out) <- c("exp_doi", class(out))
   return(out)
 }
 
@@ -288,6 +284,6 @@ export_doi <- function(
   }
 
   table <- collect(table)
-  table <- mutate(table, date = as_date(.data$date))
+  table <- mutate(table, date = as_date(paste0(.data$date, "-01")))
   return(table)
 }
