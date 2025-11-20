@@ -32,10 +32,10 @@
 #'
 #' @description
 #' The table *batch_time* contains the time period for which data is
-#' downloaded for each batch. Each line contains one *time* period, the
-#' *type* of the batch (i.e., control or object) and the id of the
-#' *batch* to which the time period is assigned. Time frames take the form
-#' `"YYYY-MM-DD YYYY-MM-DD"`. Time periods are added automatically through
+#' downloaded for each batch. Each line contains the *start date*, the
+#' *end date*, the *type* of the batch (i.e., control or object), and the id of
+#' the *batch* to which the time period is assigned. Start and end dates take
+#' the form `"YYYY-MM"`. Time periods are added automatically through
 #' the function `add_keywords`. The function `start_db` exports the
 #' table *batch_time* as objects `time_control` and `time_object`
 #' to `.GlobalEnv`.
@@ -48,8 +48,10 @@
 #'   \item{type}{Column of type `character` showing the type of each batch,
 #'   takes "control" for control batches and "object" for object batches.}
 #'   \item{batch}{Column of type `integer` showing number of each batch.}
-#'   \item{time}{Column of type `character` showing the time period for
-#'   each batch as "YYYY-MM-DD YYYY-MM-DD".}
+#'   \item{start_date}{Column of type `character` showing the start date for
+#'   each batch as "YYYY-MM".}
+#'   \item{end_date}{Column of type `character` showing the end date for
+#'   each batch as "YYYY-MM".}
 #' }
 #'
 #' @seealso

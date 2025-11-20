@@ -6,8 +6,6 @@ lst_dates <- list(seq.Date(
   to = as.Date("2019-12-31"),
   by = "month"
 ))
-lst_dates[[1]] <- as.character(lst_dates[[1]])
-lst_dates[[1]] <- str_sub(lst_dates[[1]], 1, 7)
 
 # trunc_rnorm ------------------------------------------------------------------
 trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
@@ -53,13 +51,15 @@ usethis::use_data(example_keywords, overwrite = TRUE)
 ti_control <- tibble(
   type = "control",
   batch = 1,
-  time = "2010-01 2019-12"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 ti_object <- tibble(
   type = "object",
   batch = 1:4,
-  time = "2010-01 2019-12"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 example_time <- bind_rows(ti_control, ti_object)
