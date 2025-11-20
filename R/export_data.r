@@ -284,6 +284,6 @@ export_doi <- function(
   }
 
   table <- collect(table)
-  table <- mutate(table, date = as_date(paste0(.data$date, "-01")))
+  table <- mutate(table, date = as_date(.data$date))
   return(table)
 }

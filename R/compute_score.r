@@ -219,7 +219,7 @@ compute_score.numeric <- function(
               .data$keyword %in% lst_synonyms ~ TRUE,
               TRUE ~ FALSE
             ),
-            date = str_sub(date, 1, 7)
+            date = as_date(date)
           )
           in_location <- .x
           message(paste0(
