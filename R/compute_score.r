@@ -247,7 +247,7 @@ compute_score.numeric <- function(
         append = TRUE
       )
     }
-    .aggregate_synonym(object = object)
+    # .aggregate_synonym(object = object)
   }
 }
 
