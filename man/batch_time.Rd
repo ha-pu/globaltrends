@@ -11,8 +11,10 @@ A tibble with 5 rows and 3 variables:
 \item{type}{Column of type \code{character} showing the type of each batch,
 takes "control" for control batches and "object" for object batches.}
 \item{batch}{Column of type \code{integer} showing number of each batch.}
-\item{time}{Column of type \code{character} showing the time period for
-each batch as "YYYY-MM-DD YYYY-MM-DD".}
+\item{start_date}{Column of type \code{character} showing the start date for
+each batch as "YYYY-MM".}
+\item{end_date}{Column of type \code{character} showing the end date for
+each batch as "YYYY-MM".}
 }
 }
 \usage{
@@ -20,10 +22,10 @@ example_time
 }
 \description{
 The table \emph{batch_time} contains the time period for which data is
-downloaded for each batch. Each line contains one \emph{time} period, the
-\emph{type} of the batch (i.e., control or object) and the id of the
-\emph{batch} to which the time period is assigned. Time frames take the form
-\code{"YYYY-MM-DD YYYY-MM-DD"}. Time periods are added automatically through
+downloaded for each batch. Each line contains the \emph{start date}, the
+\emph{end date}, the \emph{type} of the batch (i.e., control or object), and the id of
+the \emph{batch} to which the time period is assigned. Start and end dates take
+the form \code{"YYYY-MM"}. Time periods are added automatically through
 the function \code{add_keywords}. The function \code{start_db} exports the
 table \emph{batch_time} as objects \code{time_control} and \code{time_object}
 to \code{.GlobalEnv}.

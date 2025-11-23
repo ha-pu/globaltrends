@@ -6,7 +6,7 @@
 \alias{example_score}
 \title{data_score}
 \format{
-A tibble with 6,000 rows and 8 variables:
+A tibble with 6,000 rows and 7 variables:
 \describe{
 \item{location}{Column of type \code{character} showing the ISO2 code of
 the country or region for which the data was computed.}
@@ -21,8 +21,6 @@ respective location-keyword-date combination.}
 control batch.}
 \item{batch_o}{Column of type \code{integer} showing the number of each
 object batch.}
-\item{synonym}{Column of type \code{integer} showing whether the line will
-be aggregated as synonym.}
 }
 }
 \usage{
