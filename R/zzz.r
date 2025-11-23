@@ -20,6 +20,7 @@
 #'   \item time_object: Tibble that contains all batch times per object batch.
 #'   \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
 #'   \item query_wait: Number of seconds to wait between queries (default = 0.1s).
+#'   \item py_initialized: `TRUE`/`FALSE` indicator whether `initialize_python` has been called.
 #' }
 #'
 #' @seealso
@@ -47,9 +48,11 @@ gt.env <- new.env(parent = emptyenv())
     "keywords_object",
     "time_object",
     "keyword_synonyms",
-    "query_wait"
+    "query_wait",
+    "py_initialized"
   )
   lst_object <- as.list(rep(TRUE, length(lst_name)))
+  lst_object$py_initialized <- FALSE
   names(lst_object) <- lst_name
   invisible(list2env(lst_object, envir = gt.env))
 }

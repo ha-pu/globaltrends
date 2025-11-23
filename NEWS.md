@@ -6,7 +6,11 @@
   * Access available from Google: [https://support.google.com/trends/contact/trends_api](https://support.google.com/trends/contact/trends_api)
   * Downloads are made with the [Google API Python Client](https://github.com/googleapis/google-api-python-client)
   * `globaltrends`uses `reticulate` to run the respective Python script
-* Remove dependency on `gtrendsr`package
+* Users can choose to download through the official API or the `gtrendsr`package
+  * If users call `initialized_python()`, the downloads will be made through
+    the official Google Trends API
+  * If users run downloads without calling `initialized_python()`, the downloads
+    will be made through the `gtrendsr`package
 * Control the waiting time between queries through the environmental variable
   `gt.env$query_wait` (default value = `0.1s`)
 

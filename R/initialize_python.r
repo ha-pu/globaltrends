@@ -20,4 +20,5 @@ initialize_python <- function(api_key, conda_env = NULL, python_env = NULL) {
     file = system.file("python/query_gtrends.py", package = "globaltrends"),
     envir = gt.env
   )
+  assign("py_initialilzed", TRUE, envir = gt.env)
 }
