@@ -176,7 +176,7 @@ export_score <- function(
     in_control = unlist(control),
     in_location = unlist(location),
   )
-  out <- filter(out, .data$location != "world" & .data$synonym == 0)
+  out <- filter(out, .data$location != "world")
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
   return(out)
@@ -193,7 +193,6 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
     in_control = unlist(control),
     in_location = "world"
   )
-  out <- filter(out, .data$synonym == 0)
   out <- rename(out, control = batch_c, object = batch_o)
   out <- select(out, -synonym)
   return(out)

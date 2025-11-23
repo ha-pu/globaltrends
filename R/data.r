@@ -163,7 +163,7 @@
 #' Example data for the table *data_score* is available as R object
 #' `example_score`.
 #'
-#' @format A tibble with 6,000 rows and 8 variables:
+#' @format A tibble with 6,000 rows and 7 variables:
 #' \describe{
 #'   \item{location}{Column of type `character` showing the ISO2 code of
 #'   the country or region for which the data was computed.}
@@ -178,8 +178,6 @@
 #'   control batch.}
 #'   \item{batch_o}{Column of type `integer` showing the number of each
 #'   object batch.}
-#'   \item{synonym}{Column of type `integer` showing whether the line will
-#'   be aggregated as synonym.}
 #' }
 #'
 #' @seealso

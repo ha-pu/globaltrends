@@ -133,8 +133,7 @@ example_score <- stat_score %>%
   mutate(
     score = out,
     date = lst_dates,
-    batch_c = 1L,
-    synonym = 0L
+    batch_c = 1L
   ) %>%
   unnest(cols = c(score, date))
 
