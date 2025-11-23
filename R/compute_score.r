@@ -102,10 +102,9 @@ compute_score <- function(object, control = 1, locations = gt.env$countries) {
 #' @export
 
 compute_score.numeric <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+    object,
+    control = 1,
+    locations = gt.env$countries) {
   control <- unlist(control)
   .check_length(control, 1)
   .check_input(locations, "character")
@@ -248,10 +247,9 @@ compute_score.numeric <- function(
 #' @export
 
 compute_score.list <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+    object,
+    control = 1,
+    locations = gt.env$countries) {
   walk(object, compute_score, control = control, locations = locations)
 }
 

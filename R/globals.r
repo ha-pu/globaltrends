@@ -21,7 +21,6 @@ global_vars <- c(
   "measure",
   "object",
   "score",
-  "synonym",
   "type",
   "voi"
 )
