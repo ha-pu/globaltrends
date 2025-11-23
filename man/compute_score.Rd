@@ -54,8 +54,8 @@ Uncertainty index for the United States and Australia. Economics Letters,
 }
 \section{Note}{
 
-When synonyms were specified through \code{add_synonym}, search
-scores for synonyms are added to the main keyword.
+When synonyms were specified through \code{add_synonym}, run \code{aggregate_synonyms}
+to add their search scores to the main term.
 }
 
 \examples{
@@ -81,6 +81,5 @@ compute_score(
 \itemize{
 \item \code{\link[=example_score]{example_score()}}
 \item \code{\link[=add_synonym]{add_synonym()}}
-\item \code{\link[stats:stl]{stats::stl()}}
 }
 }

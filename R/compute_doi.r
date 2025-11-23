@@ -97,7 +97,7 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       )
       data <- filter(
         data,
-        .data$location %in% tmp_locations & .data$synonym == 0
+        .data$location %in% tmp_locations
       )
 
       # compute doi measures

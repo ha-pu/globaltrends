@@ -16,6 +16,7 @@
 * Remove `get_abnorm_hist` function for package simplification
 * Remove plotting functions and export classes for package simplification
 * Accelerate `compute_score`
+* Accelerate handling of synonyms in separate function `aggregate_synonyms`
 
 ## Technical issues and bug fixes
 
