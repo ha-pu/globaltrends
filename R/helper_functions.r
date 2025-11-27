@@ -7,33 +7,84 @@
 #' @importFrom dplyr select
 #' @importFrom gtrendsR gtrends
 #' @importFrom lubridate as_date
+#' @importFrom purrr map_dfr
+#' @importFrom purrr map_dbl
+#' @importFrom purrr map_chr
 #' @importFrom rlang .data
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_replace
+#' @importFrom tibble tibble
 
-.get_trend <- function(location, term, time = "all", ...) {
-  out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE, ...))
-  while (inherits(out, "try-error")) {
-    if (str_detect(attr(out, "condition")$message, "Status code was not 200. Returned status code:500")) {
-      message("globaltrends automatically retries download in 1s.")
-      Sys.sleep(1)
-    } else {
-      message("globaltrends automatically retries download in 60s.")
-      Sys.sleep(60)
-    }
-    out <- try(gtrends(keyword = term, geo = location, time = time, onlyInterest = TRUE))
-  }
-  if (is.null(out$interest_over_time)) {
-    return(NULL)
-  } else {
-    out <- out$interest_over_time
-    out <- mutate(out,
-      hits = as.double(str_replace(.data$hits, "<1", "0.1")),
-      date = as_date(.data$date)
+.get_trend <- function(
+  location = NULL,
+  term,
+  start_date = "2020-01",
+  end_date = "2020-12"
+) {
+  if (gt.env$py_initialized) {
+    out <- gt.env$query_gtrends(
+      terms = term,
+      start_date = start_date,
+      end_date = end_date,
+      geo = location,
+      api_key = gt.env$api_key
     )
-    out <- select(out, location = geo, keyword, date, hits)
-    Sys.sleep(stats::runif(1, min = 5, max = 10))
+    out <- map_dfr(
+      out$lines,
+      ~ {
+        term <- .x$term
+        values <- map_dbl(.x$points, ~ .x$value)
+        dates <- map_chr(.x$points, ~ .x$date)
+        dates <- as.Date(dates)
+        out <- tibble(keyword = term, date = dates, hits = values)
+        return(out)
+      }
+    )
+    out$location <- ifelse(is.null(location), "world", location)
+
+    Sys.sleep(gt.env$query_wait)
     return(out)
+  } else {
+    time <- paste0(start_date, "-01 ", end_date, "-01")
+    out <- try(gtrends(
+      keyword = term,
+      geo = location,
+      time = time,
+      onlyInterest = TRUE
+    ))
+    while (inherits(out, "try-error")) {
+      if (
+        str_detect(
+          attr(out, "condition")$message,
+          "Status code was not 200. Returned status code:500"
+        )
+      ) {
+        message("globaltrends automatically retries download in 1s.")
+        Sys.sleep(1)
+      } else {
+        message("globaltrends automatically retries download in 60s.")
+        Sys.sleep(60)
+      }
+      out <- try(gtrends(
+        keyword = term,
+        geo = location,
+        time = time,
+        onlyInterest = TRUE
+      ))
+    }
+    if (is.null(out$interest_over_time)) {
+      return(NULL)
+    } else {
+      out <- out$interest_over_time
+      out <- mutate(
+        out,
+        hits = as.double(str_replace(.data$hits, "<1", "0.1")),
+        date = as_date(.data$date)
+      )
+      out <- select(out, location = geo, keyword, date, hits)
+      Sys.sleep(stats::runif(1, min = 5, max = 10))
+      return(out)
+    }
   }
 }
 
@@ -45,27 +96,52 @@
 #' @importFrom dplyr collect
 #' @importFrom dplyr filter
 
-.test_empty <- function(table, batch_c = NULL, batch_o = NULL, location = NULL, locations = NULL) {
+.test_empty <- function(
+  batch_c = NULL,
+  batch_o = NULL,
+  locations = NULL
+) {
+  in_batch_c <- batch_c
+  in_batch_o <- batch_o
+  in_locations <- locations
+  out <- filter(
+    gt.env$tbl_doi,
+    .data$batch_c == in_batch_c &
+      .data$batch_o == in_batch_o &
+      .data$locations == in_locations
+  )
+  out <- utils::head(out)
+  out <- collect(out)
+  out <- nrow(out)
+  out <- out == 0
+  return(out)
+}
+
+.get_full <- function(table, batch_c = NULL, batch_o = NULL) {
   if (is.character(table)) {
     in_batch_c <- batch_c
     in_batch_o <- batch_o
-    in_location <- location
-    in_locations <- locations
     if (table == "data_control") {
-      out <- filter(gt.env$tbl_control, .data$batch == in_batch_c & .data$location == in_location)
+      out <- filter(gt.env$tbl_control, .data$batch == in_batch_c)
     } else if (table == "data_object") {
-      out <- filter(gt.env$tbl_object, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
+      out <- filter(
+        gt.env$tbl_object,
+        .data$batch_c == in_batch_c & .data$batch_o == in_batch_o
+      )
     } else if (table == "data_score") {
-      out <- filter(gt.env$tbl_score, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$location == in_location)
-    } else if (table == "data_doi") {
-      out <- filter(gt.env$tbl_doi, .data$batch_c == in_batch_c & .data$batch_o == in_batch_o & .data$locations == in_locations)
+      out <- filter(
+        gt.env$tbl_score,
+        .data$batch_c == in_batch_c & .data$batch_o == in_batch_o
+      )
     }
-    out <- utils::head(out)
+    out <- count(out, location)
+    out <- select(out, location)
     out <- collect(out)
-    out <- nrow(out)
-    out <- out == 0
+    out <- out$location
     return(out)
   } else {
-    stop("Error: 'table' must be an object of type character.\nYou provided an object of a different type.")
+    stop(
+      "Error: 'table' must be an object of type character.\nYou provided an object of a different type."
+    )
   }
 }

@@ -6,7 +6,7 @@
 \alias{example_score}
 \title{data_score}
 \format{
-A tibble with 6,000 rows and 8 variables:
+A tibble with 6,000 rows and 7 variables:
 \describe{
 \item{location}{Column of type \code{character} showing the ISO2 code of
 the country or region for which the data was computed.}
@@ -15,19 +15,12 @@ which the data was downloaded.}
 \item{date}{Column of type \code{integer} showing the date for which the
 data was computed Can be transformed into date format with
 \code{lubridate::as_date}.}
-\item{score_obs}{Column of type \code{double} showing search score for the
-respective location-keyword-date combination - no time series adjustment.}
-\item{score_sad}{Column of type \code{double} showing the search score for
-the respective location-keyword-date combination - seasonally adjusted time
-series.}
-\item{score_trd}{Column of type \code{double} showing the search score for
-the respective location-keyword-date combination - trend-only time series.}
+\item{score}{Column of type \code{double} showing search score for the
+respective location-keyword-date combination.}
 \item{batch_c}{Column of type \code{integer} showing the number of each
 control batch.}
 \item{batch_o}{Column of type \code{integer} showing the number of each
 object batch.}
-\item{synonym}{Column of type \code{integer} showing whether the line will
-be aggregated as synonym.}
 }
 }
 \usage{
@@ -35,10 +28,8 @@ example_score
 }
 \description{
 The table \emph{data_score} contains the search scores for each object batch.
-Each line contains the observed search score (\emph{score_obs}), the
-seasonally adjusted search score (\emph{score_sad}), and the trend only
-search score (\emph{score_trd}) for each \emph{keyword} in an object
-\emph{batch_o} for a given \emph{location} and \emph{date}. The column
+Each line contains the search score (\emph{score}) for each \emph{keyword} in an
+object \emph{batch_o} for a given \emph{location} and \emph{date}. The column
 \emph{batch_c} indicates the control batch that has been used as baseline
 for mapping. Global data takes the value \emph{world} as location. Search
 scores are computed and automatically written to the table with the function

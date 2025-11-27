@@ -1,7 +1,11 @@
 library(tidyverse)
 
 # lst_dates --------------------------------------------------------------------
-lst_dates <- list(seq.Date(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), by = "month"))
+lst_dates <- list(seq.Date(
+  from = as.Date("2010-01-01"),
+  to = as.Date("2019-12-31"),
+  by = "month"
+))
 
 # trunc_rnorm ------------------------------------------------------------------
 trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
@@ -10,7 +14,14 @@ trunc_rnorm <- function(n, mean = 0, sd = 1, lwr = -Inf, upr = Inf, nnorm = n) {
   if (length(samp) >= n) {
     return(sample(samp, n))
   } else {
-    trunc_rnorm(n = n, mean = mean, sd = sd, lwr = lwr, upr = upr, nnorm = nnorm * 1.1)
+    trunc_rnorm(
+      n = n,
+      mean = mean,
+      sd = sd,
+      lwr = lwr,
+      upr = upr,
+      nnorm = nnorm * 1.1
+    )
   }
 }
 
@@ -40,13 +51,15 @@ usethis::use_data(example_keywords, overwrite = TRUE)
 ti_control <- tibble(
   type = "control",
   batch = 1,
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 ti_object <- tibble(
   type = "object",
   batch = 1:4,
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 example_time <- bind_rows(ti_control, ti_object)
@@ -71,10 +84,7 @@ example_control <- stat_control %>%
     batch = 1L
   ) %>%
   unnest(cols = c(hits, date)) %>%
-  mutate(
-    hits = as.integer(hits),
-    date = as.integer(date)
-  )
+  mutate(hits = as.integer(hits))
 
 usethis::use_data(example_control, overwrite = TRUE)
 
@@ -97,10 +107,7 @@ example_object <- stat_object %>%
     batch_c = 1L
   ) %>%
   unnest(cols = c(hits, date)) %>%
-  mutate(
-    hits = as.integer(hits),
-    date = as.integer(date)
-  )
+  mutate(hits = as.integer(hits))
 
 usethis::use_data(example_object, overwrite = TRUE)
 
@@ -116,18 +123,19 @@ out <- map(
 )
 
 example_score <- stat_score %>%
-  select(location, keyword, type) %>%
+  select(location, keyword) %>%
   left_join(example_keywords, by = "keyword") %>%
-  select(-type.y, type = type.x, batch_o = batch) %>%
+  select(
+    location,
+    keyword,
+    batch_o = batch
+  ) %>%
   mutate(
     score = out,
     date = lst_dates,
-    batch_c = 1L,
-    synonym = 0L
+    batch_c = 1L
   ) %>%
-  unnest(cols = c(score, date)) %>%
-  mutate(date = as.integer(date)) %>%
-  pivot_wider(names_from = type, values_from = score)
+  unnest(cols = c(score, date))
 
 usethis::use_data(example_score, overwrite = TRUE)
 
@@ -143,9 +151,10 @@ out <- map(
 )
 
 example_doi <- stat_doi %>%
-  select(keyword, type, measure) %>%
+  select(keyword, measure) %>%
   left_join(example_keywords, by = "keyword") %>%
-  select(-type.y, type = type.x, batch_o = batch) %>%
+  rename(batch_o = batch) %>%
+  select(-type) %>%
   mutate(
     doi = out,
     date = lst_dates,
@@ -153,7 +162,6 @@ example_doi <- stat_doi %>%
     locations = "countries"
   ) %>%
   unnest(cols = c(doi, date)) %>%
-  mutate(date = as.integer(date)) %>%
   pivot_wider(names_from = measure, values_from = doi)
 
 usethis::use_data(example_doi, overwrite = TRUE)

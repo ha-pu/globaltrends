@@ -30,9 +30,13 @@
 #' `character` or a `list` of `character` vectors. The function also allows the
 #' usage of codes for search topics instead of search terms.
 #'
-#' @param time Time frame for which the batch data should be downloaded. Object
-#' of type `character` that takes the from "YYYY-MM-DD YYYY-MM-DD".
-#' Defaults to *"2010-01-01 2020-12-31"*.
+#' @param start_date Start of time frame for which the batch data should be downloaded. Object
+#' of type `character` that takes the from "YYYY-MM".
+#' Defaults to *"2010-01"*.
+#'
+#' @param end_date End of time frame for which the batch data should be downloaded. Object
+#' of type `character` that takes the from "YYYY-MM".
+#' Defaults to *"2020-12"*.
 #'
 #' @return
 #' Message that the batch has been created successfully. Batch data is
@@ -43,20 +47,20 @@
 #' \dontrun{
 #' add_control_keyword(
 #'   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_object_keyword(
 #'   keyword = c("apple", "facebook", "google", "microsoft"),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' add_control_keyword(
 #'   keyword = c("gmail", "maps", "news", "translate", "weather", "wikipedia", "youtube"),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_control_keyword(
 #'   keyword = c("amazon", "apple", "facebook", "google", "microsoft", "netflix", "twitter"),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' add_control_keyword(
@@ -64,20 +68,20 @@
 #'     c("gmail", "maps", "news"),
 #'     c("translate", "weather", "wikipedia", "youtube")
 #'   ),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' add_control_keyword(
 #'   keyword = list(
 #'     c("amazon", "apple", "facebook", "google"),
 #'     c("microsoft", "netflix", "twitter")
 #'   ),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #'
 #' # search topics
 #' add_control_keyword(
 #'   keyword = c("%2Fm%2F02q_bk", "%2Fm%2F055t58", "%2Fm%2F025sndk", "%2Fm%2F0d07ph", "%2Fm%2F09jcvs"),
-#'   time = "2016-01-01 2019-12-31"
+#'   start_date = "2016-01", end_date = "2019-12"
 #' )
 #' # This adds the following topics: Gmail, Google Maps, Google Translate, Wikipedia, YouTube
 #' }
@@ -90,8 +94,8 @@
 #' @rdname add_keyword
 #' @export
 
-add_control_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
-  out <- .add_batch(type = "control", keyword = keyword, time = time, max = 5)
+add_control_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
+  out <- .add_batch(type = "control", keyword = keyword, start_date = start_date, end_date = end_date, max = 5)
   return(out)
 }
 
@@ -100,8 +104,8 @@ add_control_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @rdname add_keyword
 #' @export
 
-add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
-  out <- .add_batch(type = "object", keyword = keyword, time = time, max = 4)
+add_object_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
+  out <- .add_batch(type = "object", keyword = keyword, start_date = start_date, end_date = end_date, max = 4)
   return(out)
 }
 
@@ -118,18 +122,18 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @importFrom stringr str_squish
 #' @importFrom tibble tibble
 
-.add_batch <- function(type, keyword, time, max) UseMethod(".add_batch", keyword)
+.add_batch <- function(type, keyword, start_date, end_date, max) UseMethod(".add_batch", keyword)
 
 #' @keywords internal
 #' @noRd
 
-.add_batch.character <- function(type, keyword, time, max) {
+.add_batch.character <- function(type, keyword, start_date, end_date, max) {
   if (length(keyword) > max) {
     keyword <- split(keyword, ceiling(seq_along(keyword) / max))
   } else {
     keyword <- list(keyword)
   }
-  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
+  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, start_date = start_date, end_date = end_date, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
@@ -137,8 +141,8 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @keywords internal
 #' @noRd
 
-.add_batch.list <- function(type, keyword, time, max) {
-  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, time = time, max = max))
+.add_batch.list <- function(type, keyword, start_date, end_date, max) {
+  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, start_date = start_date, end_date = end_date, max = max))
   new_batches <- unname(new_batches)
   return(new_batches)
 }
@@ -147,11 +151,13 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
 #' @keywords internal
 #' @noRd
 
-.add_keyword_batch <- function(type, keyword, time, max) {
+.add_keyword_batch <- function(type, keyword, start_date, end_date, max) {
   .check_length(keyword, max)
   .check_input(keyword, "character")
-  .check_length(time, 1)
-  .check_input(time, "character")
+  .check_length(start_date, 1)
+  .check_length(end_date, 1)
+  .check_input(start_date, "character")
+  .check_input(end_date, "character")
   if (type == "control") {
     if (nrow(gt.env$keywords_control) == 0) {
       new_batch <- 1
@@ -161,7 +167,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     keyword <- str_squish(keyword)
     data <- tibble(batch = new_batch, keyword, type = "control")
     dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
-    data <- tibble(batch = new_batch, time = time, type = "control")
+    data <- tibble(batch = new_batch, start_date = start_date, end_date = end_date, type = "control")
     dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
     keywords_control <- filter(gt.env$tbl_keywords, .data$type == "control")
     keywords_control <- select(keywords_control, -type)
@@ -175,7 +181,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     lst_export <- list(time_control, time_control)
     names(lst_export) <- list("time_control", "time_control")
     invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully created new control batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", time, ")."))
+    message(paste0("Successfully created new control batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", start_date, "-", end_date, ")."))
     return(new_batch)
   } else if (type == "object") {
     if (nrow(gt.env$keywords_object) == 0) {
@@ -185,7 +191,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     }
     data <- tibble(batch = new_batch, keyword, type = "object")
     dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
-    data <- tibble(batch = new_batch, time = time, type = "object")
+    data <- tibble(batch = new_batch, start_date = start_date, end_date = end_date, type = "object")
     dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
     keywords_object <- filter(gt.env$tbl_keywords, .data$type == "object")
     keywords_object <- select(keywords_object, -type)
@@ -199,7 +205,7 @@ add_object_keyword <- function(keyword, time = "2010-01-01 2020-12-31") {
     lst_export <- list(time_object, time_object)
     names(lst_export) <- list("time_object", "time_object")
     invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully created new object batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", time, ")."))
+    message(paste0("Successfully created new object batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", start_date, "-", end_date, ")."))
     return(new_batch)
   } else {
     stop("Error: 'type' allows only 'control' or 'object'.\nYou provided another value.")

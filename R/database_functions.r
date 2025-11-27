@@ -54,10 +54,14 @@
 
 initialize_db <- function() {
   # create db folder -----------------------------------------------------------
-  if (!dir.exists("db")) dir.create("db")
+  if (!dir.exists("db")) {
+    dir.create("db")
+  }
 
   # create db ------------------------------------------------------------------
-  if (file.exists("db/globaltrends_db.sqlite")) stop("Error: File 'db/globaltrends_db.sqlite' already exists.")
+  if (file.exists("db/globaltrends_db.sqlite")) {
+    stop("Error: File 'db/globaltrends_db.sqlite' already exists.")
+  }
   globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
   assign("globaltrends_db", globaltrends_db, envir = gt.env)
   message("Successfully created database.")
@@ -65,28 +69,49 @@ initialize_db <- function() {
   # batch_keywords -------------------------------------------------------------
   db_cols <- c("TEXT", "INTEGER", "TEXT")
   names(db_cols) <- c("type", "batch", "keyword")
-  dbCreateTable(conn = globaltrends_db, name = "batch_keywords", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_terms ON batch_keywords (batch);")
+  dbCreateTable(
+    conn = globaltrends_db,
+    name = "batch_keywords",
+    fields = db_cols
+  )
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_terms ON batch_keywords (batch);"
+  )
   message("Successfully created table 'batch_keywords'.")
 
   # batch_time -----------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT")
-  names(db_cols) <- c("type", "batch", "time")
+  db_cols <- c("TEXT", "INTEGER", "TEXT", "TEXT")
+  names(db_cols) <- c("type", "batch", "start_date", "end_date")
   dbCreateTable(conn = globaltrends_db, name = "batch_time", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_time ON batch_time (batch);")
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_time ON batch_time (batch);"
+  )
   message("Successfully created table 'batch_time'.")
 
   # keyword_synonyms -----------------------------------------------------------
   db_cols <- c("TEXT", "TEXT")
   names(db_cols) <- c("keyword", "synonym")
-  dbCreateTable(conn = globaltrends_db, name = "keyword_synonyms", fields = db_cols)
+  dbCreateTable(
+    conn = globaltrends_db,
+    name = "keyword_synonyms",
+    fields = db_cols
+  )
   message("Successfully created table 'keyword_synonyms'.")
 
   # data_locations -------------------------------------------------------------
   db_cols <- c("TEXT", "TEXT")
   names(db_cols) <- c("location", "type")
-  dbCreateTable(conn = globaltrends_db, name = "data_locations", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_location ON data_locations (location);")
+  dbCreateTable(
+    conn = globaltrends_db,
+    name = "data_locations",
+    fields = db_cols
+  )
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_location ON data_locations (location);"
+  )
   message("Successfully created table 'data_locations'.")
   .enter_location(globaltrends_db = globaltrends_db)
 
@@ -94,28 +119,81 @@ initialize_db <- function() {
   db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER")
   names(db_cols) <- c("location", "keyword", "date", "hits", "batch")
   dbCreateTable(conn = globaltrends_db, name = "data_control", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_con ON data_control (batch);")
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_con ON data_control (batch);"
+  )
   message("Successfully created table 'batch_keywords'.")
 
   # data_object ----------------------------------------------------------------
   db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER", "INTEGER")
-  names(db_cols) <- c("location", "keyword", "date", "hits", "batch_c", "batch_o")
+  names(db_cols) <- c(
+    "location",
+    "keyword",
+    "date",
+    "hits",
+    "batch_c",
+    "batch_o"
+  )
   dbCreateTable(conn = globaltrends_db, name = "data_object", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);")
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);"
+  )
   message("Successfully created table 'data_control'.")
 
   # data_score -----------------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "INTEGER")
-  names(db_cols) <- c("location", "keyword", "date", "score_obs", "score_sad", "score_trd", "batch_c", "batch_o", "synonym")
+  db_cols <- c(
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "REAL",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER"
+  )
+  names(db_cols) <- c(
+    "location",
+    "keyword",
+    "date",
+    "score",
+    "batch_c",
+    "batch_o",
+    "synonym"
+  )
   dbCreateTable(conn = globaltrends_db, name = "data_score", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);")
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);"
+  )
   message("Successfully created table 'data_score'.")
 
   # data_doi -------------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT", "REAL", "REAL", "REAL", "INTEGER", "INTEGER", "TEXT")
-  names(db_cols) <- c("keyword", "date", "type", "gini", "hhi", "entropy", "batch_c", "batch_o", "locations")
+  db_cols <- c(
+    "TEXT",
+    "INTEGER",
+    "REAL",
+    "REAL",
+    "REAL",
+    "INTEGER",
+    "INTEGER",
+    "TEXT"
+  )
+  names(db_cols) <- c(
+    "keyword",
+    "date",
+    "gini",
+    "hhi",
+    "entropy",
+    "batch_c",
+    "batch_o",
+    "locations"
+  )
   dbCreateTable(conn = globaltrends_db, name = "data_doi", fields = db_cols)
-  dbExecute(conn = globaltrends_db, statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);")
+  dbExecute(
+    conn = globaltrends_db,
+    statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);"
+  )
   message("Successfully created table 'data_doi'.")
 
   # disconnect from db ---------------------------------------------------------
@@ -227,7 +305,9 @@ start_db <- function() {
     globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
     message("Successfully connected to database.")
   } else {
-    stop("Error: File 'db/globaltrends_db.sqlite' does not exist in working directory.\nSet working directory to correct path.")
+    stop(
+      "Error: File 'db/globaltrends_db.sqlite' does not exist in working directory.\nSet working directory to correct path."
+    )
   }
 
   # get tables -----------------------------------------------------------------
@@ -271,7 +351,8 @@ start_db <- function() {
     time_control,
     keywords_object,
     time_object,
-    keyword_synonyms
+    keyword_synonyms,
+    0.1
   )
   names(lst_object) <- list(
     "globaltrends_db",
@@ -287,7 +368,8 @@ start_db <- function() {
     "time_control",
     "keywords_object",
     "time_object",
-    "keyword_synonyms"
+    "keyword_synonyms",
+    "query_wait"
   )
   invisible(list2env(lst_object, envir = gt.env))
 
@@ -319,7 +401,6 @@ start_db <- function() {
 #' }
 #' @export
 #' @importFrom DBI dbDisconnect
-
 
 disconnect_db <- function() {
   dbDisconnect(conn = gt.env$globaltrends_db)

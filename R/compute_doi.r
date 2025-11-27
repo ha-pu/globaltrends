@@ -62,7 +62,9 @@
 #' @importFrom tidyr nest
 #' @importFrom tidyr pivot_longer
 
-compute_doi <- function(object, control = 1, locations = "countries") UseMethod("compute_doi", object)
+compute_doi <- function(object, control = 1, locations = "countries") {
+  UseMethod("compute_doi", object)
+}
 
 #' @rdname compute_doi
 #' @method compute_doi numeric
@@ -74,17 +76,31 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   .check_length(locations, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
-    compute_doi(control = control, object = as.list(object), locations = locations)
+    compute_doi(
+      control = control,
+      object = as.list(object),
+      locations = locations
+    )
   } else {
     walk(list(control, object), .check_batch)
-    if (.test_empty(table = "data_doi", batch_c = control, batch_o = object, locations = locations)) {
-      data <- filter(gt.env$tbl_score, .data$batch_c == control & .data$batch_o == object)
+    if (
+      .test_empty(batch_c = control, batch_o = object, locations = locations)
+    ) {
+      data <- filter(
+        gt.env$tbl_score,
+        .data$batch_c == control & .data$batch_o == object
+      )
       data <- collect(data)
-      tmp_locations <- pull(collect(filter(gt.env$tbl_locations, .data$type == locations)), .data$location)
-      data <- filter(data, .data$location %in% tmp_locations & .data$synonym == 0)
+      tmp_locations <- pull(
+        collect(filter(gt.env$tbl_locations, .data$type == locations)),
+        .data$location
+      )
+      data <- filter(
+        data,
+        .data$location %in% tmp_locations
+      )
 
       # compute doi measures
-      data <- pivot_longer(data, cols = contains("score"), names_to = "type", values_to = "score")
       data <- nest(data, data = c(location, score))
       data <- mutate(data, check = map_lgl(data, ~ !all(is.na(.x$score))))
       out1 <- filter(data, .data$check)
@@ -106,7 +122,6 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         out,
         date,
         keyword,
-        type,
         gini,
         hhi,
         entropy
@@ -119,9 +134,23 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         batch_o = object,
         locations = locations
       )
-      dbAppendTable(conn = gt.env$globaltrends_db, name = "data_doi", value = out)
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "data_doi",
+        value = out
+      )
     }
-    message(paste0("Successfully computed DOI | control: ", control, " | object: ", object, " [", object, "/", max(gt.env$keywords_object$batch), "]"))
+    message(paste0(
+      "Successfully computed DOI | control: ",
+      control,
+      " | object: ",
+      object,
+      " [",
+      object,
+      "/",
+      max(gt.env$keywords_object$batch),
+      "]"
+    ))
   }
 }
 

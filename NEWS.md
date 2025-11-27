@@ -1,4 +1,32 @@
-# globaltrends 0.0.14.9000
+# globaltrends 0.1.0.9000
+
+## Change in downloading approach
+
+* Run downloads from Google Trends through the official Google Trends API
+  * Access available from Google: [https://support.google.com/trends/contact/trends_api](https://support.google.com/trends/contact/trends_api)
+  * Downloads are made with the [Google API Python Client](https://github.com/googleapis/google-api-python-client)
+  * `globaltrends`uses `reticulate` to run the respective Python script
+* Users can choose to download through the official API or the `gtrendsr`package
+  * If users call `initialized_python()`, the downloads will be made through
+    the official Google Trends API
+  * If users run downloads without calling `initialized_python()`, the downloads
+    will be made through the `gtrendsr`package
+* Control the waiting time between queries through the environmental variable
+  `gt.env$query_wait` (default value = `0.1s`)
+
+## Package simplifications
+
+* Remove time-series adjustments from `compute_score` for package simplification
+* Remove `get_abnorm_hist` function for package simplification
+* Remove plotting functions and export classes for package simplification
+* Accelerate `compute_score`
+* Accelerate handling of synonyms in separate function `aggregate_synonyms`
+
+## Technical issues and bug fixes
+
+* Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by
+  `relationship`
+* Fixed issues in sample data
 
 # globaltrends 0.0.14
 
@@ -17,18 +45,18 @@
 * Store globaltrends logo in the *vignettes* folder
 * Add explanation of Google's data preparation methodology to vignette
 * Change wait intervals for status responses != 200 and add message about automatic retry of download
-	* Status == 500: wait 1 second
-	* All other responses: wait 60 seconds
+  * Status == 500: wait 1 second
+  * All other responses: wait 60 seconds
 * Add function `vacuum_data` to free unused memory after `remove_data`
 * Remove all usage of `.data` to comply with `tidyselect 1.2.0`, this applies to calls of:
-	* `dplyr::rename`
-	* `dplyr::select`
-	* `purrr::map`
-	* `purrr::walk`
-	* `tidyr::nest`
-	* `tidyr::pivot_longer`
-	* `tidyr::pivot_wider`
-	* `tidyr::unnest`
+  * `dplyr::rename`
+  * `dplyr::select`
+  * `purrr::map`
+  * `purrr::walk`
+  * `tidyr::nest`
+  * `tidyr::pivot_longer`
+  * `tidyr::pivot_wider`
+  * `tidyr::unnest`
 * As a consequence of the changes in `tidyselect 1.2.0`, several objects are defined as global variables (see `globals.r` for details) 
 * Replace `size` with `linewidth` to comply with `ggplot2 3.4.0`
 * Add the argument `multiple = "all"` and `multiple = "error"` to comply with `dplyr 1.1.0`
@@ -62,53 +90,53 @@
 * Optimize RAM usage of `export_xxx`
 * Check whether "db/globaltrends_db.sqlite" file exists in working directory
 * Inclusion of "workaround" plot functions that set class `xxx` automatically:
-	* `plot_xxx_box`
-	* `plot_xxx_bar`
-	* `plot_xxx_ts`
+  * `plot_xxx_box`
+  * `plot_xxx_bar`
+  * `plot_xxx_ts`
 
 # globaltrends 0.0.7
 
 * Change waiting times for errors
-	* Status Code != 200/Limit exceeded -> 60 seconds wait
-	* Status Code == 500 -> 1 second wait
+  * Status Code != 200/Limit exceeded -> 60 seconds wait
+  * Status Code == 500 -> 1 second wait
 
 # globaltrends 0.0.6
 
 * To distinguish them from the actual database tables, names of the example data
   object were adapted. Documentation is still available for the respective database
   table.
-	* `batch_keywords` -> `example_keywords`
-	* `batch_time` -> `example_time`
-	* `data_control` -> `example_control`
-	* `data_doi` -> `example_doi`
-	* `data_object` -> `example_object`
-	* `data_score` -> `example_score`
+  * `batch_keywords` -> `example_keywords`
+  * `batch_time` -> `example_time`
+  * `data_control` -> `example_control`
+  * `data_doi` -> `example_doi`
+  * `data_object` -> `example_object`
+  * `data_score` -> `example_score`
 * Waiting period between downloads reduced from 20-30 seconds to 5-10 seconds
 
 # globaltrends 0.0.5
 
 * Added classes for output from `export_xxx`
-	* `export_score` -> class("exp_score")
-	* `export_voi` -> class("exp_voi")
-	* `export_doi` -> class("exp_doi")
+  * `export_score` -> class("exp_score")
+  * `export_voi` -> class("exp_voi")
+  * `export_doi` -> class("exp_doi")
 * `export_xxx` + `get_abnorm_hist` supersedes `export_xxx_change`
-	* method for `export_score` -> class("exp_score")
-	* method for `export_voi` -> class("exp_voi")
-	* method for `export_doi` -> class("exp_doi")
+  * method for `export_score` -> class("exp_score")
+  * method for `export_voi` -> class("exp_voi")
+  * method for `export_doi` -> class("exp_doi")
 * `plot_bar` supersedes `plot_score`
-	* method for `export_score` -> class("exp_score")
-	* method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
+  * method for `export_score` -> class("exp_score")
+  * method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
 * `plot_ts` supersedes `plot_voi_ts` and `plot_doi_ts`
-	* method for `export_score` -> class("exp_score")
-	* method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
-	* method for `export_voi` -> class("exp_voi")
-	* method for `export_voi` -> `get_abnorm_hist` -> class("abnorm_voi")
-	* method for `export_doi` -> class("exp_doi")
-	* method for `export_doi` -> `get_abnorm_hist` -> class("abnorm_doi")
+  * method for `export_score` -> class("exp_score")
+  * method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
+  * method for `export_voi` -> class("exp_voi")
+  * method for `export_voi` -> `get_abnorm_hist` -> class("abnorm_voi")
+  * method for `export_doi` -> class("exp_doi")
+  * method for `export_doi` -> `get_abnorm_hist` -> class("abnorm_doi")
 * `plot_box` supersedes `plot_voi_box` and `plot_doi_box`
-	* method for `export_score` -> class("exp_score")
-	* method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
-	* method for `export_voi` -> class("exp_voi")
-	* method for `export_voi` -> `get_abnorm_hist` -> class("abnorm_voi")
-	* method for `export_doi` -> class("exp_doi")
-	* method for `export_doi` -> `get_abnorm_hist` -> class("abnorm_doi")
+  * method for `export_score` -> class("exp_score")
+  * method for `export_score` -> `get_abnorm_hist` -> class("abnorm_score")
+  * method for `export_voi` -> class("exp_voi")
+  * method for `export_voi` -> `get_abnorm_hist` -> class("abnorm_voi")
+  * method for `export_doi` -> class("exp_doi")
+  * method for `export_doi` -> `get_abnorm_hist` -> class("abnorm_doi")

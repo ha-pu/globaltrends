@@ -5,7 +5,7 @@
 \alias{gt.env}
 \title{globaltrends package environment}
 \format{
-An object of class \code{environment} of length 14.
+An object of class \code{environment} of length 16.
 }
 \usage{
 gt.env
@@ -29,6 +29,8 @@ contains:
 \item keywords_object: Tibble that contains all keywords per object batch.
 \item time_object: Tibble that contains all batch times per object batch.
 \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
+\item query_wait: Number of seconds to wait between queries (default = 0.1s).
+\item py_initialized: \code{TRUE}/\code{FALSE} indicator whether \code{initialize_python} has been called.
 }
 }
 \seealso{

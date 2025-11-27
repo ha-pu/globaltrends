@@ -13,22 +13,34 @@ location_set <- c("US", "CN", "JP")
 # enter data -------------------------------------------------------------------
 add_control_keyword(
   keyword = c("gmail", "map", "translate", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 add_object_keyword(
   keyword = c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
-data <- filter(example_control, batch == 1 & location %in% c(location_set[1:3], "world"))
+data <- filter(
+  example_control,
+  batch == 1 & location %in% c(location_set[1:3], "world")
+)
 dbAppendTable(gt.env$globaltrends_db, "data_control", data)
-data <- filter(example_object, batch_c == 1 & batch_o == 1 & location %in% c(location_set[1:3], "world"))
+data <- filter(
+  example_object,
+  batch_c == 1 & batch_o == 1 & location %in% c(location_set[1:3], "world")
+)
 dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
-  out <- capture_messages(compute_score(control = 1, object = 1, locations = location_set[1:3]))
+  out <- capture_messages(compute_score(
+    control = 1,
+    object = 1,
+    locations = location_set[1:3]
+  ))
 
   expect_match(
     out,
@@ -46,9 +58,13 @@ test_that("compute_score1", {
     all = FALSE
   )
 
-  out <- filter(gt.env$tbl_score, batch_c == 1 & batch_o == 1 & location != "world")
+  out <- filter(
+    gt.env$tbl_score,
+    batch_c == 1 & batch_o == 1 & location != "world"
+  )
+  out <- count(out)
   out <- collect(out)
-  expect_equal(nrow(out), 1440)
+  expect_equal(out$n, 1440)
 })
 
 # compute score signals --------------------------------------------------------
@@ -78,9 +94,13 @@ test_that("compute_voi1", {
     compute_voi(control = 1, object = 1),
     "Successfully computed search score | control: 1 | object: 1 | location: world [1/1]",
   )
-  out <- filter(gt.env$tbl_score, batch_c == 1 & batch_o == 1 & location == "world")
+  out <- filter(
+    gt.env$tbl_score,
+    batch_c == 1 & batch_o == 1 & location == "world"
+  )
+  out <- count(out)
   out <- collect(out)
-  expect_equal(nrow(out), 480)
+  expect_equal(out$n, 480)
 })
 
 # compute doi ------------------------------------------------------------------
@@ -90,10 +110,10 @@ test_that("compute_doi1", {
     "Successfully computed DOI | control: 1 | object: 1 [1/1]"
   )
   out <- filter(gt.env$tbl_doi, batch_c == 1 & batch_o == 1)
+  out <- count(out)
   out <- collect(out)
-  expect_equal(nrow(out), 1440)
+  expect_equal(out$n, 480)
 })
-
 
 # compute doi signals ----------------------------------------------------------
 test_that("compute_doi2", {
@@ -150,12 +170,14 @@ test_that("remove_data1", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "control")
-  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "control")
-  out_keywords <- collect(out_keywords)
-  out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 0)
-  expect_equal(nrow(out_time), 0)
+  out <- filter(gt.env$tbl_keywords, batch == 1 & type == "control")
+  out <- count(out)
+  out <- collect(out)
+  expect_equal(out$n, 0)
+  out <- filter(gt.env$tbl_time, batch == 1 & type == "control")
+  out <- count(out)
+  out <- collect(out)
+  expect_equal(out$n, 0)
 })
 
 test_that("remove_data2", {
@@ -187,12 +209,14 @@ test_that("remove_data2", {
     all = FALSE
   )
 
-  out_keywords <- filter(gt.env$tbl_keywords, batch == 1 & type == "object")
-  out_time <- filter(gt.env$tbl_time, batch == 1 & type == "object")
-  out_keywords <- collect(out_keywords)
-  out_time <- collect(out_time)
-  expect_equal(nrow(out_keywords), 0)
-  expect_equal(nrow(out_time), 0)
+  out <- filter(gt.env$tbl_keywords, batch == 1 & type == "object")
+  out <- count(out)
+  out <- collect(out)
+  expect_equal(out$n, 0)
+  out <- filter(gt.env$tbl_time, batch == 1 & type == "object")
+  out <- count(out)
+  out <- collect(out)
+  expect_equal(out$n, 0)
 })
 
 # remove data signals ----------------------------------------------------------

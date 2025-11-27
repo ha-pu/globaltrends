@@ -10,7 +10,8 @@ start_db()
 
 add_control_keyword(
   keyword = c("gmail", "map", "wikipedia", "youtube"),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 add_object_keyword(
@@ -18,7 +19,8 @@ add_object_keyword(
     c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
     c("bayern munich", "bayern munchen")
   ),
-  time = "2010-01-01 2019-12-31"
+  start_date = "2010-01",
+  end_date = "2019-12"
 )
 
 location_set <- c("US", "CN", "JP")
@@ -63,39 +65,63 @@ data <- filter(
   mutate(batch_o = 2)
 dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
-compute_score(object = 1, locations = location_set[1:2])
+compute_score(object = 1:2, locations = location_set[1:3])
 out1 <- export_score(keyword = "fc bayern")
 
-compute_score(object = 2, locations = location_set[1:3])
-out2 <- export_score(keyword = "fc bayern")
+# run aggregation --------------------------------------------------------------
+test_that("aggregate_synonyms1", {
+  out <- capture_messages(
+    aggregate_synonyms(control = 1, vacuum = FALSE)
+  )
+
+  expect_false(
+    out[[7]] == "Start vacuum_data().\n"
+  )
+})
+
+test_that("aggregate_synonyms2", {
+  out <- capture_messages(
+    aggregate_synonyms(control = 1)
+  )
+
+  expect_match(
+    out,
+    "Start exporting from DB\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Start removing from DB\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Start vacuum_data\\(\\)\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Start appending to DB\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    "Successfully aggregated synonyms\\.",
+    all = FALSE
+  )
+})
 
 # compare results --------------------------------------------------------------
 test_that("keyword_score", {
   out1_cn <- out1 %>%
     filter(location == "CN") %>%
-    summarise(score = mean(score_obs), .groups = "drop")
+    summarise(score = mean(score), .groups = "drop")
 
-  out2_cn <- out2 %>%
+  out2_cn <- export_score(keyword = "fc bayern") %>%
     filter(location == "CN") %>%
-    summarise(score = mean(score_obs), .groups = "drop")
+    summarise(score = mean(score), .groups = "drop")
 
   expect_gt(out2_cn$score, out1_cn$score)
-})
-
-test_that("keyword_synonym", {
-  out2_cn <- gt.env$tbl_score %>%
-    filter(keyword == "bayern munich" & location == "CN") %>%
-    collect() %>%
-    summarise(synonym = mean(synonym), .groups = "drop")
-
-  expect_equal(out2_cn$synonym, 2)
-
-  out2_jp <- gt.env$tbl_score %>%
-    filter(keyword == "bayern munich" & location == "JP") %>%
-    collect() %>%
-    summarise(synonym = mean(synonym), .groups = "drop")
-
-  expect_equal(out2_jp$synonym, 1)
 })
 
 # add synonyms signals ---------------------------------------------------------
@@ -122,6 +148,25 @@ test_that("add_synonyms5", {
   expect_error(
     add_synonym(keyword = "A", synonym = sum),
     "no applicable method"
+  )
+})
+
+test_that("aggregate_synonyms3", {
+  test_control(fun = aggregate_synonyms)
+})
+
+test_that("aggregate_synonyms4", {
+  expect_error(
+    aggregate_synonyms(control = 1, vacuum = 1),
+    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type double."
+  )
+  expect_error(
+    aggregate_synonyms(control = 1, vacuum = "A"),
+    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type character."
+  )
+  expect_error(
+    aggregate_synonyms(control = 1, vacuum = sum),
+    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type builtin."
   )
 })
 
