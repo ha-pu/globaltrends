@@ -109,30 +109,6 @@ out_score <- export_score(keyword = "manchester united")
 out_voi <- export_voi(keyword = "manchester united")
 out_doi <- export_doi(locations = "countries")
 
-# plot data --------------------------------------------------------------------
-plot_bar(data = out_score)
-plot_ts(data = out_score)
-plot_box(data = out_score)
-plot_ts(data = out_voi)
-plot_box(data = out_voi)
-plot_ts(data = out_doi)
-plot_box(data = out_doi)
-plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
-
-# get abnormal internationalization --------------------------------------------
-abnorm_score <- get_abnorm_hist(data = out_score)
-plot_bar(data = abnorm_score)
-plot_ts(data = abnorm_score)
-plot_box(data = abnorm_score)
-
-abnorm_voi <- get_abnorm_hist(data = out_voi)
-plot_ts(data = abnorm_voi)
-plot_box(data = abnorm_voi)
-
-abnorm_doi <- get_abnorm_hist(data = out_doi)
-plot_ts(data = abnorm_doi)
-plot_box(data = abnorm_doi)
-
 # disconnect from db -----------------------------------------------------------
 disconnect_db()
 ````
