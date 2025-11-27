@@ -65,6 +65,7 @@ will be made throught the `gtrendsR` package. **We suggest using the official**
 # Install the current dev version directly from GitHub:
 devtools::install_github(
   repo = "ha-pu/globaltrends",
+  head = "parquet",
   build_vignettes = TRUE
 )
 
