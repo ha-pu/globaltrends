@@ -52,7 +52,7 @@ gt.env <- new.env(parent = emptyenv())
     "py_initialized"
   )
   lst_object <- as.list(rep(TRUE, length(lst_name)))
-  lst_object$py_initialized <- FALSE
   names(lst_object) <- lst_name
+  lst_object$py_initialized <- FALSE
   invisible(list2env(lst_object, envir = gt.env))
 }
