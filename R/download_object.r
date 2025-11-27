@@ -74,10 +74,11 @@
 #' @importFrom rlang .data
 
 download_object <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries,
-    ...) {
+  object,
+  control = 1,
+  locations = gt.env$countries,
+  ...
+) {
   UseMethod("download_object", object)
 }
 
@@ -86,19 +87,17 @@ download_object <- function(
 #' @export
 
 download_object.numeric <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries,
-    ...) {
-  args <- list(...)
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
     download_object(
       control = control,
       object = as.list(object),
-      locations = locations,
-      ...
+      locations = locations
     )
   } else {
     walk(list(control, object), .check_batch)
@@ -164,7 +163,8 @@ download_object.numeric <- function(
               out <- mutate(
                 out,
                 batch_c = control,
-                batch_o = object
+                batch_o = object,
+                date = as.integer(date)
               )
               dbAppendTable(
                 conn = gt.env$globaltrends_db,
@@ -205,6 +205,10 @@ download_object.numeric <- function(
         }
       }
     )
+    dbExecute(
+      gt.env$globaltrends_db,
+      "COPY data_object TO 'db/data_object.parquet' (FORMAT parquet);"
+    )
   }
 }
 
@@ -213,10 +217,11 @@ download_object.numeric <- function(
 #' @export
 
 download_object.list <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries,
-    ...) {
+  object,
+  control = 1,
+  locations = gt.env$countries,
+  ...
+) {
   walk(object, download_object, control = control, locations = locations, ...)
 }
 

@@ -75,9 +75,10 @@ download_control <- function(control, locations = gt.env$countries, ...) {
 #' @export
 
 download_control.numeric <- function(
-    control,
-    locations = gt.env$countries,
-    ...) {
+  control,
+  locations = gt.env$countries,
+  ...
+) {
   args <- list(...)
   .check_input(locations, "character")
   if (length(control) > 1) {
@@ -125,7 +126,11 @@ download_control.numeric <- function(
           )
         }
         if (!is.null(out)) {
-          out <- mutate(out, batch = control)
+          out <- mutate(
+            out,
+            batch = control,
+            date = as.integer(date)
+          )
           dbAppendTable(
             conn = gt.env$globaltrends_db,
             name = "data_control",
@@ -144,6 +149,10 @@ download_control.numeric <- function(
           "]"
         ))
       }
+    )
+    dbExecute(
+      gt.env$globaltrends_db,
+      "COPY data_control TO 'db/data_control.parquet' (FORMAT parquet);"
     )
   }
 }

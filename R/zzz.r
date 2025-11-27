@@ -53,6 +53,7 @@ gt.env <- new.env(parent = emptyenv())
   )
   lst_object <- as.list(rep(TRUE, length(lst_name)))
   names(lst_object) <- lst_name
+  lst_object$query_wait <- 0.1
   lst_object$py_initialized <- FALSE
   invisible(list2env(lst_object, envir = gt.env))
 }
