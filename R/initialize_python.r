@@ -52,7 +52,7 @@ initialize_python <- function(api_key, conda_env = NULL, python_env = NULL) {
     .check_input(python_env, "character")
     use_virtualenv(python_env)
   } else {
-    stop("Specify 'env'!")
+    stop("Error: Specify 'env'!")
   }
   assign("api_key", api_key, envir = gt.env)
   source_python(

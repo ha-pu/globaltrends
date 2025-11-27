@@ -37,7 +37,7 @@ test_that("initialize_py4", {
     initialize_python(
       api_key = "XXX"
     ),
-    "Specify 'env'!"
+    "Error: Specify 'env'!"
   )
 })
 
