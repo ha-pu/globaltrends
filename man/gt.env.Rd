@@ -5,7 +5,7 @@
 \alias{gt.env}
 \title{globaltrends package environment}
 \format{
-An object of class \code{environment} of length 17.
+An object of class \code{environment} of length 16.
 }
 \usage{
 gt.env
