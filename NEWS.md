@@ -1,6 +1,13 @@
 # globaltrends 0.2.0.9000
 
-# globaltrends 0.1.0.9000
+## Change in database handling
+
+* Switch from sqlite to duckdb
+  * Database tables are stored as individual parquet files
+  * `start_db()` loads the parquet files to memory
+  * All database actions are conducted in memory and later written to parquet
+
+# globaltrends 0.1.0
 
 ## Change in downloading approach
 

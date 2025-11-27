@@ -16,8 +16,6 @@ directory
 the connected SQLite database
 \item tbl_control A remote data source pointing to the table
 \emph{data_control} in the connected SQLite database
-\item tbl_mapping A remote data source pointing to the table
-\emph{data_mapping} in the connected SQLite database
 \item tbl_object A remote data source pointing to the table
 \emph{data_object} in the connected SQLite database
 \item tbl_score A remote data source pointing to the table
