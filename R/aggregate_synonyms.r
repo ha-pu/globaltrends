@@ -69,59 +69,69 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     gt.env$tbl_keywords,
     gt.env$tbl_synonyms,
     by = "keyword"
-  ) %>%
-    collect()
+  )
+  lst_org_syn <- collect(lst_org_syn)
 
   lst_syn_org <- inner_join(
     gt.env$tbl_synonyms,
     gt.env$tbl_keywords,
     by = c("synonym" = "keyword")
-  ) %>%
-    collect()
+  )
+  lst_syn_org <- collect(lst_syn_org)
 
   lst_batch <- c(
     lst_org_syn$batch,
     lst_syn_org$batch
-  ) %>%
-    unique()
+  )
+  lst_batch <- unique(lst_batch)
 
   message("Start exporting from DB.")
   df_score <- map_dfr(
     lst_batch,
     ~ {
-      gt.env$tbl_score %>%
-        filter(.data$batch_o == .x & .data$batch_c == control) %>%
-        collect()
+      out <- filter(
+        gt.env$tbl_score,
+        .data$batch_o == .x & .data$batch_c == control
+      )
+      out <- collect(out)
+      return(out)
     },
     .progress = TRUE
   )
 
-  df_score_s <- lst_syn_org %>%
-    inner_join(lst_org_syn, by = c("keyword", "synonym")) %>%
-    select(
-      batch_oo = batch.y,
-      keyword_o = keyword,
-      batch_os = batch.x,
-      keyword_s = synonym
-    ) %>%
-    inner_join(
-      df_score,
-      by = c("batch_os" = "batch_o", "keyword_s" = "keyword")
-    ) %>%
-    summarise(
-      score = sum(.data$score, na.rm = TRUE),
-      .by = c(
-        .data$batch_oo,
-        .data$keyword_o,
-        .data$location,
-        .data$date,
-        .data$batch_c
-      )
-    ) %>%
-    rename(
-      batch_o = batch_oo,
-      keyword = keyword_o
+  df_score_s <- inner_join(
+    lst_syn_org,
+    lst_org_syn,
+    by = c("keyword", "synonym")
+  )
+  df_score_s <- select(
+    df_score_s,
+    batch_oo = batch.y,
+    keyword_o = keyword,
+    batch_os = batch.x,
+    keyword_s = synonym
+  )
+  df_score_s <- inner_join(
+    df_score_s,
+    df_score,
+    by = c("batch_os" = "batch_o", "keyword_s" = "keyword")
+  )
+  df_score_s <- summarise(
+    df_score_s,
+    score = sum(.data$score, na.rm = TRUE),
+    .by = c(
+      .data$batch_oo,
+      .data$keyword_o,
+      .data$location,
+      .data$date,
+      .data$batch_c
     )
+  )
+  df_score_s <- rename(
+    df_score_s,
+    batch_o = batch_oo,
+    keyword = keyword_o
+  )
 
   df_score_o <- anti_join(
     df_score,
@@ -132,17 +142,18 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
   df_score_new <- bind_rows(
     df_score_o,
     df_score_s
-  ) %>%
-    summarise(
-      score = sum(.data$score, na.rm = TRUE),
-      .by = c(
-        .data$batch_o,
-        .data$keyword,
-        .data$location,
-        .data$date,
-        .data$batch_c
-      )
+  )
+  df_score_new <- summarise(
+    df_score_new,
+    score = sum(.data$score, na.rm = TRUE),
+    .by = c(
+      .data$batch_o,
+      .data$keyword,
+      .data$location,
+      .data$date,
+      .data$batch_c
     )
+  )
 
   message("Start removing from DB.")
   walk(

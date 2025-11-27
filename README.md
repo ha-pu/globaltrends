@@ -44,8 +44,8 @@ a change log.
 
 ## Usage
 
-**This version of the** `globaltrends` **package uses the Google Trends Research**
-**API provided by Google.** To use this version of the package, you must:
+**This version of the** `globaltrends` **package can use the Google Trends**
+**Research API provided by Google.** To use this API acces, you must:
 
 1. Apply for API access [online](https://support.google.com/trends/contact/trends_api).
    and generate an API key in your Google developer console.
@@ -65,7 +65,6 @@ will be made throught the `gtrendsR` package. **We suggest using the official**
 # Install the current dev version directly from GitHub:
 devtools::install_github(
   repo = "ha-pu/globaltrends",
-  ref = "Google-Trends-API",
   build_vignettes = TRUE
 )
 

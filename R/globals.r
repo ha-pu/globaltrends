@@ -4,8 +4,11 @@
 
 global_vars <- c(
   "batch",
+  "batch.x",
+  "batch.y",
   "batch_c",
   "batch_o",
+  "batch_oo",
   "control",
   "country",
   "doi",
@@ -16,11 +19,13 @@ global_vars <- c(
   "hits",
   "iso2c",
   "keyword",
+  "keyword_o",
   "location",
   "locations",
   "measure",
   "object",
   "score",
+  "synonym",
   "type",
   "voi"
 )

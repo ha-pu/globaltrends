@@ -16,10 +16,11 @@
 #' @importFrom tibble tibble
 
 .get_trend <- function(
-    location = NULL,
-    term,
-    start_date = "2020-01",
-    end_date = "2020-12") {
+  location = NULL,
+  term,
+  start_date = "2020-01",
+  end_date = "2020-12"
+) {
   if (gt.env$py_initialized) {
     out <- gt.env$query_gtrends(
       terms = term,
@@ -49,8 +50,7 @@
       keyword = term,
       geo = location,
       time = time,
-      onlyInterest = TRUE,
-      ...
+      onlyInterest = TRUE
     ))
     while (inherits(out, "try-error")) {
       if (
@@ -97,9 +97,10 @@
 #' @importFrom dplyr filter
 
 .test_empty <- function(
-    batch_c = NULL,
-    batch_o = NULL,
-    locations = NULL) {
+  batch_c = NULL,
+  batch_o = NULL,
+  locations = NULL
+) {
   in_batch_c <- batch_c
   in_batch_o <- batch_o
   in_locations <- locations
