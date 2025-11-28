@@ -66,7 +66,7 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_control <- function(control, locations = gt.env$countries, ...) {
+download_control <- function(control, locations = gt.env$countries) {
   UseMethod("download_control", control)
 }
 
@@ -76,12 +76,10 @@ download_control <- function(control, locations = gt.env$countries, ...) {
 
 download_control.numeric <- function(
     control,
-    locations = gt.env$countries,
-    ...) {
-  args <- list(...)
+    locations = gt.env$countries) {
   .check_input(locations, "character")
   if (length(control) > 1) {
-    download_control(control = as.list(control), locations = locations, ...)
+    download_control(control = as.list(control), locations = locations)
   } else {
     .check_batch(control)
     terms <- gt.env$keywords_control$keyword[
@@ -103,25 +101,17 @@ download_control.numeric <- function(
       ~ {
         in_location <- ifelse(.x == "", "world", .x)
         if (in_location == "world") {
-          out <- do.call(
-            .get_trend,
-            c(
-              args,
+          out <- .get_trend(
               term = list(terms),
               start_date = start_date,
               end_date = end_date
-            )
           )
         } else {
-          out <- do.call(
-            .get_trend,
-            c(
-              args,
+          out <- get_trend(
               location = .x,
               term = list(terms),
               start_date = start_date,
               end_date = end_date
-            )
           )
         }
         if (!is.null(out)) {
