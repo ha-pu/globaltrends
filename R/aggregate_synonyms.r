@@ -153,7 +153,7 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     .progress = TRUE
   )
 
-  if (nrow(df_score_new) > 0) {
+  if (pull(count(df_score_new), n) > 0) {
     dbAppendTable(
       conn = gt.env$globaltrends_db,
       name = "data_score",

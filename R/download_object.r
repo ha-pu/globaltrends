@@ -76,8 +76,7 @@
 download_object <- function(
   object,
   control = 1,
-  locations = gt.env$countries,
-  ...
+  locations = gt.env$countries
 ) {
   UseMethod("download_object", object)
 }
@@ -125,9 +124,9 @@ download_object.numeric <- function(
         qry_control <- collect(qry_control)
         if (nrow(qry_control) > 0) {
           terms_con <- summarise(
-            group_by(qry_control, .data$keyword),
+            qry_control,
             hits = mean(.data$hits),
-            .groups = "drop"
+            .by = keyword
           )
           terms_con <- filter(terms_con, hits > 0)
           terms_con <- terms_con$keyword[order(terms_con$hits)]
@@ -136,25 +135,17 @@ download_object.numeric <- function(
           success <- FALSE
           while (i <= length(terms_con)) {
             if (in_location == "world") {
-              out <- do.call(
-                .get_trend,
-                c(
-                  args,
-                  term = list(c(terms_con[[i]], terms_obj)),
-                  start_date = start_date,
-                  end_date = end_date
-                )
+              out <- .get_trend(
+                term = list(c(terms_con[[i]], terms_obj)),
+                start_date = start_date,
+                end_date = end_date
               )
             } else {
-              out <- do.call(
-                .get_trend,
-                c(
-                  args,
-                  location = .x,
-                  term = list(c(terms_con[[i]], terms_obj)),
-                  start_date = start_date,
-                  end_date = end_date
-                )
+              out <- .get_trend(
+                location = .x,
+                term = list(c(terms_con[[i]], terms_obj)),
+                start_date = start_date,
+                end_date = end_date
               )
             }
             if (

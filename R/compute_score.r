@@ -129,7 +129,7 @@ compute_score.numeric <- function(
         .data$batch_o == object
     )
     exp_control <- filter(gt.env$tbl_control, .data$batch == control)
-    if (count(exp_object) != 0) {
+    if (pull(count(exp_object), n) != 0) {
       # set to benchmark
       data_control <- inner_join(
         exp_object,
@@ -214,7 +214,7 @@ compute_score.numeric <- function(
         batch_o = object,
         date = date
       )
-      in_location <- .x
+
       message(paste0(
         "Successfully computed search score | control: ",
         control,
@@ -222,13 +222,12 @@ compute_score.numeric <- function(
         object,
         "]"
       ))
-      return(out)
     }
-    if (count(out) > 0) {
+    if (pull(count(out), n) > 0) {
       dbAppendTable(
         conn = gt.env$globaltrends_db,
         name = "data_score",
-        value = lst_out
+        value = out
       )
     }
   }
