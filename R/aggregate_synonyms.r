@@ -120,11 +120,11 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     df_score_s,
     score = sum(.data$score, na.rm = TRUE),
     .by = c(
-      .data$batch_oo,
-      .data$keyword_o,
-      .data$location,
-      .data$date,
-      .data$batch_c
+      batch_oo,
+      keyword_o,
+      location,
+      date,
+      batch_c
     )
   )
   df_score_s <- rename(
@@ -147,11 +147,11 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     df_score_new,
     score = sum(.data$score, na.rm = TRUE),
     .by = c(
-      .data$batch_o,
-      .data$keyword,
-      .data$location,
-      .data$date,
-      .data$batch_c
+      batch_o,
+      keyword,
+      location,
+      date,
+      batch_c
     )
   )
 

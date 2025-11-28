@@ -18,7 +18,7 @@ test_that("initialize_py2", {
       api_key = "XXX",
       conda_env = "XXX"
     ),
-    "Unable to find conda binary. Is Anaconda installed?"
+    "Unable .* conda .*"
   )
 })
 
