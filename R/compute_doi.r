@@ -84,21 +84,25 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   } else {
     walk(list(control, object), .check_batch)
     if (
-      .test_empty(batch_c = control, batch_o = object, locations = locations)
+      .test_empty(
+        batch_c = control,
+        batch_o = object,
+        locations = locations
+      )
     ) {
       data <- filter(
         gt.env$tbl_score,
         .data$batch_c == control & .data$batch_o == object
       )
-      data <- collect(data)
       tmp_locations <- pull(
-        collect(filter(gt.env$tbl_locations, .data$type == locations)),
+        filter(gt.env$tbl_locations, .data$type == locations),
         .data$location
       )
       data <- filter(
         data,
         .data$location %in% tmp_locations
       )
+      data <- collect(data)
 
       # compute doi measures
       data <- nest(data, data = c(location, score))
@@ -152,6 +156,10 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       "]"
     ))
   }
+  dbExecute(
+    gt.env$globaltrends_db,
+    "COPY data_doi TO 'db/data_doi.parquet' (FORMAT parquet);"
+  )
 }
 
 #' @rdname compute_doi

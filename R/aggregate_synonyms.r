@@ -55,6 +55,7 @@
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
+#' @importFrom dplyr union_all
 #' @importFrom purrr map_dfr
 #' @importFrom purrr walk
 #' @importFrom rlang .data
@@ -80,23 +81,14 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
   lst_syn_org <- collect(lst_syn_org)
 
   lst_batch <- c(
-    lst_org_syn$batch,
-    lst_syn_org$batch
+    pull(lst_org_syn, batch),
+    pull(lst_syn_org, batch)
   )
   lst_batch <- unique(lst_batch)
 
-  message("Start exporting from DB.")
-  df_score <- map_dfr(
-    lst_batch,
-    ~ {
-      out <- filter(
-        gt.env$tbl_score,
-        .data$batch_o == .x & .data$batch_c == control
-      )
-      out <- collect(out)
-      return(out)
-    },
-    .progress = TRUE
+  df_score <- filter(
+    gt.env$tbl_score,
+    .data$batch_o %in% lst_batch & .data$batch_c == control
   )
 
   df_score_s <- inner_join(
@@ -139,7 +131,7 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     by = c("batch_o" = "batch", "keyword" = "synonym")
   )
 
-  df_score_new <- bind_rows(
+  df_score_new <- union_all(
     df_score_o,
     df_score_s
   )
@@ -155,33 +147,29 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     )
   )
 
-  message("Start removing from DB.")
   walk(
     lst_batch,
     ~ remove_data(table = "data_score", control = control, object = .x),
     .progress = TRUE
   )
 
+  if (nrow(df_score_new) > 0) {
+    dbAppendTable(
+      conn = gt.env$globaltrends_db,
+      name = "data_score",
+      value = df_score_new
+    )
+  }
+
+  message("Successfully aggregated synonyms.")
+
   if (vacuum) {
     message("Start vacuum_data().")
     vacuum_data()
   }
 
-  message("Start appending to DB.")
-  walk(
-    lst_batch,
-    ~ {
-      df <- filter(df_score_new, .data$batch_o == .x)
-      if (nrow(df) > 0) {
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "data_score",
-          value = df
-        )
-      }
-    },
-    .progress = TRUE
+  dbExecute(
+    gt.env$globaltrends_db,
+    "COPY data_score TO 'db/data_score.parquet' (FORMAT parquet);"
   )
-
-  message("Successfully aggregated synonyms.")
 }

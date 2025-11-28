@@ -86,22 +86,7 @@ test_that("aggregate_synonyms2", {
 
   expect_match(
     out,
-    "Start exporting from DB\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Start removing from DB\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
     "Start vacuum_data\\(\\)\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Start appending to DB\\.",
     all = FALSE
   )
   expect_match(

@@ -128,8 +128,7 @@ download_control.numeric <- function(
         if (!is.null(out)) {
           out <- mutate(
             out,
-            batch = control,
-            date = as.integer(date)
+            batch = control
           )
           dbAppendTable(
             conn = gt.env$globaltrends_db,

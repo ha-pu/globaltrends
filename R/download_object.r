@@ -163,8 +163,7 @@ download_object.numeric <- function(
               out <- mutate(
                 out,
                 batch_c = control,
-                batch_o = object,
-                date = as.integer(date)
+                batch_o = object
               )
               dbAppendTable(
                 conn = gt.env$globaltrends_db,

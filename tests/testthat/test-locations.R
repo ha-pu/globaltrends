@@ -148,11 +148,11 @@ test_that("compute_doi", {
   )
 
   out <- gt.env$tbl_doi %>%
-    group_by(locations) %>%
     summarise(
       gini = mean(gini, na.rm = TRUE),
       hhi = mean(hhi, na.rm = TRUE),
-      entropy = mean(entropy, na.rm = TRUE)
+      entropy = mean(entropy, na.rm = TRUE),
+      .by = c(locations)
     ) %>%
     collect()
 
