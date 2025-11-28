@@ -88,17 +88,14 @@ download_object <- function(
 download_object.numeric <- function(
     object,
     control = 1,
-    locations = gt.env$countries,
-    ...) {
-  args <- list(...)
+    locations = gt.env$countries) {
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
     download_object(
       control = control,
       object = as.list(object),
-      locations = locations,
-      ...
+      locations = locations
     )
   } else {
     walk(list(control, object), .check_batch)
@@ -137,20 +134,14 @@ download_object.numeric <- function(
           success <- FALSE
           while (i <= length(terms_con)) {
             if (in_location == "world") {
-              out <- do.call(
-                .get_trend,
-                c(
-                  args,
+              out <- .get_trend(
                   term = list(c(terms_con[[i]], terms_obj)),
                   start_date = start_date,
                   end_date = end_date
                 )
               )
             } else {
-              out <- do.call(
-                .get_trend,
-                c(
-                  args,
+              out <- .get_trend(
                   location = .x,
                   term = list(c(terms_con[[i]], terms_obj)),
                   start_date = start_date,
