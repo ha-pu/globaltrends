@@ -124,10 +124,11 @@ export_control_global <- function(control = NULL) {
 #' @export
 
 export_object <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    location = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -144,9 +145,10 @@ export_object <- function(
 #' @export
 
 export_object_global <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -162,10 +164,11 @@ export_object_global <- function(
 #' @export
 
 export_score <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    location = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
@@ -197,10 +200,11 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
 #' @export
 
 export_doi <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    locations = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_doi,
     in_keyword = unlist(keyword),
@@ -223,13 +227,14 @@ export_doi <- function(
 #' @importFrom lubridate as_date
 
 .export_data <- function(
-    table,
-    in_keyword = NULL,
-    in_object = NULL,
-    in_control = NULL,
-    in_batch = NULL,
-    in_location = NULL,
-    in_locations = NULL) {
+  table,
+  in_keyword = NULL,
+  in_object = NULL,
+  in_control = NULL,
+  in_batch = NULL,
+  in_location = NULL,
+  in_locations = NULL
+) {
   keyword <- in_keyword
   object <- in_object
   control <- in_control

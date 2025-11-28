@@ -37,8 +37,6 @@
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `gt.env$countries`.
 #'
-#' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
-#'
 #' @seealso
 #' * [example_control()]
 #' * [gtrendsR::gtrends()]
@@ -75,8 +73,9 @@ download_control <- function(control, locations = gt.env$countries) {
 #' @export
 
 download_control.numeric <- function(
-    control,
-    locations = gt.env$countries) {
+  control,
+  locations = gt.env$countries
+) {
   .check_input(locations, "character")
   if (length(control) > 1) {
     download_control(control = as.list(control), locations = locations)
@@ -102,16 +101,16 @@ download_control.numeric <- function(
         in_location <- ifelse(.x == "", "world", .x)
         if (in_location == "world") {
           out <- .get_trend(
-              term = list(terms),
-              start_date = start_date,
-              end_date = end_date
+            term = list(terms),
+            start_date = start_date,
+            end_date = end_date
           )
         } else {
           out <- get_trend(
-              location = .x,
-              term = list(terms),
-              start_date = start_date,
-              end_date = end_date
+            location = .x,
+            term = list(terms),
+            start_date = start_date,
+            end_date = end_date
           )
         }
         if (!is.null(out)) {

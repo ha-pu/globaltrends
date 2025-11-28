@@ -44,8 +44,6 @@
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `countries`.
 #'
-#' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
-#'
 #' @seealso
 #' * [example_object()]
 #' * [gtrendsR::gtrends()]
@@ -74,10 +72,10 @@
 #' @importFrom rlang .data
 
 download_object <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries,
-    ...) {
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   UseMethod("download_object", object)
 }
 
@@ -86,9 +84,10 @@ download_object <- function(
 #' @export
 
 download_object.numeric <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries) {
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   .check_length(control, 1)
   .check_input(locations, "character")
   if (length(object) > 1) {
@@ -135,16 +134,16 @@ download_object.numeric <- function(
           while (i <= length(terms_con)) {
             if (in_location == "world") {
               out <- .get_trend(
-                  term = list(c(terms_con[[i]], terms_obj)),
-                  start_date = start_date,
-                  end_date = end_date
+                term = list(c(terms_con[[i]], terms_obj)),
+                start_date = start_date,
+                end_date = end_date
               )
             } else {
               out <- .get_trend(
-                  location = .x,
-                  term = list(c(terms_con[[i]], terms_obj)),
-                  start_date = start_date,
-                  end_date = end_date
+                location = .x,
+                term = list(c(terms_con[[i]], terms_obj)),
+                start_date = start_date,
+                end_date = end_date
               )
             }
             if (
@@ -202,15 +201,16 @@ download_object.numeric <- function(
 #' @export
 
 download_object.list <- function(
-    object,
-    control = 1,
-    locations = gt.env$countries) {
+  object,
+  control = 1,
+  locations = gt.env$countries
+) {
   walk(object, download_object, control = control, locations = locations)
 }
 
 #' @rdname download_object
 #' @export
 
-download_object_global <- function(object, control = 1, ...) {
+download_object_global <- function(object, control = 1) {
   download_object(object = object, control = control, locations = "")
 }
