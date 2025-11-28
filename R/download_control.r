@@ -142,13 +142,13 @@ download_control.numeric <- function(
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = gt.env$countries, ...) {
-  walk(control, download_control, locations = locations, ...)
+download_control.list <- function(control, locations = gt.env$countries) {
+  walk(control, download_control, locations = locations)
 }
 
 #' @rdname download_control
 #' @export
 
-download_control_global <- function(control, ...) {
-  download_control(control = control, locations = "", ...)
+download_control_global <- function(control) {
+  download_control(control = control, locations = "")
 }
