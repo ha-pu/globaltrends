@@ -7,13 +7,13 @@
 \alias{download_object_global}
 \title{Download data for object batch}
 \usage{
-download_object(object, control = 1, locations = gt.env$countries, ...)
+download_object(object, control = 1, locations = gt.env$countries)
 
-\method{download_object}{numeric}(object, control = 1, locations = gt.env$countries, ...)
+\method{download_object}{numeric}(object, control = 1, locations = gt.env$countries)
 
-\method{download_object}{list}(object, control = 1, locations = gt.env$countries, ...)
+\method{download_object}{list}(object, control = 1, locations = gt.env$countries)
 
-download_object_global(object, control = 1, ...)
+download_object_global(object, control = 1)
 }
 \arguments{
 \item{object}{Object batch for which the data is downloaded. Object
@@ -26,8 +26,6 @@ object of type \code{numeric}.}
 \item{locations}{List of countries or regions for which the data is
 downloaded. Refers to lists generated in \code{start_db}. Defaults to
 \code{countries}.}
-
-\item{...}{Arguments that are passed on to the \code{gtrendsR::gtrends} function.}
 }
 \value{
 Message that data was downloaded successfully. Data is written

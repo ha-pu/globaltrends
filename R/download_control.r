@@ -37,8 +37,6 @@
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `gt.env$countries`.
 #'
-#' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
-#'
 #' @seealso
 #' * [example_control()]
 #' * [gtrendsR::gtrends()]
@@ -66,7 +64,7 @@
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_control <- function(control, locations = gt.env$countries, ...) {
+download_control <- function(control, locations = gt.env$countries) {
   UseMethod("download_control", control)
 }
 
@@ -76,13 +74,11 @@ download_control <- function(control, locations = gt.env$countries, ...) {
 
 download_control.numeric <- function(
   control,
-  locations = gt.env$countries,
-  ...
+  locations = gt.env$countries
 ) {
-  args <- list(...)
   .check_input(locations, "character")
   if (length(control) > 1) {
-    download_control(control = as.list(control), locations = locations, ...)
+    download_control(control = as.list(control), locations = locations)
   } else {
     .check_batch(control)
     terms <- gt.env$keywords_control$keyword[
@@ -152,13 +148,13 @@ download_control.numeric <- function(
 #' @method download_control list
 #' @export
 
-download_control.list <- function(control, locations = gt.env$countries, ...) {
-  walk(control, download_control, locations = locations, ...)
+download_control.list <- function(control, locations = gt.env$countries) {
+  walk(control, download_control, locations = locations)
 }
 
 #' @rdname download_control
 #' @export
 
-download_control_global <- function(control, ...) {
-  download_control(control = control, locations = "", ...)
+download_control_global <- function(control) {
+  download_control(control = control, locations = "")
 }

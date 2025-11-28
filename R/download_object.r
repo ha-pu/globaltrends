@@ -44,8 +44,6 @@
 #' downloaded. Refers to lists generated in `start_db`. Defaults to
 #' `countries`.
 #'
-#' @param ... Arguments that are passed on to the `gtrendsR::gtrends` function.
-#'
 #' @seealso
 #' * [example_object()]
 #' * [gtrendsR::gtrends()]
@@ -209,15 +207,14 @@ download_object.numeric <- function(
 download_object.list <- function(
   object,
   control = 1,
-  locations = gt.env$countries,
-  ...
+  locations = gt.env$countries
 ) {
-  walk(object, download_object, control = control, locations = locations, ...)
+  walk(object, download_object, control = control, locations = locations)
 }
 
 #' @rdname download_object
 #' @export
 
-download_object_global <- function(object, control = 1, ...) {
-  download_object(object = object, control = control, locations = "", ...)
+download_object_global <- function(object, control = 1) {
+  download_object(object = object, control = control, locations = "")
 }

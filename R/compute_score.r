@@ -69,6 +69,8 @@
 #' @export
 #' @rdname compute_score
 #' @importFrom DBI dbAppendTable
+#' @importFrom DBI SQL
+#' @importFrom dbplyr sql_render
 #' @importFrom dplyr anti_join
 #' @importFrom dplyr case_when
 #' @importFrom dplyr coalesce
@@ -82,7 +84,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom lubridate as_date
-#' @importFrom purrr map_dfr
+#' @importFrom purrr reduce
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 #' @importFrom rlang env_parent
@@ -94,159 +96,136 @@
 #' @importFrom tidyr unnest
 
 compute_score <- function(object, control = 1, locations = gt.env$countries) {
-  UseMethod("compute_score", object)
-}
-
-#' @rdname compute_score
-#' @method compute_score numeric
-#' @export
-
-compute_score.numeric <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+  # preparation and checks
   control <- unlist(control)
   .check_length(control, 1)
   .check_input(locations, "character")
-  if (length(object) > 1) {
-    compute_score(
-      control = control,
-      object = as.list(object),
-      locations = locations
-    )
-  } else {
-    walk(list(control, object), .check_batch)
-    lst_full <- .get_full(
-      table = "data_score",
-      batch_c = control,
-      batch_o = object
-    )
-    locations <- locations[!(locations %in% lst_full)]
-    exp_object <- filter(
-      gt.env$tbl_object,
-      .data$batch_c == control &
-        .data$batch_o == object
-    )
-    exp_control <- filter(gt.env$tbl_control, .data$batch == control)
-    if (pull(count(exp_object), n) != 0) {
-      # set to benchmark
-      data_control <- inner_join(
-        exp_object,
-        exp_control,
-        by = c(
-          "location",
-          "keyword",
-          "date"
-        ),
-        suffix = c("_o", "_c")
-      )
-      data_control <- mutate(
-        data_control,
-        hits_o = case_when(
-          .data$hits_o == 0 ~ 1,
-          TRUE ~ .data$hits_o
-        ),
-        hits_c = case_when(
-          .data$hits_c == 0 ~ 1,
-          TRUE ~ .data$hits_c
-        )
-      )
-      data_control <- mutate(
-        data_control,
-        benchmark = coalesce(.data$hits_o / .data$hits_c, 0)
-      )
-      data_control <- select(
-        data_control,
-        location,
-        date,
-        benchmark
-      )
-      data_control <- inner_join(
-        data_control,
-        exp_control,
-        by = c("location", "date"),
-        relationship = "many-to-many"
-      )
-      data_control <- mutate(
-        data_control,
-        hits = .data$hits * .data$benchmark
-      )
-      data_control <- select(
-        data_control,
-        location,
-        date,
-        keyword,
-        hits
-      )
 
-      data_object <- anti_join(
-        exp_object,
-        data_control,
-        by = c("keyword")
-      )
-
-      # compute score
-      data_control <- summarise(
-        data_control,
-        hits_c = sum(.data$hits),
-        .by = c(location, date)
-      )
-      data_object <- left_join(
-        data_object,
-        data_control,
-        by = c("location", "date")
-      )
-      data_object <- mutate(
-        data_object,
-        score = coalesce(.data$hits / .data$hits_c, 0)
-      )
-      data_object <- select(
-        data_object,
-        location,
-        date,
-        keyword,
-        score
-      )
-      out <- mutate(
-        data_object,
+  # walk through batchs
+  walk(
+    object,
+    ~ {
+      walk(list(control, .x), .check_batch)
+      lst_full <- .get_full(
+        table = "data_score",
         batch_c = control,
-        batch_o = object,
-        date = date
+        batch_o = .x
       )
+      locations <- locations[!(locations %in% lst_full)]
+      exp_object <- filter(
+        gt.env$tbl_object,
+        .data$batch_c == control &
+          .data$batch_o == .x &
+          .data$locations %in% locations
+      )
+      exp_control <- filter(gt.env$tbl_control, .data$batch == control)
+      if (pull(count(exp_object), n) != 0) {
+        # set to benchmark
+        data_control <- exp_object |>
+          inner_join(
+            exp_control,
+            by = c(
+              "location",
+              "keyword",
+              "date"
+            ),
+            suffix = c("_o", "_c")
+          ) |>
+          mutate(
+            hits_o = case_when(
+              .data$hits_o == 0 ~ 1,
+              TRUE ~ .data$hits_o
+            ),
+            hits_c = case_when(
+              .data$hits_c == 0 ~ 1,
+              TRUE ~ .data$hits_c
+            )
+          ) |>
+          mutate(
+            benchmark = coalesce(.data$hits_o / .data$hits_c, 0)
+          ) |>
+          select(
+            location,
+            date,
+            benchmark
+          ) |>
+          inner_join(
+            exp_control,
+            by = c("location", "date"),
+            relationship = "many-to-many"
+          ) |>
+          mutate(
+            hits = .data$hits * .data$benchmark
+          ) |>
+          select(
+            location,
+            date,
+            keyword,
+            hits
+          )
 
-      message(paste0(
-        "Successfully computed search score | control: ",
-        control,
-        " | object: ",
-        object,
-        "]"
-      ))
+        # compute score
+        data_control <- summarise(
+          data_control,
+          hits_c = sum(.data$hits),
+          .by = c(location, date)
+        )
+        data_object <- exp_object |>
+          anti_join(
+            data_control,
+            by = c("keyword")
+          ) |>
+          left_join(
+            data_control,
+            by = c("location", "date")
+          ) |>
+          mutate(
+            score = coalesce(.data$hits / .data$hits_c, 0)
+          ) |>
+          select(
+            location,
+            date,
+            keyword,
+            score
+          )
+
+        out <- mutate(
+          data_object,
+          batch_c = control,
+          batch_o = .x
+        ) |>
+          select(
+            location,
+            keyword,
+            date,
+            score,
+            batch_c,
+            batch_o
+          )
+
+        message(paste0(
+          "Successfully computed search score | control: ",
+          control,
+          " | object: ",
+          .x,
+          "]"
+        ))
+
+        sql_lazy <- sql_render(out)
+
+        if (pull(count(out), n) > 0) {
+          dbExecute(
+            gt.env$globaltrends_db,
+            SQL(paste0("INSERT INTO data_score ", sql_lazy))
+          )
+        }
+      }
     }
-    if (pull(count(out), n) > 0) {
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_score",
-        value = out
-      )
-    }
-  }
+  )
   dbExecute(
     gt.env$globaltrends_db,
     "COPY data_score TO 'db/data_score.parquet' (FORMAT parquet);"
   )
-}
-
-#' @rdname compute_score
-#' @method compute_score list
-#' @export
-
-compute_score.list <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
-  walk(object, compute_score, control = control, locations = locations)
 }
 
 #' @rdname compute_score
