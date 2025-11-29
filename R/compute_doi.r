@@ -90,54 +90,50 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
         locations = locations
       )
     ) {
-      data <- filter(
-        gt.env$tbl_score,
-        .data$batch_c == control & .data$batch_o == object
-      )
-      tmp_locations <- pull(
-        filter(gt.env$tbl_locations, .data$type == locations),
-        .data$location
-      )
-      data <- filter(
-        data,
-        .data$location %in% tmp_locations
-      )
-      data <- collect(data)
+      data <- gt.env$tbl_locations |>
+        filter(.data$type == locations) |>
+        distinct() |>
+        inner_join(gt.env$tbl_score, by = "location") |>
+        filter(
+          .data$batch_c == control & .data$batch_o == object
+        ) |>
+        collect() |>
+        nest(data = c(location, score)) |>
+        mutate(check = map_lgl(data, ~ !all(is.na(.x$score))))
 
       # compute doi measures
-      data <- nest(data, data = c(location, score))
-      data <- mutate(data, check = map_lgl(data, ~ !all(is.na(.x$score))))
-      out1 <- filter(data, .data$check)
-      out1 <- mutate(
-        out1,
-        gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
-        hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
-        entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
-      )
-      out2 <- filter(data, !.data$check)
-      out2 <- mutate(
-        out2,
-        gini = NA,
-        hhi = NA,
-        entropy = NA
-      )
-      out <- bind_rows(out1, out2)
-      out <- select(
-        out,
-        date,
-        keyword,
-        gini,
-        hhi,
-        entropy
-      )
+      out1 <- data |>
+        filter(.data$check) |>
+        mutate(
+          gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
+          hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
+          entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
+        )
+
+      out2 <- data |>
+        filter(!.data$check) |>
+        mutate(
+          gini = NA,
+          hhi = NA,
+          entropy = NA
+        )
 
       # write data
-      out <- mutate(
-        out,
-        batch_c = control,
-        batch_o = object,
-        locations = locations
-      )
+      out <- out1 |>
+        bind_rows(out2) |>
+        select(
+          date,
+          keyword,
+          gini,
+          hhi,
+          entropy
+        ) |>
+        mutate(
+          batch_c = control,
+          batch_o = object,
+          locations = locations
+        )
+
       dbAppendTable(
         conn = gt.env$globaltrends_db,
         name = "data_doi",

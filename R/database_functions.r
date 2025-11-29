@@ -248,17 +248,16 @@ start_db <- function() {
   assign("globaltrends_db", globaltrends_db, envir = gt.env)
 
   # fill tables
-  lst_sql <- c(
-    paste0(
-      "CREATE TABLE ",
-      .list_files(),
-      " AS SELECT * FROM read_parquet('db/",
-      .list_files(),
-      ".parquet');"
-    )
-  )
   walk(
-    lst_sql,
+    c(
+      paste0(
+        "CREATE TABLE ",
+        .list_files(),
+        " AS SELECT * FROM read_parquet('db/",
+        .list_files(),
+        ".parquet');"
+      )
+    ),
     ~ dbExecute(globaltrends_db, .x)
   )
 
@@ -274,18 +273,22 @@ start_db <- function() {
   tbl_score <- tbl(globaltrends_db, "data_score")
 
   # load files -----------------------------------------------------------------
-  keywords_control <- filter(tbl_keywords, .data$type == "control")
-  keywords_control <- select(keywords_control, -type)
-  keywords_control <- collect(keywords_control)
-  time_control <- filter(tbl_time, .data$type == "control")
-  time_control <- select(time_control, -type)
-  time_control <- collect(time_control)
-  keywords_object <- filter(tbl_keywords, .data$type == "object")
-  keywords_object <- select(keywords_object, -type)
-  keywords_object <- collect(keywords_object)
-  time_object <- filter(tbl_time, .data$type == "object")
-  time_object <- select(time_object, -type)
-  time_object <- collect(time_object)
+  keywords_control <- tbl_keywords |>
+    filter(.data$type == "control") |>
+    select(-type) |>
+    collect()
+  time_control <- tbl_time |>
+    filter(.data$type == "control") |>
+    select(-type) |>
+    collect()
+  keywords_object <- tbl_keywords |>
+    filter(.data$type == "object") |>
+    select(-type) |>
+    collect()
+  time_object <- tbl_time |>
+    filter(.data$type == "object") |>
+    select(-type) |>
+    collect()
   keyword_synonyms <- collect(tbl_synonyms)
 
   # write objects to the package environment gt.env ----------------------------

@@ -116,11 +116,14 @@ compute_score <- function(object, control = 1, locations = gt.env$countries) {
         gt.env$tbl_object,
         .data$batch_c == control &
           .data$batch_o == .x &
-          .data$locations %in% locations
+          .data$location %in% locations
       )
-      exp_control <- filter(gt.env$tbl_control, .data$batch == control)
+      exp_control <- filter(
+        gt.env$tbl_control,
+        .data$batch == control &
+          .data$location %in% locations
+      )
       if (pull(count(exp_object), n) != 0) {
-        # set to benchmark
         data_control <- exp_object |>
           inner_join(
             exp_control,
@@ -162,17 +165,15 @@ compute_score <- function(object, control = 1, locations = gt.env$countries) {
             date,
             keyword,
             hits
+          ) |>
+          summarise(
+            hits_c = sum(.data$hits, na.rm = TRUE),
+            .by = c(location, date)
           )
 
-        # compute score
-        data_control <- summarise(
-          data_control,
-          hits_c = sum(.data$hits),
-          .by = c(location, date)
-        )
         data_object <- exp_object |>
           anti_join(
-            data_control,
+            exp_control,
             by = c("keyword")
           ) |>
           left_join(
