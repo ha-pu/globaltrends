@@ -170,12 +170,16 @@ add_object_keyword <- function(
     keyword,
     ~ {
       keyword <- .x
+
+      # run checks
       .check_length(keyword, max)
       .check_input(keyword, "character")
       .check_length(start_date, 1)
       .check_length(end_date, 1)
       .check_input(start_date, "character")
       .check_input(end_date, "character")
+
+      # handle control terms
       if (type == "control") {
         if (nrow(gt.env$keywords_control) == 0) {
           new_batch <- 1
@@ -183,35 +187,46 @@ add_object_keyword <- function(
           new_batch <- max(gt.env$keywords_control$batch) + 1
         }
         keyword <- str_squish(keyword)
-        data <- tibble(batch = new_batch, keyword, type = "control")
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "batch_keywords",
-          value = data
-        )
-        data <- tibble(
+
+        # add terms
+        tibble(batch = new_batch, keyword, type = "control") |>
+          dbAppendTable(
+            conn = gt.env$globaltrends_db,
+            name = "batch_keywords",
+            value = .
+          )
+
+        # add time
+        tibble(
           batch = new_batch,
           start_date = start_date,
           end_date = end_date,
           type = "control"
-        )
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "batch_time",
-          value = data
-        )
-        keywords_control <- filter(gt.env$tbl_keywords, .data$type == "control")
-        keywords_control <- select(keywords_control, -type)
-        keywords_control <- collect(keywords_control)
+        ) |>
+          dbAppendTable(
+            conn = gt.env$globaltrends_db,
+            name = "batch_time",
+            value = .
+          )
+
+        # export terms
+        keywords_control <- gt.env$tbl_keywords |>
+          filter(.data$type == "control") |>
+          select(-type) |>
+          collect()
         lst_export <- list(keywords_control, keywords_control)
         names(lst_export) <- list("keywords_control", "keywords_control")
         invisible(list2env(lst_export, envir = gt.env))
-        time_control <- filter(gt.env$tbl_time, .data$type == "control")
-        time_control <- select(time_control, -type)
-        time_control <- collect(time_control)
+
+        # export time
+        time_control <- gt.env$tbl_time |>
+          filter(.data$type == "control") |>
+          select(-type) |>
+          collect()
         lst_export <- list(time_control, time_control)
         names(lst_export) <- list("time_control", "time_control")
         invisible(list2env(lst_export, envir = gt.env))
+
         message(paste0(
           "Successfully created new control batch ",
           new_batch,
@@ -224,41 +239,54 @@ add_object_keyword <- function(
           ")."
         ))
         return(new_batch)
+
+        # handle object terms
       } else if (type == "object") {
         if (nrow(gt.env$keywords_object) == 0) {
           new_batch <- 1
         } else {
           new_batch <- max(gt.env$keywords_object$batch) + 1
         }
-        data <- tibble(batch = new_batch, keyword, type = "object")
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "batch_keywords",
-          value = data
-        )
-        data <- tibble(
+
+        # add terms
+        tibble(batch = new_batch, keyword, type = "object") |>
+          dbAppendTable(
+            conn = gt.env$globaltrends_db,
+            name = "batch_keywords",
+            value = .
+          )
+
+        # add time
+        tibble(
           batch = new_batch,
           start_date = start_date,
           end_date = end_date,
           type = "object"
-        )
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "batch_time",
-          value = data
-        )
-        keywords_object <- filter(gt.env$tbl_keywords, .data$type == "object")
-        keywords_object <- select(keywords_object, -type)
-        keywords_object <- collect(keywords_object)
+        ) |>
+          dbAppendTable(
+            conn = gt.env$globaltrends_db,
+            name = "batch_time",
+            value = .
+          )
+
+        # export terms
+        keywords_object <- gt.env$tbl_keywords |>
+          filter(.data$type == "object") |>
+          select(-type) |>
+          collect()
         lst_export <- list(keywords_object, keywords_object)
         names(lst_export) <- list("keywords_object", "keywords_object")
         invisible(list2env(lst_export, envir = gt.env))
-        time_object <- filter(gt.env$tbl_time, .data$type == "object")
-        time_object <- select(time_object, -type)
-        time_object <- collect(time_object)
+
+        # export time
+        time_object <- gt.env$tbl_time |>
+          filter(.data$type == "object") |>
+          select(-type) |>
+          collect()
         lst_export <- list(time_object, time_object)
         names(lst_export) <- list("time_object", "time_object")
         invisible(list2env(lst_export, envir = gt.env))
+
         message(paste0(
           "Successfully created new object batch ",
           new_batch,
@@ -346,17 +374,20 @@ add_synonym <- function(keyword, synonym) {
       }
       keyword <- str_squish(keyword)
       synonym <- str_squish(synonym)
-      out <- tibble(keyword, synonym)
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "keyword_synonyms",
-        value = out,
-        append = TRUE
-      )
+
+      tibble(keyword, synonym) |>
+        dbAppendTable(
+          conn = gt.env$globaltrends_db,
+          name = "keyword_synonyms",
+          value = .,
+          append = TRUE
+        )
+
       keyword_synonyms <- collect(gt.env$tbl_synonyms)
       lst_export <- list(keyword_synonyms, keyword_synonyms)
       names(lst_export) <- list("keyword_synonyms", "keyword_synonyms")
       invisible(list2env(lst_export, envir = gt.env))
+
       message(paste0(
         "Successfully added synonym | keyword: ",
         keyword,
