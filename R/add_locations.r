@@ -61,27 +61,57 @@ add_locations <- function(locations, type, export = TRUE) {
   codes <- c(gtrendsR::countries$country_code, gtrendsR::countries$sub_code)
   codes <- unique(codes)
   codes <- na.omit(codes)
-  walk(locations, ~ {
-    if (!(.x %in% codes)) stop(paste0("Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided ", .x, "."))
-  })
+  walk(
+    locations,
+    ~ {
+      if (!(.x %in% codes)) {
+        stop(paste0(
+          "Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided ",
+          .x,
+          "."
+        ))
+      }
+    }
+  )
 
   # handle Namibia
   if (any(locations == "NA")) {
     locations <- locations[locations != "NA"]
 
     if (length(locations) == 0) {
-      stop("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!")
+      stop(
+        "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!"
+      )
     } else {
-      warning("Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.")
+      warning(
+        "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped."
+      )
     }
   }
 
   data <- tibble(location = locations, type = type)
-  dbAppendTable(conn = gt.env$globaltrends_db, name = "data_locations", value = data)
+  dbAppendTable(
+    conn = gt.env$globaltrends_db,
+    name = "data_locations",
+    value = data
+  )
 
-  if (export) .export_locations()
+  if (export) {
+    .export_locations()
+  }
 
-  message(paste0("Successfully created new location set ", type, " (", paste(locations, collapse = ", "), ")."))
+  dbExecute(
+    gt.env$globaltrends_db,
+    "COPY data_locations TO 'db/data_locations.parquet' (FORMAT parquet);"
+  )
+
+  message(paste0(
+    "Successfully created new location set ",
+    type,
+    " (",
+    paste(locations, collapse = ", "),
+    ")."
+  ))
 }
 
 #' @title Export locations to package environment gt.env
@@ -94,12 +124,14 @@ add_locations <- function(locations, type, export = TRUE) {
   locations <- collect(locations)
   locations <- locations$type
 
-  lst_locations <- map(locations, ~ {
-    out <- filter(gt.env$tbl_locations, .data$type == .x)
-    out <- collect(out)
-    out <- pull(out, .data$location)
-    return(out)
-  })
+  lst_locations <- map(
+    locations,
+    ~ {
+      out <- filter(gt.env$tbl_locations, .data$type == .x)
+      out <- pull(out, .data$location)
+      return(out)
+    }
+  )
 
   names(lst_locations) <- locations
 
