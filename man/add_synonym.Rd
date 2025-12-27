@@ -7,10 +7,6 @@
 \title{Add synonyms for object keywords}
 \usage{
 add_synonym(keyword, synonym)
-
-\method{add_synonym}{character}(keyword, synonym)
-
-\method{add_synonym}{list}(keyword, synonym)
 }
 \arguments{
 \item{keyword}{Keyword of type \code{character} and length 1 for which the
