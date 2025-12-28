@@ -152,10 +152,6 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       "]"
     ))
   }
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY data_doi TO 'db/data_doi.parquet' (FORMAT parquet);"
-  )
 }
 
 #' @rdname compute_doi

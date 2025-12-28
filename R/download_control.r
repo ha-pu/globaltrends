@@ -137,10 +137,6 @@ download_control.numeric <- function(
         ))
       }
     )
-    dbExecute(
-      gt.env$globaltrends_db,
-      "COPY data_control TO 'db/data_control.parquet' (FORMAT parquet);"
-    )
   }
 }
 

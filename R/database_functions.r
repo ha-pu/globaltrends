@@ -93,7 +93,10 @@ initialize_db <- function() {
     .enter_location()
 
     # write database to parquet
-    dbExecute(globaltrends_db, "EXPORT DATABASE 'db' (FORMAT parquet);")
+    dbExecute(
+      globaltrends_db,
+      "EXPORT DATABASE 'db' (FORMAT parquet, USE_TMP_FILE false);"
+    )
     file.remove(file.path("db", c("load.sql", "schema.sql")))
 
     # disconnect from db
@@ -356,6 +359,12 @@ start_db <- function() {
 #' @importFrom DBI dbDisconnect
 
 disconnect_db <- function() {
+  # write database to parquet
+  dbExecute(
+    gt.env$globaltrends_db,
+    "EXPORT DATABASE 'db' (FORMAT parquet, USE_TMP_FILE false);"
+  )
   dbDisconnect(conn = gt.env$globaltrends_db)
+  file.remove(file.path("db", c("load.sql", "schema.sql")))
   message("Successfully disconnected.")
 }

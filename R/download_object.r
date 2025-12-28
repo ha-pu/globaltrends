@@ -193,10 +193,6 @@ download_object.numeric <- function(
         }
       }
     )
-    dbExecute(
-      gt.env$globaltrends_db,
-      "COPY data_object TO 'db/data_object.parquet' (FORMAT parquet);"
-    )
   }
 }
 

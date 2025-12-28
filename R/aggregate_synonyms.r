@@ -167,9 +167,4 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     message("Start vacuum_data().")
     vacuum_data()
   }
-
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY data_score TO 'db/data_score.parquet' (FORMAT parquet);"
-  )
 }

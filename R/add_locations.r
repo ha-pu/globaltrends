@@ -100,11 +100,6 @@ add_locations <- function(locations, type, export = TRUE) {
     .export_locations()
   }
 
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY data_locations TO 'db/data_locations.parquet' (FORMAT parquet);"
-  )
-
   message(paste0(
     "Successfully created new location set ",
     type,

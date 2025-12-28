@@ -69,6 +69,7 @@
 #' @export
 #' @rdname compute_score
 #' @importFrom DBI dbAppendTable
+#' @importFrom DBI dbExecute
 #' @importFrom DBI SQL
 #' @importFrom dbplyr sql_render
 #' @importFrom dplyr anti_join
@@ -222,10 +223,6 @@ compute_score <- function(object, control = 1, locations = gt.env$countries) {
         }
       }
     }
-  )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY data_score TO 'db/data_score.parquet' (FORMAT parquet);"
   )
 }
 

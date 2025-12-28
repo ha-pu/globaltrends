@@ -74,44 +74,6 @@ test_that("keywords_control2", {
   expect_equal(out$n[[2]], 1)
 })
 
-# add control keywords - list --------------------------------------------------
-test_that("keywords_control3", {
-  out <- capture_messages(
-    new_batch <- add_control_keyword(
-      keyword = list(
-        c("gmail", "maps", "news"),
-        c("translate", "weather", "wikipedia", "youtube")
-      ),
-      start_date = "2010-01",
-      end_date = "2019-12"
-    )
-  )
-  expect_match(
-    out,
-    "Successfully created new control batch 4 \\(gmail, maps, news, 2010-01-2019-12\\)\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Successfully created new control batch 5 \\(translate, weather, wikipedia, youtube, 2010-01-2019-12\\)\\.",
-    all = FALSE
-  )
-
-  out <- filter(gt.env$tbl_keywords, batch > 3 & type == "control")
-  out <- count(out, batch)
-  out <- collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 3)
-  expect_equal(out$n[[2]], 4)
-
-  out <- filter(gt.env$tbl_time, batch > 3 & type == "control")
-  out <- count(out, batch)
-  out <- collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 1)
-  expect_equal(out$n[[2]], 1)
-})
-
 # add object keywords - vector -------------------------------------------------
 test_that("keywords_object1", {
   expect_message(
@@ -177,132 +139,88 @@ test_that("keywords_object2", {
   expect_equal(out$n[[2]], 1)
 })
 
-# add object keywords - list ---------------------------------------------------
-test_that("keywords_object3", {
-  out <- capture_messages(
-    new_batch <- add_object_keyword(
-      keyword = list(
-        c("amazon", "apple", "facebook", "google"),
-        c("microsoft", "netflix", "twitter")
-      ),
-      start_date = "2010-01",
-      end_date = "2019-12"
-    )
-  )
-  expect_match(
-    out,
-    "Successfully created new object batch 4 \\(amazon, apple, facebook, google, 2010-01-2019-12\\)\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Successfully created new object batch 5 \\(microsoft, netflix, twitter, 2010-01-2019-12\\)\\.",
-    all = FALSE
-  )
-
-  out <- filter(gt.env$tbl_keywords, batch > 3 & type == "object")
-  out <- count(out, batch)
-  out <- collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 4)
-  expect_equal(out$n[[2]], 3)
-
-  out <- filter(gt.env$tbl_time, batch > 3 & type == "object")
-  out <- count(out, batch)
-  out <- collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 1)
-  expect_equal(out$n[[2]], 1)
-})
-
 # add_control / add_keyword signals --------------------------------------------
 test_that("add_batch1", {
-  test_keyword(fun = add_control_keyword, incl = 4:6)
+  expect_error(
+    add_control_keyword(keyword = sum),
+    "cannot coerce type 'builtin' to vector of type 'character'"
+  )
 })
 
 test_that("add_batch2", {
   expect_error(
     add_control_keyword(start_date = 1),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     add_control_keyword(start_date = TRUE),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     add_control_keyword(start_date = sum),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     add_control_keyword(start_date = letters[1:5]),
-    '"keyword"'
+    "Error: 'start_date' must be object of length 1.\nYou provided an object of length 5."
   )
   expect_error(
     add_control_keyword(end_date = 1),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     add_control_keyword(end_date = TRUE),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     add_control_keyword(end_date = sum),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     add_control_keyword(end_date = letters[1:5]),
-    '"keyword"'
+    "Error: 'end_date' must be object of length 1.\nYou provided an object of length 5."
   )
 })
 
 test_that("add_batch3", {
-  test_keyword(fun = add_object_keyword, incl = 4:6)
+  expect_error(
+    add_object_keyword(keyword = sum),
+    "cannot coerce type 'builtin' to vector of type 'character'"
+  )
 })
 
 test_that("add_batch4", {
   expect_error(
     add_object_keyword(start_date = 1),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     add_object_keyword(start_date = TRUE),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     add_object_keyword(start_date = sum),
-    '"keyword"'
+    "Error: 'start_date' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     add_object_keyword(start_date = letters[1:5]),
-    '"keyword"'
+    "Error: 'start_date' must be object of length 1.\nYou provided an object of length 5."
   )
   expect_error(
     add_object_keyword(end_date = 1),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type double."
   )
   expect_error(
     add_object_keyword(end_date = TRUE),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type logical."
   )
   expect_error(
     add_object_keyword(end_date = sum),
-    '"keyword"'
+    "Error: 'end_date' must be object of type character.\nYou provided an object of type builtin."
   )
   expect_error(
     add_object_keyword(end_date = letters[1:5]),
-    '"keyword"'
-  )
-})
-
-test_that("add_batch5", {
-  expect_error(
-    add_control_keyword(keyword = list(letters[1:6])),
-    "'keyword' must be object of length 5.\nYou provided an object of length 6."
-  )
-
-  expect_error(
-    add_object_keyword(keyword = list(letters[1:5])),
-    "'keyword' must be object of length 4.\nYou provided an object of length 5."
+    "Error: 'end_date' must be object of length 1.\nYou provided an object of length 5."
   )
 })
 

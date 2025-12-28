@@ -106,14 +106,6 @@ add_control_keyword <- function(
     end_date = end_date,
     max = 5
   )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY batch_keywords TO 'db/batch_keywords.parquet' (FORMAT parquet);"
-  )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY batch_time TO 'db/batch_time.parquet' (FORMAT parquet);"
-  )
   return(out)
 }
 
@@ -134,14 +126,6 @@ add_object_keyword <- function(
     end_date = end_date,
     max = 4
   )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY batch_keywords TO 'db/batch_keywords.parquet' (FORMAT parquet);"
-  )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY batch_time TO 'db/batch_time.parquet' (FORMAT parquet);"
-  )
   return(out)
 }
 
@@ -151,163 +135,140 @@ add_object_keyword <- function(
 #' @noRd
 #'
 #' @importFrom DBI dbAppendTable
-#' @importFrom DBI dbExecute
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
-#' @importFrom purrr map
+#' @importFrom DBI dbWithTransaction
+#' @importFrom purrr map_int
 #' @importFrom rlang .data
 #' @importFrom stringr str_squish
 #' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, start_date, end_date, max) {
-  keyword <- unlist(keyword)
-  if (length(keyword) > max) {
-    keyword <- split(keyword, ceiling(seq_along(keyword) / max))
-  } else {
-    keyword <- list(keyword)
+  type <- match.arg(type, c("control", "object"))
+
+  # ---- input validation (high level) ----
+  .check_length(start_date, 1)
+  .check_length(end_date, 1)
+  .check_input(start_date, "character")
+  .check_input(end_date, "character")
+  .check_length(max, 1)
+
+  if (!is.numeric(max) || is.na(max) || max < 1) {
+    stop("`max` must be a positive integer.", call. = FALSE)
   }
-  new_batches <- map_dbl(
-    keyword,
-    ~ {
-      keyword <- .x
+  max <- as.integer(max)
 
-      # run checks
-      .check_length(keyword, max)
-      .check_input(keyword, "character")
-      .check_length(start_date, 1)
-      .check_length(end_date, 1)
-      .check_input(start_date, "character")
-      .check_input(end_date, "character")
+  keyword_vec <- unlist(keyword, use.names = FALSE)
+  keyword_vec <- as.character(keyword_vec)
 
-      # handle control terms
-      if (type == "control") {
-        if (nrow(gt.env$keywords_control) == 0) {
-          new_batch <- 1
-        } else {
-          new_batch <- max(gt.env$keywords_control$batch) + 1
-        }
-        keyword <- str_squish(keyword)
+  # Allow empty input to fail fast with a clear message.
+  if (length(keyword_vec) == 0) {
+    stop("`keyword` must contain at least one term.", call. = FALSE)
+  }
 
-        # add terms
-        tibble(batch = new_batch, keyword, type = "control") |>
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "batch_keywords",
-            value = .
-          )
+  # ---- batching ----
+  batches <- split(keyword_vec, ceiling(seq_along(keyword_vec) / max))
+  n_batches <- length(batches)
 
-        # add time
-        tibble(
-          batch = new_batch,
-          start_date = start_date,
-          end_date = end_date,
-          type = "control"
-        ) |>
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "batch_time",
-            value = .
-          )
+  # Compute batch IDs deterministically for this call (avoids repeated cache reads)
+  first_id <- .next_batch_id(type)
+  batch_ids <- seq.int(first_id, length.out = n_batches)
 
-        # export terms
-        keywords_control <- gt.env$tbl_keywords |>
-          filter(.data$type == "control") |>
-          select(-type) |>
-          collect()
-        lst_export <- list(keywords_control, keywords_control)
-        names(lst_export) <- list("keywords_control", "keywords_control")
-        invisible(list2env(lst_export, envir = gt.env))
+  # ---- insert + refresh per batch ----
+  map_int(seq_along(batches), function(i) {
+    kw_batch <- str_squish(batches[[i]])
+    .check_length(kw_batch, max)
 
-        # export time
-        time_control <- gt.env$tbl_time |>
-          filter(.data$type == "control") |>
-          select(-type) |>
-          collect()
-        lst_export <- list(time_control, time_control)
-        names(lst_export) <- list("time_control", "time_control")
-        invisible(list2env(lst_export, envir = gt.env))
+    batch_id <- batch_ids[[i]]
 
-        message(paste0(
-          "Successfully created new control batch ",
-          new_batch,
-          " (",
-          paste(keyword, collapse = ", "),
-          ", ",
-          start_date,
-          "-",
-          end_date,
-          ")."
-        ))
-        return(new_batch)
-
-        # handle object terms
-      } else if (type == "object") {
-        if (nrow(gt.env$keywords_object) == 0) {
-          new_batch <- 1
-        } else {
-          new_batch <- max(gt.env$keywords_object$batch) + 1
-        }
-
-        # add terms
-        tibble(batch = new_batch, keyword, type = "object") |>
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "batch_keywords",
-            value = .
-          )
-
-        # add time
-        tibble(
-          batch = new_batch,
-          start_date = start_date,
-          end_date = end_date,
-          type = "object"
-        ) |>
-          dbAppendTable(
-            conn = gt.env$globaltrends_db,
-            name = "batch_time",
-            value = .
-          )
-
-        # export terms
-        keywords_object <- gt.env$tbl_keywords |>
-          filter(.data$type == "object") |>
-          select(-type) |>
-          collect()
-        lst_export <- list(keywords_object, keywords_object)
-        names(lst_export) <- list("keywords_object", "keywords_object")
-        invisible(list2env(lst_export, envir = gt.env))
-
-        # export time
-        time_object <- gt.env$tbl_time |>
-          filter(.data$type == "object") |>
-          select(-type) |>
-          collect()
-        lst_export <- list(time_object, time_object)
-        names(lst_export) <- list("time_object", "time_object")
-        invisible(list2env(lst_export, envir = gt.env))
-
-        message(paste0(
-          "Successfully created new object batch ",
-          new_batch,
-          " (",
-          paste(keyword, collapse = ", "),
-          ", ",
-          start_date,
-          "-",
-          end_date,
-          ")."
-        ))
-        return(new_batch)
-      } else {
-        stop(
-          "Error: 'type' allows only 'control' or 'object'.\nYou provided another value."
+    dbWithTransaction(gt.env$globaltrends_db, {
+      # keywords table
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "batch_keywords",
+        value = tibble(
+          batch = batch_id,
+          keyword = kw_batch,
+          type = type
         )
-      }
-    }
-  )
-  new_batches <- unname(new_batches)
-  return(new_batches)
+      )
+
+      # time table
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "batch_time",
+        value = tibble(
+          batch = batch_id,
+          start_date = start_date,
+          end_date = end_date,
+          type = type
+        )
+      )
+    })
+
+    .refresh_cached_batches(type)
+
+    message(sprintf(
+      "Successfully created new %s batch %d (%s, %s-%s).",
+      type,
+      batch_id,
+      paste(kw_batch, collapse = ", "),
+      start_date,
+      end_date
+    ))
+
+    batch_id
+  })
+}
+
+# ---- helpers ----
+
+#' @description
+#' Determine the next available batch id for a given type based on the cached
+#' data.Falls back safely if the cache object is missing or empty.
+#'
+#' @keywords internal
+#' @noRd
+
+.next_batch_id <- function(in_type) {
+  cache_name <- paste0("keywords_", in_type)
+
+  cache <- get0(cache_name, envir = gt.env, inherits = FALSE, ifnotfound = NULL)
+  if (is.null(cache) || !is.data.frame(cache) || nrow(cache) == 0) {
+    return(1L)
+  }
+
+  # Be defensive in case `batch` is not integer-typed.
+  max_id <- suppressWarnings(max(as.integer(cache$batch), na.rm = TRUE))
+  if (!is.finite(max_id)) 0L else (max_id + 1L)
+}
+
+#' @description
+#' Refresh `keywords_<type>` and `time_<type>` from the DB-backed tbls in
+#' `gt.env`.
+#'
+#' @keywords internal
+#' @noRd
+#' @importFrom dplyr collect
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+
+.refresh_cached_batches <- function(in_type) {
+  kw_name <- paste0("keywords_", in_type)
+  tm_name <- paste0("time_", in_type)
+
+  keywords <- gt.env$tbl_keywords |>
+    filter(.data$type == in_type) |>
+    select(-type) |>
+    collect()
+
+  time <- gt.env$tbl_time |>
+    filter(.data$type == in_type) |>
+    select(-type) |>
+    collect()
+
+  assign(kw_name, keywords, envir = gt.env)
+  assign(tm_name, time, envir = gt.env)
+
+  invisible(NULL)
 }
 
 #' Add synonyms for object keywords
@@ -352,7 +313,6 @@ add_object_keyword <- function(
 #' @export
 #' @rdname add_synonym
 #' @importFrom DBI dbAppendTable
-#' @importFrom DBI dbExecute
 #' @importFrom purrr walk
 #' @importFrom stringr str_squish
 #' @importFrom tibble tibble
@@ -396,9 +356,5 @@ add_synonym <- function(keyword, synonym) {
         "."
       ))
     }
-  )
-  dbExecute(
-    gt.env$globaltrends_db,
-    "COPY keyword_synonyms TO 'db/keyword_synonyms.parquet' (FORMAT parquet);"
   )
 }
