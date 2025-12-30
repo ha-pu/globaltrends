@@ -1,3 +1,119 @@
+# Resubmission 0.1.0
+
+## Test environments
+* local Windows 11 pro, 64 bit (R 4.5.2)
+* macOS-latest (release) on GitHub
+* windows-latest (release) on GitHub
+* ubuntu-latest (devel) on GitHub
+* ubuntu-latest (release) on GitHub
+* ubuntu-latest (oldrel-1) on GitHub
+* all available platforms through R-Hub (rhub::rhub_platforms)
+  1. [VM]  linux
+  2. [VM]  m1-san
+  3. [VM]  macos
+    + The macOS-13 based runner images are now retired. For more details, see
+      https://github.com/actions/runner-images/issues/13046.
+  4. [VM]  macos-arm64
+  5. [VM]  windows
+  6. [CT]  atlas  [ATLAS]
+  7. [CT]  c23  [C23]
+  8. [CT]  clang-asan  [asan, clang-ASAN]
+  9. [CT]  clang-ubsan  [clang-UBSAN, ubsan]
+  10. [CT]  clang16  [clang16]
+  11. [CT]  clang17  [clang17]
+  12. [CT]  clang18  [clang18]
+  13. [CT]  clang19  [clang19]
+  14. [CT]  clang20  [clang20]
+  15. [CT]  donttest  [donttest]
+  16. [CT]  gcc-asan  [gcc-ASAN, gcc-UBSAN]
+  17. [CT]  gcc13  [gcc13]
+  18. [CT]  gcc14  [gcc14]
+  19. [CT]  gcc15  [gcc15]
+  20. [CT]  intel  [Intel]
+  21. [CT]  lto  [LTO]
+  22. [CT]  mkl  [MKL]
+  23. [CT]  nold  [noLD]
+  24. [CT]  noremap  [noRemap]
+  25. [CT]  nosuggests  [noSuggests]
+    + Error: processing vignette 'globaltrends.Rmd' failed with diagnostics:
+      there is no package called ‘rmarkdown’ -> this error is triggered by the
+      test platform and not globaltrends
+  26. [CT]  rchk  [rchk]
+    + Error: bcheck output file does not exist -> this error is triggered by the
+      test platform and not globaltrends
+  27. [CT]  ubuntu-clang  [r-devel-linux-x86_64-debian-clang]
+  28. [CT]  ubuntu-gcc12  [r-devel-linux-x86_64-debian-gcc]
+  29. [CT]  ubuntu-next  [r-next, r-patched, r-patched-linux-x86_64]
+  30. [CT]  ubuntu-release  [r-release, r-release-linux-x86_64, ubuntu]
+  31. [CT]  valgrind  [valgrind]
+
+## Test coverage
+The test coverage [devtools::test_coverage()] of the package is 80%.
+
+## Reverse dependencies
+Results from [revdepcheck::revdep_check()]:
+
+```
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+```
+
+## R CMD check results
+There were no ERRORs or WARNINGs. 
+
+### Note 1
+
+```
+> checking for future file timestamps ... NOTE
+  unable to verify current time
+```
+
+According to a discussion on on StackOverflow
+(https://stackoverflow.com/questions/63613301/r-cmd-check-note-unable-to-verify-current-time),
+this note is caused by the failure to access worldclockapi.com. -> this note is
+triggered by the check and not globaltrends
+
+## winbuilder
+Winbuilder might show a note regarding (possible) invalid URLs:
+
+```
+URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
+  From: inst/doc/globaltrends.html
+  Status: 429
+  Message: Too Many Requests
+```
+
+This does not signify an invalid URL but indicates that Google Trends blocks
+downloads due to too many requests.  The same note was reported in the initial
+submission.
+
+In this resubmission of the globaltrends package I have made the following updates:
+
+* Added the function to run downloads from Google Trends through the official
+  Google Trends API
+* Allow the users to choose to download through the official API or the
+  `gtrendsr`package
+* Allow controlling the waiting time between queries through an environmental
+  variable
+* Implemented multiple package simplifications that cut overhead:
+  * Remove time-series adjustments from `compute_score` for simplification
+  * Remove `get_abnorm_hist` function for package simplification
+  * Remove plotting functions and export classes for package simplification
+  * Accelerate `compute_score`
+  * Accelerate handling of synonyms in separate function `aggregate_synonyms`
+* Fixed technical issues and bugs
+  * Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by
+    `relationship`
+  * Fixed issues in sample data
+
+Overall, these updates are a significant improvement in the package and consist
+a major update to globaltrends.
+
+Thanks!
+Harald Puhr
+
 # Resubmission 0.0.14
 
 ## Test environments
