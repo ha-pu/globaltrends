@@ -75,20 +75,40 @@ According to a discussion on on StackOverflow
 this note is caused by the failure to access worldclockapi.com. -> this note is
 triggered by the check and not globaltrends
 
+### Note 1
+R CMD check might show a notes regarding (possible) invalid URLs. These note do
+not signify invalid URLs. All URLs have been manually checked. The same note was
+reported in the initial submission.
+
 ## winbuilder
-Winbuilder might show a note regarding (possible) invalid URLs:
+There were no ERRORs or WARNINGs.
+
+### Note 1
+Winbuilder might show a notes regarding (possible) invalid URLs. These note do
+not signify invalid URLs. All URLs have been manually checked. The same note was
+reported in the initial submission.
+
+### Note 2
+Winbuilder [R version 4.4.3 (2025-02-28 ucrt)] creates the following note:
 
 ```
-URL: https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT
-  From: inst/doc/globaltrends.html
-  Status: 429
-  Message: Too Many Requests
+* checking DESCRIPTION meta-information ... NOTE
+Author field differs from that derived from Authors@R
+  Author:    'Harald Puhr [aut, cre] (ORCID: <https://orcid.org/0000-0002-3308-9553>), Jakob Muellner [ccp] (ORCID: <https://orcid.org/0000-0002-3443-0469>)'
+  Authors@R: 'Harald Puhr [aut, cre] (<https://orcid.org/0000-0002-3308-9553>), Jakob Muellner [ccp] (<https://orcid.org/0000-0002-3443-0469>)'
 ```
 
-This does not signify an invalid URL but indicates that Google Trends blocks
-downloads due to too many requests.  The same note was reported in the initial
-submission.
+However, the author meta-information in the `DESCRIPTION`file is created
+automatically:
 
+```
+Authors@R: c(
+    person("Harald", "Puhr", email = "harald.puhr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3308-9553")),
+    person("Jakob", "Muellner", role = "ccp", comment = c(ORCID = "0000-0002-3443-0469"))
+  )
+```
+
+## Summary of changes
 In this resubmission of the globaltrends package I have made the following updates:
 
 * Added the function to run downloads from Google Trends through the official

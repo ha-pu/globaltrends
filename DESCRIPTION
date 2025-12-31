@@ -1,7 +1,7 @@
 Type: Package
 Package: globaltrends
 Title: Download and Measure Global Trends Through Google Search Volumes
-Version: 0.1.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Harald", "Puhr", email = "harald.puhr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3308-9553")),
     person("Jakob", "Muellner", role = "ccp", comment = c(ORCID = "0000-0002-3443-0469"))
