@@ -30,7 +30,7 @@ contains:
 \item time_object: Tibble that contains all batch times per object batch.
 \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
 \item query_wait: Number of seconds to wait between queries (default = 0.1s).
-\item py_initialized: \code{TRUE}/\code{FALSE} indicator whether \code{initialize_python} has been called.
+\item py_setup: \code{TRUE}/\code{FALSE} indicator whether \code{initialize_python} has been called.
 }
 }
 \seealso{
