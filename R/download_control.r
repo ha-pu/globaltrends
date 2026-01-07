@@ -101,14 +101,14 @@ download_control.numeric <- function(
         in_location <- ifelse(.x == "", "world", .x)
         if (in_location == "world") {
           out <- .get_trend(
-            term = list(terms),
+            term = c(terms),
             start_date = start_date,
             end_date = end_date
           )
         } else {
           out <- .get_trend(
             location = .x,
-            term = list(terms),
+            term = c(terms),
             start_date = start_date,
             end_date = end_date
           )

@@ -134,14 +134,14 @@ download_object.numeric <- function(
           while (i <= length(terms_con)) {
             if (in_location == "world") {
               out <- .get_trend(
-                term = list(c(terms_con[[i]], terms_obj)),
+                term = c(terms_con[[i]], terms_obj),
                 start_date = start_date,
                 end_date = end_date
               )
             } else {
               out <- .get_trend(
                 location = .x,
-                term = list(c(terms_con[[i]], terms_obj)),
+                term = c(terms_con[[i]], terms_obj),
                 start_date = start_date,
                 end_date = end_date
               )
