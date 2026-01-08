@@ -8,7 +8,7 @@ start_db()
 # test parameter ---------------------------------------------------------------
 test_that("initialize_py1", {
   expect_false(
-    gt.env$py_initialized
+    gt.env$py_setup
   )
 })
 

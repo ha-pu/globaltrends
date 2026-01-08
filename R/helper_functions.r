@@ -21,7 +21,7 @@
   start_date = "2020-01",
   end_date = "2020-12"
 ) {
-  if (gt.env$py_initialized) {
+  if (gt.env$py_setup) {
     out <- gt.env$query_gtrends(
       terms = term,
       start_date = start_date,
