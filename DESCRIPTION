@@ -22,7 +22,7 @@ License: MIT + file LICENSE
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     DBI (>= 1.1.0),
     duckdb (>= 1.3.2),
