@@ -7,45 +7,10 @@
 * ubuntu-latest (devel) on GitHub
 * ubuntu-latest (release) on GitHub
 * ubuntu-latest (oldrel-1) on GitHub
-* all available platforms through R-Hub (rhub::rhub_platforms)
-  1. [VM]  linux
-  2. [VM]  m1-san
-  3. [VM]  macos
-    + The macOS-13 based runner images are now retired. For more details, see
-      https://github.com/actions/runner-images/issues/13046.
-  4. [VM]  macos-arm64
-  5. [VM]  windows
-  6. [CT]  atlas  [ATLAS]
-  7. [CT]  c23  [C23]
-  8. [CT]  clang-asan  [asan, clang-ASAN]
-  9. [CT]  clang-ubsan  [clang-UBSAN, ubsan]
-  10. [CT]  clang16  [clang16]
-  11. [CT]  clang17  [clang17]
-  12. [CT]  clang18  [clang18]
-  13. [CT]  clang19  [clang19]
-  14. [CT]  clang20  [clang20]
-  15. [CT]  donttest  [donttest]
-  16. [CT]  gcc-asan  [gcc-ASAN, gcc-UBSAN]
-  17. [CT]  gcc13  [gcc13]
-  18. [CT]  gcc14  [gcc14]
-  19. [CT]  gcc15  [gcc15]
-  20. [CT]  intel  [Intel]
-  21. [CT]  lto  [LTO]
-  22. [CT]  mkl  [MKL]
-  23. [CT]  nold  [noLD]
-  24. [CT]  noremap  [noRemap]
-  25. [CT]  nosuggests  [noSuggests]
-    + Error: processing vignette 'globaltrends.Rmd' failed with diagnostics:
-      there is no package called ‘rmarkdown’ -> this error is triggered by the
-      test platform and not globaltrends
-  26. [CT]  rchk  [rchk]
-    + Error: bcheck output file does not exist -> this error is triggered by the
-      test platform and not globaltrends
-  27. [CT]  ubuntu-clang  [r-devel-linux-x86_64-debian-clang]
-  28. [CT]  ubuntu-gcc12  [r-devel-linux-x86_64-debian-gcc]
-  29. [CT]  ubuntu-next  [r-next, r-patched, r-patched-linux-x86_64]
-  30. [CT]  ubuntu-release  [r-release, r-release-linux-x86_64, ubuntu]
-  31. [CT]  valgrind  [valgrind]
+* Windows Server 2022 x64, R version 4.5.2 on winbuilder
+* Windows Server 2022 x64, R Under development (unstable) on winbuilder
+* Windows Server 2022 x64, R version 4.4.3 on winbuilder
+* macOS Tahoe 26.2, R Under development (unstable) on macbuilder
 
 ## Test coverage
 The test coverage [devtools::test_coverage()] of the package is 80%.
@@ -54,7 +19,8 @@ The test coverage [devtools::test_coverage()] of the package is 80%.
 Results from [revdepcheck::revdep_check()]:
 
 ```
-We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and
+dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
@@ -75,7 +41,7 @@ According to a discussion on on StackOverflow
 this note is caused by the failure to access worldclockapi.com. -> this note is
 triggered by the check and not globaltrends
 
-### Note 1
+### Note 2
 R CMD check might show a notes regarding (possible) invalid URLs. These note do
 not signify invalid URLs. All URLs have been manually checked. The same note was
 reported in the initial submission.
@@ -124,12 +90,12 @@ In this resubmission of the globaltrends package I have made the following updat
   * Accelerate `compute_score`
   * Accelerate handling of synonyms in separate function `aggregate_synonyms`
 * Fixed technical issues and bugs
-  * Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument by
-    `relationship`
+  * Increase dependencies to `dplyr 1.1.1` and replace the `multiple` argument
+    by `relationship`
   * Fixed issues in sample data
 
-Overall, these updates are a significant improvement in the package and consist
-a major update to globaltrends.
+Overall, these updates are a significant improvement in the package and
+constitute a major update for globaltrends.
 
 Thanks!
 Harald Puhr
