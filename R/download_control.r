@@ -100,15 +100,24 @@ download_control.numeric <- function(
       ~ {
         in_location <- ifelse(.x == "", "world", .x)
         if (in_location == "world") {
-          out <- .get_trend(
-            term = list(terms),
-            start_date = start_date,
-            end_date = end_date
-          )
+          if (gt.env$py_setup) {
+            out <- .get_trend(
+              term = c(terms),
+              start_date = start_date,
+              end_date = end_date
+            )
+          } else {
+            out <- .get_trend(
+              term = c(terms),
+              start_date = start_date,
+              end_date = end_date,
+              location = ""
+            )
+          }
         } else {
-          out <- get_trend(
+          out <- .get_trend(
             location = .x,
-            term = list(terms),
+            term = c(terms),
             start_date = start_date,
             end_date = end_date
           )
