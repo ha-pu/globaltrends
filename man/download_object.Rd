@@ -5,78 +5,73 @@
 \alias{download_object.numeric}
 \alias{download_object.list}
 \alias{download_object_global}
-\title{Download data for object batch}
+\title{Download data for object keyword batches}
 \usage{
-download_object(object, control = 1, locations = gt.env$countries)
+download_object(object, control = 1, locations = NULL)
 
-\method{download_object}{numeric}(object, control = 1, locations = gt.env$countries)
+\method{download_object}{numeric}(object, control = 1, locations = NULL)
 
-\method{download_object}{list}(object, control = 1, locations = gt.env$countries)
+\method{download_object}{list}(object, control = 1, locations = NULL)
 
 download_object_global(object, control = 1)
 }
 \arguments{
-\item{object}{Object batch for which the data is downloaded. Object
-of type \code{numeric} or object of type \code{list} containing single
-object of type \code{numeric}.}
+\item{object}{Numeric scalar/vector or list. Object batch id(s) to download.}
 
-\item{control}{Control batch that is used for mapping. Object of type
-\code{numeric}. Defaults to \code{1}.}
+\item{control}{Numeric scalar. Control batch id used for mapping. Defaults to \code{1}.}
 
-\item{locations}{List of countries or regions for which the data is
-downloaded. Refers to lists generated in \code{start_db}. Defaults to
-\code{countries}.}
+\item{locations}{Character vector of location codes. Defaults to
+\code{gt.env$countries} when available; otherwise \code{globaltrends::countries}.
+Use \code{""} to request the global aggregate (\code{"world"}).}
 }
 \value{
-Message that data was downloaded successfully. Data is written
-to table \emph{data_object}.
+Invisibly returns \code{TRUE}. Called for its side effects (writing to
+\code{data_object}) and emits messages per location.
+
+Invisibly returns \code{TRUE}.
 }
 \description{
-The function downloads search volumes from Google Trends for an object batch
-(\emph{batch_o}) and one keyword from a control batch (\emph{batch_c}) in a
-set of \emph{locations}. Data is automatically written to table
-\emph{data_object}. For \code{download_object_global} the input
-\emph{location} is automatically set to \emph{world}.
+Downloads Google Trends search volumes for one or more \emph{object} batches
+(\code{batch_o}) together with a single control keyword (from \code{batch_c}) used for
+scaling/mapping, across a set of locations. Results are written to the
+database table \code{data_object}.
+
+Convenience wrapper around \code{\link[=download_object]{download_object()}} to download global (world)
+object series. Internally this is implemented by passing \code{locations = ""}.
 }
 \details{
-Downloads through the Google Trends API are made through
-\code{gtrendsR::gtrends}. Each object batch can consist of up to four
-keywords and is predefined in tables \emph{batch_keywords} and
-\emph{batch_time} through \code{add_keywords}. In addition, one control
-keyword is added to each object batch. The control keyword then allows a
-mapping between search volumes for control keywords stored in
-\emph{data_control} and search volumes for object keywords. The download for
-a single keyword batch for a single location takes about 30 seconds. This
-includes a randomized waiting period of 5-10 seconds between downloads.
-Depending on the frequency of downloads, Google Trends might block users
-for some time (about 1,500 downloads within 24 hours). In this case,
-\code{download_object} waits 60 minutes before it retries the download.
-}
-\section{Warning}{
+Each object batch contains up to four object keywords. For each download
+request, this function prepends exactly one control keyword to the query so
+that object hits can be mapped to the control scale used elsewhere in the
+package.
 
-We advise against the usage of \emph{category codes} in
-downloads. If you use \emph{categories} to narrow the context of keyword usage,
-these categories are applied to \strong{ALL} keywords in the batch. This applies
-to \emph{control} keywords as well as \emph{object} keywords and can result in
-unintended behavior.
+The function selects the control keyword dynamically per location:
+it inspects existing \code{data_control} for the chosen control batch and location,
+ranks control keywords by their average \code{hits}, and tries them in ascending
+order until a control keyword yields non-zero signal in the returned series.
+This reduces the likelihood of failed requests caused by zero-signal control
+terms.
+
+The function avoids duplicate downloads by skipping locations already present
+for \verb{(batch_c, batch_o)} in \code{data_object}.
+
+Downloads are performed through the package internal \code{.get_trend()} helper,
+which may use \code{gtrendsR::gtrends()} or the Research API backend initialized
+via \code{\link[=initialize_python]{initialize_python()}}.
+}
+\section{Category codes}{
+
+Avoid category codes unless you are confident they apply uniformly to all
+keywords in the batch. Google Trends applies a category constraint to the
+entire request, which can unintentionally change the meaning of control and
+object keywords.
 }
 
 \examples{
 \dontrun{
-download_object(
-  object = 1,
-  locations = countries
-)
-download_object(
-  object = as.list(1:5),
-  locations = countries
-)
+download_object(object = 1, control = 1, locations = countries)
+download_object(object = as.list(1:5), control = 1, locations = countries)
+download_object_global(object = 1, control = 1)
 }
 
-}
-\seealso{
-\itemize{
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[gtrendsR:gtrends]{gtrendsR::gtrends()}}
-}
 }

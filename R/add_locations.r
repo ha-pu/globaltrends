@@ -1,37 +1,38 @@
-#' @title Add sets of locations
+#' @title Add a location set
 #'
 #' @description
-#' The function adds a new set of locations for downloads and computations to
-#' the database. The location set serves as input for all download and
-#' computation functions.
+#' Adds a user-defined *location set* to the `data_locations` database table.
+#' Location sets are used as inputs to download and computation functions.
 #'
 #' @details
-#' Location sets control the locations for which data is downloaded or to which
-#' computations are applied. By adding new location sets, the default sets
-#' *countries* and *us_states* can be expanded by additional sets.
-#' Thereby, users can compute DOI within a region (e.g., adding EU countries as
-#' a set) or single countries (e.g., adding regions of France as a set). Download
-#' and computation functions check whether data for a location already exists.
-#' Therefore, data will not be duplicated when location data already exists from
-#' another set.
+#' Location sets control which locations are downloaded or included in
+#' computations. The package ships with default sets (e.g., `countries`,
+#' `us_states`), and you can expand these by adding your own sets (e.g., "EU",
+#' "DACH", or subnational regions for a country).
 #'
-#' @section Warning:
-#' Unfortunately, the Google Trends API cannot handle the location
-#' "NA - Namibia". Therefore, the location will be dropped automatically.
+#' The function is designed to be idempotent with respect to `(type, location)`:
+#' if a location already exists for a given `type`, it will be skipped (not
+#' duplicated).
 #'
-#' @param locations Locations that should be added as set of locations. Vector of
-#' type `character`.
+#' @section Known API limitation:
+#' The Google Trends API cannot handle the location code `"NA"` (Namibia).
+#' If `"NA"` is supplied, it will be dropped. If `"NA"` is the only supplied
+#' location, the function errors.
 #'
-#' @param type Name of the location set that should be added. Object of type
-#' `character` of length 1.
+#' @param locations Character vector of location codes to add. Codes must be
+#'   present in `gtrendsR::countries$country_code` or
+#'   `gtrendsR::countries$sub_code`. Duplicates are removed.
 #'
-#' @param export Indicator whether the new location set should be directly
-#' exported to the package environment `gt.env`. Object of type `logical`,
-#' defaults to `TRUE`.
+#' @param type Character scalar. Name of the location set to which `locations`
+#'   should be added (e.g., `"DACH"`, `"EU"`).
+#'
+#' @param export Logical scalar. If `TRUE` (default), the package environment
+#'   `gt.env` is refreshed so the new/updated location set becomes available
+#'   immediately.
 #'
 #' @return
-#' Message that the location set has been created successfully. Location data is
-#' written to table *data_locations*.
+#' Invisibly returns a tibble of rows that were appended to the database
+#' (columns: `location`, `type`). A message is emitted summarizing what happened.
 #'
 #' @examples
 #' \dontrun{
@@ -40,95 +41,169 @@
 #'
 #' @export
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect
-#' @importFrom dplyr distinct
-#' @importFrom dplyr filter
-#' @importFrom dplyr pull
-#' @importFrom purrr map
-#' @importFrom purrr walk
+#' @importFrom dplyr collect distinct filter pull
 #' @importFrom rlang .data
 #' @importFrom stats na.omit
 #' @importFrom tibble tibble
 
 add_locations <- function(locations, type, export = TRUE) {
+  # --- validate inputs --------------------------------------------------------
   .check_input(locations, "character")
   .check_input(type, "character")
   .check_length(type, 1)
   .check_input(export, "logical")
   .check_length(export, 1)
 
-  # check new locations
-  codes <- c(gtrendsR::countries$country_code, gtrendsR::countries$sub_code)
-  codes <- unique(codes)
-  codes <- na.omit(codes)
-  walk(
-    locations,
-    ~ {
-      if (!(.x %in% codes)) {
-        stop(paste0(
-          "Error: Invalid input for new location!\nLocation must be part of columns 'country_code' or 'sub_code' of table gtrendsR::countries.\nYou provided ",
-          .x,
-          "."
-        ))
-      }
-    }
-  )
+  if (length(locations) == 0) {
+    stop("`locations` must contain at least one location code.", call. = FALSE)
+  }
+  if (any(is.na(locations))) {
+    stop("`locations` must not contain NA values.", call. = FALSE)
+  }
 
-  # handle Namibia
-  if (any(locations == "NA")) {
+  # Normalize: trim whitespace and drop duplicates early
+  locations <- unique(trimws(locations))
+
+  # --- validate codes against gtrendsR dictionary ----------------------------
+  codes <- unique(na.omit(c(
+    gtrendsR::countries$country_code,
+    gtrendsR::countries$sub_code
+  )))
+  invalid <- setdiff(locations, codes)
+
+  if (length(invalid) > 0) {
+    stop(
+      paste0(
+        "Invalid location code(s): ",
+        paste(invalid, collapse = ", "),
+        ". Valid codes must appear in `gtrendsR::countries$country_code` or `gtrendsR::countries$sub_code`."
+      ),
+      call. = FALSE
+    )
+  }
+
+  # --- handle Namibia limitation ---------------------------------------------
+  if ("NA" %in% locations) {
     locations <- locations[locations != "NA"]
 
     if (length(locations) == 0) {
       stop(
-        "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!"
+        paste0(
+          "The Google Trends API cannot handle the location code 'NA' (Namibia). ",
+          "It was dropped, leaving `locations` empty."
+        ),
+        call. = FALSE
       )
     } else {
       warning(
-        "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped."
+        "The Google Trends API cannot handle the location code 'NA' (Namibia). It was dropped.",
+        call. = FALSE
       )
     }
   }
 
-  data <- tibble(location = locations, type = type)
+  # --- avoid duplicates in the database --------------------------------------
+  # Only append (type, location) pairs that do not already exist.
+  if (is.null(gt.env$tbl_locations)) {
+    already_present <- NULL
+  } else {
+    in_type <- type
+    existing <- gt.env$tbl_locations |>
+      filter(.data$type == in_type & .data$location %in% locations) |>
+      collect()
+    already_present <- existing$location
+  }
+  to_add <- setdiff(locations, already_present)
+
+  if (length(to_add) == 0) {
+    if (export) {
+      .export_locations()
+    }
+    message(
+      paste0(
+        "No new locations added for set '",
+        type,
+        "'. ",
+        "All provided locations already exist (",
+        paste(locations, collapse = ", "),
+        ")."
+      )
+    )
+    return(invisible(tibble(location = character(), type = character())))
+  }
+
+  data_to_add <- tibble(location = to_add, type = type)
   dbAppendTable(
     conn = gt.env$globaltrends_db,
     name = "data_locations",
-    value = data
+    value = data_to_add
   )
 
   if (export) {
     .export_locations()
   }
 
-  message(paste0(
-    "Successfully created new location set ",
-    type,
-    " (",
-    paste(locations, collapse = ", "),
-    ")."
-  ))
+  # --- user feedback ----------------------------------------------------------
+  if (length(already_present) > 0) {
+    message(
+      paste0(
+        "Location set '",
+        type,
+        "': added ",
+        length(to_add),
+        " location(s) (",
+        paste(to_add, collapse = ", "),
+        "); skipped ",
+        length(already_present),
+        " existing (",
+        paste(already_present, collapse = ", "),
+        ")."
+      )
+    )
+  } else {
+    message(
+      paste0(
+        "Successfully created/extended location set '",
+        type,
+        "' with ",
+        length(to_add),
+        " location(s) (",
+        paste(to_add, collapse = ", "),
+        ")."
+      )
+    )
+  }
+
+  invisible(data_to_add)
 }
 
-#' @title Export locations to package environment gt.env
+#' @title Export location sets to `gt.env`
+#'
+#' @description
+#' Loads all distinct `(type, location)` pairs from the database-backed locations
+#' table and exposes each set as a character vector in the package environment
+#' `gt.env`, named by its `type`.
+#'
+#' @details
+#' This internal helper performs a single database read (collect once) and then
+#' splits the result in memory for performance and reproducibility.
+#'
+#' @return
+#' Invisibly returns the list of location vectors that were assigned into `gt.env`.
 #'
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr collect distinct
+#' @importFrom rlang .data
 
 .export_locations <- function() {
-  locations <- distinct(gt.env$tbl_locations, .data$type)
-  locations <- collect(locations)
-  locations <- locations$type
+  df <- gt.env$tbl_locations |>
+    distinct(.data$type, .data$location) |>
+    collect()
 
-  lst_locations <- map(
-    locations,
-    ~ {
-      out <- filter(gt.env$tbl_locations, .data$type == .x)
-      out <- pull(out, .data$location)
-      return(out)
-    }
-  )
+  # Split to a named list: each element is a character vector of locations
+  lst_locations <- split(df$location, df$type)
 
-  names(lst_locations) <- locations
-
+  # Assign into package environment
   invisible(list2env(lst_locations, envir = gt.env))
 }

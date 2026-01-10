@@ -1,387 +1,237 @@
-#' batch_keywords
+#' Example table: keyword batches (`batch_keywords`)
 #'
 #' @description
-#' The table *batch_keywords* contains the keywords for each batch. Each
-#' line contains one *keyword*, the *type* of the batch (i.e., control
-#' or object) and the id of the *batch* to which the keyword is assigned.
-#' Keywords can be added with the function `add_keywords`. The function
-#' `start_db` exports the table *batch_keywords* as objects
-#' `keywords_control` and `keywords_object` to the package environment
-#' `gt.env`.
+#' Example data representing the database table `batch_keywords`.
+#' Each row assigns a single `keyword` to a `batch` and a `type`
+#' (`"control"` or `"object"`).
 #'
-#' Example data for the table *batch_keywords* is available as R object
-#' `example_keywords`.
+#' In a live database, keyword batches are created via [add_keyword()] and are
+#' exported to the package environment `gt.env` by [start_db()] as
+#' `gt.env$keywords_control` and `gt.env$keywords_object`.
 #'
-#' @format A tibble with 19 rows and 3 variables:
+#' @format A tibble with 3 variables:
 #' \describe{
-#'   \item{type}{Column of type `character` showing the type of each batch,
-#'   takes "control" for control batches and "object" for object batches.}
-#'   \item{batch}{Column of type `integer` showing the number of each
-#'   batch.}
-#'   \item{keyword}{Column of type `character` showing the keywords
-#'   included in each batch.}
+#'   \item{type}{Character. Batch type: `"control"` or `"object"`.}
+#'   \item{batch}{Integer. Batch identifier within `type`.}
+#'   \item{keyword}{Character. Keyword assigned to the batch.}
 #' }
 #'
 #' @seealso
-#' * [globaltrends::add_control_keyword()]
+#' [add_keyword()], [start_db()]
 #'
 #' @name batch_keywords
 "example_keywords"
 
-#' batch_time
+#' Example table: batch time windows (`batch_time`)
 #'
 #' @description
-#' The table *batch_time* contains the time period for which data is
-#' downloaded for each batch. Each line contains the *start date*, the
-#' *end date*, the *type* of the batch (i.e., control or object), and the id of
-#' the *batch* to which the time period is assigned. Start and end dates take
-#' the form `"YYYY-MM"`. Time periods are added automatically through
-#' the function `add_keywords`. The function `start_db` exports the
-#' table *batch_time* as objects `time_control` and `time_object`
-#' to `.GlobalEnv`.
+#' Example data representing the database table `batch_time`.
+#' Each row assigns a time window (`start_date`, `end_date`) to a `batch`
+#' and a `type` (`"control"` or `"object"`).
 #'
-#' Example data for the table *batch_time* is available as R object
-#' `example_time`.
+#' In a live database, batch time windows are generated when keywords are added
+#' (see [add_keyword()]) and are exported to the package environment `gt.env`
+#' by [start_db()] as `gt.env$time_control` and `gt.env$time_object`.
 #'
-#' @format A tibble with 5 rows and 3 variables:
+#' Dates are stored as `"YYYY-MM"` strings to represent monthly windows.
+#'
+#' @format A tibble with 4 variables:
 #' \describe{
-#'   \item{type}{Column of type `character` showing the type of each batch,
-#'   takes "control" for control batches and "object" for object batches.}
-#'   \item{batch}{Column of type `integer` showing number of each batch.}
-#'   \item{start_date}{Column of type `character` showing the start date for
-#'   each batch as "YYYY-MM".}
-#'   \item{end_date}{Column of type `character` showing the end date for
-#'   each batch as "YYYY-MM".}
+#'   \item{type}{Character. Batch type: `"control"` or `"object"`.}
+#'   \item{batch}{Integer. Batch identifier within `type`.}
+#'   \item{start_date}{Character. Window start in `"YYYY-MM"`.}
+#'   \item{end_date}{Character. Window end in `"YYYY-MM"`.}
 #' }
 #'
 #' @seealso
-#' * [globaltrends::add_control_keyword()]
+#' [add_keyword()], [start_db()]
 #'
 #' @name batch_time
 "example_time"
 
-#' data_control
+#' Example table: control downloads (`data_control`)
 #'
 #' @description
-#' The table *data_control* contains the downloaded data for each control
-#' batch. Each line contains the search *hits* for each *keyword* in a
-#' control *batch* for a given *location* and *date*. Global data
-#' gets the value *world* as location. Data is downloaded and automatically
-#' written to the table through the function `download_control`. The
-#' function `start_db` exports the table *data_control* as database
-#' connection `tbl_control` to the package environment `gt.env`. Users
-#' can access the database table through `dplyr::tbl`.
-#' The sample data included in `data_control` was simulated based on actual
-#' Google Trends data.
+#' Example data representing the database table `data_control`.
+#' Each row contains Google Trends `hits` for a control `keyword` in a given
+#' `location` on a given `date`, along with the control `batch` identifier.
 #'
-#' Example data for the table *data_control* is available as R object
-#' `example_control`.
+#' In a live database, data are downloaded via [download_control()] and are
+#' available through `gt.env$tbl_control` (a lazy table reference) after
+#' [start_db()]. Global aggregates use `"world"` as `location`.
 #'
-#' @format A tibble with 2,400 rows and 5 variables:
+#' The example dataset is simulated to resemble real Google Trends output.
+#'
+#' @format A tibble with 5 variables:
 #' \describe{
-#'   \item{location}{Column of type `character` showing the ISO2 code of
-#'   the country or region for which the data was downloaded.}
-#'   \item{keyword}{Column of type `character` showing the keyword for
-#'   which the data was downloaded.}
-#'   \item{date}{Column of type `integer` showing the date for which the
-#'   data was downloaded. Can be transformed into date format with
-#'   `lubridate::as_date`.`
-#'   \item{hits}{Column of type `double` showing search volumes for the
-#'   respective location-keyword-date combination.}
-#'   \item{batch}{Column of type `integer` showing the number of each
-#'   batch.}
+#'   \item{location}{Character. Location code (e.g., ISO 3166-1 alpha-2 or other
+#'   codes supported by Google Trends). Global data uses `"world"`.}
+#'   \item{keyword}{Character. Control keyword.}
+#'   \item{date}{Integer. Date stored as days since 1970-01-01 (Unix epoch).
+#'   Convert with `lubridate::as_date(date)`.}
+#'   \item{hits}{Double. Search interest (Google Trends).}
+#'   \item{batch}{Integer. Control batch id.}
 #' }
-#' @source \url{https://trends.google.com/trends/}
+#'
+#' @source Google Trends. See the Trends UI and documentation.
 #'
 #' @seealso
-#' * [download_control()]
-#' * [dplyr::tbl()]
+#' [download_control()], [start_db()], [dplyr::tbl()]
 #'
 #' @name data_control
 "example_control"
 
-#' data_object
+#' Example table: object downloads (`data_object`)
 #'
 #' @description
-#' The table *data_object* contains the downloaded data for each object
-#' batch. Each line contains the search *hits* for each *keyword* in
-#' an object *batch_o* for a given *location* and *date*. The
-#' column *batch_c* indicates the control batch to which the data will be
-#' mapped. Global data takes the value *world* as location. Data is
-#' downloaded and automatically written to the table through the function
-#' `download_object`. The function `start_db` exports the table
-#' *data_object* as database connection `tbl_object` to the package
-#' environment `gt.env`. Users can access the database table through
-#' `dplyr::tbl`.
-#' The sample data included in `data_object` was simulated based on actual
-#' Google Trends data.
+#' Example data representing the database table `data_object`.
+#' Each row contains Google Trends `hits` for an object `keyword` in a given
+#' `location` on a given `date`. Object data (`batch_o`) are downloaded and
+#' mapped to a control batch (`batch_c`) for subsequent score computation.
 #'
-#' Example data for the table *data_object* is available as R object
-#' `example_object`.
+#' In a live database, data are downloaded via [download_object()] and are
+#' available through `gt.env$tbl_object` after [start_db()]. Global aggregates
+#' use `"world"` as `location`.
 #'
-#' @format A tibble with 8,640 rows and 6 variables:
+#' The example dataset is simulated to resemble real Google Trends output.
+#'
+#' @format A tibble with 6 variables:
 #' \describe{
-#'   \item{location}{Column of type `character` showing the ISO2 code of
-#'   the country or region for which the data was downloaded.}
-#'   \item{keyword}{Column of type `character` showing the keyword for
-#'   which the data was downloaded.}
-#'   \item{date}{Column of type `integer` showing the date for which the
-#'   data was downloaded. Can be transformed into date format with
-#'   `lubridate::as_date`.}
-#'   \item{hits}{Column of type `double` showing search volumes for the
-#'   respective location-keyword-date combination.}
-#'   \item{batch_c}{Column of type `integer` showing the number of each
-#'   control batch.}
-#'   \item{batch_o}{Column of type `integer` showing the number of each
-#'   object batch.}
+#'   \item{location}{Character. Location code. Global data uses `"world"`.}
+#'   \item{keyword}{Character. Object keyword.}
+#'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+#'   `lubridate::as_date(date)`.}
+#'   \item{hits}{Double. Search interest (Google Trends).}
+#'   \item{batch_c}{Integer. Control batch id used for mapping/baseline.}
+#'   \item{batch_o}{Integer. Object batch id.}
 #' }
-#' @source \url{https://trends.google.com/trends/}
+#'
+#' @source Google Trends. See the Trends UI and documentation.
 #'
 #' @seealso
-#' * [download_object()]
-#' * [dplyr::tbl()]
+#' [download_object()], [start_db()], [dplyr::tbl()]
 #'
 #' @name data_object
 "example_object"
 
-#' data_score
+#' Example table: computed scores (`data_score`)
 #'
 #' @description
-#' The table *data_score* contains the search scores for each object batch.
-#' Each line contains the search score (*score*) for each *keyword* in an
-#' object *batch_o* for a given *location* and *date*. The column
-#' *batch_c* indicates the control batch that has been used as baseline
-#' for mapping. Global data takes the value *world* as location. Search
-#' scores are computed and automatically written to the table with the function
-#' `compute_score`. The function `start_db` exports the table
-#' *data_score* as database connection `tbl_score` to
-#' the package environment `gt.env`. Users can access the database
-#' table through `dplyr::tbl`.
-#' The sample data included in `data_score` was simulated based on actual
+#' Example data representing the database table `data_score`.
+#' Each row contains a computed `score` for an object `keyword` in a given
+#' `location` on a given `date`, along with the associated control batch
+#' (`batch_c`) and object batch (`batch_o`).
+#'
+#' In a live database, scores are computed via [compute_score()] and are
+#' available through `gt.env$tbl_score` after [start_db()]. Global aggregates
+#' use `"world"` as `location`.
+#'
+#' The example dataset is simulated to resemble outputs derived from real
 #' Google Trends data.
 #'
-#' Example data for the table *data_score* is available as R object
-#' `example_score`.
-#'
-#' @format A tibble with 6,000 rows and 7 variables:
+#' @format A tibble with 6 variables:
 #' \describe{
-#'   \item{location}{Column of type `character` showing the ISO2 code of
-#'   the country or region for which the data was computed.}
-#'   \item{keyword}{Column of type `character` showing the keyword for
-#'   which the data was downloaded.}
-#'   \item{date}{Column of type `integer` showing the date for which the
-#'   data was computed Can be transformed into date format with
-#'   `lubridate::as_date`.}
-#'   \item{score}{Column of type `double` showing search score for the
-#'   respective location-keyword-date combination.}
-#'   \item{batch_c}{Column of type `integer` showing the number of each
-#'   control batch.}
-#'   \item{batch_o}{Column of type `integer` showing the number of each
-#'   object batch.}
+#'   \item{location}{Character. Location code. Global data uses `"world"`.}
+#'   \item{keyword}{Character. Object keyword.}
+#'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+#'   `lubridate::as_date(date)`.}
+#'   \item{score}{Double. Computed score (mapped/normalized search interest).}
+#'   \item{batch_c}{Integer. Control batch id used as baseline.}
+#'   \item{batch_o}{Integer. Object batch id.}
 #' }
 #'
 #' @seealso
-#' * [compute_score()]
-#' * [compute_voi()]
-#' * [dplyr::tbl()]
+#' [compute_score()], [compute_voi()], [start_db()], [dplyr::tbl()]
 #'
 #' @name data_score
 "example_score"
 
-#' data_doi
+#' Example table: degree of internationalization (`data_doi`)
 #'
 #' @description
-#' The table *data_doi* contains the degree of internationalization (DOI)
-#' for each object batch. Each line contains the DOI computed as inverted
-#' *gini* coefficient, as inverted *hhi*, or inverted *entropy*
-#' for each *keyword* in an object *batch_o* for a given *date*.
-#' The column *batch_c* indicates the control batch that has been used
-#' as baseline for mapping. Column *locations* indicates which set of
-#' locations was used to compute the distribution of search scores.
-#' DOI is computed and automatically written to the table with the
-#' function `compute_doi`. The function `start_db` exports the table
-#' *data_doi* as database connection `tbl_doi` to the package environment
-#' `gt.env`. Users can access the database table through `dplyr::tbl`.
-#' The sample data included in `data_doi` was simulated based on actual
+#' Example data representing the database table `data_doi`.
+#' Each row contains degree-of-internationalization (DOI) metrics for an object
+#' `keyword` on a given `date`, computed from the distribution of `data_score`
+#' across a specified set of `locations`.
+#'
+#' DOI is computed via [compute_doi()] and is available through `gt.env$tbl_doi`
+#' after [start_db()]. The `batch_c` column indicates the control batch used as
+#' baseline, and `batch_o` indicates the object batch.
+#'
+#' The example dataset is simulated to resemble outputs derived from real
 #' Google Trends data.
 #'
-#' @format A tibble with 4,320 rows and 9 variables:
+#' @format A tibble with 8 variables:
 #' \describe{
-#'   \item{keyword}{Column of type `character` showing the keyword for
-#'   which the data was computed.}
-#'   \item{date}{Column of type `integer` showing the date for which the
-#'   data was computed Can be transformed into date format with
-#'   `lubridate::as_date`.}
-#'   \item{gini}{Column of type `double` showing the DOI computed as
-#'   inverted Gini coefficient of the search score distribution from
-#'   `data_score`.}
-#'   \item{hhi}{Column of type `double` showing the DOI computed as
-#'   inverted Herfindahl-Hirschman index of the search score distribution from
-#'   `data_score`.}
-#'   \item{entropy}{Column of type `double` showing the DOI computed as
-#'   inverted Entropy measure for the search score distribution from
-#'   `data_score`.}
-#'   \item{batch_c}{Column of type `integer` showing the number of each
-#'   control batch.}
-#'   \item{batch_o}{Column of type `integer` showing the number of each
-#'   object batch.}
-#'   \item{locations}{Column of type `character` showing the list of
-#'   locations for which the search score distribution is used.}
+#'   \item{keyword}{Character. Object keyword.}
+#'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+#'   `lubridate::as_date(date)`.}
+#'   \item{gini}{Double. DOI computed from the (inverted) Gini coefficient of the
+#'   score distribution.}
+#'   \item{hhi}{Double. DOI computed from the (inverted) Herfindahl-Hirschman
+#'   index of the score distribution.}
+#'   \item{entropy}{Double. DOI computed from the (inverted) entropy of the score
+#'   distribution.}
+#'   \item{batch_c}{Integer. Control batch id used as baseline.}
+#'   \item{batch_o}{Integer. Object batch id.}
+#'   \item{locations}{Character. Name of the location set used (e.g.,
+#'   `"countries"`, `"us_states"`).}
 #' }
 #'
 #' @seealso
-#' * [compute_doi()]
-#' * [dplyr::tbl()]
+#' [compute_doi()], [start_db()], [dplyr::tbl()]
 #'
 #' @name data_doi
 "example_doi"
 
-#' countries
+#' Default location set: countries
 #'
 #' @description
-#' A character vector that includes ISO2 codes for all countries with a share in
-#' global GDP >= 0.1\% in 2018. Data on GDP is retrieved from the World Bank's
-#' World Development Indicators database. The data includes:
-#' * AE
-#' * AO
-#' * AR
-#' * AT
-#' * AU
-#' * BD
-#' * BE
-#' * BR
-#' * CA
-#' * CH
-#' * CL
-#' * CN
-#' * CO
-#' * CU
-#' * CZ
-#' * DE
-#' * DK
-#' * DO
-#' * DZ
-#' * EC
-#' * EG
-#' * ES
-#' * ET
-#' * FI
-#' * FR
-#' * GB
-#' * GR
-#' * HK
-#' * HU
-#' * ID
-#' * IE
-#' * IL
-#' * IN
-#' * IQ
-#' * IR
-#' * IT
-#' * JP
-#' * KR
-#' * KW
-#' * KZ
-#' * LK
-#' * MA
-#' * MX
-#' * MY
-#' * NG
-#' * NL
-#' * NO
-#' * NZ
-#' * OM
-#' * PE
-#' * PH
-#' * PK
-#' * PL
-#' * PR
-#' * PT
-#' * QA
-#' * RO
-#' * RU
-#' * SA
-#' * SD
-#' * SE
-#' * SG
-#' * SK
-#' * TH
-#' * TR
-#' * TW
-#' * UA
-#' * US
-#' * UZ
-#' * VN
-#' * ZA
+#' Character vector of country location codes used by the package as a default
+#' location set for cross-country computations.
+#'
+#' The vector contains ISO 3166-1 alpha-2 country codes selected based on a GDP
+#' share threshold (>= 0.1% in 2018) using the World Bank World Development
+#' Indicators (WDI). See [countries_wdi] for the underlying WDI country list.
+#'
+#' To inspect the full set, print `countries` or use `length(countries)`.
+#'
+#' @format A character vector.
+#'
+#' @seealso
+#' [add_locations()], [start_db()]
 #'
 #' @name countries
 "countries"
 
-#' countries_wdi
+#' Country codes and names from WDI
 #'
 #' @description
-#' A data.frame that includes ISO2 codes and country names for all countries and
-#' locations in the World Bank's World Development Indicators database.
+#' A data frame of country/location codes and names as provided by the World
+#' Bank World Development Indicators (WDI). This object is useful for mapping
+#' ISO-style codes to human-readable names when constructing custom location
+#' sets.
+#'
+#' @format A data.frame.
+#'
+#' @seealso
+#' [countries], [add_locations()]
 #'
 #' @name countries_wdi
 "countries_wdi"
 
-#' us_states
+#' Default location set: US states
 #'
 #' @description
-#' A character vector that includes ISO2 codes for all US federal states and
-#' Washington DC. The data includes:
-#' * US-AL
-#' * US-AK
-#' * US-AZ
-#' * US-AR
-#' * US-CA
-#' * US-CO
-#' * US-CT
-#' * US-DE
-#' * US-FL
-#' * US-GA
-#' * US-HI
-#' * US-ID
-#' * US-IL
-#' * US-IN
-#' * US-IA
-#' * US-KS
-#' * US-KY
-#' * US-LA
-#' * US-ME
-#' * US-MD
-#' * US-MA
-#' * US-MI
-#' * US-MN
-#' * US-MS
-#' * US-MO
-#' * US-MT
-#' * US-NE
-#' * US-NV
-#' * US-NH
-#' * US-NJ
-#' * US-NM
-#' * US-NY
-#' * US-NC
-#' * US-ND
-#' * US-OH
-#' * US-OK
-#' * US-OR
-#' * US-PA
-#' * US-RI
-#' * US-SC
-#' * US-SD
-#' * US-TN
-#' * US-TX
-#' * US-UT
-#' * US-VT
-#' * US-VA
-#' * US-WA
-#' * US-WV
-#' * US-WI
-#' * US-WY
-#' * US-DC
+#' Character vector of US state-level location codes used by the package.
+#'
+#' The vector contains ISO 3166-2 codes of the form `"US-XX"` for the 50 US
+#' states and `"US-DC"` for the District of Columbia.
+#'
+#' @format A character vector.
+#'
+#' @seealso
+#' [add_locations()], [start_db()]
 #'
 #' @name us_states
 "us_states"

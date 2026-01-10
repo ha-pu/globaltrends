@@ -2,32 +2,25 @@
 % Please edit documentation in R/database_functions.r
 \name{disconnect_db}
 \alias{disconnect_db}
-\title{Disconnect from database}
+\title{Disconnect from the database and persist changes}
 \usage{
 disconnect_db()
 }
 \value{
-Message that disconnection was successful.
+Invisibly returns \code{TRUE} on success.
 }
 \description{
-The function closes the connection to the database file
-\emph{db/globaltrends_db.sqlite} in the working directory.
+Exports the current in-memory DuckDB database to the Parquet store under
+\verb{db/} and closes the DBI connection.
 }
-\section{Warning}{
-
-SQLite databases only allow one writer at any instant in time. To run
-parallel downloads use one database for each download client and merge them
-once all downloads are complete.
+\details{
+Call this after downloads/computations to persist changes to disk. The
+function overwrites the Parquet files under \verb{db/} with the current in-memory
+state.
 }
-
 \examples{
 \dontrun{
 disconnect_db()
 }
-}
-\seealso{
-\itemize{
-\item \code{\link[=initialize_db]{initialize_db()}}
-\item \code{\link[=start_db]{start_db()}}
-}
+
 }

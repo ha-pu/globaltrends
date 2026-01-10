@@ -335,13 +335,12 @@ add_synonym <- function(keyword, synonym) {
       keyword <- str_squish(keyword)
       synonym <- str_squish(synonym)
 
-      tibble(keyword, synonym) |>
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "keyword_synonyms",
-          value = .,
-          append = TRUE
-        )
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "keyword_synonyms",
+        value = tibble(keyword, synonym),
+        append = TRUE
+      )
 
       keyword_synonyms <- collect(gt.env$tbl_synonyms)
       lst_export <- list(keyword_synonyms, keyword_synonyms)

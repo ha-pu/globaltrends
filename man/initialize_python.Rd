@@ -2,43 +2,49 @@
 % Please edit documentation in R/initialize_python.r
 \name{initialize_python}
 \alias{initialize_python}
-\title{Initialize gtrends Python module}
+\title{Initialize Python backend for Google Trends Research API}
 \usage{
 initialize_python(api_key, conda_env = NULL, python_env = NULL)
 }
 \arguments{
-\item{api_key}{API key obtained from Google. Object of type \code{character}.}
+\item{api_key}{Character scalar. API key obtained from Google.}
 
-\item{conda_env}{Storage location of a Conda environment. Object of type
-\code{character}.}
+\item{conda_env}{Optional character scalar. Name or path of a Conda
+environment to use (passed to \code{\link[reticulate:use_python]{reticulate::use_condaenv()}}).}
 
-\item{python_env}{Storage location of a Python environment. Object of type
-\code{character}.}
+\item{python_env}{Optional character scalar. Path to a Python virtual
+environment to use (passed to \code{\link[reticulate:use_python]{reticulate::use_virtualenv()}}).}
 }
 \value{
-The functions sets the environment variable \code{gt.env} to \code{TRUE}. This channels
-downloads to the API. Otherwise, \code{globaltrends} uses \code{gtrendsR::gtrends} for
-downloads.
+Invisibly returns \code{TRUE} on success. Side effects:
+\itemize{
+\item Stores \code{api_key} in \code{gt.env}.
+\item Sources the Python helper script \code{python/query_gtrends.py} into \code{gt.env}.
+\item Sets \code{gt.env$py_setup <- TRUE} to indicate API-mode is available.
+}
 }
 \description{
-The function initializes the Python session required to download data from
-Google Trends using the Google Trends research API. The user can define an
-API key and either a Conda or Python environment.
+Initializes the Python session required to download data via the Google
+Trends \emph{Research API} (not the public \code{gtrendsR::gtrends()} scraping route).
+The function configures the Python interpreter (Conda \emph{or} virtualenv),
+stores the API key in \code{gt.env}, sources the package's Python helper code,
+and marks the session as ready for API-based downloads.
 }
 \details{
-To use this API acces, you must:
+Prerequisites for using the Research API:
 \enumerate{
-\item Apply for API access \href{https://support.google.com/trends/contact/trends_api}{online}.
-and generate an API key in your Google developer console.
-\item Create a Python or Conda environment where you install the
-\code{google-api-python-client} package with pip.
+\item Apply for access and obtain an API key via Google's request form.
+\item Create a Python environment (Conda or virtualenv) with the required
+dependencies installed (at minimum \code{google-api-python-client}).
 }
+
+You must provide exactly one of \code{conda_env} or \code{python_env}.
 }
 \examples{
 \dontrun{
 initialize_python(
-  api_key = "XXX",
-  conda_env = "/xxx/venv"
+  api_key   = "XXX",
+  conda_env = "/path/to/conda/env"
 )
 }
 

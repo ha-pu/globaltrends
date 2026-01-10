@@ -8,7 +8,7 @@
 \alias{export_score}
 \alias{export_voi}
 \alias{export_doi}
-\title{Export data from database table}
+\title{Export data from database tables}
 \usage{
 export_control(control = NULL, location = NULL)
 
@@ -25,86 +25,51 @@ export_voi(keyword = NULL, object = NULL, control = NULL)
 export_doi(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported. Only
-for \code{export_control} and \code{export_control_global}, input is also possible as
-list.}
+\item{control}{Integer-ish batch id(s) for control data (\code{batch_c} or \code{batch}).}
 
-\item{location}{List of locations for which the data is exported. Refers to
-lists generated in \code{start_db} or \code{character} objects in these lists. Only for
-\code{export_control}, \code{export_object}, or \code{export_score}.}
+\item{location}{Character vector (or list coercible via \code{unlist()}) of
+location codes to export (e.g., \code{countries}, \code{us_states}). Applicable to
+control/object/score exports.}
 
-\item{keyword}{Object keywords for which data should be exported. Object or
-list of objects of type \code{character}.}
+\item{keyword}{Character vector (or list coercible via \code{unlist()}) of object
+keywords to export. When provided, it overrides \code{object}.}
 
-\item{object}{Object batch number for which data should be exported.}
+\item{object}{Integer-ish batch id(s) for object data (\code{batch_o}). Ignored if
+\code{keyword} is supplied.}
 
-\item{locations}{List of locations for which the data is exported. Refers to
-names of lists generated in \code{start_db} as an object of type \code{character}. Only
-for \code{export_doi}.}
+\item{locations}{Character vector (or list coercible via \code{unlist()}) of
+location-set names (e.g., \code{"countries"}, \code{"us_states"}). Applicable to DOI.}
 }
 \value{
-The functions export and filter the respective database tables.
-\itemize{
-\item \code{export_control} and \code{export_control_global} export data from table
-\code{data_control} with columns location, keyword, date, hits, control. Object
-of class \code{"data.frame"}. Methods are applied based on input \emph{control}.
-\item \code{export_object} and \code{export_object_global} export data from table
-\code{data_object} with columns location, keyword, date, hits, object. Object of
-class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
-\item \code{export_score} exports data from table \code{data_score} with
-columns location, keyword, date, score, control,
-object. Object of class \code{"data.frame"}. Methods are applied based on input
-\emph{keyword}.
-\item \code{export_voi} exports data from table \code{data_score} with
-columns keyword, date, score, control, filters for
-\code{location == "world"}. Object of class \code{"data.frame"}. Methods are applied
-based on input \emph{keyword}.
-\item \code{export_doi} exports data from table \code{data_doi} with columns
-keyword, date, gini, hhi, entropy, control, object, locations. Object
-of class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
-}
+A \code{data.frame} (tibble) with the requested rows. Date columns are
+converted to \code{Date}.
 }
 \description{
-The function allows to export data from database tables. In combination with
-various \emph{write} functions in R, the functions allow exports from the
-database to local files.
+Export and filter data from the package's database-backed tables (control,
+object, score/VOI, and DOI). The exported result can be written to disk using
+standard R I/O functions (e.g., \code{readr::write_csv()}, \code{writexl::write_xlsx()}).
 }
 \details{
-Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control}, \emph{location},
-\emph{locations}, or \emph{type}. Not all filters are applicable for all
-functions. When filter \emph{keyword} and \emph{object} are used together,
-\emph{keyword} overrules \emph{object}. When supplying \code{NULL} as input, no filter is
-applied to the variable.
+Each export function is a thin wrapper around an internal helper
+(\code{.export_data()}) that applies optional filters. Passing \code{NULL} to a filter
+argument disables that filter.
+
+Precedence rule: if \code{keyword} is provided, it takes precedence over \code{object}
+(i.e., \code{object} is ignored when \code{keyword} is not \code{NULL}), matching the
+behavior described in this documentation.
 }
 \examples{
 \dontrun{
 export_control(control = 2)
 
-export_object(
-  keyword = "manchester united",
-  locations = countries
-)
+export_object(keyword = "manchester united", location = countries)
 
-export_object(
-  keyword = c("manchester united", "real madrid")
-)
+export_object(keyword = c("manchester united", "real madrid"))
 
-export_object(
-  keyword = list("manchester united", "real madrid")
-)
-
-export_score(
-  object = 3,
-  control = 1,
-  location = us_states
-) \%>\%
+export_score(object = 3, control = 1, location = us_states) |>
   readr::write_csv("data_score.csv")
 
-export_doi(
-  keyword = "manchester united",
-  control = 2,
-  locations = "us_states"
-) \%>\%
+export_doi(keyword = "manchester united", control = 2, locations = "us_states") |>
   writexl::write_xlsx("data_doi.xlsx")
 }
 

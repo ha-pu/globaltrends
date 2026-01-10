@@ -3,15 +3,20 @@
 \docType{data}
 \name{countries_wdi}
 \alias{countries_wdi}
-\title{countries_wdi}
+\title{Country codes and names from WDI}
 \format{
-An object of class \code{data.frame} with 299 rows and 2 columns.
+A data.frame.
 }
 \usage{
 countries_wdi
 }
 \description{
-A data.frame that includes ISO2 codes and country names for all countries and
-locations in the World Bank's World Development Indicators database.
+A data frame of country/location codes and names as provided by the World
+Bank World Development Indicators (WDI). This object is useful for mapping
+ISO-style codes to human-readable names when constructing custom location
+sets.
+}
+\seealso{
+\link{countries}, \code{\link[=add_locations]{add_locations()}}
 }
 \keyword{datasets}

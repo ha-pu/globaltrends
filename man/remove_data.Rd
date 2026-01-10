@@ -10,50 +10,63 @@ remove_data(table, control = NULL, object = NULL)
 vacuum_data()
 }
 \arguments{
-\item{table}{Database table from which the batch should be removed.  Object
-of type \code{character}.}
+\item{table}{Character scalar. One of:
+\code{"batch_keywords"}, \code{"batch_time"}, \code{"data_control"}, \code{"data_object"},
+\code{"data_score"}, \code{"data_doi"}.}
 
-\item{control}{Control batch for which the data is removed Object
-of type \code{numeric}.}
+\item{control}{Optional numeric/integer scalar. Control batch id. Required
+for \code{table = "data_control"}. For \code{batch_keywords} and \code{batch_time}, exactly
+one of \code{control} or \code{object} must be provided.}
 
-\item{object}{Object batch for which the data is removed Object
-of type \code{numeric}.}
+\item{object}{Optional numeric/integer scalar. Object batch id. For
+\code{batch_keywords} and \code{batch_time}, exactly one of \code{control} or \code{object}
+must be provided.}
 }
 \value{
-Message that data has been removed successfully. Data is removed
-from database tables.
+Invisibly returns \code{TRUE} on success. The function is called for its side
+effects (deleting rows).
+
+Invisibly returns \code{TRUE} on success.
 }
 \description{
-The function removes data from database tables for control or object batches.
+Removes batches and derived data from the database. Deletions are \emph{greedy}:
+downstream tables that depend on the deleted batches are cleaned up
+automatically to keep the database consistent.
+
+Executes \code{VACUUM} on the underlying database to reclaim unused space after
+large deletions.
 }
 \details{
-The function removes data "greedily": all data that builds on the deleted
-data is removed. For example, when data from \emph{data_control} is removed
-data in \emph{data_object} that maps to this control batch is also removed.
-The dependency structure works as follows: \emph{batch_keyword} / \emph{batch_time} ->
-\emph{data_control} -> \emph{data_object} -> \emph{data_score} -> \emph{data_doi}.
+The dependency chain is:
+\code{batch_keywords} / \code{batch_time} \eqn{\rightarrow} \code{data_control}
+\eqn{\rightarrow} \code{data_object} \eqn{\rightarrow} \code{data_score}
+\eqn{\rightarrow} \code{data_doi}.
 
-After using \code{remove_data}, run \code{vacuum_data} to free-up unused memory in
-the database file. Depending on the database size, \code{vacuum_data} might
-take some minutes for execution.
+Examples:
+\itemize{
+\item Removing a control batch from \code{data_control} also removes all object rows
+referencing that control batch, then associated scores and DOI rows.
+\item Removing an object batch from \code{batch_keywords} removes the corresponding
+object data (\code{data_object}), then scores and DOI rows derived from it.
+}
+
+After deletions, consider running \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space.
+Vacuuming can take several minutes for large database files.
+
+For SQLite-based backends, \code{VACUUM} rewrites the database file and can take
+noticeable time for large databases.
 }
 \examples{
 \dontrun{
-remove_data(
-  table = "batch_keywords",
-  control = 1
-)
-remove_data(
-  table = "data_score",
-  control = 1,
-  object = 1
-)
+remove_data(table = "batch_keywords", control = 1)
+remove_data(table = "data_score", control = 1, object = 1)
 vacuum_data()
 }
 
 }
 \seealso{
 \itemize{
+\item \code{\link[=vacuum_data]{vacuum_data()}}
 \item \code{\link[=example_keywords]{example_keywords()}}
 \item \code{\link[=example_time]{example_time()}}
 \item \code{\link[=example_control]{example_control()}}

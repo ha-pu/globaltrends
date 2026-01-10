@@ -1,4 +1,4 @@
-#' @title Aggregate keyword-country data and compute DOI
+#' @title Compute degree of internationalization (DOI)
 #'
 #' @aliases
 #' compute_doi
@@ -6,61 +6,56 @@
 #' compute_doi.list
 #'
 #' @description
-#' The function computes degree of internationalization (DOI) for object
-#' keywords. Degree of internationalization is measured based on the
-#' distribution of country search scores.
+#' Computes degree of internationalization (DOI) for object keywords based on
+#' the cross-location distribution of search scores. DOI is computed per
+#' `(keyword, date)` for a given control batch (`batch_c`), object batch
+#' (`batch_o`), and a named location set (e.g., `"countries"`).
 #'
 #' @details
-#' The function uses an inverted Gini-coefficient as measure for the degree of
-#' internationalization. The more uniform the distribution of search scores
-#' across all countries, the higher the inverted Gini-coefficient and the
-#' greater the degree of internationalization. In addition to the
-#' Gini-coefficient, the package uses inverted Herfindahl index and inverted
-#' Entropy as measures for internationalization.
+#' DOI is derived from the dispersion of search scores across locations.
+#' Intuitively, the more uniformly distributed the scores are across the chosen
+#' location set, the higher the DOI.
 #'
-#' @param control Control batch for which the search score is used. Object
-#' of type `numeric`.
+#' This implementation writes three inverted concentration/inequality measures:
+#' \itemize{
+#'   \item `gini`: `1 - Gini(score)`
+#'   \item `hhi`: `1 - sum(p^2)` where `p = score / sum(score)` (Herfindahl-Hirschman)
+#'   \item `entropy`: normalized negative entropy-like measure (see `.compute_entropy()`)
+#' }
 #'
-#' @param object Object batch for which the keyword-country data
-#' is aggregated and DOI is computed.  Object of type `numeric`.
+#' The function expects that score data is already available in `data_score`,
+#' typically produced by [compute_score()]. Only locations present in the named
+#' location set are used. Global (`location == "world"`) is not used unless the
+#' location set explicitly contains `"world"`.
 #'
-#' @param locations List of locations for which the search score is used.
-#' Object of type `character`. Defaults to *"countries"*.
+#' @param object Numeric scalar (or vector) or list of numeric scalars.
+#'   Object batch id(s) (`batch_o`) for which DOI should be computed.
 #'
-#' @seealso
-#' * [example_doi()]
+#' @param control Numeric scalar. Control batch id (`batch_c`) used as baseline.
+#'   Defaults to `1`.
+#'
+#' @param locations Character scalar. Name of the location set stored in
+#'   `data_locations$type` (e.g., `"countries"`, `"us_states"`). Defaults to
+#'   `"countries"`.
 #'
 #' @return
-#' Message that data was aggregated successfully. Data is written to table
-#' *data_doi*.
+#' Invisibly returns the tibble written to `data_doi` for the processed batch.
+#' Called primarily for its side effects (database writes) and emits a progress
+#' message per batch.
 #'
 #' @examples
 #' \dontrun{
-#' compute_doi(
-#'   object = 1,
-#'   control = 1,
-#'   locations = "countries"
-#' )
-#' compute_doi(
-#'   object = as.list(1:5),
-#'   control = 1,
-#'   locations = "countries"
-#' )
+#' compute_doi(object = 1, control = 1, locations = "countries")
+#' compute_doi(object = as.list(1:5), control = 1, locations = "countries")
 #' }
 #'
 #' @export
 #' @rdname compute_doi
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom purrr map_dbl
-#' @importFrom purrr map_lgl
-#' @importFrom purrr walk
+#' @importFrom dplyr bind_rows collect distinct filter inner_join mutate select summarise
+#' @importFrom purrr map_dbl map_lgl walk
 #' @importFrom rlang .data
 #' @importFrom tidyr nest
-#' @importFrom tidyr pivot_longer
 
 compute_doi <- function(object, control = 1, locations = "countries") {
   UseMethod("compute_doi", object)
@@ -73,85 +68,131 @@ compute_doi <- function(object, control = 1, locations = "countries") {
 compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   control <- unlist(control)
   .check_length(control, 1)
+  .check_batch(control)
+
   .check_length(locations, 1)
   .check_input(locations, "character")
+
+  # Vector input: delegate to list method for consistent iteration semantics
   if (length(object) > 1) {
-    compute_doi(
-      control = control,
+    return(invisible(compute_doi(
       object = as.list(object),
+      control = control,
       locations = locations
-    )
-  } else {
-    walk(list(control, object), .check_batch)
-    if (
-      .test_empty(
-        batch_c = control,
-        batch_o = object,
-        locations = locations
-      )
-    ) {
-      data <- gt.env$tbl_locations |>
-        filter(.data$type == locations) |>
-        distinct() |>
-        inner_join(gt.env$tbl_score, by = "location") |>
-        filter(
-          .data$batch_c == control & .data$batch_o == object
-        ) |>
-        collect() |>
-        nest(data = c(location, score)) |>
-        mutate(check = map_lgl(data, ~ !all(is.na(.x$score))))
+    )))
+  }
 
-      # compute doi measures
-      out1 <- data |>
-        filter(.data$check) |>
-        mutate(
-          gini = map_dbl(data, ~ .compute_gini(series = .x$score)),
-          hhi = map_dbl(data, ~ .compute_hhi(series = .x$score)),
-          entropy = map_dbl(data, ~ .compute_entropy(series = .x$score))
-        )
+  .check_batch(object)
 
-      out2 <- data |>
-        filter(!.data$check) |>
-        mutate(
-          gini = NA,
-          hhi = NA,
-          entropy = NA
-        )
-
-      # write data
-      out <- out1 |>
-        bind_rows(out2) |>
-        select(
-          date,
-          keyword,
-          gini,
-          hhi,
-          entropy
-        ) |>
-        mutate(
-          batch_c = control,
-          batch_o = object,
-          locations = locations
-        )
-
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_doi",
-        value = out
-      )
-    }
+  # Skip work if DOI already exists (expected to be implemented in .test_empty)
+  if (
+    !.test_empty(batch_c = control, batch_o = object, locations = locations)
+  ) {
     message(paste0(
-      "Successfully computed DOI | control: ",
+      "DOI already exists | control: ",
       control,
       " | object: ",
       object,
-      " [",
-      object,
-      "/",
-      max(gt.env$keywords_object$batch),
-      "]"
+      " | locations: ",
+      locations,
+      "."
     ))
+    return(invisible(tibble()))
   }
+
+  # -----------------------------------------------------------------------
+  # Pull score data for the requested location set and batch combination.
+  # We join `data_locations` to restrict to the desired location set.
+  # -----------------------------------------------------------------------
+  score_df <- gt.env$tbl_locations |>
+    filter(.data$type == locations) |>
+    distinct(.data$location) |>
+    inner_join(gt.env$tbl_score, by = "location") |>
+    filter(.data$batch_c == control, .data$batch_o == object) |>
+    collect()
+
+  if (nrow(score_df) == 0) {
+    message(paste0(
+      "No score data found | control: ",
+      control,
+      " | object: ",
+      object,
+      " | locations: ",
+      locations,
+      "."
+    ))
+    return(invisible(tibble()))
+  }
+
+  # -----------------------------------------------------------------------
+  # Compute DOI measures per (keyword, date).
+  # We nest the location-score series and compute metrics over the score vector.
+  # If all scores are NA for a series, DOI measures are set to NA.
+  # -----------------------------------------------------------------------
+  nested <- score_df |>
+    select(
+      .data$date,
+      .data$keyword,
+      .data$location,
+      .data$score,
+      .data$batch_c
+    ) |>
+    tidyr::nest(
+      data = c(.data$location, .data$score),
+      .by = c(.data$date, .data$keyword, .data$batch_c)
+    ) |>
+    mutate(has_non_na = map_lgl(.data$data, ~ !all(is.na(.x$score))))
+
+  out_ok <- nested |>
+    filter(.data$has_non_na) |>
+    mutate(
+      gini = map_dbl(.data$data, ~ .compute_gini(.x$score)),
+      hhi = map_dbl(.data$data, ~ .compute_hhi(.x$score)),
+      entropy = map_dbl(.data$data, ~ .compute_entropy(.x$score))
+    )
+
+  out_na <- nested |>
+    filter(!.data$has_non_na) |>
+    mutate(gini = NA_real_, hhi = NA_real_, entropy = NA_real_)
+
+  out <- bind_rows(out_ok, out_na) |>
+    select(
+      .data$date,
+      .data$keyword,
+      .data$gini,
+      .data$hhi,
+      .data$entropy,
+      .data$batch_c
+    ) |>
+    mutate(
+      batch_o = object,
+      locations = locations
+    )
+
+  dbAppendTable(
+    conn = gt.env$globaltrends_db,
+    name = "data_doi",
+    value = out
+  )
+
+  # Progress message: avoid referencing gt.env$keywords_object if not initialized
+  max_o <- tryCatch(
+    max(gt.env$keywords_object$batch, na.rm = TRUE),
+    error = function(e) NA_integer_
+  )
+  suffix <- if (is.finite(max_o)) paste0(" [", object, "/", max_o, "]") else ""
+
+  message(paste0(
+    "Successfully computed DOI | control: ",
+    control,
+    " | object: ",
+    object,
+    " | locations: ",
+    locations,
+    suffix
+  ))
+
+  invisible(out)
 }
 
 #' @rdname compute_doi
@@ -159,60 +200,109 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
 #' @export
 
 compute_doi.list <- function(object, control = 1, locations = "countries") {
+  control <- unlist(control)
+  .check_length(control, 1)
+  .check_batch(control)
+
+  .check_length(locations, 1)
+  .check_input(locations, "character")
+
   walk(object, compute_doi, control = control, locations = locations)
+  invisible(TRUE)
 }
 
-#' @title Compute gini coefficient
-#'
-#' @rdname hlprs
+# -------------------------------------------------------------------------
+# Internal DOI metrics
+# -------------------------------------------------------------------------
+
+#' @title Inverted Gini coefficient
+#' @description
+#' Computes `1 - Gini(x)` for a non-negative numeric vector `x`. Returns `0`
+#' when the series is all `NA`, all zeros, or otherwise not computable.
 #' @keywords internal
 #' @noRd
-#'
 #' @importFrom dplyr coalesce
 
 .compute_gini <- function(series) {
-  gini <- function(x) {
-    n <- length(x)
-    x <- sort(x)
-    g <- sum(x * seq(n))
-    g <- 2 * g / sum(x) - (n + 1)
-    g <- g / n
-    return(g)
+  x <- series
+  x <- x[!is.na(x)]
+  if (length(x) == 0L) {
+    return(0)
   }
 
-  out <- coalesce(1 - gini(series), 0)
-  return(out)
+  # If there is no mass, treat as non-informative.
+  s <- sum(x)
+  if (!is.finite(s) || s <= 0) {
+    return(0)
+  }
+
+  # Standard Gini for non-negative values
+  x <- sort(x)
+  n <- length(x)
+  g <- sum(x * seq_len(n))
+  g <- (2 * g / s - (n + 1)) / n
+
+  coalesce(1 - g, 0)
 }
 
-#' @title Compute herfindahl hirschman index
-#'
-#' @rdname hlprs
+#' @title Inverted Herfindahl-Hirschman index (HHI)
+#' @description
+#' Computes `1 - sum(p^2)` where `p = x / sum(x)`. Returns `0` when the series
+#' is all `NA`, all zeros, or not computable.
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr coalesce
 
 .compute_hhi <- function(series) {
-  out <- coalesce(1 - sum((series / sum(series))^2), 0)
-  return(out)
+  x <- series
+  x <- x[!is.na(x)]
+  if (length(x) == 0L) {
+    return(0)
+  }
+
+  s <- sum(x)
+  if (!is.finite(s) || s <= 0) {
+    return(0)
+  }
+
+  p <- x / s
+  coalesce(1 - sum(p^2), 0)
 }
 
-#' @title Compute entropy
-#'
-#' @rdname hlprs
+#' @title Inverted entropy-like dispersion measure
+#' @description
+#' Computes an inverted entropy-like measure used by the package to quantify
+#' dispersion. Zero scores are removed before computing logs. Returns `0` for
+#' degenerate or non-computable inputs.
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr coalesce
 
 .compute_entropy <- function(series) {
-  entropy <- function(x) {
-    x <- x[!(x == 0)]
-    e <- x / mean(x)
-    e <- sum(x * log(e))
-    e <- e / sum(x)
-    return(e)
+  x <- series
+  x <- x[!is.na(x)]
+  if (length(x) == 0L) {
+    return(0)
   }
 
-  out <- coalesce(-1 * entropy(series), 0)
-  if (out == -Inf) {
+  # Remove zeros to avoid log(0) while preserving meaning
+  x <- x[x != 0]
+  if (length(x) == 0L) {
+    return(0)
+  }
+
+  s <- sum(x)
+  if (!is.finite(s) || s <= 0) {
+    return(0)
+  }
+
+  # Original formulation preserved; guarded for numerical issues
+  e <- x / mean(x)
+  val <- sum(x * log(e)) / s
+  out <- coalesce(-1 * val, 0)
+
+  if (!is.finite(out)) {
     out <- 0
   }
-  return(out)
+  out
 }

@@ -1,81 +1,68 @@
-#' @title Download data for object batch
+#' @title Download data for object keyword batches
 #'
-#' @aliases
-#' download_object
-#' download_object.numeric
-#' download_object.list
+#' @aliases download_object download_object.numeric download_object.list
 #'
 #' @description
-#' The function downloads search volumes from Google Trends for an object batch
-#' (*batch_o*) and one keyword from a control batch (*batch_c*) in a
-#' set of *locations*. Data is automatically written to table
-#' *data_object*. For `download_object_global` the input
-#' *location* is automatically set to *world*.
+#' Downloads Google Trends search volumes for one or more *object* batches
+#' (`batch_o`) together with a single control keyword (from `batch_c`) used for
+#' scaling/mapping, across a set of locations. Results are written to the
+#' database table `data_object`.
 #'
 #' @details
-#' Downloads through the Google Trends API are made through
-#' `gtrendsR::gtrends`. Each object batch can consist of up to four
-#' keywords and is predefined in tables *batch_keywords* and
-#' *batch_time* through `add_keywords`. In addition, one control
-#' keyword is added to each object batch. The control keyword then allows a
-#' mapping between search volumes for control keywords stored in
-#' *data_control* and search volumes for object keywords. The download for
-#' a single keyword batch for a single location takes about 30 seconds. This
-#' includes a randomized waiting period of 5-10 seconds between downloads.
-#' Depending on the frequency of downloads, Google Trends might block users
-#' for some time (about 1,500 downloads within 24 hours). In this case,
-#' `download_object` waits 60 minutes before it retries the download.
+#' Each object batch contains up to four object keywords. For each download
+#' request, this function prepends exactly one control keyword to the query so
+#' that object hits can be mapped to the control scale used elsewhere in the
+#' package.
 #'
-#' @section Warning:
-#' We advise against the usage of *category codes* in
-#' downloads. If you use *categories* to narrow the context of keyword usage,
-#' these categories are applied to **ALL** keywords in the batch. This applies
-#' to *control* keywords as well as *object* keywords and can result in
-#' unintended behavior.
+#' The function selects the control keyword dynamically per location:
+#' it inspects existing `data_control` for the chosen control batch and location,
+#' ranks control keywords by their average `hits`, and tries them in ascending
+#' order until a control keyword yields non-zero signal in the returned series.
+#' This reduces the likelihood of failed requests caused by zero-signal control
+#' terms.
 #'
-#' @param object Object batch for which the data is downloaded. Object
-#' of type `numeric` or object of type `list` containing single
-#' object of type `numeric`.
+#' The function avoids duplicate downloads by skipping locations already present
+#' for `(batch_c, batch_o)` in `data_object`.
 #'
-#' @param control Control batch that is used for mapping. Object of type
-#' `numeric`. Defaults to `1`.
+#' Downloads are performed through the package internal `.get_trend()` helper,
+#' which may use `gtrendsR::gtrends()` or the Research API backend initialized
+#' via [initialize_python()].
 #'
-#' @param locations List of countries or regions for which the data is
-#' downloaded. Refers to lists generated in `start_db`. Defaults to
-#' `countries`.
+#' @section Category codes:
+#' Avoid category codes unless you are confident they apply uniformly to all
+#' keywords in the batch. Google Trends applies a category constraint to the
+#' entire request, which can unintentionally change the meaning of control and
+#' object keywords.
 #'
-#' @seealso
-#' * [example_object()]
-#' * [gtrendsR::gtrends()]
+#' @param object Numeric scalar/vector or list of numeric scalars. Object batch
+#'   id(s) (`batch_o`) to download.
+#'
+#' @param control Numeric scalar. Control batch id (`batch_c`) used for mapping.
+#'   Defaults to `1`.
+#'
+#' @param locations Character vector of location codes. Defaults to
+#'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
+#'   Use `""` to request the global aggregate (`"world"`).
 #'
 #' @return
-#' Message that data was downloaded successfully. Data is written
-#' to table *data_object*.
+#' Invisibly returns `TRUE`. Called for its side effects (writing to
+#' `data_object`) and emits messages per location.
 #'
 #' @examples
 #' \dontrun{
-#' download_object(
-#'   object = 1,
-#'   locations = countries
-#' )
-#' download_object(
-#'   object = as.list(1:5),
-#'   locations = countries
-#' )
+#' download_object(object = 1, control = 1, locations = countries)
+#' download_object(object = as.list(1:5), control = 1, locations = countries)
+#' download_object_global(object = 1, control = 1)
 #' }
 #'
 #' @export
 #' @rdname download_object
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr mutate
+#' @importFrom dplyr collect filter mutate summarise
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
-download_object <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+download_object <- function(object, control = 1, locations = NULL) {
   UseMethod("download_object", object)
 }
 
@@ -83,142 +70,246 @@ download_object <- function(
 #' @method download_object numeric
 #' @export
 
-download_object.numeric <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+download_object.numeric <- function(object, control = 1, locations = NULL) {
+  control <- unlist(control)
   .check_length(control, 1)
+  .check_batch(control)
+
+  if (is.null(locations)) {
+    locations <- if (!is.null(gt.env$countries)) {
+      gt.env$countries
+    } else {
+      globaltrends::countries
+    }
+  }
   .check_input(locations, "character")
+
+  # Vector input: delegate to list method for consistent iteration semantics.
   if (length(object) > 1) {
     download_object(
-      control = control,
       object = as.list(object),
+      control = control,
       locations = locations
     )
-  } else {
-    walk(list(control, object), .check_batch)
-    terms_obj <- gt.env$keywords_object$keyword[
-      gt.env$keywords_object$batch == object
-    ]
-    start_date <- gt.env$time_object$start_date[
-      gt.env$time_object$batch == object
-    ]
-    end_date <- gt.env$time_object$end_date[gt.env$time_object$batch == object]
-    lst_full <- .get_full(
-      table = "data_object",
-      batch_c = control,
-      batch_o = object
-    )
-    locations <- locations[!(locations %in% lst_full)]
-    walk(
-      locations,
-      ~ {
-        in_location <- ifelse(.x == "", "world", .x)
-        qry_control <- filter(
-          gt.env$tbl_control,
-          .data$batch == control & .data$location == in_location
-        )
-        qry_control <- collect(qry_control)
-        if (nrow(qry_control) > 0) {
-          terms_con <- summarise(
-            qry_control,
-            hits = mean(.data$hits),
-            .by = keyword
-          )
-          terms_con <- filter(terms_con, hits > 0)
-          terms_con <- terms_con$keyword[order(terms_con$hits)]
+    return(invisible(TRUE))
+  }
 
-          i <- 1
-          success <- FALSE
-          while (i <= length(terms_con)) {
-            if (in_location == "world") {
-              if (gt.env$py_setup) {
-                out <- .get_trend(
-                  term = c(terms_con[[i]], terms_obj),
-                  start_date = start_date,
-                  end_date = end_date
-                )
-              } else {
-                out <- .get_trend(
-                  term = c(terms_con[[i]], terms_obj),
-                  start_date = start_date,
-                  end_date = end_date,
-                  location = ""
-                )
-              }
-            } else {
-              out <- .get_trend(
-                location = .x,
-                term = c(terms_con[[i]], terms_obj),
-                start_date = start_date,
-                end_date = end_date
-              )
-            }
-            if (
-              !is.null(out) & mean(out$hits[out$keyword == terms_con[[i]]]) > 0
-            ) {
-              out <- mutate(
-                out,
-                batch_c = control,
-                batch_o = object
-              )
-              dbAppendTable(
-                conn = gt.env$globaltrends_db,
-                name = "data_object",
-                value = out
-              )
-              success <- TRUE
-              break()
-            }
-            i <- i + 1
-          }
-          if (!success) {
-            stop(
-              "Error: Too little signal in search volumes for control keywords.\nReconsider choice of control keywords."
-            )
-          }
-          message(paste0(
-            "Successfully downloaded object data | object: ",
-            object,
-            " | control: ",
-            control,
-            " | location: ",
-            in_location,
-            " [",
-            which(locations == .x),
-            "/",
-            length(locations),
-            "]"
-          ))
-        } else {
-          message(paste0(
-            "Download for object data failed.\nThere is no data in 'data_control' for control batch ",
-            control,
-            " and location ",
-            in_location,
-            "."
-          ))
-        }
-      }
+  .check_batch(object)
+
+  # Validate that batch metadata is present (start_db() should have run).
+  if (is.null(gt.env$keywords_object) || is.null(gt.env$time_object)) {
+    stop(
+      "Object batch metadata not found in `gt.env`. Run `start_db()` first.",
+      call. = FALSE
     )
   }
+
+  terms_obj <- gt.env$keywords_object$keyword[
+    gt.env$keywords_object$batch == object
+  ]
+  start_date <- gt.env$time_object$start_date[
+    gt.env$time_object$batch == object
+  ]
+  end_date <- gt.env$time_object$end_date[gt.env$time_object$batch == object]
+
+  if (length(terms_obj) == 0) {
+    stop(
+      paste0("No keywords found for object batch ", object, "."),
+      call. = FALSE
+    )
+  }
+  if (length(start_date) == 0 || length(end_date) == 0) {
+    stop(
+      paste0("No time window found for object batch ", object, "."),
+      call. = FALSE
+    )
+  }
+
+  # Avoid duplicate downloads: only fetch locations not yet present for this batch.
+  existing <- .get_full(
+    table = "data_object",
+    batch_c = control,
+    batch_o = object
+  )
+  loc_remaining <- locations[!(locations %in% existing)]
+
+  if (length(loc_remaining) == 0) {
+    message(paste0(
+      "No new locations to download | object: ",
+      object,
+      " | control: ",
+      control,
+      "."
+    ))
+    return(invisible(TRUE))
+  }
+
+  walk(
+    seq_along(loc_remaining),
+    ~ {
+      loc <- loc_remaining[[.x]]
+      in_location <- ifelse(identical(loc, ""), "world", loc)
+
+      # We require `data_control` for the same control batch and location to
+      # pick an appropriate control keyword for mapping.
+      qry_control <- gt.env$tbl_control |>
+        filter(.data$batch == control, .data$location == in_location) |>
+        collect()
+
+      if (nrow(qry_control) == 0) {
+        message(paste0(
+          "Skipped object download (missing control baseline) | object: ",
+          object,
+          " | control: ",
+          control,
+          " | location: ",
+          in_location,
+          "."
+        ))
+        return(invisible(NULL))
+      }
+
+      # Rank control keywords by average hits (ascending) and keep only those with signal.
+      # We try control keywords with lower average hits first to reduce saturation risk.
+      terms_con <- qry_control |>
+        summarise(hits = mean(.data$hits, na.rm = TRUE), .by = .data$keyword) |>
+        filter(.data$hits > 0)
+
+      if (nrow(terms_con) == 0) {
+        stop(
+          paste0(
+            "Too little signal in control batch ",
+            control,
+            " for location ",
+            in_location,
+            ". ",
+            "Reconsider choice of control keywords."
+          ),
+          call. = FALSE
+        )
+      }
+
+      terms_con <- terms_con$keyword[order(terms_con$hits)]
+
+      # Try control keywords until one returns non-zero signal in the result.
+      success <- FALSE
+      out <- NULL
+
+      for (term_c in terms_con) {
+        if (identical(in_location, "world")) {
+          if (isTRUE(gt.env$py_setup)) {
+            out <- .get_trend(
+              term = c(term_c, terms_obj),
+              start_date = start_date,
+              end_date = end_date
+            )
+          } else {
+            out <- .get_trend(
+              term = c(term_c, terms_obj),
+              start_date = start_date,
+              end_date = end_date,
+              location = ""
+            )
+          }
+        } else {
+          out <- .get_trend(
+            location = loc,
+            term = c(term_c, terms_obj),
+            start_date = start_date,
+            end_date = end_date
+          )
+        }
+
+        # Accept only if we got data and the control term has positive mean hits.
+        if (!is.null(out)) {
+          ctrl_hits <- out$hits[out$keyword == term_c]
+          if (length(ctrl_hits) > 0 && mean(ctrl_hits, na.rm = TRUE) > 0) {
+            success <- TRUE
+            break
+          }
+        }
+      }
+
+      if (!success) {
+        stop(
+          paste0(
+            "Download failed: no control keyword produced usable signal for object batch ",
+            object,
+            " (control batch ",
+            control,
+            ", location ",
+            in_location,
+            "). ",
+            "Reconsider control keywords or time window."
+          ),
+          call. = FALSE
+        )
+      }
+
+      # Persist data
+      out <- mutate(out, batch_c = control, batch_o = object)
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "data_object",
+        value = out
+      )
+
+      message(paste0(
+        "Downloaded object data | object: ",
+        object,
+        " | control: ",
+        control,
+        " | location: ",
+        in_location,
+        " [",
+        .x,
+        "/",
+        length(loc_remaining),
+        "]"
+      ))
+
+      invisible(TRUE)
+    }
+  )
+
+  invisible(TRUE)
 }
 
 #' @rdname download_object
 #' @method download_object list
 #' @export
 
-download_object.list <- function(
-  object,
-  control = 1,
-  locations = gt.env$countries
-) {
+download_object.list <- function(object, control = 1, locations = NULL) {
+  control <- unlist(control)
+  .check_length(control, 1)
+  .check_batch(control)
+
+  if (is.null(locations)) {
+    locations <- if (!is.null(gt.env$countries)) {
+      gt.env$countries
+    } else {
+      globaltrends::countries
+    }
+  }
+  .check_input(locations, "character")
+
   walk(object, download_object, control = control, locations = locations)
+  invisible(TRUE)
 }
 
-#' @rdname download_object
+#' @title Download global object data
+#'
+#' @description
+#' Convenience wrapper around [download_object()] to download global (world)
+#' object series. Internally this is implemented by passing `locations = ""`.
+#'
+#' @param object Numeric scalar/vector or list. Object batch id(s) to download.
+#' @param control Numeric scalar. Control batch id used for mapping. Defaults to `1`.
+#'
+#' @return Invisibly returns `TRUE`.
+#'
 #' @export
+#' @rdname download_object
 
 download_object_global <- function(object, control = 1) {
   download_object(object = object, control = control, locations = "")

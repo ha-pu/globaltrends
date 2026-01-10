@@ -4,45 +4,37 @@
 \name{data_control}
 \alias{data_control}
 \alias{example_control}
-\title{data_control}
+\title{Example table: control downloads (\code{data_control})}
 \format{
-A tibble with 2,400 rows and 5 variables:
+A tibble with 5 variables:
 \describe{
-\item{location}{Column of type \code{character} showing the ISO2 code of
-the country or region for which the data was downloaded.}
-\item{keyword}{Column of type \code{character} showing the keyword for
-which the data was downloaded.}
-\item{date}{Column of type \code{integer} showing the date for which the
-data was downloaded. Can be transformed into date format with
-\code{lubridate::as_date}.\verb{\\item\{hits\}\{Column of type}double\verb{showing search volumes for the respective location-keyword-date combination.\} \\item\{batch\}\{Column of type}integer` showing the number of each
-batch.}
+\item{location}{Character. Location code (e.g., ISO 3166-1 alpha-2 or other
+codes supported by Google Trends). Global data uses \code{"world"}.}
+\item{keyword}{Character. Control keyword.}
+\item{date}{Integer. Date stored as days since 1970-01-01 (Unix epoch).
+Convert with \code{lubridate::as_date(date)}.}
+\item{hits}{Double. Search interest (Google Trends).}
+\item{batch}{Integer. Control batch id.}
 }
 }
 \source{
-\url{https://trends.google.com/trends/}
+Google Trends. See the Trends UI and documentation.
 }
 \usage{
 example_control
 }
 \description{
-The table \emph{data_control} contains the downloaded data for each control
-batch. Each line contains the search \emph{hits} for each \emph{keyword} in a
-control \emph{batch} for a given \emph{location} and \emph{date}. Global data
-gets the value \emph{world} as location. Data is downloaded and automatically
-written to the table through the function \code{download_control}. The
-function \code{start_db} exports the table \emph{data_control} as database
-connection \code{tbl_control} to the package environment \code{gt.env}. Users
-can access the database table through \code{dplyr::tbl}.
-The sample data included in \code{data_control} was simulated based on actual
-Google Trends data.
+Example data representing the database table \code{data_control}.
+Each row contains Google Trends \code{hits} for a control \code{keyword} in a given
+\code{location} on a given \code{date}, along with the control \code{batch} identifier.
 
-Example data for the table \emph{data_control} is available as R object
-\code{example_control}.
+In a live database, data are downloaded via \code{\link[=download_control]{download_control()}} and are
+available through \code{gt.env$tbl_control} (a lazy table reference) after
+\code{\link[=start_db]{start_db()}}. Global aggregates use \code{"world"} as \code{location}.
+
+The example dataset is simulated to resemble real Google Trends output.
 }
 \seealso{
-\itemize{
-\item \code{\link[=download_control]{download_control()}}
-\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
-}
+\code{\link[=download_control]{download_control()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}
 }
 \keyword{datasets}

@@ -3,68 +3,20 @@
 \docType{data}
 \name{us_states}
 \alias{us_states}
-\title{us_states}
+\title{Default location set: US states}
 \format{
-An object of class \code{character} of length 51.
+A character vector.
 }
 \usage{
 us_states
 }
 \description{
-A character vector that includes ISO2 codes for all US federal states and
-Washington DC. The data includes:
-\itemize{
-\item US-AL
-\item US-AK
-\item US-AZ
-\item US-AR
-\item US-CA
-\item US-CO
-\item US-CT
-\item US-DE
-\item US-FL
-\item US-GA
-\item US-HI
-\item US-ID
-\item US-IL
-\item US-IN
-\item US-IA
-\item US-KS
-\item US-KY
-\item US-LA
-\item US-ME
-\item US-MD
-\item US-MA
-\item US-MI
-\item US-MN
-\item US-MS
-\item US-MO
-\item US-MT
-\item US-NE
-\item US-NV
-\item US-NH
-\item US-NJ
-\item US-NM
-\item US-NY
-\item US-NC
-\item US-ND
-\item US-OH
-\item US-OK
-\item US-OR
-\item US-PA
-\item US-RI
-\item US-SC
-\item US-SD
-\item US-TN
-\item US-TX
-\item US-UT
-\item US-VT
-\item US-VA
-\item US-WA
-\item US-WV
-\item US-WI
-\item US-WY
-\item US-DC
+Character vector of US state-level location codes used by the package.
+
+The vector contains ISO 3166-2 codes of the form \code{"US-XX"} for the 50 US
+states and \code{"US-DC"} for the District of Columbia.
 }
+\seealso{
+\code{\link[=add_locations]{add_locations()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

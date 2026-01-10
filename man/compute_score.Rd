@@ -5,77 +5,78 @@
 \alias{compute_score.numeric}
 \alias{compute_score.list}
 \alias{compute_voi}
-\title{Compute keyword-country search score}
+\title{Compute search scores for object keywords}
 \usage{
-compute_score(object, control = 1, locations = gt.env$countries)
+compute_score(object, control = 1, locations = NULL)
+
+\method{compute_score}{numeric}(object, control = 1, locations = NULL)
+
+\method{compute_score}{list}(object, control = 1, locations = NULL)
 
 compute_voi(object, control = 1)
 }
 \arguments{
-\item{object}{Object batch for which the data is downloaded. Object
-of type \code{numeric} or object of type \code{list} containing single
-objects of type \code{numeric}.}
+\item{object}{Numeric scalar/vector (or list) of object batch id(s).}
 
-\item{control}{Control batch for which the data is downloaded. Object
-of type \code{numeric}. Defaults to 1.}
+\item{control}{Numeric scalar. Control batch id. Defaults to \code{1}.}
 
-\item{locations}{List of countries or regions for which the data is
-downloaded. Refers to lists generated in \code{start_db}. Defaults to
-\code{countries}.}
+\item{locations}{Character vector of location codes (e.g., \code{countries},
+\code{us_states}) or \code{"world"} for global VOI-style computation. If \code{NULL},
+defaults to \code{gt.env$countries} when available, otherwise \code{globaltrends::countries}.}
 }
 \value{
-Message that data has been computed successfully. Data is written to
-table \emph{data_score}.
+Invisibly returns \code{TRUE} (list method) or the number of inserted rows
+(numeric method, best-effort) for the processed batch. The function is
+called primarily for its side effects (writing to \code{data_score}) and emits
+a message per batch.
+
+Invisibly returns \code{TRUE} (or a batch-wise insert count) via
+\code{\link[=compute_score]{compute_score()}}.
 }
 \description{
-The function computes search scores for object keywords. Search volumes for
-control and object batches are mapped to the same base. Next, search volumes
-for object batches are divided by the sum of search volumes for the
-respective control batch. \code{compute_voi} computes volume of
-internationalization (VOI) as global search scores.
+Computes \emph{search scores} for object keywords by mapping object and control
+search volumes onto a common scale and then normalizing object volumes by the
+mapped control total for each \verb{(location, date)}.
+
+Convenience wrapper around \code{\link[=compute_score]{compute_score()}} that computes scores for the
+global aggregate only (\code{location == "world"}).
 }
 \details{
-The search score computation proceeds in four steps. First, the function
-aggregates all search volumes to monthly data. Next, it follows the procedure
-outlined by Castelnuovo and Tran (2017, pp. A1-A2) to map control and object
-data. After the mapping, object search volumes are divided by the sum of
-control search volumes in the respective control batch. We use the sum of
-search volumes for a set of control keywords, rather than the search volumes
-for a single control keyword, to smooth-out variation in the underlying
-control data.
-
-\emph{Castelnuovo, E. & Tran, T. D. 2017. Google It Up! A Google Trends-based
-Uncertainty index for the United States and Australia. Economics Letters,
-161: 149-153.}
+Conceptually, the score for an object keyword is computed as:
+\deqn{
+  score_{o,loc,t} = \frac{hits_{o,loc,t}}{\sum_{k \in C} \tilde{hits}_{k,loc,t}}
 }
-\section{Note}{
+where \eqn{C} is the set of control keywords and \eqn{\tilde{hits}} are control
+hits mapped to the object scale using an overlap-based benchmark, following
+the mapping logic described in Castelnuovo and Tran (2017, Appendix A).
 
-When synonyms were specified through \code{add_synonym}, run \code{aggregate_synonyms}
-to add their search scores to the main term.
+Operationally, for each requested object batch (\code{batch_o}) and control batch
+(\code{batch_c}), the function:
+\enumerate{
+\item Identifies the subset of \code{locations} that have not yet been computed
+for \verb{(batch_c, batch_o)} in \code{data_score}.
+\item Computes a per-\verb{(location, date)} \emph{benchmark} as the mean ratio of
+object/control hits \strong{for the control keywords} that are present in both
+downloads.
+\item Maps the control batch to the object scale via \code{hits_mapped = hits * benchmark}.
+\item Sums mapped control hits across control keywords to obtain \code{hits_c}
+and computes \code{score = hits_object / hits_c} for each object keyword.
+\item Inserts the resulting rows into \code{data_score}.
 }
 
+If synonym keywords were specified via \code{\link[=add_synonym]{add_synonym()}}, you should run
+\code{\link[=aggregate_synonyms]{aggregate_synonyms()}} after score computation to roll synonym scores into
+their canonical terms.
+
+References:
+Castelnuovo, E. & Tran, T. D. (2017). \emph{Google It Up! A Google Trends-based
+Uncertainty index for the United States and Australia.} Economics Letters, 161, 149-153.
+}
 \examples{
 \dontrun{
-compute_score(
-  object = 1,
-  control = 1,
-  locations = countries
-)
-compute_voi(
-  object = 1,
-  control = 1
-)
-compute_score(
-  object = as.list(1:5),
-  control = 1,
-  locations = countries
-)
+compute_score(object = 1, control = 1, locations = countries)
+compute_score(object = as.list(1:5), control = 1, locations = countries)
+compute_voi(object = 1, control = 1)
 }
 
-}
-\seealso{
-\itemize{
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=add_synonym]{add_synonym()}}
-}
 }

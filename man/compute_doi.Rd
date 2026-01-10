@@ -4,7 +4,7 @@
 \alias{compute_doi}
 \alias{compute_doi.numeric}
 \alias{compute_doi.list}
-\title{Aggregate keyword-country data and compute DOI}
+\title{Compute degree of internationalization (DOI)}
 \usage{
 compute_doi(object, control = 1, locations = "countries")
 
@@ -13,49 +13,48 @@ compute_doi(object, control = 1, locations = "countries")
 \method{compute_doi}{list}(object, control = 1, locations = "countries")
 }
 \arguments{
-\item{object}{Object batch for which the keyword-country data
-is aggregated and DOI is computed.  Object of type \code{numeric}.}
+\item{object}{Numeric scalar (or vector) or list of numeric scalars.
+Object batch id(s) (\code{batch_o}) for which DOI should be computed.}
 
-\item{control}{Control batch for which the search score is used. Object
-of type \code{numeric}.}
+\item{control}{Numeric scalar. Control batch id (\code{batch_c}) used as baseline.
+Defaults to \code{1}.}
 
-\item{locations}{List of locations for which the search score is used.
-Object of type \code{character}. Defaults to \emph{"countries"}.}
+\item{locations}{Character scalar. Name of the location set stored in
+\code{data_locations$type} (e.g., \code{"countries"}, \code{"us_states"}). Defaults to
+\code{"countries"}.}
 }
 \value{
-Message that data was aggregated successfully. Data is written to table
-\emph{data_doi}.
+Invisibly returns the tibble written to \code{data_doi} for the processed batch.
+Called primarily for its side effects (database writes) and emits a progress
+message per batch.
 }
 \description{
-The function computes degree of internationalization (DOI) for object
-keywords. Degree of internationalization is measured based on the
-distribution of country search scores.
+Computes degree of internationalization (DOI) for object keywords based on
+the cross-location distribution of search scores. DOI is computed per
+\verb{(keyword, date)} for a given control batch (\code{batch_c}), object batch
+(\code{batch_o}), and a named location set (e.g., \code{"countries"}).
 }
 \details{
-The function uses an inverted Gini-coefficient as measure for the degree of
-internationalization. The more uniform the distribution of search scores
-across all countries, the higher the inverted Gini-coefficient and the
-greater the degree of internationalization. In addition to the
-Gini-coefficient, the package uses inverted Herfindahl index and inverted
-Entropy as measures for internationalization.
+DOI is derived from the dispersion of search scores across locations.
+Intuitively, the more uniformly distributed the scores are across the chosen
+location set, the higher the DOI.
+
+This implementation writes three inverted concentration/inequality measures:
+\itemize{
+\item \code{gini}: \code{1 - Gini(score)}
+\item \code{hhi}: \code{1 - sum(p^2)} where \code{p = score / sum(score)} (Herfindahl-Hirschman)
+\item \code{entropy}: normalized negative entropy-like measure (see \code{.compute_entropy()})
+}
+
+The function expects that score data is already available in \code{data_score},
+typically produced by \code{\link[=compute_score]{compute_score()}}. Only locations present in the named
+location set are used. Global (\code{location == "world"}) is not used unless the
+location set explicitly contains \code{"world"}.
 }
 \examples{
 \dontrun{
-compute_doi(
-  object = 1,
-  control = 1,
-  locations = "countries"
-)
-compute_doi(
-  object = as.list(1:5),
-  control = 1,
-  locations = "countries"
-)
+compute_doi(object = 1, control = 1, locations = "countries")
+compute_doi(object = as.list(1:5), control = 1, locations = "countries")
 }
 
-}
-\seealso{
-\itemize{
-\item \code{\link[=example_doi]{example_doi()}}
-}
 }

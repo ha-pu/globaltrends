@@ -1,29 +1,43 @@
 #' @title Remove data from database tables
 #'
 #' @description
-#' The function removes data from database tables for control or object batches.
+#' Removes batches and derived data from the database. Deletions are *greedy*:
+#' downstream tables that depend on the deleted batches are cleaned up
+#' automatically to keep the database consistent.
 #'
 #' @details
-#' The function removes data "greedily": all data that builds on the deleted
-#' data is removed. For example, when data from *data_control* is removed
-#' data in *data_object* that maps to this control batch is also removed.
-#' The dependency structure works as follows: *batch_keyword* / *batch_time* ->
-#' *data_control* -> *data_object* -> *data_score* -> *data_doi*.
+#' The dependency chain is:
+#' `batch_keywords` / `batch_time` \eqn{\rightarrow} `data_control`
+#' \eqn{\rightarrow} `data_object` \eqn{\rightarrow} `data_score`
+#' \eqn{\rightarrow} `data_doi`.
 #'
-#' After using `remove_data`, run `vacuum_data` to free-up unused memory in
-#' the database file. Depending on the database size, `vacuum_data` might
-#' take some minutes for execution.
+#' Examples:
+#' * Removing a control batch from `data_control` also removes all object rows
+#'   referencing that control batch, then associated scores and DOI rows.
+#' * Removing an object batch from `batch_keywords` removes the corresponding
+#'   object data (`data_object`), then scores and DOI rows derived from it.
 #'
-#' @param table Database table from which the batch should be removed.  Object
-#' of type `character`.
+#' After deletions, consider running [vacuum_data()] to reclaim disk space.
+#' Vacuuming can take several minutes for large database files.
 #'
-#' @param control Control batch for which the data is removed Object
-#' of type `numeric`.
+#' @param table Character scalar. One of:
+#'   `"batch_keywords"`, `"batch_time"`, `"data_control"`, `"data_object"`,
+#'   `"data_score"`, `"data_doi"`.
 #'
-#' @param object Object batch for which the data is removed Object
-#' of type `numeric`.
+#' @param control Optional numeric/integer scalar. Control batch id. Required
+#'   for `table = "data_control"`. For `batch_keywords` and `batch_time`, exactly
+#'   one of `control` or `object` must be provided.
+#'
+#' @param object Optional numeric/integer scalar. Object batch id. For
+#'   `batch_keywords` and `batch_time`, exactly one of `control` or `object`
+#'   must be provided.
+#'
+#' @return
+#' Invisibly returns `TRUE` on success. The function is called for its side
+#' effects (deleting rows).
 #'
 #' @seealso
+#' * [vacuum_data()]
 #' * [example_keywords()]
 #' * [example_time()]
 #' * [example_control()]
@@ -31,103 +45,204 @@
 #' * [example_score()]
 #' * [example_doi()]
 #'
-#' @return Message that data has been removed successfully. Data is removed
-#' from database tables.
-#'
 #' @examples
 #' \dontrun{
-#' remove_data(
-#'   table = "batch_keywords",
-#'   control = 1
-#' )
-#' remove_data(
-#'   table = "data_score",
-#'   control = 1,
-#'   object = 1
-#' )
+#' remove_data(table = "batch_keywords", control = 1)
+#' remove_data(table = "data_score", control = 1, object = 1)
 #' vacuum_data()
 #' }
 #'
 #' @export
 #' @importFrom DBI dbExecute
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
+#' @importFrom dplyr collect filter select
+#' @importFrom purrr walk
 #' @importFrom rlang .data
 #' @rdname remove_data
 
 remove_data <- function(table, control = NULL, object = NULL) {
   .check_length(table, 1)
-  .check_length(control, 1)
-  .check_length(object, 1)
   .check_input(table, "character")
-  if (table == "batch_keywords") {
-    if (!is.null(control) & is.null(object)) {
-      .remove_batch_keywords(type = "control", batch_c = control, batch_o = object)
-    } else if (!is.null(object) & is.null(control)) {
-      .remove_batch_keywords(type = "object", batch_c = control, batch_o = object)
-    }
-  } else if (table == "batch_time") {
-    if (!is.null(control) & is.null(object)) {
-      .remove_batch_time(type = "control", batch_c = control, batch_o = object)
-    } else if (!is.null(object) & is.null(control)) {
-      .remove_batch_time(type = "object", batch_c = control, batch_o = object)
-    }
-  } else if (table == "data_control") {
-    if (!is.null(control)) {
-      .remove_data_control(batch_c = control, batch_o = object)
-    }
-  } else if (table == "data_object") {
-    if (!is.null(object) | !is.null(control)) {
-      .remove_data_object(batch_c = control, batch_o = object)
-    }
-  } else if (table == "data_score") {
-    if (!is.null(control) | !is.null(object)) {
-      .remove_data_score(batch_c = control, batch_o = object)
-    }
-  } else if (table == "data_doi") {
-    if (!is.null(control) | !is.null(object)) {
-      .remove_data_doi(batch_c = control, batch_o = object)
-    }
-  } else {
-    stop(paste0("Error: 'table' must be either 'batch_keywords', 'batch_time', 'data_control', 'data_object', 'data_score', or 'data_doi'.\nYou provided ", table, "."))
+
+  # Validate scalar-ness only if provided
+  if (!is.null(control)) {
+    .check_length(control, 1)
   }
+  if (!is.null(object)) {
+    .check_length(object, 1)
+  }
+
+  allowed <- c(
+    "batch_keywords",
+    "batch_time",
+    "data_control",
+    "data_object",
+    "data_score",
+    "data_doi"
+  )
+  if (!(table %in% allowed)) {
+    stop(
+      paste0(
+        "`table` must be one of: ",
+        paste(shQuote(allowed), collapse = ", "),
+        ". You provided ",
+        shQuote(table),
+        "."
+      ),
+      call. = FALSE
+    )
+  }
+
+  # Dispatch with table-specific argument rules
+  if (table %in% c("batch_keywords", "batch_time")) {
+    .require_exactly_one(control, object, arg1 = "control", arg2 = "object")
+    type <- if (!is.null(control)) "control" else "object"
+
+    if (table == "batch_keywords") {
+      .remove_batch_keywords(type = type, batch_c = control, batch_o = object)
+    } else {
+      .remove_batch_time(type = type, batch_c = control, batch_o = object)
+    }
+
+    return(invisible(TRUE))
+  }
+
+  if (table == "data_control") {
+    if (is.null(control)) {
+      stop(
+        "For `table = 'data_control'`, `control` must be provided.",
+        call. = FALSE
+      )
+    }
+    if (!is.null(object)) {
+      warning(
+        "`object` is ignored for `table = 'data_control'`.",
+        call. = FALSE
+      )
+    }
+    .remove_data_control(batch_c = control)
+    return(invisible(TRUE))
+  }
+
+  # Remaining tables accept control, object, or both, but not neither
+  .require_at_least_one(control, object, arg1 = "control", arg2 = "object")
+
+  if (table == "data_object") {
+    .remove_data_object(batch_c = control, batch_o = object)
+  } else if (table == "data_score") {
+    .remove_data_score(batch_c = control, batch_o = object)
+  } else if (table == "data_doi") {
+    .remove_data_doi(batch_c = control, batch_o = object)
+  }
+
+  invisible(TRUE)
 }
 
+#' @title Vacuum database file
+#'
+#' @description
+#' Executes `VACUUM` on the underlying database to reclaim unused space after
+#' large deletions.
+#'
+#' @details
+#' For SQLite-based backends, `VACUUM` rewrites the database file and can take
+#' noticeable time for large databases.
+#'
+#' @return Invisibly returns `TRUE` on success.
+#'
 #' @export
 #' @rdname remove_data
+#' @importFrom DBI dbExecute
 
 vacuum_data <- function() {
-  out <- dbExecute(conn = gt.env$globaltrends_db, statement = "vacuum")
-  if (out == 0) message("Vacuum completed successfully.")
+  dbExecute(conn = gt.env$globaltrends_db, statement = "VACUUM")
+  message("Vacuum completed successfully.")
+  invisible(TRUE)
 }
 
-#' @title Remove from batch_keywords
+# -------------------------------------------------------------------------
+# Internal helpers
+# -------------------------------------------------------------------------
+
 #' @keywords internal
 #' @noRd
 
-.remove_batch_keywords <- function(type, batch_c, batch_o) {
-  walk(list(batch_c, batch_o), .check_batch)
+.require_exactly_one <- function(x, y, arg1, arg2) {
+  if (is.null(x) && is.null(y)) {
+    stop(
+      paste0("Specify exactly one of `", arg1, "` or `", arg2, "`."),
+      call. = FALSE
+    )
+  }
+  if (!is.null(x) && !is.null(y)) {
+    stop(
+      paste0("Specify only one of `", arg1, "` or `", arg2, "`, not both."),
+      call. = FALSE
+    )
+  }
+}
+
+#' @keywords internal
+#' @noRd
+
+.require_at_least_one <- function(x, y, arg1, arg2) {
+  if (is.null(x) && is.null(y)) {
+    stop(
+      paste0("Specify at least one of `", arg1, "` or `", arg2, "`."),
+      call. = FALSE
+    )
+  }
+}
+
+#' @keywords internal
+#' @noRd
+
+.check_batch_optional <- function(x) {
+  if (!is.null(x)) .check_batch(x)
+}
+
+#' @keywords internal
+#' @noRd
+.db_delete <- function(statement, params = list()) {
+  dbExecute(
+    conn = gt.env$globaltrends_db,
+    statement = statement,
+    params = params
+  )
+}
+
+#' @title Remove from batch_keywords (greedy)
+#' @keywords internal
+#' @noRd
+#' @importFrom dplyr collect filter select
+#' @importFrom purrr walk
+#' @importFrom rlang .data
+
+.remove_batch_keywords <- function(type, batch_c = NULL, batch_o = NULL) {
+  walk(list(batch_c, batch_o), .check_batch_optional)
+
+  batch <- if (type == "control") batch_c else batch_o
+  .db_delete(
+    statement = "DELETE FROM batch_keywords WHERE type = ? AND batch = ?",
+    params = list(type, batch)
+  )
+
+  # Refresh keyword lists in gt.env so downstream calls see a consistent state
+  .refresh_keywords(type)
+
+  message(
+    paste0(
+      "Successfully deleted ",
+      type,
+      " batch ",
+      batch,
+      " from 'batch_keywords'."
+    )
+  )
+
+  # Greedy deletion: remove dependent data and time windows
   if (type == "control") {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch_c))
-    keywords_control <- filter(gt.env$tbl_keywords, .data$type == "control")
-    keywords_control <- select(keywords_control, -type)
-    keywords_control <- collect(keywords_control)
-    lst_export <- list(keywords_control, keywords_control)
-    names(lst_export) <- list("keywords_control", "keywords_control")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully deleted control batch ", batch_c, " from 'batch_keywords'."))
-
     .remove_data_control(batch_c = batch_c)
-  } else if (type == "object") {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM batch_keywords WHERE type=? AND batch=?", params = list(type, batch_o))
-    keywords_object <- filter(gt.env$tbl_keywords, .data$type == "object")
-    keywords_object <- select(keywords_object, -type)
-    keywords_object <- collect(keywords_object)
-    lst_export <- list(keywords_object, keywords_object)
-    names(lst_export) <- list("keywords_object", "keywords_object")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully deleted object batch ", batch_o, " from 'batch_keywords'."))
-
+  } else {
     .remove_data_object(batch_o = batch_o)
   }
 
@@ -137,77 +252,145 @@ vacuum_data <- function() {
 #' @title Remove from batch_time
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr collect filter select
+#' @importFrom purrr walk
+#' @importFrom rlang .data
 
 .remove_batch_time <- function(type, batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  if (type == "control") {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_c))
-    time_control <- filter(gt.env$tbl_time, .data$type == "control")
-    time_control <- select(time_control, -type)
-    time_control <- collect(time_control)
-    lst_export <- list(time_control, time_control)
-    names(lst_export) <- list("time_control", "time_control")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully deleted control batch ", batch_c, " from 'batch_time'."))
-  } else if (type == "object") {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM batch_time WHERE type=? AND batch=?", params = list(type, batch_o))
-    time_object <- filter(gt.env$tbl_time, .data$type == "object")
-    time_object <- select(time_object, -type)
-    time_object <- collect(time_object)
-    lst_export <- list(time_object, time_object)
-    names(lst_export) <- list("time_object", "time_object")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully deleted object batch ", batch_o, " from 'batch_time'."))
-  }
+  walk(list(batch_c, batch_o), .check_batch_optional)
+
+  batch <- if (type == "control") batch_c else batch_o
+  .db_delete(
+    statement = "DELETE FROM batch_time WHERE type = ? AND batch = ?",
+    params = list(type, batch)
+  )
+
+  .refresh_time(type)
+
+  message(
+    paste0(
+      "Successfully deleted ",
+      type,
+      " batch ",
+      batch,
+      " from 'batch_time'."
+    )
+  )
 }
 
-#' @title Remove from data_control
+#' @title Remove from data_control (greedy)
 #' @keywords internal
 #' @noRd
 
-.remove_data_control <- function(batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_control WHERE batch=?", params = list(batch_c))
-  message(paste0("Successfully deleted control batch ", batch_c, " from 'data_control'."))
+.remove_data_control <- function(batch_c) {
+  .check_batch_optional(batch_c)
 
+  .db_delete(
+    statement = "DELETE FROM data_control WHERE batch = ?",
+    params = list(batch_c)
+  )
+  message(paste0(
+    "Successfully deleted control batch ",
+    batch_c,
+    " from 'data_control'."
+  ))
+
+  # Greedy: object rows reference control batches
   .remove_data_object(batch_c = batch_c)
 }
 
-#' @title Remove from data_object
+#' @title Remove from data_object (greedy)
 #' @keywords internal
 #' @noRd
+#' @importFrom purrr walk
 
 .remove_data_object <- function(batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  if (is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_c=?", params = list(batch_c))
-    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_object'."))
-  } else if (is.null(batch_c) & !is.null(batch_o)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=?", params = list(batch_o))
-    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_object'."))
-  } else if (!is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_object WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_object'."))
+  walk(list(batch_c, batch_o), .check_batch_optional)
+  .require_at_least_one(batch_c, batch_o, arg1 = "batch_c", arg2 = "batch_o")
+
+  if (!is.null(batch_c) && is.null(batch_o)) {
+    .db_delete(
+      "DELETE FROM data_object WHERE batch_c = ?",
+      params = list(batch_c)
+    )
+    message(paste0(
+      "Successfully deleted control batch ",
+      batch_c,
+      " from 'data_object'."
+    ))
+  } else if (is.null(batch_c) && !is.null(batch_o)) {
+    .db_delete(
+      "DELETE FROM data_object WHERE batch_o = ?",
+      params = list(batch_o)
+    )
+    message(paste0(
+      "Successfully deleted object batch ",
+      batch_o,
+      " from 'data_object'."
+    ))
+  } else {
+    # Important: parameter order must match placeholder order
+    .db_delete(
+      "DELETE FROM data_object WHERE batch_o = ? AND batch_c = ?",
+      params = list(batch_o, batch_c)
+    )
+    message(
+      paste0(
+        "Successfully deleted control batch ",
+        batch_c,
+        " and object batch ",
+        batch_o,
+        " from 'data_object'."
+      )
+    )
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
 }
 
-#' @title Remove from data_score
+#' @title Remove from data_score (greedy)
 #' @keywords internal
 #' @noRd
+#' @importFrom purrr walk
 
 .remove_data_score <- function(batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  if (is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_c=?", params = list(batch_c))
-    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_score'."))
-  } else if (is.null(batch_c) & !is.null(batch_o)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=?", params = list(batch_o))
-    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_score'."))
-  } else if (!is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_score WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_score'."))
+  walk(list(batch_c, batch_o), .check_batch_optional)
+  .require_at_least_one(batch_c, batch_o, arg1 = "batch_c", arg2 = "batch_o")
+
+  if (!is.null(batch_c) && is.null(batch_o)) {
+    .db_delete(
+      "DELETE FROM data_score WHERE batch_c = ?",
+      params = list(batch_c)
+    )
+    message(paste0(
+      "Successfully deleted control batch ",
+      batch_c,
+      " from 'data_score'."
+    ))
+  } else if (is.null(batch_c) && !is.null(batch_o)) {
+    .db_delete(
+      "DELETE FROM data_score WHERE batch_o = ?",
+      params = list(batch_o)
+    )
+    message(paste0(
+      "Successfully deleted object batch ",
+      batch_o,
+      " from 'data_score'."
+    ))
+  } else {
+    .db_delete(
+      "DELETE FROM data_score WHERE batch_o = ? AND batch_c = ?",
+      params = list(batch_o, batch_c)
+    )
+    message(
+      paste0(
+        "Successfully deleted control batch ",
+        batch_c,
+        " and object batch ",
+        batch_o,
+        " from 'data_score'."
+      )
+    )
   }
 
   .remove_data_doi(batch_c = batch_c, batch_o = batch_o)
@@ -216,17 +399,71 @@ vacuum_data <- function() {
 #' @title Remove from data_doi
 #' @keywords internal
 #' @noRd
+#' @importFrom purrr walk
 
 .remove_data_doi <- function(batch_c = NULL, batch_o = NULL) {
-  walk(list(batch_c, batch_o), .check_batch)
-  if (is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_c=?", params = list(batch_c))
-    message(paste0("Successfully deleted control batch ", batch_c, " from 'data_doi'."))
-  } else if (is.null(batch_c) & !is.null(batch_o)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=?", params = list(batch_o))
-    message(paste0("Successfully deleted object batch ", batch_o, " from 'data_doi'."))
-  } else if (!is.null(batch_o) & !is.null(batch_c)) {
-    dbExecute(conn = gt.env$globaltrends_db, statement = "DELETE FROM data_doi WHERE batch_o=? AND batch_c=?", params = list(batch_c, batch_o))
-    message(paste0("Successfully deleted control batch ", batch_c, " and object batch ", batch_o, " from 'data_doi'."))
+  walk(list(batch_c, batch_o), .check_batch_optional)
+  .require_at_least_one(batch_c, batch_o, arg1 = "batch_c", arg2 = "batch_o")
+
+  if (!is.null(batch_c) && is.null(batch_o)) {
+    .db_delete("DELETE FROM data_doi WHERE batch_c = ?", params = list(batch_c))
+    message(paste0(
+      "Successfully deleted control batch ",
+      batch_c,
+      " from 'data_doi'."
+    ))
+  } else if (is.null(batch_c) && !is.null(batch_o)) {
+    .db_delete("DELETE FROM data_doi WHERE batch_o = ?", params = list(batch_o))
+    message(paste0(
+      "Successfully deleted object batch ",
+      batch_o,
+      " from 'data_doi'."
+    ))
+  } else {
+    .db_delete(
+      "DELETE FROM data_doi WHERE batch_o = ? AND batch_c = ?",
+      params = list(batch_o, batch_c)
+    )
+    message(
+      paste0(
+        "Successfully deleted control batch ",
+        batch_c,
+        " and object batch ",
+        batch_o,
+        " from 'data_doi'."
+      )
+    )
   }
+}
+
+#' @title Refresh keyword vectors in gt.env
+#' @keywords internal
+#' @noRd
+#' @importFrom dplyr collect filter select
+#' @importFrom rlang .data
+
+.refresh_keywords <- function(type) {
+  df <- gt.env$tbl_keywords |>
+    filter(.data$type == type) |>
+    select(-.data$type) |>
+    collect()
+
+  assign(paste0("keywords_", type), df, envir = gt.env)
+  invisible(TRUE)
+}
+
+#' @title Refresh time vectors in gt.env
+#' @keywords internal
+#' @noRd
+#' @importFrom dplyr collect filter select
+#' @importFrom rlang .data
+
+.refresh_time <- function(type) {
+  df <- gt.env$tbl_time |>
+    filter(.data$type == type) |>
+    select(-.data$type) |>
+    collect()
+
+  assign(paste0("time_", type), df, envir = gt.env)
+  invisible(TRUE)
 }

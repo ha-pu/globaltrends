@@ -2,44 +2,45 @@
 % Please edit documentation in R/add_locations.r
 \name{add_locations}
 \alias{add_locations}
-\title{Add sets of locations}
+\title{Add a location set}
 \usage{
 add_locations(locations, type, export = TRUE)
 }
 \arguments{
-\item{locations}{Locations that should be added as set of locations. Vector of
-type \code{character}.}
+\item{locations}{Character vector of location codes to add. Codes must be
+present in \code{gtrendsR::countries$country_code} or
+\code{gtrendsR::countries$sub_code}. Duplicates are removed.}
 
-\item{type}{Name of the location set that should be added. Object of type
-\code{character} of length 1.}
+\item{type}{Character scalar. Name of the location set to which \code{locations}
+should be added (e.g., \code{"DACH"}, \code{"EU"}).}
 
-\item{export}{Indicator whether the new location set should be directly
-exported to the package environment \code{gt.env}. Object of type \code{logical},
-defaults to \code{TRUE}.}
+\item{export}{Logical scalar. If \code{TRUE} (default), the package environment
+\code{gt.env} is refreshed so the new/updated location set becomes available
+immediately.}
 }
 \value{
-Message that the location set has been created successfully. Location data is
-written to table \emph{data_locations}.
+Invisibly returns a tibble of rows that were appended to the database
+(columns: \code{location}, \code{type}). A message is emitted summarizing what happened.
 }
 \description{
-The function adds a new set of locations for downloads and computations to
-the database. The location set serves as input for all download and
-computation functions.
+Adds a user-defined \emph{location set} to the \code{data_locations} database table.
+Location sets are used as inputs to download and computation functions.
 }
 \details{
-Location sets control the locations for which data is downloaded or to which
-computations are applied. By adding new location sets, the default sets
-\emph{countries} and \emph{us_states} can be expanded by additional sets.
-Thereby, users can compute DOI within a region (e.g., adding EU countries as
-a set) or single countries (e.g., adding regions of France as a set). Download
-and computation functions check whether data for a location already exists.
-Therefore, data will not be duplicated when location data already exists from
-another set.
-}
-\section{Warning}{
+Location sets control which locations are downloaded or included in
+computations. The package ships with default sets (e.g., \code{countries},
+\code{us_states}), and you can expand these by adding your own sets (e.g., "EU",
+"DACH", or subnational regions for a country).
 
-Unfortunately, the Google Trends API cannot handle the location
-"NA - Namibia". Therefore, the location will be dropped automatically.
+The function is designed to be idempotent with respect to \verb{(type, location)}:
+if a location already exists for a given \code{type}, it will be skipped (not
+duplicated).
+}
+\section{Known API limitation}{
+
+The Google Trends API cannot handle the location code \code{"NA"} (Namibia).
+If \code{"NA"} is supplied, it will be dropped. If \code{"NA"} is the only supplied
+location, the function errors.
 }
 
 \examples{

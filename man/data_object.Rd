@@ -4,52 +4,38 @@
 \name{data_object}
 \alias{data_object}
 \alias{example_object}
-\title{data_object}
+\title{Example table: object downloads (\code{data_object})}
 \format{
-A tibble with 8,640 rows and 6 variables:
+A tibble with 6 variables:
 \describe{
-\item{location}{Column of type \code{character} showing the ISO2 code of
-the country or region for which the data was downloaded.}
-\item{keyword}{Column of type \code{character} showing the keyword for
-which the data was downloaded.}
-\item{date}{Column of type \code{integer} showing the date for which the
-data was downloaded. Can be transformed into date format with
-\code{lubridate::as_date}.}
-\item{hits}{Column of type \code{double} showing search volumes for the
-respective location-keyword-date combination.}
-\item{batch_c}{Column of type \code{integer} showing the number of each
-control batch.}
-\item{batch_o}{Column of type \code{integer} showing the number of each
-object batch.}
+\item{location}{Character. Location code. Global data uses \code{"world"}.}
+\item{keyword}{Character. Object keyword.}
+\item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+\code{lubridate::as_date(date)}.}
+\item{hits}{Double. Search interest (Google Trends).}
+\item{batch_c}{Integer. Control batch id used for mapping/baseline.}
+\item{batch_o}{Integer. Object batch id.}
 }
 }
 \source{
-\url{https://trends.google.com/trends/}
+Google Trends. See the Trends UI and documentation.
 }
 \usage{
 example_object
 }
 \description{
-The table \emph{data_object} contains the downloaded data for each object
-batch. Each line contains the search \emph{hits} for each \emph{keyword} in
-an object \emph{batch_o} for a given \emph{location} and \emph{date}. The
-column \emph{batch_c} indicates the control batch to which the data will be
-mapped. Global data takes the value \emph{world} as location. Data is
-downloaded and automatically written to the table through the function
-\code{download_object}. The function \code{start_db} exports the table
-\emph{data_object} as database connection \code{tbl_object} to the package
-environment \code{gt.env}. Users can access the database table through
-\code{dplyr::tbl}.
-The sample data included in \code{data_object} was simulated based on actual
-Google Trends data.
+Example data representing the database table \code{data_object}.
+Each row contains Google Trends \code{hits} for an object \code{keyword} in a given
+\code{location} on a given \code{date}. Object data (\code{batch_o}) are downloaded and
+mapped to a control batch (\code{batch_c}) for subsequent score computation.
 
-Example data for the table \emph{data_object} is available as R object
-\code{example_object}.
+In a live database, data are downloaded via \code{\link[=download_object]{download_object()}} and are
+available through \code{gt.env$tbl_object} after \code{\link[=start_db]{start_db()}}. Global aggregates
+use \code{"world"} as \code{location}.
+
+The example dataset is simulated to resemble real Google Trends output.
 }
 \seealso{
-\itemize{
-\item \code{\link[=download_object]{download_object()}}
-\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
-}
+\code{\link[=download_object]{download_object()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}
 }
 \keyword{datasets}

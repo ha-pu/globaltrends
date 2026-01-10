@@ -1,59 +1,74 @@
-#' @title globaltrends package environment
+#' @title Package environment for internal state
 #'
 #' @description
-#' The environment `gt.env` contains all package-related data objects, such as
-#' the handle for the SQLite database file or connections to tables. The object
-#' contains:
+#' `gt.env` is the internal package environment used to store runtime state and
+#' database handles. It centralizes objects that should be shared across
+#' functions (e.g., the DBI connection, lazy table references, cached keyword
+#' batches).
+#'
+#' @details
+#' The following bindings may be present in `gt.env` after package attach and/or
+#' after calling initialization functions such as `start_db()`:
 #' \itemize{
-#'   \item globaltrends_db: Handle for the SQLite database file.
-#'   \item tbl_locations: Connection to table that contains the lists of locations saved in the database.
-#'   \item tbl_keywords: Connection to table that contains the lists of keywords saved in the database.
-#'   \item tbl_time: Connection to table that contains the lists of batch times saved in the database.
-#'   \item tbl_synonyms: Connection to table that contains the lists of keyword synonyms saved in the database.
-#'   \item tbl_doi: Connection to table that contains the DOI data saved in the database.
-#'   \item tbl_control: Connection to table that contains data on search volume for control terms saved in the database.
-#'   \item tbl_object: Connection to table that contains data on search volume for object terms saved in the database.
-#'   \item tbl_score: Connection to table that contains data on search scores saved in the database.
-#'   \item keywords_control: Tibble that contains all keywords per control batch.
-#'   \item time_control: Tibble that contains all batch times per control batch.
-#'   \item keywords_object: Tibble that contains all keywords per object batch.
-#'   \item time_object: Tibble that contains all batch times per object batch.
-#'   \item keyword_synonyms: Tibble that contains all keyword/synonym combinations.
-#'   \item query_wait: Number of seconds to wait between queries (default = 0.1s).
-#'   \item py_setup: `TRUE`/`FALSE` indicator whether `initialize_python` has been called.
+#'   \item `globaltrends_db`: DBI connection/handle to the SQLite database.
+#'   \item `tbl_locations`: Lazy table reference for location sets stored in the DB.
+#'   \item `tbl_keywords`: Lazy table reference for keyword batches stored in the DB.
+#'   \item `tbl_time`: Lazy table reference for time windows stored in the DB.
+#'   \item `tbl_synonyms`: Lazy table reference for keyword synonyms stored in the DB.
+#'   \item `tbl_doi`: Lazy table reference for DOI data stored in the DB.
+#'   \item `tbl_control`: Lazy table reference for control search-volume data.
+#'   \item `tbl_object`: Lazy table reference for object search-volume data.
+#'   \item `tbl_score`: Lazy table reference for computed scores.
+#'   \item `keywords_control`: Cached tibble of control keywords by batch (populated by `start_db()` / exports).
+#'   \item `time_control`: Cached tibble of control batch time windows.
+#'   \item `keywords_object`: Cached tibble of object keywords by batch.
+#'   \item `time_object`: Cached tibble of object batch time windows.
+#'   \item `keyword_synonyms`: Cached tibble of keyword/synonym mappings.
+#'   \item `query_wait`: Numeric scalar. Seconds to wait between API calls (default: `0.1`).
+#'   \item `py_setup`: Logical scalar. `TRUE` if [initialize_python()] has been called successfully.
 #' }
 #'
+#' @section Implementation notes:
+#' The environment is created with `parent = emptyenv()` to avoid accidental
+#' variable capture. Bindings are initialized on package attach so downstream
+#' functions can rely on their existence; however, most bindings remain `NULL`
+#' until `start_db()` (or related setup routines) populates them.
+#'
 #' @seealso
+#' * [start_db()]
+#' * [initialize_python()]
 #' * [example_control()]
 #' * [example_object()]
 #' * [example_score()]
 #' * [example_doi()]
 #'
-#' @export gt.env
-
+#' @export
 gt.env <- new.env(parent = emptyenv())
+
+#' @keywords internal
+#' @noRd
 .onAttach <- function(libname, pkgname) {
-  lst_name <- list(
-    "globaltrends_db",
-    "tbl_locations",
-    "tbl_keywords",
-    "tbl_time",
-    "tbl_synonyms",
-    "tbl_doi",
-    "tbl_control",
-    "tbl_object",
-    "tbl_score",
-    "keywords_control",
-    "time_control",
-    "keywords_object",
-    "time_object",
-    "keyword_synonyms",
-    "query_wait",
-    "py_setup"
+  # Initialize expected bindings explicitly. Using NULL for most entries
+  # makes "not yet configured" states unambiguous while ensuring names exist.
+  defaults <- list(
+    globaltrends_db = NULL,
+    tbl_locations = NULL,
+    tbl_keywords = NULL,
+    tbl_time = NULL,
+    tbl_synonyms = NULL,
+    tbl_doi = NULL,
+    tbl_control = NULL,
+    tbl_object = NULL,
+    tbl_score = NULL,
+    keywords_control = NULL,
+    time_control = NULL,
+    keywords_object = NULL,
+    time_object = NULL,
+    keyword_synonyms = NULL,
+    query_wait = 0.1,
+    py_setup = FALSE
   )
-  lst_object <- as.list(rep(TRUE, length(lst_name)))
-  names(lst_object) <- lst_name
-  lst_object$query_wait <- 0.1
-  lst_object$py_setup <- FALSE
-  invisible(list2env(lst_object, envir = gt.env))
+
+  # Assign without copying into the search path; keep state contained in gt.env.
+  invisible(list2env(defaults, envir = gt.env))
 }

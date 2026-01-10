@@ -1,55 +1,36 @@
-#' @title Export data from database table
+#' @title Export data from database tables
 #'
 #' @description
-#' The function allows to export data from database tables. In combination with
-#' various *write* functions in R, the functions allow exports from the
-#' database to local files.
+#' Export and filter data from the package's database-backed tables (control,
+#' object, score/VOI, and DOI). The exported result can be written to disk using
+#' standard R I/O functions (e.g., `readr::write_csv()`, `writexl::write_xlsx()`).
 #'
 #' @details
-#' Exports can be filtered by *keyword*, *object*, *control*, *location*,
-#' *locations*, or *type*. Not all filters are applicable for all
-#' functions. When filter *keyword* and *object* are used together,
-#' *keyword* overrules *object*. When supplying `NULL` as input, no filter is
-#' applied to the variable.
+#' Each export function is a thin wrapper around an internal helper
+#' (`.export_data()`) that applies optional filters. Passing `NULL` to a filter
+#' argument disables that filter.
 #'
-#' @param keyword Object keywords for which data should be exported. Object or
-#' list of objects of type `character`.
+#' Precedence rule: if `keyword` is provided, it takes precedence over `object`
+#' (i.e., `object` is ignored when `keyword` is not `NULL`), matching the
+#' behavior described in this documentation.
 #'
-#' @param object Object batch number for which data should be exported.
+#' @param keyword Character vector (or list coercible via `unlist()`) of object
+#'   keywords to export. When provided, it overrides `object`.
 #'
-#' @param control Control batch number for which data should be exported. Only
-#' for `export_control` and `export_control_global`, input is also possible as
-#' list.
+#' @param object Integer-ish batch id(s) for object data (`batch_o`). Ignored if
+#'   `keyword` is supplied.
 #'
-#' @param location List of locations for which the data is exported. Refers to
-#' lists generated in `start_db` or `character` objects in these lists. Only for
-#' `export_control`, `export_object`, or `export_score`.
+#' @param control Integer-ish batch id(s) for control data (`batch_c` or `batch`).
 #'
-#' @param locations List of locations for which the data is exported. Refers to
-#' names of lists generated in `start_db` as an object of type `character`. Only
-#' for `export_doi`.
+#' @param location Character vector (or list coercible via `unlist()`) of
+#'   location codes to export (e.g., `countries`, `us_states`). Applicable to
+#'   control/object/score exports.
 #'
-#' @return
-#' The functions export and filter the respective database tables.
-#' \itemize{
-#'   \item `export_control` and `export_control_global` export data from table
-#'   `data_control` with columns location, keyword, date, hits, control. Object
-#'   of class `"data.frame"`. Methods are applied based on input *control*.
-#'   \item `export_object` and `export_object_global` export data from table
-#'   `data_object` with columns location, keyword, date, hits, object. Object of
-#'   class `"data.frame"`. Methods are applied based on input *keyword*.
-#'   \item `export_score` exports data from table `data_score` with
-#'   columns location, keyword, date, score, control,
-#'   object. Object of class `"data.frame"`. Methods are applied based on input
-#'   *keyword*.
-#'   \item `export_voi` exports data from table `data_score` with
-#'   columns keyword, date, score, control, filters for
-#'   `location == "world"`. Object of class `"data.frame"`. Methods are applied
-#'   based on input *keyword*.
-#'   \item `export_doi` exports data from table `data_doi` with columns
-#'   keyword, date, gini, hhi, entropy, control, object, locations. Object
-#'   of class `"data.frame"`. Methods are applied based on input *keyword*.
-#' }
+#' @param locations Character vector (or list coercible via `unlist()`) of
+#'   location-set names (e.g., `"countries"`, `"us_states"`). Applicable to DOI.
+#'
+#' @return A `data.frame` (tibble) with the requested rows. Date columns are
+#'   converted to `Date`.
 #'
 #' @seealso
 #' * [example_control()]
@@ -61,39 +42,20 @@
 #' \dontrun{
 #' export_control(control = 2)
 #'
-#' export_object(
-#'   keyword = "manchester united",
-#'   locations = countries
-#' )
+#' export_object(keyword = "manchester united", location = countries)
 #'
-#' export_object(
-#'   keyword = c("manchester united", "real madrid")
-#' )
+#' export_object(keyword = c("manchester united", "real madrid"))
 #'
-#' export_object(
-#'   keyword = list("manchester united", "real madrid")
-#' )
-#'
-#' export_score(
-#'   object = 3,
-#'   control = 1,
-#'   location = us_states
-#' ) %>%
+#' export_score(object = 3, control = 1, location = us_states) |>
 #'   readr::write_csv("data_score.csv")
 #'
-#' export_doi(
-#'   keyword = "manchester united",
-#'   control = 2,
-#'   locations = "us_states"
-#' ) %>%
+#' export_doi(keyword = "manchester united", control = 2, locations = "us_states") |>
 #'   writexl::write_xlsx("data_doi.xlsx")
 #' }
 #'
 #' @rdname export_data
 #' @export
-#' @importFrom dplyr filter
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
+#' @importFrom dplyr filter rename
 #' @importFrom rlang .data
 
 export_control <- function(control = NULL, location = NULL) {
@@ -102,9 +64,10 @@ export_control <- function(control = NULL, location = NULL) {
     in_batch = unlist(control),
     in_location = unlist(location)
   )
+
+  # By convention, non-global exports exclude the aggregated "world" location.
   out <- filter(out, .data$location != "world")
-  out <- rename(out, control = batch)
-  return(out)
+  rename(out, control = .data$batch)
 }
 
 #' @rdname export_data
@@ -116,18 +79,18 @@ export_control_global <- function(control = NULL) {
     in_batch = unlist(control),
     in_location = "world"
   )
-  out <- rename(out, control = batch)
-  return(out)
+  rename(out, control = .data$batch)
 }
 
 #' @rdname export_data
 #' @export
 
 export_object <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    location = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -135,18 +98,19 @@ export_object <- function(
     in_control = unlist(control),
     in_location = unlist(location)
   )
+
   out <- filter(out, .data$location != "world")
-  out <- rename(out, object = batch_o, control = batch_c)
-  return(out)
+  rename(out, object = .data$batch_o, control = .data$batch_c)
 }
 
 #' @rdname export_data
 #' @export
 
 export_object_global <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_object,
     in_keyword = unlist(keyword),
@@ -154,28 +118,28 @@ export_object_global <- function(
     in_control = unlist(control),
     in_location = "world"
   )
-  out <- rename(out, object = batch_o, control = batch_c)
-  return(out)
+  rename(out, object = .data$batch_o, control = .data$batch_c)
 }
 
 #' @rdname export_data
 #' @export
 
 export_score <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    location = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  location = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_score,
     in_keyword = unlist(keyword),
     in_object = unlist(object),
     in_control = unlist(control),
-    in_location = unlist(location),
+    in_location = unlist(location)
   )
+
   out <- filter(out, .data$location != "world")
-  out <- rename(out, control = batch_c, object = batch_o)
-  return(out)
+  rename(out, control = .data$batch_c, object = .data$batch_o)
 }
 
 #' @rdname export_data
@@ -189,18 +153,18 @@ export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
     in_control = unlist(control),
     in_location = "world"
   )
-  out <- rename(out, control = batch_c, object = batch_o)
-  return(out)
+  rename(out, control = .data$batch_c, object = .data$batch_o)
 }
 
 #' @rdname export_data
 #' @export
 
 export_doi <- function(
-    keyword = NULL,
-    object = NULL,
-    control = NULL,
-    locations = NULL) {
+  keyword = NULL,
+  object = NULL,
+  control = NULL,
+  locations = NULL
+) {
   out <- .export_data(
     table = gt.env$tbl_doi,
     in_keyword = unlist(keyword),
@@ -208,40 +172,49 @@ export_doi <- function(
     in_control = unlist(control),
     in_locations = unlist(locations)
   )
-  out <- rename(out, control = batch_c, object = batch_o)
-  return(out)
+  rename(out, control = .data$batch_c, object = .data$batch_o)
 }
 
-#' @rdname dot-export_data
+#' @title Export helper for database-backed tables
+#'
+#' @description
+#' Internal helper that applies optional filters to a lazy database table,
+#' collects the result, and normalizes the `date` column to class `Date`.
+#'
+#' @details
+#' Filters are applied only when the corresponding `in_*` argument is not `NULL`.
+#' If `in_keyword` is provided, it overrides `in_object` (object batch filtering
+#' is skipped), mirroring the public API behavior.
+#'
+#' @param table A lazy table (typically a `dplyr` tbl backed by DBI/duckdb/sqlite).
+#' @param in_keyword Optional character vector of keywords to filter by.
+#' @param in_object Optional vector of object batch ids (`batch_o`). Ignored if
+#'   `in_keyword` is supplied.
+#' @param in_control Optional vector of control batch ids (`batch_c`).
+#' @param in_batch Optional vector of control batch ids (`batch`) used in control tables.
+#' @param in_location Optional character vector of location codes.
+#' @param in_locations Optional character vector of location-set names (DOI only).
+#'
+#' @return A collected tibble.
 #'
 #' @keywords internal
 #' @noRd
-#'
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
-#' @importFrom dplyr mutate
+#' @importFrom dplyr collect filter mutate
 #' @importFrom lubridate as_date
+#' @importFrom rlang .data
 
 .export_data <- function(
-    table,
-    in_keyword = NULL,
-    in_object = NULL,
-    in_control = NULL,
-    in_batch = NULL,
-    in_location = NULL,
-    in_locations = NULL) {
-  keyword <- in_keyword
-  object <- in_object
-  control <- in_control
-  batch <- in_batch
-  location <- in_location
-  locations <- in_locations
-
+  table,
+  in_keyword = NULL,
+  in_object = NULL,
+  in_control = NULL,
+  in_batch = NULL,
+  in_location = NULL,
+  in_locations = NULL
+) {
+  # --- validate inputs --------------------------------------------------------
   if (!is.null(in_keyword)) {
-    .check_input(keyword, "character")
-  }
-  if (is.null(in_keyword) & !is.null(in_object)) {
-    .check_batch(in_object)
+    .check_input(in_keyword, "character")
   }
   if (!is.null(in_control)) {
     .check_batch(in_control)
@@ -250,23 +223,31 @@ export_doi <- function(
     .check_batch(in_batch)
   }
   if (!is.null(in_location)) {
-    .check_input(location, "character")
+    .check_input(in_location, "character")
   }
   if (!is.null(in_locations)) {
-    .check_input(locations, "character")
+    .check_input(in_locations, "character")
   }
 
+  # Only validate `in_object` if it can actually be used (keyword has precedence).
+  if (is.null(in_keyword) && !is.null(in_object)) {
+    .check_batch(in_object)
+  }
+
+  # --- apply filters (on lazy table) -----------------------------------------
   if (!is.null(in_keyword)) {
     table <- filter(table, .data$keyword %in% in_keyword)
-  }
-  if (is.null(in_keyword) & !is.null(in_object)) {
+  } else if (!is.null(in_object)) {
+    # Only applied if keyword is not supplied (precedence rule).
     table <- filter(table, .data$batch_o %in% in_object)
   }
+
   if (!is.null(in_control)) {
     table <- filter(table, .data$batch_c %in% in_control)
   }
   if (!is.null(in_batch)) {
-    table <- filter(table, .data$batch == in_batch)
+    # Keep semantics: `in_batch` may be vector; `%in%` is robust and consistent.
+    table <- filter(table, .data$batch %in% in_batch)
   }
   if (!is.null(in_location)) {
     table <- filter(table, .data$location %in% in_location)
@@ -275,7 +256,8 @@ export_doi <- function(
     table <- filter(table, .data$locations %in% in_locations)
   }
 
-  table <- collect(table)
-  table <- mutate(table, date = as_date(.data$date))
-  return(table)
+  # --- collect and normalize --------------------------------------------------
+  table |>
+    collect() |>
+    mutate(date = as_date(.data$date))
 }

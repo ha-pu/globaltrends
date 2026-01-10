@@ -18,7 +18,7 @@ test_that("add_loc1", {
       type = "dach",
       export = FALSE
     ),
-    "Successfully created new location set dach \\(AT, DE, CH\\)\\."
+    "Successfully created/extended location set 'dach' with 3 location\\(s\\) \\(AT, DE, CH\\)."
   )
 
   expect_equal(
@@ -32,7 +32,7 @@ test_that("add_loc1", {
       type = "asia",
       export = TRUE
     ),
-    "Successfully created new location set asia \\(CN, JP\\)\\."
+    "Successfully created/extended location set 'asia' with 2 location\\(s\\) \\(CN, JP\\)."
   )
 
   expect_identical(
@@ -194,18 +194,26 @@ test_that("export_doi", {
   expect_false(all(out1$entropy == out2$entropy))
 })
 
+# invalid code -----------------------------------------------------------------
+test_that("invalid1", {
+  expect_error(
+    add_locations("test", "test"),
+    "Invalid location code(s): test. Valid codes must appear in `gtrendsR::countries$country_code` or `gtrendsR::countries$sub_code`."
+  )
+})
+
 # namibia ----------------------------------------------------------------------
 test_that("namibia1", {
   expect_warning(
     add_locations(c("NA", "AT"), "test"),
-    "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped."
+    "The Google Trends API cannot handle the location code 'NA' (Namibia)."
   )
 })
 
 test_that("namibia2", {
   expect_error(
     add_locations("NA", "test"),
-    "Unfortunately, the Google Trends API cannot handle the location 'NA - Namibia'. The location 'NA' has been dropped.\nThe argument 'locations' now has lenght 0!"
+    "The Google Trends API cannot handle the location code 'NA' (Namibia). It was dropped, leaving `locations` empty."
   )
 })
 

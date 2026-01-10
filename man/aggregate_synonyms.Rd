@@ -2,59 +2,49 @@
 % Please edit documentation in R/aggregate_synonyms.r
 \name{aggregate_synonyms}
 \alias{aggregate_synonyms}
-\title{Aggregate search scores for synonym terms}
+\title{Aggregate search scores across synonym terms}
 \usage{
 aggregate_synonyms(control, vacuum = TRUE)
 }
 \arguments{
-\item{control}{Control batch for which the data is downloaded. Object
-of type \code{numeric}. Defaults to 1.}
+\item{control}{Numeric/integer scalar. Control batch id (\code{batch_c}) whose
+score data should be aggregated. Typically \code{1}.}
 
-\item{vacuum}{Indicator whether the function should call \code{vacuum_data()}.
-Object of type \code{logical}. Defaults to \code{TRUE}.}
+\item{vacuum}{Logical scalar. If \code{TRUE} (default), calls \code{\link[=vacuum_data]{vacuum_data()}}
+after aggregation to reclaim space.}
 }
 \value{
-Message that the aggregation of synonyms is complete. During the
-aggregation process, messages regarding each step. The function shows the
-\code{purrr::map_dfr} and \code{purrr:walk} progress bars.
+Invisibly returns a tibble of the rows written to \code{data_score}. The function
+is called for its side effects (modifying the database) and emits informative
+messages.
 }
 \description{
-The function aggregates search scores for object keywords across synonyms
-defined through \code{add_synonyms}. Users should run this funciton \strong{after}
-running \code{compute_score}. Then, search scores will be added and the synonym
-terms removed from the \emph{data_score} table. For efficiency reasons, the
-function uses \code{purrr::map} to iterate across \code{batch_o}.
+Aggregates score time series for object keywords by rolling up scores from
+synonym keywords (defined via \code{\link[=add_synonym]{add_synonym()}} and synonym table maintenance)
+into their canonical ("main") keywords.
 }
 \details{
-The function proceeds in five steps:
+This function is intended to be run \strong{after} \code{\link[=compute_score]{compute_score()}} has populated
+\code{data_score}. For a given \code{control} batch (\code{batch_c}), it:
 \enumerate{
-\item Export data from the database using \code{purrr::map_dfr}
-\item Aggreagate score data from synonyms to main term
-\item Remove batches that include synonyms from the database using \code{purrr::walk}
-\item If \code{vacuum = TRUE}, run \code{vacuum_data()} on the database
-\item Write aggregated data to the database using \code{purrr::walk}
+\item Identifies affected object batches (\code{batch_o}) that contain either a
+canonical keyword or a synonym keyword.
+\item Computes aggregated scores by mapping synonym rows onto their
+canonical keyword and summing over duplicates.
+\item Deletes existing \code{data_score} rows for the affected object batches
+(greedy cleanup is not required here because only \code{data_score} is modified).
+\item Writes the aggregated rows back to \code{data_score}.
+\item Optionally runs \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space after deletions.
 }
 
-During these steps, \code{map_dfr} and \code{walk} calls return progress information
-through \code{.progress = TRUE}.
+Performance note: Deleting and re-inserting can be expensive for large
+datasets. Vacuuming is the most time-consuming step and is therefore
+optional.
 }
-\section{Note}{
-
-The aggregation of synonyms can be very time-consuming when using a large
-dataset! Particulalry, the \code{vacuum_data()} call can require substantial time
-to run.
-}
-
 \examples{
 \dontrun{
 compute_score(object = 1:2, control = 1)
 aggregate_synonyms(control = 1, vacuum = FALSE)
 }
 
-}
-\seealso{
-\itemize{
-\item \code{\link[=add_synonym]{add_synonym()}}
-\item \code{\link[=vacuum_data]{vacuum_data()}}
-}
 }
