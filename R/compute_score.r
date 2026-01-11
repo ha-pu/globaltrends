@@ -109,8 +109,8 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
   # Exclude locations already computed for this (control, object) combination
   existing_locations <- .get_full(
     table = "data_score",
-    batch_c = control,
-    batch_o = object
+    in_batch_c = control,
+    in_batch_o = object
   )
   loc_remaining <- locations[!(locations %in% existing_locations)]
 
