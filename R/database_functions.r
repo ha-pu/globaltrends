@@ -147,20 +147,29 @@ initialize_db <- function() {
 #' `data_locations`. This is called during `initialize_db()`.
 #' @keywords internal
 #' @noRd
+#' @importFrom DBI dbAppendTable
+#' @importFrom dplyr bind_rows
+#' @importFrom tibble tibble
 
 .enter_location_defaults <- function(con) {
   # Ensure add_locations writes to the connection we just created
   assign("globaltrends_db", con, envir = gt.env)
 
-  add_locations(
-    locations = globaltrends::countries,
-    type = "countries",
-    export = FALSE
+  data_to_add <- bind_rows(
+    tibble(
+      location = globaltrends::countries,
+      type = "countries"
+    ),
+    tibble(
+      location = globaltrends::us_states,
+      type = "us_states"
+    )
   )
-  add_locations(
-    locations = globaltrends::us_states,
-    type = "us_states",
-    export = FALSE
+
+  dbAppendTable(
+    conn = gt.env$globaltrends_db,
+    name = "data_locations",
+    value = data_to_add
   )
 
   invisible(TRUE)
