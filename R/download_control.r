@@ -109,7 +109,7 @@ download_control.numeric <- function(control, locations = NULL) {
   }
 
   # Avoid duplicate downloads: only fetch locations not yet present for this batch.
-  existing <- .get_full(table = "data_control", batch_c = control)
+  existing <- .get_full(table = "data_control", in_batch_c = control)
   loc_remaining <- locations[!(locations %in% existing)]
 
   if (length(loc_remaining) == 0) {

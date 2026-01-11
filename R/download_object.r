@@ -128,8 +128,8 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
   # Avoid duplicate downloads: only fetch locations not yet present for this batch.
   existing <- .get_full(
     table = "data_object",
-    batch_c = control,
-    batch_o = object
+    in_batch_c = control,
+    in_batch_o = object
   )
   loc_remaining <- locations[!(locations %in% existing)]
 

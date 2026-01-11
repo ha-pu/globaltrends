@@ -218,39 +218,40 @@
 #' @importFrom dplyr collect count filter pull select
 #' @importFrom rlang .data
 
-.get_full <- function(table, batch_c = NULL, batch_o = NULL) {
+.get_full <- function(table, in_batch_c = NULL, in_batch_o = NULL) {
   .check_input(table, "character")
   .check_length(table, 1)
 
-  if (!is.null(batch_c)) {
-    .check_batch(batch_c)
+  if (!is.null(in_batch_c)) {
+    .check_batch(in_batch_c)
   }
-  if (!is.null(batch_o)) {
-    .check_batch(batch_o)
+  if (!is.null(in_batch_o)) {
+    .check_batch(in_batch_o)
   }
 
-  tbl <- switch(table,
+  tbl <- switch(
+    table,
     data_control = gt.env$tbl_control |>
-      filter(.data$batch == batch_c),
+      filter(.data$batch == in_batch_c),
     data_object = {
-      if (is.null(batch_o)) {
+      if (is.null(in_batch_o)) {
         stop(
           "`batch_o` must be provided for table = 'data_object'.",
           call. = FALSE
         )
       }
       gt.env$tbl_object |>
-        filter(.data$batch_c == batch_c, .data$batch_o == batch_o)
+        filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
     },
     data_score = {
-      if (is.null(batch_o)) {
+      if (is.null(in_batch_o)) {
         stop(
           "`batch_o` must be provided for table = 'data_score'.",
           call. = FALSE
         )
       }
       gt.env$tbl_score |>
-        filter(.data$batch_c == batch_c, .data$batch_o == batch_o)
+        filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', or 'data_score'.",
