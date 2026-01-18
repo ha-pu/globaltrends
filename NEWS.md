@@ -1,5 +1,7 @@
 # globaltrends 0.2.0.9000
 
+## Change License to CC-BY-4.0
+
 ## Change in database handling
 
 * Switch from sqlite to duckdb

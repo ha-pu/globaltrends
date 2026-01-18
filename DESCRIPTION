@@ -18,7 +18,7 @@ Description: Google offers public access to global search volumes from its
     single countries.  An outline of the package's methodological
     foundations and potential applications is available as a working
     paper: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013>.
-License: MIT + file LICENSE
+License: CC-BY-4.0
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Depends: 
