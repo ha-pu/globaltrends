@@ -57,12 +57,14 @@ initialize_db <- function() {
     "CREATE TABLE data_doi(keyword VARCHAR, date DATE, gini DOUBLE, hhi DOUBLE, entropy DOUBLE, batch_c INTEGER, batch_o INTEGER, locations VARCHAR);",
     "CREATE TABLE data_locations(location VARCHAR, type VARCHAR);",
     "CREATE TABLE data_region(term VARCHAR, location VARCHAR, start_date DATE, end_date DATE, region_code VARCHAR, region_name VARCHAR, hits DOUBLE, batch_o INTEGER);",
+    "CREATE TABLE data_related(term VARCHAR, topic BOOLEAN, rising BOOLEAN, location VARCHAR, start_date DATE, end_date DATE, related_term VARCHAR, hits DOUBLE, batch_o INTEGER);",
     "CREATE TABLE keyword_synonyms(keyword VARCHAR, synonym VARCHAR);",
     "CREATE INDEX idx_doi_batch ON data_doi(batch_o);",
     "CREATE INDEX idx_control_batch ON data_control(batch);",
     "CREATE INDEX idx_locations_loc ON data_locations(location);",
     "CREATE INDEX idx_regions_term ON data_region(term);",
     "CREATE INDEX idx_regions_loc ON data_region(location);",
+    "CREATE INDEX idx_related_term ON data_related(term);",
     "CREATE INDEX idx_object_batch ON data_object(batch_o);",
     "CREATE INDEX idx_score_batch ON data_score(batch_o);",
     "CREATE INDEX idx_terms_batch ON batch_keywords(batch);",
@@ -114,6 +116,7 @@ initialize_db <- function() {
     "data_object",
     "data_score",
     "data_region",
+    "data_related",
     "keyword_synonyms"
   )
 }
@@ -266,6 +269,7 @@ start_db <- function() {
   tbl_object <- tbl(con, "data_object")
   tbl_score <- tbl(con, "data_score")
   tbl_region <- tbl(con, "data_region")
+  tbl_related <- tbl(con, "data_related")
 
   # Cache small, frequently-used tables as in-memory tibbles
   keywords_control <- tbl_keywords |>
@@ -302,6 +306,7 @@ start_db <- function() {
     tbl_object = tbl_object,
     tbl_score = tbl_score,
     tbl_region = tbl_region,
+    tbl_related = tbl_related,
     keywords_control = keywords_control,
     time_control = time_control,
     keywords_object = keywords_object,

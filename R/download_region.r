@@ -111,7 +111,11 @@ download_region.numeric <- function(object, locations = NULL) {
   }
 
   # Avoid duplicates: only fetch locations not yet present for this batch.
-  existing <- .get_full(table = "data_region", batch_c = NULL, batch_o = object)
+  existing <- .get_full(
+    table = "data_region",
+    in_batch_c = NULL,
+    in_batch_o = object
+  )
   loc_remaining <- locations[!(locations %in% existing)]
 
   if (length(loc_remaining) == 0) {

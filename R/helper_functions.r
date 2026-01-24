@@ -219,7 +219,13 @@
 #' @importFrom dplyr collect count filter pull select
 #' @importFrom rlang .data
 
-.get_full <- function(table, in_batch_c = NULL, in_batch_o = NULL) {
+.get_full <- function(
+  table,
+  in_batch_c = NULL,
+  in_batch_o = NULL,
+  in_topic = NULL,
+  in_rising = NULL
+) {
   .check_input(table, "character")
   .check_length(table, 1)
 
@@ -228,6 +234,12 @@
   }
   if (!is.null(in_batch_o)) {
     .check_batch(in_batch_o)
+  }
+  if (!is.null(in_topic)) {
+    .check_input(in_topic, "logical")
+  }
+  if (!is.null(in_rising)) {
+    .check_input(in_rising, "logical")
   }
 
   tbl <- switch(table,
@@ -253,18 +265,44 @@
       gt.env$tbl_score |>
         filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
     },
-    data_region = {
+    data_related = {
       if (is.null(in_batch_o)) {
         stop(
-          "`batch_o` must be provided for table = 'data_region'.",
+          "`batch_o` must be provided for table = 'data_related'.",
           call. = FALSE
         )
       }
-      gt.env$tbl_region |>
+      gt.env$tbl_related |>
         filter(.data$batch_o == in_batch_o)
     },
+    data_related = {
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      if (is.null(in_topic)) {
+        stop(
+          "`topic` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      if (is.null(in_rising)) {
+        stop(
+          "`rising` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      gt.env$tbl_related |>
+        filter(
+          .data$batch_o == in_batch_o &
+            .data$topic == in_topic &
+            .data$rising == in_rising
+        )
+    },
     stop(
-      "Error: `table` must be one of 'data_control', 'data_object', 'data_score', or 'data_region'.",
+      "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",
       call. = FALSE
     )
   )
@@ -330,5 +368,69 @@
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)
     return(region)
+  }
+}
+
+#' @title Download Google Trends related terms/topic data for one request
+#'
+#' @keywords internal
+#' @noRd
+
+.get_related <- function(
+  location = NULL,
+  term,
+  start_date = "2020-01",
+  end_date = "2020-12",
+  topic = NULL,
+  rising = NULL
+) {
+  .check_length(term, 1)
+  .check_length(start_date, 1)
+  .check_length(end_date, 1)
+  .check_input(term, "character")
+  .check_input(start_date, "character")
+  .check_input(end_date, "character")
+  .check_input(topic, "logical")
+  .check_input(rising, "logical")
+
+  # Normalize location semantics: NULL/""
+  is_global <- is.null(location) || identical(location, "")
+  geo <- location
+
+  if (isTRUE(gt.env$py_setup)) {
+    # ---------------------------------------------------------------------
+    # Research API backend (Python via reticulate)
+    # ---------------------------------------------------------------------
+    out <- gt.env$query_terms(
+      terms = term,
+      start_date = start_date,
+      end_date = end_date,
+      geo = geo,
+      api_key = gt.env$api_key,
+      topic = topic,
+      rising = rising
+    )
+
+    # `out$item` is expected to be list-like; each element has $title and $value.
+    item <- map_dfr(
+      out$item,
+      ~ tibble(
+        related_term = .x$title,
+        hits = .x$value
+      )
+    ) |>
+      mutate(
+        term = term,
+        topic = topic,
+        rising = rising,
+        location = ifelse(is_global, "world", location),
+        start_date = as.Date(paste0(start_date, "-01")),
+        end_date = as.Date(paste0(end_date, "-01")),
+        .before = related_term
+      )
+
+    # Respect configured wait between API calls
+    Sys.sleep(gt.env$query_wait)
+    return(item)
   }
 }
