@@ -19,7 +19,7 @@ environment to use (passed to \code{\link[reticulate:use_python]{reticulate::use
 Invisibly returns \code{TRUE} on success. Side effects:
 \itemize{
 \item Stores \code{api_key} in \code{gt.env}.
-\item Sources the Python helper script \code{python/query_gtrends.py} into \code{gt.env}.
+\item Sources the Python helper script \code{python/querty_trend.py} into \code{gt.env}.
 \item Sets \code{gt.env$py_setup <- TRUE} to indicate API-mode is available.
 }
 }

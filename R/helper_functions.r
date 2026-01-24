@@ -49,7 +49,7 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- gt.env$query_gtrends(
+    out <- gt.env$querty_trend(
       terms = term,
       start_date = start_date,
       end_date = end_date,
@@ -204,9 +204,10 @@
 #' - `"data_control"`: filters on `data_control.batch == batch_c`
 #' - `"data_object"`: filters on `data_object.batch_c == batch_c` and `batch_o == batch_o`
 #' - `"data_score"`:  filters on `data_score.batch_c == batch_c` and `batch_o == batch_o`
+#' - `"data_region"`: filters on `data_region.batch_o == batch_o`
 #'
 #' @param table Character scalar. One of `"data_control"`, `"data_object"`,
-#'   `"data_score"`.
+#'   `"data_score"`, `"data_region"`.
 #' @param batch_c Integer-like scalar. Control batch id.
 #' @param batch_o Integer-like scalar. Object batch id (required for object/score).
 #'
@@ -229,8 +230,7 @@
     .check_batch(in_batch_o)
   }
 
-  tbl <- switch(
-    table,
+  tbl <- switch(table,
     data_control = gt.env$tbl_control |>
       filter(.data$batch == in_batch_c),
     data_object = {
@@ -253,8 +253,18 @@
       gt.env$tbl_score |>
         filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
     },
+    data_region = {
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_region'.",
+          call. = FALSE
+        )
+      }
+      gt.env$tbl_region |>
+        filter(.data$batch_o == in_batch_o)
+    },
     stop(
-      "Error: `table` must be one of 'data_control', 'data_object', or 'data_score'.",
+      "Error: `table` must be one of 'data_control', 'data_object', 'data_score', or 'data_region'.",
       call. = FALSE
     )
   )
@@ -264,4 +274,61 @@
     select(.data$location) |>
     collect() |>
     pull(.data$location)
+}
+
+#' @title Download Google Trends regional data for one request
+#'
+#' @keywords internal
+#' @noRd
+
+.get_region <- function(
+  location = NULL,
+  term,
+  start_date = "2020-01",
+  end_date = "2020-12"
+) {
+  .check_length(term, 1)
+  .check_length(start_date, 1)
+  .check_length(end_date, 1)
+  .check_input(term, "character")
+  .check_input(start_date, "character")
+  .check_input(end_date, "character")
+
+  # Normalize location semantics: NULL/""
+  is_global <- is.null(location) || identical(location, "")
+  geo <- location
+
+  if (isTRUE(gt.env$py_setup)) {
+    # ---------------------------------------------------------------------
+    # Research API backend (Python via reticulate)
+    # ---------------------------------------------------------------------
+    out <- gt.env$query_region(
+      terms = term,
+      start_date = start_date,
+      end_date = end_date,
+      geo = geo,
+      api_key = gt.env$api_key
+    )
+
+    # `out$regions` is expected to be list-like; each element has $regionCode, $regionName, and $value.
+    region <- map_dfr(
+      out$regions,
+      ~ tibble(
+        region_code = .x$regionCode,
+        region_name = .x$regionName,
+        hits = .x$value
+      )
+    ) |>
+      mutate(
+        term = term,
+        location = ifelse(is_global, "world", location),
+        start_date = as.Date(paste0(start_date, "-01")),
+        end_date = as.Date(paste0(end_date, "-01")),
+        .before = region_code
+      )
+
+    # Respect configured wait between API calls
+    Sys.sleep(gt.env$query_wait)
+    return(region)
+  }
 }

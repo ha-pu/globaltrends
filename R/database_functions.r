@@ -56,12 +56,15 @@ initialize_db <- function() {
     "CREATE TABLE data_score(location VARCHAR, keyword VARCHAR, date DATE, score DOUBLE, batch_c INTEGER, batch_o INTEGER);",
     "CREATE TABLE data_doi(keyword VARCHAR, date DATE, gini DOUBLE, hhi DOUBLE, entropy DOUBLE, batch_c INTEGER, batch_o INTEGER, locations VARCHAR);",
     "CREATE TABLE data_locations(location VARCHAR, type VARCHAR);",
+    "CREATE TABLE data_region(term VARCHAR, location VARCHAR, start_date DATE, end_date DATE, region_code VARCHAR, region_name VARCHAR, hits DOUBLE, batch_o INTEGER);",
     "CREATE TABLE keyword_synonyms(keyword VARCHAR, synonym VARCHAR);",
-    "CREATE INDEX idx_doi_batches ON data_doi(batch_c, batch_o);",
+    "CREATE INDEX idx_doi_batch ON data_doi(batch_o);",
     "CREATE INDEX idx_control_batch ON data_control(batch);",
     "CREATE INDEX idx_locations_loc ON data_locations(location);",
-    "CREATE INDEX idx_object_batches ON data_object(batch_c, batch_o);",
-    "CREATE INDEX idx_score_batches ON data_score(batch_c, batch_o);",
+    "CREATE INDEX idx_regions_term ON data_region(term);",
+    "CREATE INDEX idx_regions_loc ON data_region(location);",
+    "CREATE INDEX idx_object_batch ON data_object(batch_o);",
+    "CREATE INDEX idx_score_batch ON data_score(batch_o);",
     "CREATE INDEX idx_terms_batch ON batch_keywords(batch);",
     "CREATE INDEX idx_time_batch ON batch_time(batch);"
   )
@@ -110,6 +113,7 @@ initialize_db <- function() {
     "data_locations",
     "data_object",
     "data_score",
+    "data_region",
     "keyword_synonyms"
   )
 }
@@ -261,6 +265,7 @@ start_db <- function() {
   tbl_control <- tbl(con, "data_control")
   tbl_object <- tbl(con, "data_object")
   tbl_score <- tbl(con, "data_score")
+  tbl_region <- tbl(con, "data_region")
 
   # Cache small, frequently-used tables as in-memory tibbles
   keywords_control <- tbl_keywords |>
@@ -296,6 +301,7 @@ start_db <- function() {
     tbl_control = tbl_control,
     tbl_object = tbl_object,
     tbl_score = tbl_score,
+    tbl_region = tbl_region,
     keywords_control = keywords_control,
     time_control = time_control,
     keywords_object = keywords_object,

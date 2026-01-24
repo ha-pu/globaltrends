@@ -148,12 +148,12 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     seq_along(loc_remaining),
     ~ {
       loc <- loc_remaining[[.x]]
-      in_location <- ifelse(identical(loc, ""), "world", loc)
+      loc <- ifelse(identical(loc, ""), "world", loc)
 
       # We require `data_control` for the same control batch and location to
       # pick an appropriate control keyword for mapping.
       qry_control <- gt.env$tbl_control |>
-        filter(.data$batch == control, .data$location == in_location) |>
+        filter(.data$batch == control, .data$location == loc) |>
         collect()
 
       if (nrow(qry_control) == 0) {
@@ -163,7 +163,7 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
           " | control: ",
           control,
           " | location: ",
-          in_location,
+          loc,
           "."
         ))
         return(invisible(NULL))
@@ -181,7 +181,7 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
             "Too little signal in control batch ",
             control,
             " for location ",
-            in_location,
+            loc,
             ". ",
             "Reconsider choice of control keywords."
           ),
@@ -196,7 +196,7 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
       out <- NULL
 
       for (term_c in terms_con) {
-        if (identical(in_location, "world")) {
+        if (identical(loc, "world")) {
           if (isTRUE(gt.env$py_setup)) {
             out <- .get_trend(
               term = c(term_c, terms_obj),
@@ -238,7 +238,7 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
             " (control batch ",
             control,
             ", location ",
-            in_location,
+            loc,
             "). ",
             "Reconsider control keywords or time window."
           ),
@@ -260,7 +260,7 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
         " | control: ",
         control,
         " | location: ",
-        in_location,
+        loc,
         " [",
         .x,
         "/",

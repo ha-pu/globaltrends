@@ -27,7 +27,7 @@
 #' Invisibly returns `TRUE` on success. Side effects:
 #' \itemize{
 #'   \item Stores `api_key` in `gt.env`.
-#'   \item Sources the Python helper script `python/query_gtrends.py` into `gt.env`.
+#'   \item Sources the Python helper script `python/querty_trend.py` into `gt.env`.
 #'   \item Sets `gt.env$py_setup <- TRUE` to indicate API-mode is available.
 #' }
 #'
