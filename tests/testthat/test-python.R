@@ -28,7 +28,7 @@ test_that("initialize_py3", {
       api_key = "XXX",
       python_env = "XXX"
     ),
-    "Directory ~/.virtualenvs/XXX is not a Python virtualenv"
+    "Directory .*\\.virtualenvs/XXX is not a Python virtualenv"
   )
 })
 
