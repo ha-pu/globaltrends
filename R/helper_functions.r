@@ -242,9 +242,17 @@
     .check_input(in_rising, "logical")
   }
 
-  tbl <- switch(table,
-    data_control = gt.env$tbl_control |>
-      filter(.data$batch == in_batch_c),
+  tbl <- switch(
+    table,
+    data_control = {
+      if (is.null(in_batch_c)) {
+        stop(
+          "`batch_c` must be provided for table = 'data_control'.",
+          call. = FALSE
+        )
+      }
+      filter(gt.env$tbl_control, .data$batch == in_batch_c)
+    },
     data_object = {
       if (is.null(in_batch_o)) {
         stop(
@@ -252,8 +260,11 @@
           call. = FALSE
         )
       }
-      gt.env$tbl_object |>
-        filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
+      filter(
+        gt.env$tbl_object,
+        .data$batch_c == in_batch_c,
+        .data$batch_o == in_batch_o
+      )
     },
     data_score = {
       if (is.null(in_batch_o)) {
@@ -262,18 +273,20 @@
           call. = FALSE
         )
       }
-      gt.env$tbl_score |>
-        filter(.data$batch_c == in_batch_c, .data$batch_o == in_batch_o)
+      filter(
+        gt.env$tbl_score,
+        .data$batch_c == in_batch_c,
+        .data$batch_o == in_batch_o
+      )
     },
-    data_related = {
+    data_region = {
       if (is.null(in_batch_o)) {
         stop(
-          "`batch_o` must be provided for table = 'data_related'.",
+          "`batch_o` must be provided for table = 'data_region'.",
           call. = FALSE
         )
       }
-      gt.env$tbl_related |>
-        filter(.data$batch_o == in_batch_o)
+      filter(gt.env$tbl_related, .data$batch_o == in_batch_o)
     },
     data_related = {
       if (is.null(in_batch_o)) {
@@ -294,12 +307,12 @@
           call. = FALSE
         )
       }
-      gt.env$tbl_related |>
-        filter(
-          .data$batch_o == in_batch_o &
-            .data$topic == in_topic &
-            .data$rising == in_rising
-        )
+      filter(
+        gt.env$tbl_related,
+        .data$batch_o == in_batch_o &
+          .data$topic == in_topic &
+          .data$rising == in_rising
+      )
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",
