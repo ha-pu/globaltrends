@@ -1,5 +1,4 @@
 <!-- badges: start -->
-[![CRAN status](https://www.r-pkg.org/badges/version/globaltrends)](https://CRAN.R-project.org/package=globaltrends)
 [![R-CMD-check](https://github.com/ha-pu/globaltrends/workflows/R-CMD-check/badge.svg)](https://github.com/ha-pu/globaltrends/actions)
 [![Codecov test coverage](https://codecov.io/gh/ha-pu/globaltrends/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ha-pu/globaltrends?branch=master)
 <!-- badges: end -->
@@ -9,6 +8,17 @@
 <p align="center">
   <img src="vignettes/hex-globaltrends.png" width="250" height="250">
 </p>
+
+**globaltrends is no longer available through CRAN!**
+**Install directly from GitHub.**
+
+```
+# install ----------------------------------------------------------------------
+devtools::install_github(
+  repo = "ha-pu/globaltrends",
+  build_vignettes = TRUE
+)
+```
 
 ## Introduction
 
@@ -59,15 +69,7 @@ will be made throught the `gtrendsR` package. **We suggest using the official**
 **Google Trends Research API as the preferred option to access data from**
 **Google Trends!**
 
-````
-# install ----------------------------------------------------------------------
-# The API-based version of `globaltrends` is not available on CRAN!
-# Install the current dev version directly from GitHub:
-devtools::install_github(
-  repo = "ha-pu/globaltrends",
-  build_vignettes = TRUE
-)
-
+```
 # packages ---------------------------------------------------------------------
 library(dplyr)
 library(globaltrends)

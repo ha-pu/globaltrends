@@ -1,4 +1,6 @@
-# globaltrends 0.1.0.9000
+# globaltrends 0.1.0
+
+* Removed globaltrends from CRAN
 
 ## Change in downloading approach
 
