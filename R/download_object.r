@@ -148,7 +148,6 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     seq_along(loc_remaining),
     ~ {
       loc <- loc_remaining[[.x]]
-      loc <- ifelse(identical(loc, ""), "world", loc)
 
       # We require `data_control` for the same control batch and location to
       # pick an appropriate control keyword for mapping.
@@ -301,7 +300,7 @@ download_object.list <- function(object, control = 1, locations = NULL) {
 #'
 #' @description
 #' Convenience wrapper around [download_object()] to download global (world)
-#' object series. Internally this is implemented by passing `locations = ""`.
+#' object series. Internally this is implemented by passing `locations = "world"`.
 #'
 #' @param object Numeric scalar/vector or list. Object batch id(s) to download.
 #' @param control Numeric scalar. Control batch id used for mapping. Defaults to `1`.
@@ -312,5 +311,5 @@ download_object.list <- function(object, control = 1, locations = NULL) {
 #' @rdname download_object
 
 download_object_global <- function(object, control = 1) {
-  download_object(object = object, control = control, locations = "")
+  download_object(object = object, control = control, locations = "world")
 }

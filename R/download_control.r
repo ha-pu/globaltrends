@@ -121,11 +121,10 @@ download_control.numeric <- function(control, locations = NULL) {
     seq_along(loc_remaining),
     ~ {
       loc <- loc_remaining[[.x]]
-      in_location <- ifelse(identical(loc, ""), "world", loc)
 
       # Global download: when using gtrendsR, a blank geo typically indicates global.
       # For the Research API backend, we call without location (implementation-specific).
-      out <- if (identical(in_location, "world")) {
+      out <- if (identical(loc, "world")) {
         if (isTRUE(gt.env$py_setup)) {
           .get_trend(term = terms, start_date = start_date, end_date = end_date)
         } else {
@@ -146,7 +145,7 @@ download_control.numeric <- function(control, locations = NULL) {
       }
 
       if (!is.null(out)) {
-        out <- dplyr::mutate(out, batch = control)
+        out <- mutate(out, batch = control)
         dbAppendTable(
           conn = gt.env$globaltrends_db,
           name = "data_control",
@@ -158,7 +157,7 @@ download_control.numeric <- function(control, locations = NULL) {
         "Downloaded control data | control: ",
         control,
         " | location: ",
-        in_location,
+        loc,
         " [",
         .x,
         "/",
@@ -193,7 +192,7 @@ download_control.list <- function(control, locations = NULL) {
 #'
 #' @description
 #' Convenience wrapper around [download_control()] to download global (world)
-#' control series. Internally this is implemented by passing `locations = ""`.
+#' control series. Internally this is implemented by passing `locations = "world"`.
 #'
 #' @param control Numeric scalar/vector or list. Control batch id(s) to download.
 #'
@@ -203,5 +202,5 @@ download_control.list <- function(control, locations = NULL) {
 #' @rdname download_control
 
 download_control_global <- function(control) {
-  download_control(control = control, locations = "")
+  download_control(control = control, locations = "world")
 }

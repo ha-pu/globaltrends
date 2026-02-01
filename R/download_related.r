@@ -26,7 +26,7 @@
 #'   id(s) (`batch_o`) to download.
 #' @param locations Character vector of location codes. Defaults to
 #'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
-#'   Use `""` to request global data (`"world"`).
+#'   Use `"world"` to request global data (`"world"`).
 #'
 #' @return Invisibly returns `TRUE`. Called for its side effects (writing to
 #'   `data_related`) and emits a message per location.
@@ -91,7 +91,7 @@ download_themes_rising <- function(object, locations = NULL) {
 download_topics_global <- function(object) {
   download_related(
     object = object,
-    locations = "",
+    locations = "world",
     topic = TRUE,
     rising = FALSE
   )
@@ -103,7 +103,7 @@ download_topics_global <- function(object) {
 download_themes_global <- function(object) {
   download_related(
     object = object,
-    locations = "",
+    locations = "world",
     topic = FALSE,
     rising = FALSE
   )
@@ -113,7 +113,7 @@ download_themes_global <- function(object) {
 #' @rdname download_related
 
 download_topics_rising_global <- function(object) {
-  download_related(object = object, locations = "", topic = TRUE, rising = TRUE)
+  download_related(object = object, locations = "world", topic = TRUE, rising = TRUE)
 }
 
 #' @export
@@ -122,7 +122,7 @@ download_topics_rising_global <- function(object) {
 download_themes_rising_global <- function(object) {
   download_related(
     object = object,
-    locations = "",
+    locations = "world",
     topic = FALSE,
     rising = TRUE
   )
@@ -249,11 +249,9 @@ download_related.numeric <- function(
   walk(
     seq_along(loc_remaining),
     ~ {
-      loc_in <- loc_remaining[[.x]]
-      is_global <- is.null(loc_in) || identical(loc_in, "")
-      loc_label <- if (is_global) "world" else loc_in
+      loc <- loc_remaining[[.x]]
 
-      out <- if (is_global) {
+      out <- if (loc == "world") {
         map_dfr(
           terms_obj,
           ~ .get_related(
@@ -268,7 +266,7 @@ download_related.numeric <- function(
         map_dfr(
           terms_obj,
           ~ .get_related(
-            location = loc_in,
+            location = loc,
             term = .x,
             start_date = start_date,
             end_date = end_date,
@@ -283,7 +281,7 @@ download_related.numeric <- function(
           "No related data returned | object: ",
           object,
           " | location: ",
-          loc_label,
+          loc,
           " | topic: ",
           topic,
           " | rising: ",
@@ -310,7 +308,7 @@ download_related.numeric <- function(
         "Downloaded related data | object: ",
         object,
         " | location: ",
-        loc_label,
+        loc,
         " | topic: ",
         topic,
         " | rising: ",

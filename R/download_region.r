@@ -26,7 +26,7 @@
 #'
 #' @param locations Character vector of location codes. Defaults to
 #'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
-#'   Use `""` to request global data (`"world"`).
+#'   Use `"world"` to request global data (`"world"`).
 #'
 #' @return
 #' Invisibly returns `TRUE`. Called for its side effects (writing to
@@ -126,12 +126,10 @@ download_region.numeric <- function(object, locations = NULL) {
   walk(
     seq_along(loc_remaining),
     ~ {
-      loc_in <- loc_remaining[[.x]]
-      is_global <- is.null(loc_in) || identical(loc_in, "")
-      loc <- if (is_global) "world" else loc_in
+      loc <- loc_remaining[[.x]]
 
       # Download region series per keyword; bind rows across keywords.
-      out <- if (is_global) {
+      out <- if (loc == "world") {
         map_dfr(
           terms_obj,
           ~ .get_region(term = .x, start_date = start_date, end_date = end_date)
@@ -140,7 +138,7 @@ download_region.numeric <- function(object, locations = NULL) {
         map_dfr(
           terms_obj,
           ~ .get_region(
-            location = loc_in,
+            location = loc,
             term = .x,
             start_date = start_date,
             end_date = end_date
@@ -229,5 +227,5 @@ download_region.list <- function(object, locations = NULL) {
 #' @rdname download_region
 
 download_region_global <- function(object) {
-  download_region(object = object, locations = "")
+  download_region(object = object, locations = "world")
 }
