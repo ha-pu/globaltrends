@@ -77,7 +77,9 @@ remove_data <- function(table, control = NULL, object = NULL) {
     "data_control",
     "data_object",
     "data_score",
-    "data_doi"
+    "data_doi",
+    "data_related",
+    "data_region"
   )
   if (!(table %in% allowed)) {
     stop(
@@ -120,6 +122,40 @@ remove_data <- function(table, control = NULL, object = NULL) {
       )
     }
     .remove_data_control(batch_c = control)
+    return(invisible(TRUE))
+  }
+
+  # data_related and data_region require only object
+  if (table == "data_related") {
+    if (is.null(object)) {
+      stop(
+        "For `table = 'data_related'`, `object` must be provided.",
+        call. = FALSE
+      )
+    }
+    if (!is.null(object)) {
+      warning(
+        "`control` is ignored for `table = 'data_related'`.",
+        call. = FALSE
+      )
+    }
+    .remove_data_related(batch_o = object)
+    return(invisible(TRUE))
+  }
+  if (table == "data_region") {
+    if (is.null(object)) {
+      stop(
+        "For `table = 'data_region'`, `object` must be provided.",
+        call. = FALSE
+      )
+    }
+    if (!is.null(control)) {
+      warning(
+        "`control` is ignored for `table = 'data_region'`.",
+        call. = FALSE
+      )
+    }
+    .remove_data_region(batch_o = object)
     return(invisible(TRUE))
   }
 
@@ -346,6 +382,8 @@ vacuum_data <- function() {
   }
 
   .remove_data_score(batch_c = batch_c, batch_o = batch_o)
+  .remove_data_related(batch_o = batch_o)
+  .remove_data_region(batch_o = batch_o)
 }
 
 #' @title Remove from data_score (greedy)
@@ -434,6 +472,44 @@ vacuum_data <- function() {
       )
     )
   }
+}
+
+#' @title Remove from data_related
+#' @keywords internal
+#' @noRd
+#' @importFrom purrr walk
+
+.remove_data_related <- function(batch_o = NULL) {
+  .check_batch_optional(batch_o)
+
+  .db_delete(
+    statement = "DELETE FROM data_related WHERE batch_o = ?",
+    params = list(batch_o)
+  )
+  message(paste0(
+    "Successfully deleted object batch ",
+    batch_o,
+    " from 'data_related'."
+  ))
+}
+
+#' @title Remove from data_region
+#' @keywords internal
+#' @noRd
+#' @importFrom purrr walk
+
+.remove_data_region <- function(batch_o = NULL) {
+  .check_batch_optional(batch_o)
+
+  .db_delete(
+    statement = "DELETE FROM data_region WHERE batch_o = ?",
+    params = list(batch_o)
+  )
+  message(paste0(
+    "Successfully deleted object batch ",
+    batch_o,
+    " from 'data_region'."
+  ))
 }
 
 #' @title Refresh keyword vectors in gt.env

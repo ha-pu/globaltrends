@@ -286,7 +286,7 @@
           call. = FALSE
         )
       }
-      filter(gt.env$tbl_related, .data$batch_o == in_batch_o)
+      filter(gt.env$tbl_region, .data$batch_o == in_batch_o)
     },
     data_related = {
       if (is.null(in_batch_o)) {
@@ -438,8 +438,7 @@
         rising = rising,
         location = ifelse(is_global, "world", location),
         start_date = as.Date(paste0(start_date, "-01")),
-        end_date = as.Date(paste0(end_date, "-01")),
-        .before = related_term
+        end_date = as.Date(paste0(end_date, "-01"))
       )
 
     # Respect configured wait between API calls
