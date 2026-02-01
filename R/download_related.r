@@ -113,7 +113,12 @@ download_themes_global <- function(object) {
 #' @rdname download_related
 
 download_topics_rising_global <- function(object) {
-  download_related(object = object, locations = "world", topic = TRUE, rising = TRUE)
+  download_related(
+    object = object,
+    locations = "world",
+    topic = TRUE,
+    rising = TRUE
+  )
 }
 
 #' @export
@@ -251,8 +256,8 @@ download_related.numeric <- function(
     ~ {
       loc <- loc_remaining[[.x]]
 
-      out <- if (loc == "world") {
-        map_dfr(
+      if (loc == "world") {
+        out <- map_dfr(
           terms_obj,
           ~ .get_related(
             term = .x,
@@ -263,7 +268,7 @@ download_related.numeric <- function(
           )
         )
       } else {
-        map_dfr(
+        out <- map_dfr(
           terms_obj,
           ~ .get_related(
             location = loc,
