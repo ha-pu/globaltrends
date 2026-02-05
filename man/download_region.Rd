@@ -20,7 +20,7 @@ download_region_global(object)
 
 \item{locations}{Character vector of location codes. Defaults to
 \code{gt.env$countries} when available; otherwise \code{globaltrends::countries}.
-Use \code{""} to request global data (\code{"world"}).}
+Use \code{"world"} to request global data (\code{"world"}).}
 }
 \value{
 Invisibly returns \code{TRUE}. Called for its side effects (writing to

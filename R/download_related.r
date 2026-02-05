@@ -136,7 +136,7 @@ download_themes_rising_global <- function(object) {
 # ---- Core implementation ----------------------------------------------------
 
 #' @rdname download_related
-#' @keywords internal
+#' @export
 #' @noRd
 #' @importFrom DBI dbAppendTable
 #' @importFrom dplyr mutate
@@ -154,7 +154,7 @@ download_related <- function(
 
 #' @rdname download_related
 #' @method download_related numeric
-#' @keywords internal
+#' @export
 #' @noRd
 
 download_related.numeric <- function(
@@ -334,7 +334,7 @@ download_related.numeric <- function(
 
 #' @rdname download_related
 #' @method download_related list
-#' @keywords internal
+#' @export
 #' @noRd
 
 download_related.list <- function(

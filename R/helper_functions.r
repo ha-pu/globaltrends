@@ -353,13 +353,27 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- gt.env$query_region(
+    out <- try(gt.env$query_region(
       terms = term,
       start_date = start_date,
       end_date = end_date,
       geo = geo,
       api_key = gt.env$api_key
-    )
+    ))
+
+    if (!is.null(attr(out, "class"))) {
+      out <- tibble(
+        term = NA,
+        location = NA,
+        start_date = NA,
+        end_date = NA,
+        region_code = NA,
+        region_name = NA,
+        hits = NA,
+        batch_o = NA
+      )
+      return(out)
+    }
 
     # `out$regions` is expected to be list-like; each element has $regionCode, $regionName, and $value.
     region <- map_dfr(

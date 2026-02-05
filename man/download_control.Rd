@@ -34,7 +34,7 @@ across a set of locations and writes the results to the database table
 \code{data_control}.
 
 Convenience wrapper around \code{\link[=download_control]{download_control()}} to download global (world)
-control series. Internally this is implemented by passing \code{locations = ""}.
+control series. Internally this is implemented by passing \code{locations = "world"}.
 }
 \details{
 Control batches (up to five keywords per batch) and their time windows are

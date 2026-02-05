@@ -37,7 +37,7 @@ scaling/mapping, across a set of locations. Results are written to the
 database table \code{data_object}.
 
 Convenience wrapper around \code{\link[=download_object]{download_object()}} to download global (world)
-object series. Internally this is implemented by passing \code{locations = ""}.
+object series. Internally this is implemented by passing \code{locations = "world"}.
 }
 \details{
 Each object batch contains up to four object keywords. For each download

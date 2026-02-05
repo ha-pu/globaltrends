@@ -129,13 +129,13 @@ download_region.numeric <- function(object, locations = NULL) {
       loc <- loc_remaining[[.x]]
 
       # Download region series per keyword; bind rows across keywords.
-      out <- if (loc == "world") {
-        map_dfr(
+      if (loc == "world") {
+        out <- map_dfr(
           terms_obj,
           ~ .get_region(term = .x, start_date = start_date, end_date = end_date)
         )
       } else {
-        map_dfr(
+        out <- map_dfr(
           terms_obj,
           ~ .get_region(
             location = loc,
@@ -145,6 +145,7 @@ download_region.numeric <- function(object, locations = NULL) {
           )
         )
       }
+      out <- filter(out, !is.na(term))
 
       if (is.null(out) || nrow(out) == 0) {
         message(paste0(
