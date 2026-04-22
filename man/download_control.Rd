@@ -16,40 +16,60 @@ download_control(control, locations = NULL)
 download_control_global(control)
 }
 \arguments{
-\item{control}{Numeric scalar/vector or list. Control batch id(s) to download.}
+\item{control}{Numeric scalar, numeric vector, or list of numeric scalars.
+Control batch id(s) to download.}
 
-\item{locations}{Character vector of location codes. Defaults to
-\code{gt.env$countries} when available; otherwise \code{globaltrends::countries}.
-Use \code{""} to request the global aggregate (\code{"world"}).}
+\item{locations}{Character vector of ISO 3166-1 alpha-2 location codes.
+Defaults to \code{gt.env$countries} when set by \code{\link[=start_db]{start_db()}}; otherwise falls
+back to \code{globaltrends::countries}. Pass \code{"world"} (or use
+\code{\link[=download_control_global]{download_control_global()}}) to download the worldwide aggregate instead of
+country-level data.}
 }
 \value{
-Invisibly returns \code{TRUE}. Called for its side effects (writing to
-\code{data_control}) and emits a message per location.
+Invisibly returns \code{TRUE}. The function is called for its side effects:
+downloaded rows are appended to \code{data_control} in the active database, and
+one progress message is emitted per location indicating whether data was
+written or no data was returned.
 
-Invisibly returns \code{TRUE}.
+Invisibly returns \code{TRUE}. See \code{\link[=download_control]{download_control()}} for details on
+side effects and emitted messages.
 }
 \description{
 Downloads Google Trends search volumes for one or more \emph{control} batches
-across a set of locations and writes the results to the database table
+across a set of locations and appends the results to the database table
 \code{data_control}.
 
-Convenience wrapper around \code{\link[=download_control]{download_control()}} to download global (world)
-control series. Internally this is implemented by passing \code{locations = "world"}.
+Convenience wrapper around \code{\link[=download_control]{download_control()}} that downloads the worldwide
+aggregate instead of country-level data. Equivalent to calling
+\code{download_control(control, locations = "world")}.
 }
 \details{
-Control batches (up to five keywords per batch) and their time windows are
-defined in the tables \code{batch_keywords} and \code{batch_time} (typically created
-via \code{\link[=add_keyword]{add_keyword()}}). This function retrieves the relevant keywords and the
-batch-specific time window from \code{gt.env$keywords_control} and
-\code{gt.env$time_control}.
+\strong{Prerequisites.} \code{\link[=start_db]{start_db()}} must be called before \code{download_control()}.
+It connects to the database and populates \code{gt.env$keywords_control} and
+\code{gt.env$time_control} from the tables \code{batch_keywords} and \code{batch_time}
+(created via \code{\link[=add_keyword]{add_keyword()}}). These in-memory objects are used to look up
+the keywords and time window for each requested batch.
 
-Downloads are performed through the package internal \code{.get_trend()} helper.
-Depending on configuration, \code{.get_trend()} may use \code{gtrendsR::gtrends()} or
-the Research API backend initialized via \code{\link[=initialize_python]{initialize_python()}}.
+\strong{Dispatch.} \code{download_control()} is an S3 generic that dispatches on the
+class of \code{control}. Passing a numeric scalar routes to the \code{.numeric} method,
+which performs the actual download. Passing a numeric vector of length > 1
+coerces \code{control} to a list and delegates to the \code{.list} method, which
+iterates over batches sequentially. Passing a list directly also routes to
+the \code{.list} method.
 
-The function avoids duplicate downloads: it checks which locations already
-exist for the requested control batch in \code{data_control} and only downloads
-missing locations.
+\strong{Download backend.} Requests are issued through the internal \code{.get_trend()}
+helper, which uses either \code{gtrendsR::gtrends()} (default) or the Google
+Trends Research API when \code{\link[=initialize_python]{initialize_python()}} has been called.
+
+\strong{Deduplication.} Before downloading, the function queries \code{data_control}
+for locations already present for the requested batch. Only locations not yet
+in the database are downloaded. If all locations are already present, the
+function returns early with a message and no requests are made.
+
+\strong{Missing data.} If the API returns no data for a location (e.g. due to
+insufficient search volume), the result for that location is silently skipped
+(nothing is written to \code{data_control}) and a "No data returned" message is
+emitted.
 }
 \section{Category codes}{
 
@@ -61,9 +81,21 @@ object keywords.
 
 \examples{
 \dontrun{
+# Download one control batch for all countries
 download_control(control = 1, locations = countries)
+
+# Download several batches sequentially
 download_control(control = as.list(1:5), locations = countries)
+
+# Download worldwide aggregate
 download_control_global(control = 1)
 }
 
+}
+\seealso{
+\code{\link[=start_db]{start_db()}} to connect to the database and populate \code{gt.env}.
+\code{\link[=add_keyword]{add_keyword()}} to register control batches before downloading.
+\code{\link[=download_control_global]{download_control_global()}} for a convenience wrapper for worldwide data.
+\code{\link[=download_object]{download_object()}} to download object keyword data using a control batch for
+scaling.
 }

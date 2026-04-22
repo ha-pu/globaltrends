@@ -14,18 +14,18 @@ add_object_keyword(keyword, start_date = "2010-01", end_date = "2020-12")
 \code{character} or a \code{list} of \code{character} vectors. The function also allows the
 usage of codes for search topics instead of search terms.}
 
-\item{start_date}{Start of time frame for which the batch data should be downloaded. Object
-of type \code{character} that takes the from "YYYY-MM".
-Defaults to \emph{"2010-01"}.}
+\item{start_date}{Start of the time frame for which batch data should be
+downloaded. Character scalar in the format \code{"YYYY-MM"}.
+Defaults to \code{"2010-01"}.}
 
-\item{end_date}{End of time frame for which the batch data should be downloaded. Object
-of type \code{character} that takes the from "YYYY-MM".
-Defaults to \emph{"2020-12"}.}
+\item{end_date}{End of the time frame for which batch data should be
+downloaded. Character scalar in the format \code{"YYYY-MM"}.
+Defaults to \code{"2020-12"}.}
 }
 \value{
-Message that the batch has been created successfully. Batch data is
-written to tables \emph{batch_keywords} and \emph{batch_time}.
-Numeric vector containing the newly added batch numbers are returned.
+Integer vector of the newly added batch IDs (one element per batch
+created). Batch data is written to tables \emph{batch_keywords} and
+\emph{batch_time}. A message is printed for each batch.
 }
 \description{
 The function adds one or more batches of keywords with a time period for

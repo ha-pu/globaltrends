@@ -2,40 +2,50 @@
 % Please edit documentation in R/add_keywords.r
 \name{add_synonym}
 \alias{add_synonym}
-\alias{add_synonym.character}
-\alias{add_synonym.list}
 \title{Add synonyms for object keywords}
 \usage{
 add_synonym(keyword, synonym)
 }
 \arguments{
-\item{keyword}{Keyword of type \code{character} and length 1 for which the
-synonyms are added.}
+\item{keyword}{Character scalar. The canonical object keyword for which the
+synonyms are registered. Must already exist as an object keyword in the
+database.}
 
-\item{synonym}{Synonym of type \code{character}.}
+\item{synonym}{Character scalar or vector, or a \code{list} of character vectors.
+One or more synonyms to associate with \code{keyword}. Each element is inserted
+as a separate row in \emph{keyword_synonyms}.}
 }
 \value{
-Message that the synonym has been added successfully. Synonym data is
-written to table \emph{keyword_synonyms}.
+Invisibly returns \code{NULL}. Synonym rows are written to table
+\emph{keyword_synonyms} and the in-memory cache \code{gt.env$keyword_synonyms} is
+refreshed. A message is printed for each synonym added.
 }
 \description{
-The function allows to add synonyms for object keywords. Sometimes, objects
-of interest can be searched with different keywords on Google e.g., FC Bayern
-for Bayern Munich. Search scores for keywords that are added as synonyms are
-aggregated when running \code{compute_score}. The function allows to add
-synonyms for a single keyword at a time.
+Registers one or more synonyms for a single object keyword. When
+\code{\link[=compute_score]{compute_score()}} aggregates search scores, all synonyms are treated as
+equivalent to the canonical keyword and their scores are summed.
+
+A common use-case is alternate names: e.g., "FC Bayern" and "Bayern Munich"
+refer to the same entity and should be aggregated.
 }
 \section{Note}{
 
-To avoid trailing spaces \code{stringr::str_squish} is automatically
-applied to all keywords and synonyms.
+\code{\link[stringr:str_trim]{stringr::str_squish()}} is applied to both \code{keyword} and \code{synonym} to
+remove leading, trailing, and internal whitespace.
 }
 
 \examples{
 \dontrun{
+# Single synonym
 add_synonym(
   keyword = "fc bayern",
   synonym = "bayern munich"
+)
+
+# Multiple synonyms in one call
+add_synonym(
+  keyword = "fc barcelona",
+  synonym = c("barcelona", "barca", "fcb")
 )
 }
 

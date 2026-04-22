@@ -1,32 +1,11 @@
-# setup ------------------------------------------------------------------------
-suppressWarnings(library(DBI))
-suppressWarnings(library(dplyr))
+# Tests for add_synonym() and aggregate_synonyms().
+# Helpers local_db() and local_synonyms_db() are provided by helper-db.R
+# and auto-loaded by testthat before this file runs.
 
-Sys.setenv("LANGUAGE" = "EN")
-source("../test_functions.r")
-
-initialize_db()
-start_db()
-
-add_control_keyword(
-  keyword = c("gmail", "map", "wikipedia", "youtube"),
-  start_date = "2010-01",
-  end_date = "2019-12"
-)
-
-add_object_keyword(
-  keyword = list(
-    c("fc barcelona", "fc bayern", "manchester united", "real madrid"),
-    c("bayern munich", "bayern munchen")
-  ),
-  start_date = "2010-01",
-  end_date = "2019-12"
-)
-
-location_set <- c("US", "CN", "JP")
-
-# add synonyms -----------------------------------------------------------------
+# add_synonym() ----------------------------------------------------------------
 test_that("add_synonyms1", {
+  local_db()
+
   out <- capture_messages(
     add_synonym(
       keyword = "fc bayern",
@@ -39,123 +18,147 @@ test_that("add_synonyms1", {
     "Successfully added synonym | keyword: fc bayern | synonym: bayern munich\\.",
     all = FALSE
   )
-
   expect_match(
     out,
     "Successfully added synonym | keyword: fc bayern | synonym: bayern munchen\\.",
     all = FALSE
   )
-
   expect_equal(nrow(gt.env$keyword_synonyms), 2)
 })
 
-# enter data -------------------------------------------------------------------
-data <- filter(example_control, batch == 1 & location %in% location_set[1:3])
-dbAppendTable(gt.env$globaltrends_db, "data_control", data)
-data <- filter(
-  example_object,
-  batch_c == 1 & batch_o == 1 & location %in% location_set[1:2]
-) %>%
-  mutate(batch_o = 1)
-dbAppendTable(gt.env$globaltrends_db, "data_object", data)
-data <- filter(
-  example_object,
-  batch_c == 1 & batch_o == 2 & location %in% location_set[2:3]
-) %>%
-  mutate(batch_o = 2)
-dbAppendTable(gt.env$globaltrends_db, "data_object", data)
-
-compute_score(object = 1:2, locations = location_set[1:3])
-out1 <- export_score(keyword = "fc bayern")
-
-# run aggregation --------------------------------------------------------------
+# aggregate_synonyms() ---------------------------------------------------------
 test_that("aggregate_synonyms1", {
-  out <- capture_messages(
-    aggregate_synonyms(control = 1, vacuum = FALSE)
+  local_synonyms_db()
+  suppressMessages(
+    add_synonym(keyword = "fc bayern", synonym = c("bayern munich", "bayern munchen"))
   )
 
-  expect_false(
-    out[[7]] == "Start vacuum_data().\n"
-  )
+  out <- capture_messages(aggregate_synonyms(control = 1, vacuum = FALSE))
+  expect_false(any(grepl("vacuum", out, ignore.case = TRUE)))
 })
 
 test_that("aggregate_synonyms2", {
-  out <- capture_messages(
-    aggregate_synonyms(control = 1)
+  local_synonyms_db()
+  suppressMessages(
+    add_synonym(keyword = "fc bayern", synonym = c("bayern munich", "bayern munchen"))
   )
 
-  expect_match(
-    out,
-    "Start vacuum_data\\(\\)\\.",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Successfully aggregated synonyms\\.",
-    all = FALSE
-  )
+  out <- capture_messages(aggregate_synonyms(control = 1))
+  expect_match(out, "Running vacuum_data",            all = FALSE)
+  expect_match(out, "Successfully aggregated synonyms", all = FALSE)
 })
 
-# compare results --------------------------------------------------------------
+test_that("aggregate_synonyms_no_data", {
+  local_db()
+  suppressMessages({
+    add_object_keyword(keyword = "kw_a", start_date = "2020-01", end_date = "2020-01")
+    add_object_keyword(keyword = "kw_b", start_date = "2020-01", end_date = "2020-01")
+    add_synonym(keyword = "kw_a", synonym = "kw_b")
+  })
+
+  # synonym mapping exists but data_score is empty → "No score data found" early exit
+  out <- capture_messages(aggregate_synonyms(control = 1, vacuum = FALSE))
+
+  expect_match(out, "No score data found", all = FALSE)
+  expect_equal(nrow(dplyr::collect(gt.env$tbl_score)), 0L)
+})
+
+# score comparison -------------------------------------------------------------
 test_that("keyword_score", {
-  out1_cn <- out1 %>%
-    filter(location == "CN") %>%
-    summarise(score = mean(score), .groups = "drop")
+  local_synonyms_db()
+  suppressMessages(
+    add_synonym(keyword = "fc bayern", synonym = c("bayern munich", "bayern munchen"))
+  )
 
-  out2_cn <- export_score(keyword = "fc bayern") %>%
-    filter(location == "CN") %>%
-    summarise(score = mean(score), .groups = "drop")
+  score_before <- export_score(keyword = "fc bayern")
+  suppressMessages(aggregate_synonyms(control = 1))
+  score_after <- export_score(keyword = "fc bayern")
 
-  expect_gt(out2_cn$score, out1_cn$score)
+  # CN appears in both batch 1 (canonical) and batch 2 (synonyms), so the
+  # mean score must increase after aggregation.
+  before_cn <- dplyr::filter(score_before, location == "CN")
+  after_cn  <- dplyr::filter(score_after,  location == "CN")
+  expect_gt(mean(after_cn$score, na.rm = TRUE), mean(before_cn$score, na.rm = TRUE))
+
+  # JP had no canonical (batch 1) data before aggregation; synonym batch 2
+  # covers JP, so aggregation must introduce rows there.
+  expect_equal(nrow(dplyr::filter(score_before, location == "JP")), 0L)
+  expect_gt(   nrow(dplyr::filter(score_after,  location == "JP")), 0L)
 })
 
-# add synonyms signals ---------------------------------------------------------
+test_that("aggregate_synonyms_exact_score", {
+  local_db()
+  suppressMessages({
+    add_object_keyword(keyword = "kw_a", start_date = "2020-01", end_date = "2020-01")
+    add_object_keyword(keyword = "kw_b", start_date = "2020-01", end_date = "2020-01")
+  })
+
+  # Insert synthetic scores with known values: canonical = 10, synonym = 5.
+  # After aggregation the merged canonical row must equal 10 + 5 = 15.
+  DBI::dbAppendTable(
+    gt.env$globaltrends_db, "data_score",
+    tibble::tibble(
+      location = "US", keyword = "kw_a",
+      date = as.Date("2020-01-01"), score = 10,
+      batch_c = 1L, batch_o = 1L
+    )
+  )
+  DBI::dbAppendTable(
+    gt.env$globaltrends_db, "data_score",
+    tibble::tibble(
+      location = "US", keyword = "kw_b",
+      date = as.Date("2020-01-01"), score = 5,
+      batch_c = 1L, batch_o = 2L
+    )
+  )
+
+  suppressMessages({
+    add_synonym(keyword = "kw_a", synonym = "kw_b")
+    aggregate_synonyms(control = 1, vacuum = FALSE)
+  })
+
+  result <- dplyr::filter(export_score(keyword = "kw_a"), location == "US")
+  expect_equal(nrow(result), 1L)
+  expect_equal(result$score, 15)
+})
+
+# add_synonym() input validation -----------------------------------------------
 test_that("add_synonyms2", {
+  withr::local_envvar(LANGUAGE = "EN")
   expect_error(
     add_synonym(keyword = letters[1:2], synonym = LETTERS[1:2]),
-    "'keyword' must be object of length 1.\nYou provided an object of length 2."
+    "must have length <= 1"
   )
 })
 
 test_that("add_synonyms4", {
-  test_keyword(fun = add_synonym, synonym = "A")
+  withr::local_envvar(LANGUAGE = "EN")
+  expect_error(add_synonym(keyword = 1,    synonym = "A"), "must be of type character")
+  expect_error(add_synonym(keyword = TRUE, synonym = "A"), "must be of type character")
+  expect_error(add_synonym(keyword = sum,  synonym = "A"), "must be of type character")
 })
 
 test_that("add_synonyms5", {
-  expect_error(
-    add_synonym(keyword = "A", synonym = 1),
-    "no applicable method"
-  )
-  expect_error(
-    add_synonym(keyword = "A", synonym = TRUE),
-    "no applicable method"
-  )
-  expect_error(
-    add_synonym(keyword = "A", synonym = sum),
-    "no applicable method"
-  )
+  withr::local_envvar(LANGUAGE = "EN")
+  expect_error(add_synonym(keyword = "A", synonym = 1),   "must be of type character")
+  expect_error(add_synonym(keyword = "A", synonym = TRUE), "must be of type character")
+  # unlist() on a builtin may produce "no applicable method" before the type
+  # check is reached; accept either message.
+  expect_error(add_synonym(keyword = "A", synonym = sum), "must be of type character|no applicable method")
 })
 
+# aggregate_synonyms() input validation ----------------------------------------
 test_that("aggregate_synonyms3", {
-  test_control(fun = aggregate_synonyms)
+  withr::local_envvar(LANGUAGE = "EN")
+  expect_error(aggregate_synonyms(control = 1.5),  "non-integer")
+  expect_error(aggregate_synonyms(control = "A"),  "Batch id must be an integer")
+  expect_error(aggregate_synonyms(control = TRUE), "Batch id must be an integer")
+  expect_error(aggregate_synonyms(control = sum),  "Batch id must be an integer")
 })
 
 test_that("aggregate_synonyms4", {
-  expect_error(
-    aggregate_synonyms(control = 1, vacuum = 1),
-    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type double."
-  )
-  expect_error(
-    aggregate_synonyms(control = 1, vacuum = "A"),
-    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type character."
-  )
-  expect_error(
-    aggregate_synonyms(control = 1, vacuum = sum),
-    "Error: 'vacuum' must be object of type logical.\nYou provided an object of type builtin."
-  )
+  withr::local_envvar(LANGUAGE = "EN")
+  expect_error(aggregate_synonyms(control = 1, vacuum = 1),   "must be of type logical")
+  expect_error(aggregate_synonyms(control = 1, vacuum = "A"), "must be of type logical")
+  expect_error(aggregate_synonyms(control = 1, vacuum = sum), "must be of type logical")
 })
-
-# disconnect -------------------------------------------------------------------
-disconnect_db()
-unlink("db", recursive = TRUE)
-Sys.unsetenv("LANGUAGE")

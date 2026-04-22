@@ -5,9 +5,16 @@
 #' Each row assigns a single `keyword` to a `batch` and a `type`
 #' (`"control"` or `"object"`).
 #'
+#' The example contains one control batch (5 keywords: gmail, maps, translate,
+#' wikipedia, youtube) and four object batches (14 object keywords covering
+#' football clubs and technology firms), all covering the period 2010-01 to
+#' 2019-12.
+#'
 #' In a live database, keyword batches are created via [add_keyword()] and are
 #' exported to the package environment `gt.env` by [start_db()] as
-#' `gt.env$keywords_control` and `gt.env$keywords_object`.
+#' `gt.env$keywords_control` and `gt.env$keywords_object`. Control batches hold
+#' up to five keywords; object batches hold up to four (one slot is reserved for
+#' the overlap keyword used in score mapping).
 #'
 #' @format A tibble with 3 variables:
 #' \describe{
@@ -27,13 +34,16 @@
 #' @description
 #' Example data representing the database table `batch_time`.
 #' Each row assigns a time window (`start_date`, `end_date`) to a `batch`
-#' and a `type` (`"control"` or `"object"`).
+#' and a `type` (`"control"` or `"object"`). Each `(type, batch)` combination
+#' has exactly one row.
 #'
 #' In a live database, batch time windows are generated when keywords are added
 #' (see [add_keyword()]) and are exported to the package environment `gt.env`
 #' by [start_db()] as `gt.env$time_control` and `gt.env$time_object`.
 #'
-#' Dates are stored as `"YYYY-MM"` strings to represent monthly windows.
+#' Dates are stored as `"YYYY-MM"` strings to represent monthly windows. To
+#' change the time window for an existing batch, all downloads and computations
+#' for that batch must be re-run.
 #'
 #' @format A tibble with 4 variables:
 #' \describe{
@@ -61,19 +71,24 @@
 #' [start_db()]. Global aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
+#' Simulated values are bounded to the empirical \[min, max\] range observed in
+#' actual downloads for each keyword--location pair.
 #'
 #' @format A tibble with 5 variables:
 #' \describe{
-#'   \item{location}{Character. Location code (e.g., ISO 3166-1 alpha-2 or other
+#'   \item{location}{Character. Location code (ISO 3166-1 alpha-2 or other
 #'   codes supported by Google Trends). Global data uses `"world"`.}
 #'   \item{keyword}{Character. Control keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01 (Unix epoch).
 #'   Convert with `lubridate::as_date(date)`.}
-#'   \item{hits}{Double. Search interest (Google Trends).}
+#'   \item{hits}{Integer. Relative search interest in \[0, 100\]. Google Trends
+#'   normalizes all values within a single query window so the peak observation
+#'   equals 100.}
 #'   \item{batch}{Integer. Control batch id.}
 #' }
 #'
-#' @source Google Trends. See the Trends UI and documentation.
+#' @source Google Trends (\url{https://trends.google.com}). Simulated to match
+#'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
 #' [download_control()], [start_db()], [dplyr::tbl()]
@@ -86,14 +101,18 @@
 #' @description
 #' Example data representing the database table `data_object`.
 #' Each row contains Google Trends `hits` for an object `keyword` in a given
-#' `location` on a given `date`. Object data (`batch_o`) are downloaded and
-#' mapped to a control batch (`batch_c`) for subsequent score computation.
+#' `location` on a given `date`. Each download pairs an object batch
+#' (`batch_o`) with a control batch (`batch_c`): one control keyword is
+#' included in every object query so that object and control hits can be
+#' mapped onto a common scale during score computation.
 #'
 #' In a live database, data are downloaded via [download_object()] and are
 #' available through `gt.env$tbl_object` after [start_db()]. Global aggregates
 #' use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
+#' Simulated values are bounded to the empirical \[min, max\] range observed in
+#' actual downloads for each keyword--location pair.
 #'
 #' @format A tibble with 6 variables:
 #' \describe{
@@ -101,12 +120,15 @@
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
 #'   `lubridate::as_date(date)`.}
-#'   \item{hits}{Double. Search interest (Google Trends).}
-#'   \item{batch_c}{Integer. Control batch id used for mapping/baseline.}
+#'   \item{hits}{Integer. Relative search interest in \[0, 100\] within the
+#'   query window. The peak value across all keywords in that query equals 100.}
+#'   \item{batch_c}{Integer. Control batch id. Identifies which control batch
+#'   was co-downloaded for scale mapping in [compute_score()].}
 #'   \item{batch_o}{Integer. Object batch id.}
 #' }
 #'
-#' @source Google Trends. See the Trends UI and documentation.
+#' @source Google Trends (\url{https://trends.google.com}). Simulated to match
+#'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
 #' [download_object()], [start_db()], [dplyr::tbl()]
@@ -122,9 +144,15 @@
 #' `location` on a given `date`, along with the associated control batch
 #' (`batch_c`) and object batch (`batch_o`).
 #'
-#' In a live database, scores are computed via [compute_score()] and are
-#' available through `gt.env$tbl_score` after [start_db()]. Global aggregates
-#' use `"world"` as `location`.
+#' Scores are computed by [compute_score()] as:
+#' \deqn{score = \frac{hits_o}{\sum_{k \in C} \tilde{hits}_k}}
+#' where \eqn{hits_o} are object search volumes and \eqn{\tilde{hits}_k} are
+#' control keyword hits mapped to the object scale via an overlap-based
+#' benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
+#' greater than 1 are possible when object interest exceeds control interest.
+#'
+#' In a live database, scores are available through `gt.env$tbl_score` after
+#' [start_db()]. Global aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble outputs derived from real
 #' Google Trends data.
@@ -135,10 +163,17 @@
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
 #'   `lubridate::as_date(date)`.}
-#'   \item{score}{Double. Computed score (mapped/normalized search interest).}
+#'   \item{score}{Double. Normalised search interest (object hits divided by
+#'   total mapped control hits). Non-negative; 0 when no control data are
+#'   available.}
 #'   \item{batch_c}{Integer. Control batch id used as baseline.}
 #'   \item{batch_o}{Integer. Object batch id.}
 #' }
+#'
+#' @references
+#' Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+#' Uncertainty index for the United States and Australia. *Economics Letters*,
+#' *161*, 149--153. \doi{10.1016/j.econlet.2017.09.032}
 #'
 #' @seealso
 #' [compute_score()], [compute_voi()], [start_db()], [dplyr::tbl()]
@@ -154,6 +189,12 @@
 #' `keyword` on a given `date`, computed from the distribution of `data_score`
 #' across a specified set of `locations`.
 #'
+#' DOI captures how evenly search interest is spread across locations: a
+#' perfectly uniform score distribution yields the maximum value for each
+#' metric; concentration in a single location yields the minimum. Three
+#' complementary dispersion measures are provided — see [compute_doi()] for
+#' their exact formulae.
+#'
 #' DOI is computed via [compute_doi()] and is available through `gt.env$tbl_doi`
 #' after [start_db()]. The `batch_c` column indicates the control batch used as
 #' baseline, and `batch_o` indicates the object batch.
@@ -166,17 +207,28 @@
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
 #'   `lubridate::as_date(date)`.}
-#'   \item{gini}{Double. DOI computed from the (inverted) Gini coefficient of the
-#'   score distribution.}
-#'   \item{hhi}{Double. DOI computed from the (inverted) Herfindahl-Hirschman
-#'   index of the score distribution.}
-#'   \item{entropy}{Double. DOI computed from the (inverted) entropy of the score
-#'   distribution.}
+#'   \item{gini}{Double. `1 - Gini(score)` across locations. Range \[0, 1\]:
+#'   1 = perfectly equal distribution; 0 = all search interest in one location.}
+#'   \item{hhi}{Double. `1 - HHI(score)` across locations. Range
+#'   \[0, 1 - 1/n\] where n is the number of locations: higher values indicate
+#'   more equal distributions.}
+#'   \item{entropy}{Double. `H(p) - log(n)` (Shannon entropy deficit).
+#'   Range (-Inf, 0\]: 0 = perfectly uniform distribution; more negative values
+#'   indicate greater concentration.}
 #'   \item{batch_c}{Integer. Control batch id used as baseline.}
 #'   \item{batch_o}{Integer. Object batch id.}
 #'   \item{locations}{Character. Name of the location set used (e.g.,
 #'   `"countries"`, `"us_states"`).}
 #' }
+#'
+#' @references
+#' Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+#' Uncertainty index for the United States and Australia. *Economics Letters*,
+#' *161*, 149--153. \doi{10.1016/j.econlet.2017.09.032}
+#'
+#' Puhr, H. & Müllner, J. (2022). Let me Google that for you: Capturing
+#' internationalization using Google Trends. Available at SSRN:
+#' \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
 #'
 #' @seealso
 #' [compute_doi()], [start_db()], [dplyr::tbl()]
@@ -190,16 +242,24 @@
 #' Character vector of country location codes used by the package as a default
 #' location set for cross-country computations.
 #'
-#' The vector contains ISO 3166-1 alpha-2 country codes selected based on a GDP
-#' share threshold (>= 0.1% in 2018) using the World Bank World Development
-#' Indicators (WDI). See [countries_wdi] for the underlying WDI country list.
+#' The vector contains ISO 3166-1 alpha-2 country codes selected from
+#' [countries_wdi] based on a GDP share threshold (>= 0.1% of world GDP in
+#' 2018) using World Bank World Development Indicators (WDI). This threshold
+#' retains the economically significant countries while keeping query volume
+#' manageable. Pass this vector as the `locations` argument to [compute_score()]
+#' or [compute_doi()] for standard cross-country analyses.
 #'
-#' To inspect the full set, print `countries` or use `length(countries)`.
+#' Note that `"NA"` (Namibia's ISO code) is excluded because the Google Trends
+#' API cannot handle it; see [add_locations()] for details.
 #'
-#' @format A character vector.
+#' @format A character vector of ISO 3166-1 alpha-2 country codes.
+#'
+#' @examples
+#' length(countries)
+#' head(countries)
 #'
 #' @seealso
-#' [add_locations()], [start_db()]
+#' [countries_wdi], [add_locations()], [start_db()]
 #'
 #' @name countries
 "countries"
@@ -208,11 +268,20 @@
 #'
 #' @description
 #' A data frame of country/location codes and names as provided by the World
-#' Bank World Development Indicators (WDI). This object is useful for mapping
-#' ISO-style codes to human-readable names when constructing custom location
-#' sets.
+#' Bank World Development Indicators (WDI). This object is a bundled snapshot
+#' of `WDI::WDI_data$country` included to remove the runtime dependency on the
+#' `WDI` package. It is useful for mapping ISO-style codes to human-readable
+#' country names when inspecting or constructing custom location sets, and for
+#' understanding which countries are included in [countries].
 #'
-#' @format A data.frame.
+#' @format A data frame whose columns follow the conventions of
+#'   `WDI::WDI_data$country`. Key columns include `iso2c` (ISO 3166-1 alpha-2
+#'   code, matching values in [countries]), `country` (English country name),
+#'   and additional World Bank metadata fields.
+#'
+#' @source World Bank World Development Indicators (WDI),
+#'   \url{https://datatopics.worldbank.org/world-development-indicators/}.
+#'   Bundled as a static snapshot; for the latest data see the `WDI` R package.
 #'
 #' @seealso
 #' [countries], [add_locations()]
@@ -225,10 +294,16 @@
 #' @description
 #' Character vector of US state-level location codes used by the package.
 #'
-#' The vector contains ISO 3166-2 codes of the form `"US-XX"` for the 50 US
-#' states and `"US-DC"` for the District of Columbia.
+#' The vector contains the 51 ISO 3166-2 codes of the form `"US-XX"` for the
+#' 50 US states and `"US-DC"` for the District of Columbia. Pass this vector
+#' as the `locations` argument to [compute_score()] or [compute_doi()] for
+#' within-US analyses.
 #'
-#' @format A character vector.
+#' @format A character vector of 51 ISO 3166-2 location codes.
+#'
+#' @examples
+#' length(us_states)
+#' head(us_states)
 #'
 #' @seealso
 #' [add_locations()], [start_db()]

@@ -8,44 +8,76 @@
 #' table `data_region`.
 #'
 #' @details
-#' This function requires the Research API backend (Python) to be initialized via
-#' [initialize_python()]. It uses the internal `.get_region()` helper to fetch
-#' regional interest for each object keyword in the specified batch and for each
-#' requested location.
+#' **Prerequisites.** [initialize_python()] must be called before
+#' `download_region()` to initialise the Research API backend. [start_db()]
+#' must also have been called to connect to the database and populate
+#' `gt.env$keywords_object` and `gt.env$time_object`.
 #'
-#' The function avoids duplicate downloads: it checks which locations already
-#' exist for the requested object batch in `data_region` and only downloads
-#' missing locations.
+#' **Dispatch.** `download_region()` is an S3 generic that dispatches on the
+#' class of `object`. Passing a numeric scalar routes to the `.numeric` method,
+#' which performs the actual download. Passing a numeric vector of length > 1
+#' coerces `object` to a list and delegates to the `.list` method, which
+#' iterates over batches sequentially. Passing a list directly also routes to
+#' the `.list` method.
 #'
-#' Location semantics:
-#' - `""` or `NULL` indicates the global aggregate and is reported as `"world"`
-#'   in messages and output.
+#' **Download backend.** Requests are issued through the internal `.get_region()`
+#' helper using the Google Trends Research API. This backend always requires
+#' Python to be set up via [initialize_python()]; unlike [download_control()],
+#' no `gtrendsR` fallback is available.
 #'
-#' @param object Numeric scalar/vector or list of numeric scalars. Object batch
-#'   id(s) (`batch_o`) to download.
+#' **Deduplication.** Before downloading, the function queries `data_region` for
+#' locations already present for the requested object batch. Only locations not
+#' yet in the database are downloaded. If all requested locations are already
+#' present, the function returns early with a message and no requests are made.
+#'
+#' **Missing data.** If the API returns no data for a location (e.g. due to
+#' insufficient search volume), the result for that location is silently skipped
+#' (nothing is written to `data_region`) and a "No region data returned" message
+#' is emitted.
+#'
+#' @param object Numeric scalar, numeric vector, or list of numeric scalars.
+#'   The object batch id(s) to download. A scalar downloads a single batch; a
+#'   vector or list downloads multiple batches sequentially. Must refer to
+#'   batches already registered via [add_keyword()].
 #'
 #' @param locations Character vector of location codes. Defaults to
-#'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
-#'   Use `"world"` to request global data (`"world"`).
+#'   `gt.env$countries` when set by [start_db()]; otherwise falls back to
+#'   `globaltrends::countries`. Pass `"world"` (or use
+#'   [download_region_global()]) to download the worldwide aggregate instead of
+#'   country-level data.
 #'
 #' @return
-#' Invisibly returns `TRUE`. Called for its side effects (writing to
-#' `data_region`) and emits a message per location.
+#' Invisibly returns `TRUE`. The function is called for its side effects:
+#' downloaded rows are appended to `data_region` in the active database, and
+#' one progress message is emitted per location indicating whether data was
+#' written or no data was returned.
+#'
+#' @seealso
+#' [initialize_python()] to set up the Python backend before downloading.
+#' [start_db()] to connect to the database and populate `gt.env`.
+#' [add_keyword()] to register object batches before downloading.
+#' [download_region_global()] for a convenience wrapper for worldwide data.
+#' [download_control()] to download control keyword data.
 #'
 #' @examples
 #' \dontrun{
+#' # Download one object batch for all countries
 #' initialize_python(api_key = "XXX", conda_env = "/path/to/env")
 #' start_db()
 #' download_region(object = 1, locations = countries)
+#'
+#' # Download several batches sequentially
 #' download_region(object = as.list(1:3), locations = countries)
+#'
+#' # Download worldwide aggregate
 #' download_region_global(object = 1)
 #' }
 #'
 #' @export
 #' @rdname download_region
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr mutate
-#' @importFrom purrr map_dfr walk
+#' @importFrom dplyr filter mutate
+#' @importFrom purrr iwalk map_dfr walk
 #' @importFrom rlang .data
 
 download_region <- function(object, locations = NULL) {
@@ -123,38 +155,32 @@ download_region.numeric <- function(object, locations = NULL) {
     return(invisible(TRUE))
   }
 
-  walk(
-    seq_along(loc_remaining),
+  iwalk(
+    loc_remaining,
     ~ {
-      loc <- loc_remaining[[.x]]
+      loc <- .x
+      # location = NULL omits the geo restriction (world aggregate).
+      geo <- if (identical(loc, "world")) NULL else loc
 
-      # Download region series per keyword; bind rows across keywords.
-      if (loc == "world") {
-        out <- map_dfr(
-          terms_obj,
-          ~ .get_region(term = .x, start_date = start_date, end_date = end_date)
+      out <- map_dfr(
+        terms_obj,
+        ~ .get_region(
+          location = geo,
+          term = .x,
+          start_date = start_date,
+          end_date = end_date
         )
-      } else {
-        out <- map_dfr(
-          terms_obj,
-          ~ .get_region(
-            location = loc,
-            term = .x,
-            start_date = start_date,
-            end_date = end_date
-          )
-        )
-      }
-      out <- filter(out, !is.na(term))
+      )
+      out <- filter(out, !is.na(.data$term))
 
-      if (is.null(out) || nrow(out) == 0) {
+      if (nrow(out) == 0) {
         message(paste0(
           "No region data returned | object: ",
           object,
           " | location: ",
           loc,
           " [",
-          .x,
+          .y,
           "/",
           length(loc_remaining),
           "]"
@@ -176,7 +202,7 @@ download_region.numeric <- function(object, locations = NULL) {
         " | location: ",
         loc,
         " [",
-        .x,
+        .y,
         "/",
         length(loc_remaining),
         "]"
@@ -194,13 +220,6 @@ download_region.numeric <- function(object, locations = NULL) {
 #' @export
 
 download_region.list <- function(object, locations = NULL) {
-  if (!isTRUE(gt.env$py_setup)) {
-    stop(
-      "Python backend is not initialized. Run `initialize_python()` first.",
-      call. = FALSE
-    )
-  }
-
   if (is.null(locations)) {
     locations <- if (!is.null(gt.env$countries)) {
       gt.env$countries
@@ -217,12 +236,15 @@ download_region.list <- function(object, locations = NULL) {
 #' @title Download global regional interest data
 #'
 #' @description
-#' Convenience wrapper around [download_region()] to download global (world)
-#' regional interest data. Internally implemented by passing `locations = ""`.
+#' Convenience wrapper around [download_region()] that downloads the worldwide
+#' aggregate instead of country-level data. Equivalent to calling
+#' `download_region(object, locations = "world")`.
 #'
-#' @param object Numeric scalar/vector or list. Object batch id(s) to download.
+#' @param object Numeric scalar, numeric vector, or list of numeric scalars.
+#'   Object batch id(s) to download.
 #'
-#' @return Invisibly returns `TRUE`.
+#' @return Invisibly returns `TRUE`. See [download_region()] for details on
+#'   side effects and emitted messages.
 #'
 #' @export
 #' @rdname download_region

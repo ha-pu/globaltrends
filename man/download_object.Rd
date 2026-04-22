@@ -16,48 +16,73 @@ download_object(object, control = 1, locations = NULL)
 download_object_global(object, control = 1)
 }
 \arguments{
-\item{object}{Numeric scalar/vector or list. Object batch id(s) to download.}
+\item{object}{Numeric scalar, numeric vector, or list of numeric scalars.
+Object batch id(s) to download.}
 
 \item{control}{Numeric scalar. Control batch id used for mapping. Defaults to \code{1}.}
 
-\item{locations}{Character vector of location codes. Defaults to
-\code{gt.env$countries} when available; otherwise \code{globaltrends::countries}.
-Use \code{""} to request the global aggregate (\code{"world"}).}
+\item{locations}{Character vector of ISO 3166-1 alpha-2 location codes.
+Defaults to \code{gt.env$countries} when set by \code{\link[=start_db]{start_db()}}; otherwise falls
+back to \code{globaltrends::countries}. Pass \code{"world"} (or use
+\code{\link[=download_object_global]{download_object_global()}}) to download the worldwide aggregate instead of
+country-level data.}
 }
 \value{
-Invisibly returns \code{TRUE}. Called for its side effects (writing to
-\code{data_object}) and emits messages per location.
+Invisibly returns \code{TRUE}. The function is called for its side effects:
+downloaded rows are appended to \code{data_object} in the active database, and
+one progress message is emitted per location. Locations with no control
+baseline in \code{data_control} are skipped with a message.
 
-Invisibly returns \code{TRUE}.
+Invisibly returns \code{TRUE}. See \code{\link[=download_object]{download_object()}} for details on
+side effects and emitted messages.
 }
 \description{
 Downloads Google Trends search volumes for one or more \emph{object} batches
-(\code{batch_o}) together with a single control keyword (from \code{batch_c}) used for
-scaling/mapping, across a set of locations. Results are written to the
-database table \code{data_object}.
+across a set of locations and appends the results to the database table
+\code{data_object}. Each object batch is downloaded together with one control
+keyword so that object hits can be mapped to the control scale used
+elsewhere in the package.
 
-Convenience wrapper around \code{\link[=download_object]{download_object()}} to download global (world)
-object series. Internally this is implemented by passing \code{locations = "world"}.
+Convenience wrapper around \code{\link[=download_object]{download_object()}} that downloads the worldwide
+aggregate instead of country-level data. Equivalent to calling
+\code{download_object(object, control, locations = "world")}.
 }
 \details{
-Each object batch contains up to four object keywords. For each download
-request, this function prepends exactly one control keyword to the query so
-that object hits can be mapped to the control scale used elsewhere in the
-package.
+\strong{Prerequisites.} \code{\link[=start_db]{start_db()}} must be called before \code{download_object()}.
+It connects to the database and populates \code{gt.env$keywords_object} and
+\code{gt.env$time_object} from the tables \code{batch_keywords} and \code{batch_time}
+(created via \code{\link[=add_keyword]{add_keyword()}}). These in-memory objects are used to look up
+the keywords and time window for each requested batch. \code{data_control} for
+the chosen control batch must also be present, as it is used to select an
+appropriate control keyword per location.
 
-The function selects the control keyword dynamically per location:
-it inspects existing \code{data_control} for the chosen control batch and location,
-ranks control keywords by their average \code{hits}, and tries them in ascending
-order until a control keyword yields non-zero signal in the returned series.
-This reduces the likelihood of failed requests caused by zero-signal control
-terms.
+\strong{Dispatch.} \code{download_object()} is an S3 generic that dispatches on the
+class of \code{object}. Passing a numeric scalar routes to the \code{.numeric} method,
+which performs the actual download. Passing a numeric vector of length > 1
+coerces \code{object} to a list and delegates to the \code{.list} method, which
+iterates over batches sequentially. Passing a list directly also routes to
+the \code{.list} method.
 
-The function avoids duplicate downloads by skipping locations already present
-for \verb{(batch_c, batch_o)} in \code{data_object}.
+\strong{Control keyword selection.} For each location the function queries
+\code{data_control} for the chosen control batch, ranks control keywords by their
+average \code{hits} in ascending order, and tries them one by one until one
+yields non-zero signal in the returned series. Trying lower-signal keywords
+first reduces saturation risk. If no control keyword produces usable signal,
+the function stops with an informative error.
 
-Downloads are performed through the package internal \code{.get_trend()} helper,
-which may use \code{gtrendsR::gtrends()} or the Research API backend initialized
-via \code{\link[=initialize_python]{initialize_python()}}.
+\strong{Download backend.} Requests are issued through the internal \code{.get_trend()}
+helper, which uses either \code{gtrendsR::gtrends()} (default) or the Google
+Trends Research API when \code{\link[=initialize_python]{initialize_python()}} has been called.
+
+\strong{Deduplication.} Before downloading, the function queries \code{data_object}
+for locations already present for the requested \verb{(batch_c, batch_o)} pair.
+Only locations not yet in the database are downloaded. If all locations are
+already present, the function returns early with a message and no requests
+are made.
+
+\strong{Missing control baseline.} If \code{data_control} contains no rows for a
+given location, that location is skipped with a message (nothing is written
+to \code{data_object}).
 }
 \section{Category codes}{
 
@@ -69,9 +94,20 @@ object keywords.
 
 \examples{
 \dontrun{
+# Download one object batch for all countries
 download_object(object = 1, control = 1, locations = countries)
+
+# Download several batches sequentially
 download_object(object = as.list(1:5), control = 1, locations = countries)
+
+# Download worldwide aggregate
 download_object_global(object = 1, control = 1)
 }
 
+}
+\seealso{
+\code{\link[=start_db]{start_db()}} to connect to the database and populate \code{gt.env}.
+\code{\link[=add_keyword]{add_keyword()}} to register object batches before downloading.
+\code{\link[=download_object_global]{download_object_global()}} for a convenience wrapper for worldwide data.
+\code{\link[=download_control]{download_control()}} to download control keyword data used for scaling.
 }

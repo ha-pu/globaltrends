@@ -16,49 +16,80 @@ download_region(object, locations = NULL)
 download_region_global(object)
 }
 \arguments{
-\item{object}{Numeric scalar/vector or list. Object batch id(s) to download.}
+\item{object}{Numeric scalar, numeric vector, or list of numeric scalars.
+Object batch id(s) to download.}
 
 \item{locations}{Character vector of location codes. Defaults to
-\code{gt.env$countries} when available; otherwise \code{globaltrends::countries}.
-Use \code{"world"} to request global data (\code{"world"}).}
+\code{gt.env$countries} when set by \code{\link[=start_db]{start_db()}}; otherwise falls back to
+\code{globaltrends::countries}. Pass \code{"world"} (or use
+\code{\link[=download_region_global]{download_region_global()}}) to download the worldwide aggregate instead of
+country-level data.}
 }
 \value{
-Invisibly returns \code{TRUE}. Called for its side effects (writing to
-\code{data_region}) and emits a message per location.
+Invisibly returns \code{TRUE}. The function is called for its side effects:
+downloaded rows are appended to \code{data_region} in the active database, and
+one progress message is emitted per location indicating whether data was
+written or no data was returned.
 
-Invisibly returns \code{TRUE}.
+Invisibly returns \code{TRUE}. See \code{\link[=download_region]{download_region()}} for details on
+side effects and emitted messages.
 }
 \description{
 Downloads regional interest data (sub-geo breakdown) for the keywords in one
 or more object batches (\code{batch_o}) and writes the results to the database
 table \code{data_region}.
 
-Convenience wrapper around \code{\link[=download_region]{download_region()}} to download global (world)
-regional interest data. Internally implemented by passing \code{locations = ""}.
+Convenience wrapper around \code{\link[=download_region]{download_region()}} that downloads the worldwide
+aggregate instead of country-level data. Equivalent to calling
+\code{download_region(object, locations = "world")}.
 }
 \details{
-This function requires the Research API backend (Python) to be initialized via
-\code{\link[=initialize_python]{initialize_python()}}. It uses the internal \code{.get_region()} helper to fetch
-regional interest for each object keyword in the specified batch and for each
-requested location.
+\strong{Prerequisites.} \code{\link[=initialize_python]{initialize_python()}} must be called before
+\code{download_region()} to initialise the Research API backend. \code{\link[=start_db]{start_db()}}
+must also have been called to connect to the database and populate
+\code{gt.env$keywords_object} and \code{gt.env$time_object}.
 
-The function avoids duplicate downloads: it checks which locations already
-exist for the requested object batch in \code{data_region} and only downloads
-missing locations.
+\strong{Dispatch.} \code{download_region()} is an S3 generic that dispatches on the
+class of \code{object}. Passing a numeric scalar routes to the \code{.numeric} method,
+which performs the actual download. Passing a numeric vector of length > 1
+coerces \code{object} to a list and delegates to the \code{.list} method, which
+iterates over batches sequentially. Passing a list directly also routes to
+the \code{.list} method.
 
-Location semantics:
-\itemize{
-\item \code{""} or \code{NULL} indicates the global aggregate and is reported as \code{"world"}
-in messages and output.
-}
+\strong{Download backend.} Requests are issued through the internal \code{.get_region()}
+helper using the Google Trends Research API. This backend always requires
+Python to be set up via \code{\link[=initialize_python]{initialize_python()}}; unlike \code{\link[=download_control]{download_control()}},
+no \code{gtrendsR} fallback is available.
+
+\strong{Deduplication.} Before downloading, the function queries \code{data_region} for
+locations already present for the requested object batch. Only locations not
+yet in the database are downloaded. If all requested locations are already
+present, the function returns early with a message and no requests are made.
+
+\strong{Missing data.} If the API returns no data for a location (e.g. due to
+insufficient search volume), the result for that location is silently skipped
+(nothing is written to \code{data_region}) and a "No region data returned" message
+is emitted.
 }
 \examples{
 \dontrun{
+# Download one object batch for all countries
 initialize_python(api_key = "XXX", conda_env = "/path/to/env")
 start_db()
 download_region(object = 1, locations = countries)
+
+# Download several batches sequentially
 download_region(object = as.list(1:3), locations = countries)
+
+# Download worldwide aggregate
 download_region_global(object = 1)
 }
 
+}
+\seealso{
+\code{\link[=initialize_python]{initialize_python()}} to set up the Python backend before downloading.
+\code{\link[=start_db]{start_db()}} to connect to the database and populate \code{gt.env}.
+\code{\link[=add_keyword]{add_keyword()}} to register object batches before downloading.
+\code{\link[=download_region_global]{download_region_global()}} for a convenience wrapper for worldwide data.
+\code{\link[=download_control]{download_control()}} to download control keyword data.
 }

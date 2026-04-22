@@ -8,17 +8,20 @@
 \format{
 A tibble with 5 variables:
 \describe{
-\item{location}{Character. Location code (e.g., ISO 3166-1 alpha-2 or other
+\item{location}{Character. Location code (ISO 3166-1 alpha-2 or other
 codes supported by Google Trends). Global data uses \code{"world"}.}
 \item{keyword}{Character. Control keyword.}
 \item{date}{Integer. Date stored as days since 1970-01-01 (Unix epoch).
 Convert with \code{lubridate::as_date(date)}.}
-\item{hits}{Double. Search interest (Google Trends).}
+\item{hits}{Integer. Relative search interest in [0, 100]. Google Trends
+normalizes all values within a single query window so the peak observation
+equals 100.}
 \item{batch}{Integer. Control batch id.}
 }
 }
 \source{
-Google Trends. See the Trends UI and documentation.
+Google Trends (\url{https://trends.google.com}). Simulated to match
+empirical distributional statistics from real downloads.
 }
 \usage{
 example_control
@@ -33,6 +36,8 @@ available through \code{gt.env$tbl_control} (a lazy table reference) after
 \code{\link[=start_db]{start_db()}}. Global aggregates use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble real Google Trends output.
+Simulated values are bounded to the empirical [min, max] range observed in
+actual downloads for each keyword--location pair.
 }
 \seealso{
 \code{\link[=download_control]{download_control()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}

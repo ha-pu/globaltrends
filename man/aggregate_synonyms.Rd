@@ -7,39 +7,36 @@
 aggregate_synonyms(control, vacuum = TRUE)
 }
 \arguments{
-\item{control}{Numeric/integer scalar. Control batch id (\code{batch_c}) whose
-score data should be aggregated. Typically \code{1}.}
+\item{control}{Numeric/integer scalar. The control batch id (\code{batch_c}),
+identifying the reference search used for score normalisation. In most
+single-control setups this is \code{1}.}
 
 \item{vacuum}{Logical scalar. If \code{TRUE} (default), calls \code{\link[=vacuum_data]{vacuum_data()}}
-after aggregation to reclaim space.}
+after aggregation to reclaim space freed by the row deletions.}
 }
 \value{
-Invisibly returns a tibble of the rows written to \code{data_score}. The function
-is called for its side effects (modifying the database) and emits informative
-messages.
+Invisibly returns a tibble of the rows written to \code{data_score}. Called
+primarily for its side effects (database modifications).
 }
 \description{
-Aggregates score time series for object keywords by rolling up scores from
-synonym keywords (defined via \code{\link[=add_synonym]{add_synonym()}} and synonym table maintenance)
-into their canonical ("main") keywords.
+Merges synonym keyword scores into their canonical keyword scores in
+\code{data_score}. Run this after \code{\link[=compute_score]{compute_score()}}. Synonym relationships are
+defined with \code{\link[=add_synonym]{add_synonym()}}.
 }
 \details{
-This function is intended to be run \strong{after} \code{\link[=compute_score]{compute_score()}} has populated
-\code{data_score}. For a given \code{control} batch (\code{batch_c}), it:
+For a given \code{control} batch (\code{batch_c}), this function:
 \enumerate{
-\item Identifies affected object batches (\code{batch_o}) that contain either a
-canonical keyword or a synonym keyword.
-\item Computes aggregated scores by mapping synonym rows onto their
-canonical keyword and summing over duplicates.
-\item Deletes existing \code{data_score} rows for the affected object batches
-(greedy cleanup is not required here because only \code{data_score} is modified).
+\item Retrieves all canonical-synonym pairs and their associated object
+batches (\code{batch_o}) in a single database query.
+\item Pulls the relevant \code{data_score} rows, remaps synonym rows onto their
+canonical keyword, and sums scores across duplicates.
+\item Deletes the affected \code{data_score} rows for those object batches.
 \item Writes the aggregated rows back to \code{data_score}.
-\item Optionally runs \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space after deletions.
+\item Optionally calls \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space.
 }
 
-Performance note: Deleting and re-inserting can be expensive for large
-datasets. Vacuuming is the most time-consuming step and is therefore
-optional.
+The delete-and-reinsert pattern can be slow for large datasets. Vacuuming
+adds the most overhead and can be deferred by setting \code{vacuum = FALSE}.
 }
 \examples{
 \dontrun{
@@ -47,4 +44,9 @@ compute_score(object = 1:2, control = 1)
 aggregate_synonyms(control = 1, vacuum = FALSE)
 }
 
+}
+\seealso{
+\code{\link[=compute_score]{compute_score()}} to populate \code{data_score} before aggregating,
+\code{\link[=add_synonym]{add_synonym()}} to define synonym relationships,
+\code{\link[=vacuum_data]{vacuum_data()}} for manual space reclamation.
 }

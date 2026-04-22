@@ -21,9 +21,16 @@ Example data representing the database table \code{batch_keywords}.
 Each row assigns a single \code{keyword} to a \code{batch} and a \code{type}
 (\code{"control"} or \code{"object"}).
 
+The example contains one control batch (5 keywords: gmail, maps, translate,
+wikipedia, youtube) and four object batches (14 object keywords covering
+football clubs and technology firms), all covering the period 2010-01 to
+2019-12.
+
 In a live database, keyword batches are created via \code{\link[=add_keyword]{add_keyword()}} and are
 exported to the package environment \code{gt.env} by \code{\link[=start_db]{start_db()}} as
-\code{gt.env$keywords_control} and \code{gt.env$keywords_object}.
+\code{gt.env$keywords_control} and \code{gt.env$keywords_object}. Control batches hold
+up to five keywords; object batches hold up to four (one slot is reserved for
+the overlap keyword used in score mapping).
 }
 \seealso{
 \code{\link[=add_keyword]{add_keyword()}}, \code{\link[=start_db]{start_db()}}

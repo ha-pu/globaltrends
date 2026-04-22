@@ -13,43 +13,69 @@ compute_doi(object, control = 1, locations = "countries")
 \method{compute_doi}{list}(object, control = 1, locations = "countries")
 }
 \arguments{
-\item{object}{Numeric scalar (or vector) or list of numeric scalars.
-Object batch id(s) (\code{batch_o}) for which DOI should be computed.}
+\item{object}{Numeric scalar, vector, or list of numerics. One or more object
+batch ids (\code{batch_o}) identifying keyword groups for which DOI should be
+computed. A numeric vector is processed element-by-element (equivalent to
+passing a list).}
 
-\item{control}{Numeric scalar. Control batch id (\code{batch_c}) used as baseline.
-Defaults to \code{1}.}
+\item{control}{Numeric scalar. Control batch id (\code{batch_c}) identifying the
+baseline keyword group used for score normalisation. Defaults to \code{1}.}
 
-\item{locations}{Character scalar. Name of the location set stored in
-\code{data_locations$type} (e.g., \code{"countries"}, \code{"us_states"}). Defaults to
-\code{"countries"}.}
+\item{locations}{Character scalar. Name of a location set stored in
+\code{data_locations$type} (e.g., \code{"countries"}, \code{"us_states"}). Only
+locations belonging to this set are included in the DOI computation.
+Defaults to \code{"countries"}.}
 }
 \value{
-Invisibly returns the tibble written to \code{data_doi} for the processed batch.
-Called primarily for its side effects (database writes) and emits a progress
-message per batch.
+Invisibly returns the tibble appended to \code{data_doi} for the processed batch,
+with columns \code{date}, \code{keyword}, \code{gini}, \code{hhi}, \code{entropy}, \code{batch_c},
+\code{batch_o}, and \code{locations}. Returns an empty tibble when DOI already exists
+or when no matching score data is found. Called primarily for its side
+effects (database writes) and emits a progress message per batch.
 }
 \description{
 Computes degree of internationalization (DOI) for object keywords based on
 the cross-location distribution of search scores. DOI is computed per
-\verb{(keyword, date)} for a given control batch (\code{batch_c}), object batch
-(\code{batch_o}), and a named location set (e.g., \code{"countries"}).
+\verb{(keyword, date)} combination for a given control batch (\code{batch_c}), object
+batch (\code{batch_o}), and a named location set (e.g., \code{"countries"}). Results
+are appended to the \code{data_doi} database table.
 }
 \details{
-DOI is derived from the dispersion of search scores across locations.
-Intuitively, the more uniformly distributed the scores are across the chosen
-location set, the higher the DOI.
+DOI captures how evenly search interest is spread across a set of locations:
+a perfectly uniform score vector yields the maximum DOI, while one
+concentrated in a single location yields the minimum.
 
-This implementation writes three inverted concentration/inequality measures:
-\itemize{
-\item \code{gini}: \code{1 - Gini(score)}
-\item \code{hhi}: \code{1 - sum(p^2)} where \code{p = score / sum(score)} (Herfindahl-Hirschman)
-\item \code{entropy}: normalized negative entropy-like measure (see \code{.compute_entropy()})
+Three complementary dispersion measures are computed for each
+\verb{(keyword, date)} series:
+
+\describe{
+\item{\code{gini}}{\code{1 - Gini(score)}. Uses the rank-weighted formula
+\code{Gini = (2 * sum(score[i] * i) / sum(score) - (n + 1)) / n} over the
+sorted score vector. Ranges from 0 (complete concentration) to 1
+(perfect equality).}
+\item{\code{hhi}}{\code{1 - HHI(score)} where \code{HHI = sum(p^2)} and
+\code{p = score / sum(score)}. Ranges from 0 (monopoly) to \code{1 - 1/n}
+(perfect equality across \code{n} locations).}
+\item{\code{entropy}}{\code{H(p) - log(n)} where \code{p = score / sum(score)},
+\code{H(p) = -sum(p * log(p))} is Shannon entropy, and \code{n} is the number
+of locations with non-zero scores. Always \verb{<= 0}; equals 0 when scores
+are perfectly uniform and becomes more negative as concentration
+increases. Zero scores are excluded before computing logs.}
 }
 
-The function expects that score data is already available in \code{data_score},
-typically produced by \code{\link[=compute_score]{compute_score()}}. Only locations present in the named
-location set are used. Global (\code{location == "world"}) is not used unless the
-location set explicitly contains \code{"world"}.
+If all scores for a \verb{(keyword, date)} series are \code{NA}, all three measures
+are set to \code{NA}. If all non-\code{NA} scores are zero, \code{gini} and \code{hhi} return
+0 and \code{entropy} returns 0.
+
+Score data must already exist in \code{data_score}, typically produced by
+\code{\link[=compute_score]{compute_score()}}. Only locations whose \code{type} in \code{data_locations} matches
+the \code{locations} argument are included. The global aggregate
+(\code{location == "world"}) is excluded unless the location set explicitly
+contains it.
+
+If DOI for the requested \verb{(batch_c, batch_o, locations)} combination already
+exists in \code{data_doi}, the function emits a message and returns early without
+recomputing.
 }
 \examples{
 \dontrun{
@@ -57,4 +83,8 @@ compute_doi(object = 1, control = 1, locations = "countries")
 compute_doi(object = as.list(1:5), control = 1, locations = "countries")
 }
 
+}
+\seealso{
+\code{\link[=compute_score]{compute_score()}} to produce the score data consumed by this
+function; \code{data_doi} for the database table schema.
 }

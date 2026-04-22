@@ -1,27 +1,29 @@
 #' @title Validate input type
 #'
 #' @description
-#' Internal helper to validate the base type of an argument. The function is
-#' intentionally lightweight and used throughout the package for early, clear
-#' input validation.
+#' Checks that `input` satisfies the predicate `is.<type>()`. The predicate is
+#' resolved at call time via [base::get0()], so any `is.*()` function visible
+#' on the search path is valid. Throws an informative error using the original
+#' argument name if the predicate returns `FALSE` or cannot be found.
 #'
 #' @param input Any R object to validate.
-#' @param type Character scalar. Expected base type. Supported values are those
-#'   with corresponding `is.*()` predicates (e.g., `"character"`, `"numeric"`,
-#'   `"logical"`, `"list"`, `"data.frame"`).
+#' @param type Character scalar. Suffix of the `is.*()` predicate to apply
+#'   (e.g. `"character"` resolves to `is.character()`). Must be non-`NA` and
+#'   case-sensitive. Supported values include `"character"`, `"numeric"`,
+#'   `"logical"`, `"list"`, and `"data.frame"`.
 #'
-#' @return Invisibly returns `TRUE` if `input` matches the expected type.
+#' @return Invisibly returns `TRUE` if `is.<type>(input)` is `TRUE`. Stops
+#'   with an informative error if `type` is invalid, the predicate is not
+#'   found, or `input` fails the type check.
 #'
 #' @keywords internal
 #' @noRd
 #' @importFrom rlang as_name enquo
 
 .check_input <- function(input, type) {
-  # Capture the argument name for high-quality error messages.
   name_input <- as_name(enquo(input))
 
-  .check_length(type, 1)
-  if (!is.character(type) || is.na(type)) {
+  if (!is.character(type) || length(type) != 1L || is.na(type)) {
     stop(
       "Internal error: `type` must be a non-missing character scalar.",
       call. = FALSE
@@ -33,11 +35,9 @@
 
   if (is.null(pred)) {
     stop(
-      paste0(
-        "Internal error: Unknown type predicate '",
-        pred_name,
-        "'. ",
-        "Provide a `type` value that has a corresponding `is.*()` function."
+      sprintf(
+        "Internal error: Unknown type predicate '%s'. Provide a `type` value that has a corresponding `is.*()` function.",
+        pred_name
       ),
       call. = FALSE
     )
@@ -45,15 +45,9 @@
 
   if (!isTRUE(pred(input))) {
     stop(
-      paste0(
-        "Error: `",
-        name_input,
-        "` must be of type ",
-        type,
-        ".\n",
-        "You provided an object of type ",
-        typeof(input),
-        "."
+      sprintf(
+        "Error: `%s` must be of type %s.\nYou provided an object of type %s.",
+        name_input, type, typeof(input)
       ),
       call. = FALSE
     )
@@ -65,14 +59,17 @@
 #' @title Validate vector length
 #'
 #' @description
-#' Internal helper to validate that `input` has length within a specified bound.
-#' Most callers use it to enforce scalar inputs (`max = 1`), but the function
-#' supports arbitrary upper bounds.
+#' Checks that `length(input) <= max`. Most callers pass `max = 1` to enforce
+#' scalar inputs; `max = 0` accepts only zero-length objects. Throws an
+#' informative error using the original argument name if the check fails.
 #'
-#' @param input Any R object with a defined length.
-#' @param max Integer scalar. Maximum allowed length (must be >= 0).
+#' @param input Any R object.
+#' @param max Non-negative, finite, whole-number numeric scalar. Maximum
+#'   allowed length. Accepts both `integer` and `double` (e.g. `1L` and `1`
+#'   are both valid).
 #'
-#' @return Invisibly returns `TRUE` if `length(input) <= max`.
+#' @return Invisibly returns `TRUE` if `length(input) <= max`. Stops with an
+#'   informative error if `max` is invalid or `input` exceeds the bound.
 #'
 #' @keywords internal
 #' @noRd
@@ -97,15 +94,9 @@
   n <- length(input)
   if (n > max) {
     stop(
-      paste0(
-        "Error: `",
-        name_input,
-        "` must have length <= ",
-        max,
-        ".\n",
-        "You provided an object of length ",
-        n,
-        "."
+      sprintf(
+        "Error: `%s` must have length <= %d.\nYou provided an object of length %d.",
+        name_input, max, n
       ),
       call. = FALSE
     )
@@ -114,16 +105,17 @@
   invisible(TRUE)
 }
 
-#' @title Validate location-set name input
+#' @title Validate location-set name
 #'
 #' @description
-#' Validates that `locations` is a character scalar. This helper is used for
-#' arguments that refer to a named location set (e.g., `"countries"`,
-#' `"us_states"`), rather than a vector of location codes.
+#' Checks that `locations` is a non-`NA` character scalar. This is used for
+#' arguments that name a location set (e.g. `"countries"`, `"us_states"`),
+#' not a vector of individual location codes.
 #'
-#' @param locations Character scalar.
+#' @param locations Character scalar identifying a location set.
 #'
-#' @return Invisibly returns `TRUE` if valid.
+#' @return Invisibly returns `TRUE` if valid. Stops if `locations` is not a
+#'   length-1 non-`NA` character vector.
 #'
 #' @keywords internal
 #' @noRd
@@ -137,15 +129,16 @@
 #' @title Validate batch identifier
 #'
 #' @description
-#' Validates that a batch identifier is an integer-like scalar. The package
-#' treats batches as integer ids. Numeric inputs are accepted only if they
-#' represent whole numbers (e.g., `1`, `2`, `3`) and are finite.
+#' Checks that `batch` is an integer-like scalar. Both `integer` vectors and
+#' finite whole-number `double` values are accepted (e.g. `1L` and `1` are
+#' both valid). `NULL` is passed through as valid to support optional batch
+#' filters.
 #'
-#' `NULL` is accepted and returned as valid, to support optional batch filters.
+#' @param batch `NULL`, an `integer` scalar, or a finite whole-number `double`
+#'   scalar (e.g. `1`, `2`, `3`).
 #'
-#' @param batch Integer scalar, numeric scalar representing an integer, or `NULL`.
-#'
-#' @return Invisibly returns `TRUE` if valid.
+#' @return Invisibly returns `TRUE` if valid. Stops if `batch` is non-scalar,
+#'   non-numeric, non-finite, or has a fractional part.
 #'
 #' @keywords internal
 #' @noRd
@@ -155,7 +148,7 @@
     return(invisible(TRUE))
   }
 
-  if (length(batch) != 1) {
+  if (length(batch) != 1L) {
     stop("Error: Batch id must be a scalar (length 1).", call. = FALSE)
   }
 
@@ -163,26 +156,23 @@
     return(invisible(TRUE))
   }
 
-  if (is.numeric(batch)) {
-    if (!is.finite(batch)) {
-      stop("Error: Batch id must be a finite integer value.", call. = FALSE)
-    }
-    if (batch %% 1 != 0) {
-      stop(
-        "Error: Batch id must be an integer value.\nYou provided a non-integer numeric value.",
-        call. = FALSE
-      )
-    }
-    return(invisible(TRUE))
+  if (!is.numeric(batch)) {
+    stop(
+      sprintf("Error: Batch id must be an integer value.\nYou provided an object of type %s.", typeof(batch)),
+      call. = FALSE
+    )
   }
 
-  stop(
-    paste0(
-      "Error: Batch id must be an integer value.\n",
-      "You provided an object of type ",
-      typeof(batch),
-      "."
-    ),
-    call. = FALSE
-  )
+  if (!is.finite(batch)) {
+    stop("Error: Batch id must be a finite integer value.", call. = FALSE)
+  }
+
+  if (batch %% 1 != 0) {
+    stop(
+      "Error: Batch id must be an integer value.\nYou provided a non-integer numeric value.",
+      call. = FALSE
+    )
+  }
+
+  invisible(TRUE)
 }

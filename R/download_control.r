@@ -4,23 +4,36 @@
 #'
 #' @description
 #' Downloads Google Trends search volumes for one or more *control* batches
-#' across a set of locations and writes the results to the database table
+#' across a set of locations and appends the results to the database table
 #' `data_control`.
 #'
 #' @details
-#' Control batches (up to five keywords per batch) and their time windows are
-#' defined in the tables `batch_keywords` and `batch_time` (typically created
-#' via [add_keyword()]). This function retrieves the relevant keywords and the
-#' batch-specific time window from `gt.env$keywords_control` and
-#' `gt.env$time_control`.
+#' **Prerequisites.** [start_db()] must be called before `download_control()`.
+#' It connects to the database and populates `gt.env$keywords_control` and
+#' `gt.env$time_control` from the tables `batch_keywords` and `batch_time`
+#' (created via [add_keyword()]). These in-memory objects are used to look up
+#' the keywords and time window for each requested batch.
 #'
-#' Downloads are performed through the package internal `.get_trend()` helper.
-#' Depending on configuration, `.get_trend()` may use `gtrendsR::gtrends()` or
-#' the Research API backend initialized via [initialize_python()].
+#' **Dispatch.** `download_control()` is an S3 generic that dispatches on the
+#' class of `control`. Passing a numeric scalar routes to the `.numeric` method,
+#' which performs the actual download. Passing a numeric vector of length > 1
+#' coerces `control` to a list and delegates to the `.list` method, which
+#' iterates over batches sequentially. Passing a list directly also routes to
+#' the `.list` method.
 #'
-#' The function avoids duplicate downloads: it checks which locations already
-#' exist for the requested control batch in `data_control` and only downloads
-#' missing locations.
+#' **Download backend.** Requests are issued through the internal `.get_trend()`
+#' helper, which uses either `gtrendsR::gtrends()` (default) or the Google
+#' Trends Research API when [initialize_python()] has been called.
+#'
+#' **Deduplication.** Before downloading, the function queries `data_control`
+#' for locations already present for the requested batch. Only locations not yet
+#' in the database are downloaded. If all locations are already present, the
+#' function returns early with a message and no requests are made.
+#'
+#' **Missing data.** If the API returns no data for a location (e.g. due to
+#' insufficient search volume), the result for that location is silently skipped
+#' (nothing is written to `data_control`) and a "No data returned" message is
+#' emitted.
 #'
 #' @section Category codes:
 #' Avoid category codes unless you are confident they apply uniformly to all
@@ -28,21 +41,39 @@
 #' entire request, which can unintentionally change the meaning of control and
 #' object keywords.
 #'
-#' @param control Numeric scalar/vector or list of numeric scalars. Control
-#'   batch id(s) to download.
+#' @param control Numeric scalar, numeric vector, or list of numeric scalars.
+#'   The control batch id(s) to download. A scalar downloads a single batch; a
+#'   vector or list downloads multiple batches sequentially. Must refer to
+#'   batches already registered via [add_keyword()].
 #'
-#' @param locations Character vector of location codes. Defaults to
-#'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
-#'   Use `""` to request the global aggregate (`"world"`).
+#' @param locations Character vector of ISO 3166-1 alpha-2 location codes.
+#'   Defaults to `gt.env$countries` when set by [start_db()]; otherwise falls
+#'   back to `globaltrends::countries`. Pass `"world"` (or use
+#'   [download_control_global()]) to download the worldwide aggregate instead of
+#'   country-level data.
 #'
 #' @return
-#' Invisibly returns `TRUE`. Called for its side effects (writing to
-#' `data_control`) and emits a message per location.
+#' Invisibly returns `TRUE`. The function is called for its side effects:
+#' downloaded rows are appended to `data_control` in the active database, and
+#' one progress message is emitted per location indicating whether data was
+#' written or no data was returned.
+#'
+#' @seealso
+#' [start_db()] to connect to the database and populate `gt.env`.
+#' [add_keyword()] to register control batches before downloading.
+#' [download_control_global()] for a convenience wrapper for worldwide data.
+#' [download_object()] to download object keyword data using a control batch for
+#' scaling.
 #'
 #' @examples
 #' \dontrun{
+#' # Download one control batch for all countries
 #' download_control(control = 1, locations = countries)
+#'
+#' # Download several batches sequentially
 #' download_control(control = as.list(1:5), locations = countries)
+#'
+#' # Download worldwide aggregate
 #' download_control_global(control = 1)
 #' }
 #'
@@ -50,7 +81,7 @@
 #' @rdname download_control
 #' @importFrom DBI dbAppendTable
 #' @importFrom dplyr mutate
-#' @importFrom purrr walk
+#' @importFrom purrr iwalk walk
 #' @importFrom rlang .data
 
 download_control <- function(control, locations = NULL) {
@@ -117,13 +148,13 @@ download_control.numeric <- function(control, locations = NULL) {
     return(invisible(TRUE))
   }
 
-  walk(
-    seq_along(loc_remaining),
+  iwalk(
+    loc_remaining,
     ~ {
-      loc <- loc_remaining[[.x]]
+      loc <- .x
 
-      # Global download: when using gtrendsR, a blank geo typically indicates global.
-      # For the Research API backend, we call without location (implementation-specific).
+      # Global download: gtrendsR uses geo = "", Research API requires geo = NULL
+      # (Python's _geo_kwargs() only omits restrictions_geo when geo is None).
       out <- if (identical(loc, "world")) {
         if (isTRUE(gt.env$py_setup)) {
           .get_trend(term = terms, start_date = start_date, end_date = end_date)
@@ -151,19 +182,30 @@ download_control.numeric <- function(control, locations = NULL) {
           name = "data_control",
           value = out
         )
+        message(paste0(
+          "Downloaded control data | control: ",
+          control,
+          " | location: ",
+          loc,
+          " [",
+          .y,
+          "/",
+          length(loc_remaining),
+          "]"
+        ))
+      } else {
+        message(paste0(
+          "No data returned | control: ",
+          control,
+          " | location: ",
+          loc,
+          " [",
+          .y,
+          "/",
+          length(loc_remaining),
+          "]"
+        ))
       }
-
-      message(paste0(
-        "Downloaded control data | control: ",
-        control,
-        " | location: ",
-        loc,
-        " [",
-        .x,
-        "/",
-        length(loc_remaining),
-        "]"
-      ))
     }
   )
 
@@ -188,15 +230,18 @@ download_control.list <- function(control, locations = NULL) {
   invisible(TRUE)
 }
 
-#' @title Download global control data
+#' @title Download worldwide aggregate control data
 #'
 #' @description
-#' Convenience wrapper around [download_control()] to download global (world)
-#' control series. Internally this is implemented by passing `locations = "world"`.
+#' Convenience wrapper around [download_control()] that downloads the worldwide
+#' aggregate instead of country-level data. Equivalent to calling
+#' `download_control(control, locations = "world")`.
 #'
-#' @param control Numeric scalar/vector or list. Control batch id(s) to download.
+#' @param control Numeric scalar, numeric vector, or list of numeric scalars.
+#'   Control batch id(s) to download.
 #'
-#' @return Invisibly returns `TRUE`.
+#' @return Invisibly returns `TRUE`. See [download_control()] for details on
+#'   side effects and emitted messages.
 #'
 #' @export
 #' @rdname download_control

@@ -5,7 +5,7 @@
 \alias{countries}
 \title{Default location set: countries}
 \format{
-A character vector.
+A character vector of ISO 3166-1 alpha-2 country codes.
 }
 \usage{
 countries
@@ -14,13 +14,22 @@ countries
 Character vector of country location codes used by the package as a default
 location set for cross-country computations.
 
-The vector contains ISO 3166-1 alpha-2 country codes selected based on a GDP
-share threshold (>= 0.1\% in 2018) using the World Bank World Development
-Indicators (WDI). See \link{countries_wdi} for the underlying WDI country list.
+The vector contains ISO 3166-1 alpha-2 country codes selected from
+\link{countries_wdi} based on a GDP share threshold (>= 0.1\% of world GDP in
+2018) using World Bank World Development Indicators (WDI). This threshold
+retains the economically significant countries while keeping query volume
+manageable. Pass this vector as the \code{locations} argument to \code{\link[=compute_score]{compute_score()}}
+or \code{\link[=compute_doi]{compute_doi()}} for standard cross-country analyses.
 
-To inspect the full set, print \code{countries} or use \code{length(countries)}.
+Note that \code{"NA"} (Namibia's ISO code) is excluded because the Google Trends
+API cannot handle it; see \code{\link[=add_locations]{add_locations()}} for details.
+}
+\examples{
+length(countries)
+head(countries)
+
 }
 \seealso{
-\code{\link[=add_locations]{add_locations()}}, \code{\link[=start_db]{start_db()}}
+\link{countries_wdi}, \code{\link[=add_locations]{add_locations()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

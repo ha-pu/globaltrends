@@ -5,16 +5,26 @@
 \alias{countries_wdi}
 \title{Country codes and names from WDI}
 \format{
-A data.frame.
+A data frame whose columns follow the conventions of
+\code{WDI::WDI_data$country}. Key columns include \code{iso2c} (ISO 3166-1 alpha-2
+code, matching values in \link{countries}), \code{country} (English country name),
+and additional World Bank metadata fields.
+}
+\source{
+World Bank World Development Indicators (WDI),
+\url{https://datatopics.worldbank.org/world-development-indicators/}.
+Bundled as a static snapshot; for the latest data see the \code{WDI} R package.
 }
 \usage{
 countries_wdi
 }
 \description{
 A data frame of country/location codes and names as provided by the World
-Bank World Development Indicators (WDI). This object is useful for mapping
-ISO-style codes to human-readable names when constructing custom location
-sets.
+Bank World Development Indicators (WDI). This object is a bundled snapshot
+of \code{WDI::WDI_data$country} included to remove the runtime dependency on the
+\code{WDI} package. It is useful for mapping ISO-style codes to human-readable
+country names when inspecting or constructing custom location sets, and for
+understanding which countries are included in \link{countries}.
 }
 \seealso{
 \link{countries}, \code{\link[=add_locations]{add_locations()}}

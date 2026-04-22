@@ -7,20 +7,31 @@
 disconnect_db()
 }
 \value{
-Invisibly returns \code{TRUE} on success.
+Invisibly returns \code{TRUE}. Called for its side effects (writing
+files under \verb{db/} and closing the connection).
 }
 \description{
-Exports the current in-memory DuckDB database to the Parquet store under
+Exports the current in-memory DuckDB state to the Parquet store under
 \verb{db/} and closes the DBI connection.
 }
 \details{
-Call this after downloads/computations to persist changes to disk. The
-function overwrites the Parquet files under \verb{db/} with the current in-memory
-state.
+Call this function after all downloads and computations are complete. It
+overwrites the Parquet files under \verb{db/} with the current in-memory state
+and then shuts down the DuckDB instance. \code{gt.env$globaltrends_db} is set
+to \code{NULL} afterwards; all lazy \verb{tbl_*} handles become invalid.
+
+Data written to the in-memory database during the session will be \strong{lost}
+if this function is not called before the R session ends.
 }
 \examples{
 \dontrun{
+start_db()
+# ... downloads and computations ...
 disconnect_db()
 }
 
+}
+\seealso{
+\code{\link[=initialize_db]{initialize_db()}} to create the store; \code{\link[=start_db]{start_db()}} to open a
+new session.
 }

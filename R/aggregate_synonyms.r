@@ -1,38 +1,40 @@
 #' @title Aggregate search scores across synonym terms
 #'
 #' @description
-#' Aggregates score time series for object keywords by rolling up scores from
-#' synonym keywords (defined via [add_synonym()] and synonym table maintenance)
-#' into their canonical ("main") keywords.
+#' Merges synonym keyword scores into their canonical keyword scores in
+#' `data_score`. Run this after [compute_score()]. Synonym relationships are
+#' defined with [add_synonym()].
 #'
 #' @details
-#' This function is intended to be run **after** [compute_score()] has populated
-#' `data_score`. For a given `control` batch (`batch_c`), it:
+#' For a given `control` batch (`batch_c`), this function:
 #' \enumerate{
-#'   \item Identifies affected object batches (`batch_o`) that contain either a
-#'   canonical keyword or a synonym keyword.
-#'   \item Computes aggregated scores by mapping synonym rows onto their
-#'   canonical keyword and summing over duplicates.
-#'   \item Deletes existing `data_score` rows for the affected object batches
-#'   (greedy cleanup is not required here because only `data_score` is modified).
+#'   \item Retrieves all canonical-synonym pairs and their associated object
+#'   batches (`batch_o`) in a single database query.
+#'   \item Pulls the relevant `data_score` rows, remaps synonym rows onto their
+#'   canonical keyword, and sums scores across duplicates.
+#'   \item Deletes the affected `data_score` rows for those object batches.
 #'   \item Writes the aggregated rows back to `data_score`.
-#'   \item Optionally runs [vacuum_data()] to reclaim disk space after deletions.
+#'   \item Optionally calls [vacuum_data()] to reclaim disk space.
 #' }
 #'
-#' Performance note: Deleting and re-inserting can be expensive for large
-#' datasets. Vacuuming is the most time-consuming step and is therefore
-#' optional.
+#' The delete-and-reinsert pattern can be slow for large datasets. Vacuuming
+#' adds the most overhead and can be deferred by setting `vacuum = FALSE`.
 #'
-#' @param control Numeric/integer scalar. Control batch id (`batch_c`) whose
-#'   score data should be aggregated. Typically `1`.
+#' @param control Numeric/integer scalar. The control batch id (`batch_c`),
+#'   identifying the reference search used for score normalisation. In most
+#'   single-control setups this is `1`.
 #'
 #' @param vacuum Logical scalar. If `TRUE` (default), calls [vacuum_data()]
-#'   after aggregation to reclaim space.
+#'   after aggregation to reclaim space freed by the row deletions.
 #'
 #' @return
-#' Invisibly returns a tibble of the rows written to `data_score`. The function
-#' is called for its side effects (modifying the database) and emits informative
-#' messages.
+#' Invisibly returns a tibble of the rows written to `data_score`. Called
+#' primarily for its side effects (database modifications).
+#'
+#' @seealso
+#' [compute_score()] to populate `data_score` before aggregating,
+#' [add_synonym()] to define synonym relationships,
+#' [vacuum_data()] for manual space reclamation.
 #'
 #' @examples
 #' \dontrun{
@@ -43,7 +45,7 @@
 #' @export
 #' @rdname aggregate_synonyms
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr anti_join collect distinct filter inner_join rename select summarise union_all count
+#' @importFrom dplyr anti_join collect distinct filter inner_join rename select summarise union_all
 #' @importFrom purrr walk
 #' @importFrom rlang .data
 
@@ -54,41 +56,34 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
   .check_length(vacuum, 1)
 
   # -----------------------------------------------------------------------
-  # 1) Build mappings between canonical keywords and synonyms, including
-  #    their respective object batches (batch_o) from batch_keywords.
+  # 1) Build canonical<->synonym mapping with both object batches in one query.
   # -----------------------------------------------------------------------
-  # Canonical keyword (keyword) -> synonym (synonym) with batch for canonical
-  org_syn <- gt.env$tbl_keywords |>
-    inner_join(gt.env$tbl_synonyms, by = "keyword") |>
+  syn_map <- gt.env$tbl_synonyms |>
+    inner_join(gt.env$tbl_keywords, by = "keyword") |>
+    inner_join(gt.env$tbl_keywords, by = c("synonym" = "keyword"), suffix = c("_canonical", "_synonym")) |>
+    select(
+      keyword_canonical = keyword,
+      keyword_synonym = synonym,
+      batch_o_canonical = batch_canonical,
+      batch_o_synonym = batch_synonym
+    ) |>
     collect()
 
-  # Synonym (synonym) -> canonical keyword (keyword) with batch for synonym keyword
-  syn_org <- gt.env$tbl_synonyms |>
-    inner_join(gt.env$tbl_keywords, by = c("synonym" = "keyword")) |>
-    collect()
-
-  # If there are no synonym definitions or no matching batches, exit early.
-  if (nrow(org_syn) == 0 || nrow(syn_org) == 0) {
+  if (nrow(syn_map) == 0) {
     message("No synonym mappings found in the database. Nothing to aggregate.")
     return(invisible(tibble()))
   }
 
-  affected_batches <- unique(c(org_syn$batch, syn_org$batch))
-  if (length(affected_batches) == 0) {
-    message("No affected object batches found. Nothing to aggregate.")
-    return(invisible(tibble()))
-  }
+  affected_batches <- unique(c(syn_map$batch_o_canonical, syn_map$batch_o_synonym))
 
   # -----------------------------------------------------------------------
-  # 2) Pull relevant score rows (lazy until collect) for affected object batches
-  #    under the specified control batch.
+  # 2) Pull relevant score rows for affected object batches.
   # -----------------------------------------------------------------------
   score_tbl <- gt.env$tbl_score |>
     filter(.data$batch_c == control, .data$batch_o %in% affected_batches) |>
     collect()
 
-  # If there is no score data, exit early (avoid delete + append).
-  if (count(score_tbl) |> collect() |> pull(.data$n) == 0) {
+  if (nrow(score_tbl) == 0) {
     message(
       "No score data found for the specified control batch and affected object batches."
     )
@@ -100,18 +95,7 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
   #    - Map synonym keyword rows to the canonical keyword
   #    - Sum scores by (batch_o, keyword, location, date, batch_c)
   # -----------------------------------------------------------------------
-  # Create a mapping table: synonym-batch+synonym-keyword -> canonical-batch+canonical-keyword
-  # Note: joins here are performed in-memory (small mapping tables).
-  syn_map <- syn_org |>
-    inner_join(org_syn, by = c("keyword", "synonym")) |>
-    select(
-      batch_o_canonical = batch.y,
-      keyword_canonical = keyword,
-      batch_o_synonym = batch.x,
-      keyword_synonym = synonym
-    )
 
-  # Pull score rows for synonym keywords and re-label to canonical keyword/batch
   score_syn_rolled <- syn_map |>
     inner_join(
       score_tbl,
@@ -132,26 +116,17 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
       keyword = keyword_canonical
     )
 
-  # Keep all non-synonym rows as-is (i.e., exclude rows where keyword is a synonym)
   score_non_syn <- score_tbl |>
     anti_join(
-      syn_org |> distinct(batch = .data$batch, synonym = .data$synonym),
-      by = c("batch_o" = "batch", "keyword" = "synonym")
+      distinct(syn_map, batch = batch_o_synonym, keyword = keyword_synonym),
+      by = c("batch_o" = "batch", "keyword")
     )
 
-  # Combine and de-duplicate by summing (canonical keyword may already exist)
   score_new <- union_all(score_non_syn, score_syn_rolled) |>
     summarise(
       score = sum(.data$score, na.rm = TRUE),
-      .by = c(
-        batch_o,
-        keyword,
-        location,
-        date,
-        batch_c
-      )
-    ) |>
-    collect()
+      .by = c(batch_o, keyword, location, date, batch_c)
+    )
 
   if (nrow(score_new) == 0) {
     message("Aggregation produced no rows. No database changes were made.")

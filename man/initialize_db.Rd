@@ -7,27 +7,30 @@
 initialize_db()
 }
 \value{
-Invisibly returns \code{TRUE} on success. Called for its side effects
-(creating files under \verb{db/}).
+Invisibly returns \code{TRUE}. Called for its side effects (creating
+files under \verb{db/}).
 }
 \description{
-Creates the local database store used by \code{globaltrends} in the current working
-directory and initializes all required tables and indexes.
+Creates the local database store used by \code{globaltrends} in the current
+working directory and initializes all required tables and indexes.
 }
 \details{
 The package uses DuckDB with a Parquet-backed persistence layout under the
-\verb{db/} folder. \code{initialize_db()} creates an in-memory DuckDB database,
-creates the schema, populates default location sets, and exports the database
-as Parquet files to \verb{db/}.
+\verb{db/} folder. \code{initialize_db()} creates a transient in-memory DuckDB
+database, builds the schema, populates default location sets, and exports
+the result as Parquet files to \verb{db/}. The in-memory connection is closed
+before the function returns; call \code{\link[=start_db]{start_db()}} to open a working session.
 
-If the database files already exist, the function will not overwrite them.
-If files exist but are incomplete, the function errors to prevent accidental
-use of a corrupted store.
+If all required Parquet files already exist the function returns early
+without overwriting anything. If only some files are present (indicating a
+partial or corrupted store) the function stops with an error.
 
 Default location sets written to \code{data_locations}:
-\itemize{
-\item \code{countries}: ISO 3166-1 alpha-2 codes (GDP share threshold; see \code{countries}).
-\item \code{us_states}: ISO 3166-2 codes for US states and DC (see \code{us_states}).
+\describe{
+\item{\code{countries}}{ISO 3166-1 alpha-2 codes for countries above the GDP
+share threshold (see \link{countries}).}
+\item{\code{us_states}}{ISO 3166-2 codes for US states and Washington DC
+(see \link{us_states}).}
 }
 }
 \section{Concurrency}{
@@ -40,6 +43,11 @@ use one database directory per worker and merge results afterwards.
 \examples{
 \dontrun{
 initialize_db()
+start_db()
 }
 
+}
+\seealso{
+\code{\link[=start_db]{start_db()}} to open a working session after initialization;
+\code{\link[=disconnect_db]{disconnect_db()}} to persist changes and close the session.
 }

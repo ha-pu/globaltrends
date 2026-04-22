@@ -5,7 +5,7 @@
 \alias{us_states}
 \title{Default location set: US states}
 \format{
-A character vector.
+A character vector of 51 ISO 3166-2 location codes.
 }
 \usage{
 us_states
@@ -13,8 +13,15 @@ us_states
 \description{
 Character vector of US state-level location codes used by the package.
 
-The vector contains ISO 3166-2 codes of the form \code{"US-XX"} for the 50 US
-states and \code{"US-DC"} for the District of Columbia.
+The vector contains the 51 ISO 3166-2 codes of the form \code{"US-XX"} for the
+50 US states and \code{"US-DC"} for the District of Columbia. Pass this vector
+as the \code{locations} argument to \code{\link[=compute_score]{compute_score()}} or \code{\link[=compute_doi]{compute_doi()}} for
+within-US analyses.
+}
+\examples{
+length(us_states)
+head(us_states)
+
 }
 \seealso{
 \code{\link[=add_locations]{add_locations()}}, \code{\link[=start_db]{start_db()}}

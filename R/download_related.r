@@ -1,39 +1,112 @@
-#' @title Download related topics and themes (including rising variants)
+#' @title Download related topics and themes for object keyword batches
+#'
+#' @aliases download_related download_related.numeric download_related.list
+#'   download_topics download_themes download_topics_rising download_themes_rising
+#'   download_topics_global download_themes_global download_topics_rising_global
+#'   download_themes_rising_global
 #'
 #' @description
-#' Convenience wrappers around [download_related()] that download one of four
-#' related-queries variants for the keywords in one or more object batches:
+#' Downloads Google Trends related topics or themes for one or more *object*
+#' batches across a set of locations and appends the results to the database
+#' table `data_related`. Convenience wrappers cover all four combinations of
+#' `topic` (topics vs. themes) and `rising` (top vs. rising):
 #'
-#' - related topics (top)
-#' - related themes (top)
-#' - related topics (rising)
-#' - related themes (rising)
-#'
-#' All downloads are written to the database table `data_related`.
+#' - [download_topics()] / [download_topics_global()] — top related topics
+#' - [download_themes()] / [download_themes_global()] — top related themes
+#' - [download_topics_rising()] / [download_topics_rising_global()] — rising
+#'   related topics
+#' - [download_themes_rising()] / [download_themes_rising_global()] — rising
+#'   related themes
 #'
 #' @details
-#' This feature requires the Research API backend (Python) initialized via
-#' [initialize_python()]. The internal `.get_related()` helper is used to query
-#' related topics/themes for each keyword in the object batch and for each
-#' requested location.
+#' **Prerequisites.** [initialize_python()] must be called before
+#' `download_related()` to set up the Research API backend. [start_db()] must
+#' also have been called; it connects to the database and populates
+#' `gt.env$keywords_object` and `gt.env$time_object` from the tables
+#' `batch_keywords` and `batch_time` (created via [add_keyword()]). These
+#' in-memory objects are used to look up the keywords and time window for each
+#' requested batch.
 #'
-#' The function avoids duplicate downloads by skipping locations already present
-#' in `data_related` for the requested `batch_o` (optionally, you may want to
-#' extend de-duplication to also include the `topic`/`rising` dimensions; see
-#' notes in code).
+#' **Dispatch.** `download_related()` is an S3 generic that dispatches on the
+#' class of `object`. Passing a numeric scalar routes to the `.numeric` method,
+#' which performs the actual download. Passing a numeric vector of length > 1
+#' coerces `object` to a list and delegates to the `.list` method, which
+#' iterates over batches sequentially. Passing a list directly also routes to
+#' the `.list` method.
 #'
-#' @param object Numeric scalar/vector or list of numeric scalars. Object batch
-#'   id(s) (`batch_o`) to download.
-#' @param locations Character vector of location codes. Defaults to
-#'   `gt.env$countries` when available; otherwise `globaltrends::countries`.
-#'   Use `"world"` to request global data (`"world"`).
+#' **Download backend.** Requests are issued through the internal `.get_related()`
+#' helper, which queries the Google Trends Research API via the Python backend.
+#' One API call is made per keyword per location; results across keywords are
+#' row-bound before being written to `data_related`.
 #'
-#' @return Invisibly returns `TRUE`. Called for its side effects (writing to
-#'   `data_related`) and emits a message per location.
+#' **Deduplication.** Before downloading, the function queries `data_related`
+#' for locations already present for the requested batch (filtered by `topic`
+#' and `rising`). Only locations not yet in the database are downloaded. If all
+#' locations are already present, the function returns early with a message and
+#' no requests are made.
 #'
-#' @name download_related
+#' **Missing data.** If the API returns no data for a location (e.g. due to
+#' insufficient search volume), the result for that location is skipped
+#' (nothing is written to `data_related`) and a "No data returned" message is
+#' emitted.
+#'
+#' @param object Numeric scalar, numeric vector, or list of numeric scalars.
+#'   The object batch id(s) to download. A scalar downloads a single batch; a
+#'   vector or list downloads multiple batches sequentially. Must refer to
+#'   batches already registered via [add_keyword()].
+#'
+#' @param locations Character vector of ISO 3166-1 alpha-2 location codes.
+#'   Defaults to `gt.env$countries` when set by [start_db()]; otherwise falls
+#'   back to `globaltrends::countries`. Pass `"world"` (or use the `_global`
+#'   convenience wrappers) to download the worldwide aggregate instead of
+#'   country-level data.
+#'
+#' @param topic Logical scalar. `TRUE` to download related *topics*; `FALSE` to
+#'   download related *themes*. The convenience wrappers set this automatically.
+#'
+#' @param rising Logical scalar. `TRUE` to download *rising* (breakout) results;
+#'   `FALSE` to download *top* results. The convenience wrappers set this
+#'   automatically.
+#'
+#' @return
+#' Invisibly returns `TRUE`. The function is called for its side effects:
+#' downloaded rows are appended to `data_related` in the active database, and
+#' one progress message is emitted per location indicating whether data was
+#' written or no data was returned.
+#'
+#' @seealso
+#' [initialize_python()] to set up the Python backend (required before use).
+#' [start_db()] to connect to the database and populate `gt.env`.
+#' [add_keyword()] to register object batches before downloading.
+#' [download_object()] to download raw search volume data for object keywords.
+#'
+#' @examples
+#' \dontrun{
+#' # Download top related topics for one object batch across all countries
+#' download_topics(object = 1, locations = countries)
+#'
+#' # Download rising related themes for several batches sequentially
+#' download_themes_rising(object = as.list(1:5), locations = countries)
+#'
+#' # Download top related topics worldwide
+#' download_topics_global(object = 1)
+#' }
+#'
+#' @export
+#' @rdname download_related
+#' @importFrom DBI dbAppendTable
+#' @importFrom dplyr mutate
+#' @importFrom purrr iwalk map_dfr walk
+#' @importFrom rlang .data
 
-NULL
+download_related <- function(
+  object,
+  locations = NULL,
+  topic = NULL,
+  rising = NULL
+) {
+  UseMethod("download_related", object)
+}
 
 # ---- Public convenience wrappers --------------------------------------------
 
@@ -133,29 +206,11 @@ download_themes_rising_global <- function(object) {
   )
 }
 
-# ---- Core implementation ----------------------------------------------------
-
-#' @rdname download_related
-#' @export
-#' @noRd
-#' @importFrom DBI dbAppendTable
-#' @importFrom dplyr mutate
-#' @importFrom purrr map_dfr walk
-#' @importFrom rlang .data
-
-download_related <- function(
-  object,
-  locations = NULL,
-  topic = NULL,
-  rising = NULL
-) {
-  UseMethod("download_related", object)
-}
+# ---- S3 methods -------------------------------------------------------------
 
 #' @rdname download_related
 #' @method download_related numeric
 #' @export
-#' @noRd
 
 download_related.numeric <- function(
   object,
@@ -226,9 +281,7 @@ download_related.numeric <- function(
     )
   }
 
-  # -------------------------------------------------------------------------
-  # De-duplication
-  # -------------------------------------------------------------------------
+  # Avoid duplicate downloads: only fetch locations not yet present for this batch.
   existing_locations <- .get_full(
     table = "data_related",
     in_batch_c = NULL,
@@ -251,39 +304,34 @@ download_related.numeric <- function(
     return(invisible(TRUE))
   }
 
-  walk(
-    seq_along(loc_remaining),
+  iwalk(
+    loc_remaining,
     ~ {
-      loc <- loc_remaining[[.x]]
+      loc <- .x
+      # .get_related() treats location = NULL as global; "world" maps to NULL.
+      geo <- if (identical(loc, "world")) NULL else loc
 
-      if (loc == "world") {
-        out <- map_dfr(
-          terms_obj,
-          ~ .get_related(
-            term = .x,
-            start_date = start_date,
-            end_date = end_date,
-            topic = topic,
-            rising = rising
-          )
+      out <- map_dfr(
+        terms_obj,
+        ~ .get_related(
+          location = geo,
+          term = .x,
+          start_date = start_date,
+          end_date = end_date,
+          topic = topic,
+          rising = rising
         )
-      } else {
-        out <- map_dfr(
-          terms_obj,
-          ~ .get_related(
-            location = loc,
-            term = .x,
-            start_date = start_date,
-            end_date = end_date,
-            topic = topic,
-            rising = rising
-          )
-        )
-      }
+      )
 
-      if (is.null(out) || nrow(out) == 0) {
+      if (!is.null(out) && nrow(out) > 0) {
+        out <- mutate(out, batch_o = object)
+        dbAppendTable(
+          conn = gt.env$globaltrends_db,
+          name = "data_related",
+          value = out
+        )
         message(paste0(
-          "No related data returned | object: ",
+          "Downloaded related data | object: ",
           object,
           " | location: ",
           loc,
@@ -292,40 +340,28 @@ download_related.numeric <- function(
           " | rising: ",
           rising,
           " [",
-          .x,
+          .y,
           "/",
           length(loc_remaining),
           "]"
         ))
-        return(invisible(TRUE))
+      } else {
+        message(paste0(
+          "No data returned | object: ",
+          object,
+          " | location: ",
+          loc,
+          " | topic: ",
+          topic,
+          " | rising: ",
+          rising,
+          " [",
+          .y,
+          "/",
+          length(loc_remaining),
+          "]"
+        ))
       }
-
-      # Persist: include flags so downstream users can filter variants.
-      out <- mutate(out, batch_o = object, topic = topic, rising = rising)
-
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_related",
-        value = out
-      )
-
-      message(paste0(
-        "Downloaded related data | object: ",
-        object,
-        " | location: ",
-        loc,
-        " | topic: ",
-        topic,
-        " | rising: ",
-        rising,
-        " [",
-        .x,
-        "/",
-        length(loc_remaining),
-        "]"
-      ))
-
-      invisible(TRUE)
     }
   )
 
@@ -335,7 +371,6 @@ download_related.numeric <- function(
 #' @rdname download_related
 #' @method download_related list
 #' @export
-#' @noRd
 
 download_related.list <- function(
   object,
@@ -343,13 +378,6 @@ download_related.list <- function(
   topic = NULL,
   rising = NULL
 ) {
-  if (!isTRUE(gt.env$py_setup)) {
-    stop(
-      "Python backend is not initialized. Run `initialize_python()` first.",
-      call. = FALSE
-    )
-  }
-
   if (is.null(locations)) {
     locations <- if (!is.null(gt.env$countries)) {
       gt.env$countries
@@ -358,11 +386,6 @@ download_related.list <- function(
     }
   }
   .check_input(locations, "character")
-
-  .check_input(topic, "logical")
-  .check_length(topic, 1)
-  .check_input(rising, "logical")
-  .check_length(rising, 1)
 
   walk(
     object,

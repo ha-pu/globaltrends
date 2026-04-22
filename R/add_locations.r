@@ -1,43 +1,68 @@
 #' @title Add a location set
 #'
 #' @description
-#' Adds a user-defined *location set* to the `data_locations` database table.
-#' Location sets are used as inputs to download and computation functions.
+#' Adds location codes to a named *location set* in the `data_locations`
+#' database table. A location set is a named group of codes (e.g.,
+#' `"countries"`, `"DACH"`) that is passed as the `locations` argument to
+#' download and computation functions. After insertion the set is immediately
+#' accessible as `gt.env$<type>`.
 #'
 #' @details
-#' Location sets control which locations are downloaded or included in
-#' computations. The package ships with default sets (e.g., `countries`,
-#' `us_states`), and you can expand these by adding your own sets (e.g., "EU",
-#' "DACH", or subnational regions for a country).
+#' The package ships with two default sets — `"countries"` and `"us_states"` —
+#' written to the database by [start_db()]. Use `add_locations()` to define
+#' additional sets such as `"EU"`, `"DACH"`, or subnational regions for a
+#' specific country.
 #'
-#' The function is designed to be idempotent with respect to `(type, location)`:
-#' if a location already exists for a given `type`, it will be skipped (not
-#' duplicated).
+#' The function is idempotent with respect to `(type, location)` pairs: codes
+#' that already exist in the named set are silently skipped, so repeated calls
+#' are safe. Leading and trailing whitespace is trimmed from all codes before
+#' validation and insertion.
 #'
 #' @section Known API limitation:
-#' The Google Trends API cannot handle the location code `"NA"` (Namibia).
-#' If `"NA"` is supplied, it will be dropped. If `"NA"` is the only supplied
-#' location, the function errors.
+#' The Google Trends API cannot handle the location code `"NA"` (Namibia). If
+#' `"NA"` is supplied it is dropped with a warning. If it is the only code
+#' supplied, the function errors.
 #'
-#' @param locations Character vector of location codes to add. Codes must be
-#'   present in `gtrendsR::countries$country_code` or
-#'   `gtrendsR::countries$sub_code`. Duplicates are removed.
+#' @param locations Character vector of location codes to add. Each code must
+#'   appear in `gtrendsR::countries$country_code` (country level) or
+#'   `gtrendsR::countries$sub_code` (subnational level). Leading/trailing
+#'   whitespace and duplicates are removed automatically.
 #'
 #' @param type Character scalar. Name of the location set to which `locations`
-#'   should be added (e.g., `"DACH"`, `"EU"`).
+#'   should be added (e.g., `"DACH"`, `"EU"`). After export the set is
+#'   available as `gt.env$<type>`.
 #'
-#' @param export Logical scalar. If `TRUE` (default), the package environment
-#'   `gt.env` is refreshed so the new/updated location set becomes available
-#'   immediately.
+#' @param export Logical scalar. If `TRUE` (default), `gt.env` is refreshed so
+#'   the updated set is available immediately. Set to `FALSE` when calling
+#'   `add_locations()` several times in sequence to avoid a redundant database
+#'   read after each call; run `add_locations(..., export = TRUE)` on the final
+#'   call, or restart the session, to make all sets available.
 #'
 #' @return
-#' Invisibly returns a tibble of rows that were appended to the database
-#' (columns: `location`, `type`). A message is emitted summarizing what happened.
+#' Invisibly returns a tibble of the rows appended to `data_locations` (columns:
+#' `location`, `type`). Returns a zero-row tibble when all supplied codes
+#' already exist in the set. A message is emitted in either case summarising
+#' how many codes were added and how many were skipped.
 #'
 #' @examples
 #' \dontrun{
+#' # Create a custom set for the DACH region
 #' add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
+#'
+#' # Add subnational codes (US states from the built-in vector)
+#' add_locations(locations = us_states, type = "us_states")
+#'
+#' # Add several sets without redundant DB reads; refresh once at the end
+#' add_locations(locations = c("AT", "CH", "DE"), type = "DACH", export = FALSE)
+#' add_locations(locations = c("BE", "LU", "NL"), type = "benelux", export = TRUE)
 #' }
+#'
+#' @seealso
+#' * [download_control()] and [download_object()] — pass a location set here
+#' * [compute_score()] and [compute_doi()] — pass a location set here
+#' * [countries] and [us_states] — built-in location vectors
+#' * [start_db()] — populates the default `"countries"` and `"us_states"` sets
+#' * [gtrendsR::countries] — source of all valid location codes
 #'
 #' @export
 #' @importFrom DBI dbAppendTable
@@ -107,9 +132,9 @@ add_locations <- function(locations, type, export = TRUE) {
   if (is.null(gt.env$tbl_locations)) {
     already_present <- NULL
   } else {
-    in_type <- type
+    x.type <- type
     existing <- gt.env$tbl_locations |>
-      filter(.data$type == in_type & .data$location %in% locations) |>
+      filter(.data$type == x.type & .data$location %in% locations) |>
       collect()
     already_present <- existing$location
   }
@@ -180,16 +205,16 @@ add_locations <- function(locations, type, export = TRUE) {
 #' @title Export location sets to `gt.env`
 #'
 #' @description
-#' Loads all distinct `(type, location)` pairs from the database-backed locations
-#' table and exposes each set as a character vector in the package environment
-#' `gt.env`, named by its `type`.
+#' Reads all distinct `(type, location)` pairs from the database-backed
+#' `data_locations` table and assigns each set as a named character vector
+#' into the package environment `gt.env`. A single `collect()` is performed and
+#' then split in memory, so the cost is one DB round-trip regardless of how
+#' many sets exist.
 #'
-#' @details
-#' This internal helper performs a single database read (collect once) and then
-#' splits the result in memory for performance and reproducibility.
+#' Called automatically by [add_locations()] when `export = TRUE`.
 #'
 #' @return
-#' Invisibly returns the list of location vectors that were assigned into `gt.env`.
+#' Invisibly returns the named list of character vectors assigned into `gt.env`.
 #'
 #' @keywords internal
 #' @noRd

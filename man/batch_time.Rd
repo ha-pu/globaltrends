@@ -20,13 +20,16 @@ example_time
 \description{
 Example data representing the database table \code{batch_time}.
 Each row assigns a time window (\code{start_date}, \code{end_date}) to a \code{batch}
-and a \code{type} (\code{"control"} or \code{"object"}).
+and a \code{type} (\code{"control"} or \code{"object"}). Each \verb{(type, batch)} combination
+has exactly one row.
 
 In a live database, batch time windows are generated when keywords are added
 (see \code{\link[=add_keyword]{add_keyword()}}) and are exported to the package environment \code{gt.env}
 by \code{\link[=start_db]{start_db()}} as \code{gt.env$time_control} and \code{gt.env$time_object}.
 
-Dates are stored as \code{"YYYY-MM"} strings to represent monthly windows.
+Dates are stored as \code{"YYYY-MM"} strings to represent monthly windows. To
+change the time window for an existing batch, all downloads and computations
+for that batch must be re-run.
 }
 \seealso{
 \code{\link[=add_keyword]{add_keyword()}}, \code{\link[=start_db]{start_db()}}

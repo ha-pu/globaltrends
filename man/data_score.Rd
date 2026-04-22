@@ -12,7 +12,9 @@ A tibble with 6 variables:
 \item{keyword}{Character. Object keyword.}
 \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
 \code{lubridate::as_date(date)}.}
-\item{score}{Double. Computed score (mapped/normalized search interest).}
+\item{score}{Double. Normalised search interest (object hits divided by
+total mapped control hits). Non-negative; 0 when no control data are
+available.}
 \item{batch_c}{Integer. Control batch id used as baseline.}
 \item{batch_o}{Integer. Object batch id.}
 }
@@ -26,12 +28,23 @@ Each row contains a computed \code{score} for an object \code{keyword} in a give
 \code{location} on a given \code{date}, along with the associated control batch
 (\code{batch_c}) and object batch (\code{batch_o}).
 
-In a live database, scores are computed via \code{\link[=compute_score]{compute_score()}} and are
-available through \code{gt.env$tbl_score} after \code{\link[=start_db]{start_db()}}. Global aggregates
-use \code{"world"} as \code{location}.
+Scores are computed by \code{\link[=compute_score]{compute_score()}} as:
+\deqn{score = \frac{hits_o}{\sum_{k \in C} \tilde{hits}_k}}
+where \eqn{hits_o} are object search volumes and \eqn{\tilde{hits}_k} are
+control keyword hits mapped to the object scale via an overlap-based
+benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
+greater than 1 are possible when object interest exceeds control interest.
+
+In a live database, scores are available through \code{gt.env$tbl_score} after
+\code{\link[=start_db]{start_db()}}. Global aggregates use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble outputs derived from real
 Google Trends data.
+}
+\references{
+Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+Uncertainty index for the United States and Australia. \emph{Economics Letters},
+\emph{161}, 149--153. \doi{10.1016/j.econlet.2017.09.032}
 }
 \seealso{
 \code{\link[=compute_score]{compute_score()}}, \code{\link[=compute_voi]{compute_voi()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}

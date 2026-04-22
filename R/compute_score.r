@@ -1,10 +1,5 @@
 #' @title Compute search scores for object keywords
 #'
-#' @aliases
-#' compute_score
-#' compute_score.numeric
-#' compute_score.list
-#'
 #' @description
 #' Computes *search scores* for object keywords by mapping object and control
 #' search volumes onto a common scale and then normalizing object volumes by the
@@ -19,48 +14,71 @@
 #' hits mapped to the object scale using an overlap-based benchmark, following
 #' the mapping logic described in Castelnuovo and Tran (2017, Appendix A).
 #'
-#' Operationally, for each requested object batch (`batch_o`) and control batch
-#' (`batch_c`), the function:
+#' **Idempotency.** Already-computed `(batch_c, batch_o, location)` combinations
+#' are detected and skipped automatically, so repeated calls safely fill in only
+#' missing locations.
+#'
+#' Operationally, for each object batch (`batch_o`) and control batch (`batch_c`),
+#' the function:
 #' \enumerate{
-#'   \item Identifies the subset of `locations` that have not yet been computed
-#'   for `(batch_c, batch_o)` in `data_score`.
+#'   \item Identifies the subset of `locations` not yet present in `data_score`
+#'   for this `(batch_c, batch_o)` pair.
 #'   \item Computes a per-`(location, date)` *benchmark* as the mean ratio of
-#'   object/control hits **for the control keywords** that are present in both
-#'   downloads.
-#'   \item Maps the control batch to the object scale via `hits_mapped = hits * benchmark`.
-#'   \item Sums mapped control hits across control keywords to obtain `hits_c`
-#'   and computes `score = hits_object / hits_c` for each object keyword.
+#'   object-to-control hits for the keywords that appear in both downloads.
+#'   \item Maps control hits to the object scale: `hits_mapped = hits * benchmark`.
+#'   \item Sums mapped control hits across keywords to obtain `hits_c` and
+#'   computes `score = hits_object / hits_c` for each object keyword.
 #'   \item Inserts the resulting rows into `data_score`.
 #' }
 #'
-#' If synonym keywords were specified via [add_synonym()], you should run
+#' If synonym keywords were specified via [add_synonym()], run
 #' [aggregate_synonyms()] after score computation to roll synonym scores into
 #' their canonical terms.
 #'
-#' References:
-#' Castelnuovo, E. & Tran, T. D. (2017). *Google It Up! A Google Trends-based
-#' Uncertainty index for the United States and Australia.* Economics Letters, 161, 149-153.
+#' @param object Integer-like scalar, vector, or list. The object batch id(s)
+#'   (`batch_o`) for which scores should be computed. A numeric vector is
+#'   coerced to a list and each element is processed in sequence; a list
+#'   triggers the list method directly.
 #'
-#' @param object Numeric scalar/vector (or list of numeric scalars). Object batch
-#'   id(s) (`batch_o`) for which scores should be computed.
+#' @param control Integer-like scalar. The control batch id (`batch_c`) used as
+#'   the normalisation baseline. Defaults to `1`.
 #'
-#' @param control Numeric scalar. Control batch id (`batch_c`) used as baseline.
-#'   Defaults to `1`.
-#'
-#' @param locations Character vector of location codes (e.g., `countries`,
-#'   `us_states`) or `"world"` for global VOI-style computation. If `NULL`,
-#'   defaults to `gt.env$countries` when available, otherwise `globaltrends::countries`.
+#' @param locations Character vector of location codes to compute scores for.
+#'   The package exports `countries` (ISO 3166-1 alpha-2 codes for all
+#'   countries) and `us_states` (two-letter US state codes) as convenience
+#'   vectors. Pass `"world"` to compute the global aggregate only (see also
+#'   [compute_voi()]). If `NULL`, defaults to `gt.env$countries` when set via
+#'   [start_db()], otherwise falls back to `globaltrends::countries`.
 #'
 #' @return
-#' Invisibly returns `TRUE` (list method) or the number of inserted rows
-#' (numeric method, best-effort) for the processed batch. The function is
-#' called primarily for its side effects (writing to `data_score`) and emits
-#' a message per batch.
+#' Called primarily for its side effects (writing to `data_score`); the return
+#' value is rarely needed. When `object` is a scalar or vector, returns the
+#' number of rows inserted into `data_score` as an integer (`0L` if all
+#' requested locations were already computed). When `object` is a list,
+#' returns `TRUE` invisibly after processing all elements.
+#'
+#' @seealso
+#' [download_control()] and [download_object()] to populate the raw data tables
+#' before computing scores.
+#' [aggregate_synonyms()] to roll synonym keyword scores into their canonical
+#' terms after score computation.
+#' [add_synonym()] to define synonym relationships.
+#' [compute_voi()] for the global-aggregate shorthand.
+#'
+#' @references
+#' Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+#' Uncertainty index for the United States and Australia. *Economics Letters*,
+#' *161*, 149--153. \doi{10.1016/j.econlet.2017.09.032}
 #'
 #' @examples
 #' \dontrun{
+#' # Compute scores for a single object batch across all countries
 #' compute_score(object = 1, control = 1, locations = countries)
+#'
+#' # Process multiple object batches in one call
 #' compute_score(object = as.list(1:5), control = 1, locations = countries)
+#'
+#' # Compute the global aggregate (VOI) only
 #' compute_voi(object = 1, control = 1)
 #' }
 #'
@@ -81,18 +99,9 @@ compute_score <- function(object, control = 1, locations = NULL) {
 #' @export
 
 compute_score.numeric <- function(object, control = 1, locations = NULL) {
-  control <- unlist(control)
-  .check_length(control, 1)
-  .check_batch(control)
-
-  if (is.null(locations)) {
-    locations <- if (!is.null(gt.env$countries)) {
-      gt.env$countries
-    } else {
-      globaltrends::countries
-    }
-  }
-  .check_input(locations, "character")
+  args <- .resolve_score_args(control, locations)
+  control <- args$control
+  locations <- args$locations
 
   # Vector input: delegate to list method for consistent iteration
   if (length(object) > 1) {
@@ -115,12 +124,9 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
   loc_remaining <- locations[!(locations %in% existing_locations)]
 
   if (length(loc_remaining) == 0) {
-    message(paste0(
-      "No new locations to compute | control: ",
-      control,
-      " | object: ",
-      object,
-      "."
+    message(sprintf(
+      "No new locations to compute | control: %s | object: %s.",
+      control, object
     ))
     return(invisible(0L))
   }
@@ -146,12 +152,9 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
     pull(.data$n)
 
   if (n_obj == 0) {
-    message(paste0(
-      "No object data found | control: ",
-      control,
-      " | object: ",
-      object,
-      "."
+    message(sprintf(
+      "No object data found | control: %s | object: %s.",
+      control, object
     ))
     return(invisible(0L))
   }
@@ -214,28 +217,17 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
       .data$batch_o
     )
 
-  # Insert lazily computed results via INSERT ... SELECT
-  n_out <- out |>
-    count() |>
-    collect() |>
-    pull(.data$n)
+  # dbplyr appends a trailing semicolon that is invalid inside INSERT ... SELECT
+  sql_select <- sub(";\\s*$", "", sql_render(out))
 
-  if (n_out > 0) {
-    sql_select <- sql_render(out)
-    sql_select <- sub(";\\s*$", "", sql_select)
+  n_out <- dbExecute(
+    gt.env$globaltrends_db,
+    SQL(paste0("INSERT INTO data_score ", sql_select))
+  )
 
-    dbExecute(
-      gt.env$globaltrends_db,
-      SQL(paste0("INSERT INTO data_score ", sql_select))
-    )
-  }
-
-  message(paste0(
-    "Successfully computed search scores | control: ",
-    control,
-    " | object: ",
-    object,
-    "."
+  message(sprintf(
+    "Successfully computed search scores | control: %s | object: %s.",
+    control, object
   ))
 
   invisible(as.integer(n_out))
@@ -246,38 +238,49 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
 #' @export
 
 compute_score.list <- function(object, control = 1, locations = NULL) {
-  control <- unlist(control)
-  .check_length(control, 1)
-  .check_batch(control)
-
-  if (is.null(locations)) {
-    locations <- if (!is.null(gt.env$countries)) {
-      gt.env$countries
-    } else {
-      globaltrends::countries
-    }
-  }
-  .check_input(locations, "character")
-
-  walk(object, compute_score, control = control, locations = locations)
+  args <- .resolve_score_args(control, locations)
+  walk(object, compute_score, control = args$control, locations = args$locations)
   invisible(TRUE)
 }
 
 #' @title Compute volume of internationalization (VOI)
 #'
 #' @description
-#' Convenience wrapper around [compute_score()] that computes scores for the
-#' global aggregate only (`location == "world"`).
+#' Convenience wrapper around [compute_score()] for computing the *volume of
+#' internationalization* (VOI) — a measure of how globally distributed search
+#' interest for a keyword is relative to the control baseline. Equivalent to
+#' `compute_score(object, control, locations = "world")`, which uses the
+#' worldwide aggregate rather than country-level breakdowns.
 #'
-#' @param object Numeric scalar/vector (or list) of object batch id(s).
-#' @param control Numeric scalar. Control batch id. Defaults to `1`.
+#' Use this function when you only need the global aggregate score, for example
+#' when `locations = "world"` was passed to [download_object()].
 #'
-#' @return Invisibly returns `TRUE` (or a batch-wise insert count) via
-#' [compute_score()].
+#' @param object Integer-like scalar, vector, or list. The object batch id(s)
+#'   (`batch_o`) for which VOI should be computed.
+#' @param control Integer-like scalar. The control batch id (`batch_c`).
+#'   Defaults to `1`.
+#'
+#' @return See [compute_score()] for return value semantics.
+#'
+#' @seealso [compute_score()] for country-level scores.
 #'
 #' @export
 #' @rdname compute_score
 
 compute_voi <- function(object, control = 1) {
   compute_score(object = object, control = control, locations = "world")
+}
+
+# Validates and resolves the shared `control` and `locations` arguments for
+# both S3 methods. Centralised here to avoid the two methods drifting apart.
+# @noRd
+.resolve_score_args <- function(control, locations) {
+  control <- unlist(control)
+  .check_length(control, 1)
+  .check_batch(control)
+  if (is.null(locations)) {
+    locations <- if (!is.null(gt.env$countries)) gt.env$countries else globaltrends::countries
+  }
+  .check_input(locations, "character")
+  list(control = control, locations = locations)
 }

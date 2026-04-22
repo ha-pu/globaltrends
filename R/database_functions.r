@@ -1,23 +1,25 @@
-#' @title Initialize the local database store
+#' Initialize the local database store
 #'
-#' @description
-#' Creates the local database store used by `globaltrends` in the current working
-#' directory and initializes all required tables and indexes.
+#' Creates the local database store used by `globaltrends` in the current
+#' working directory and initializes all required tables and indexes.
 #'
 #' @details
 #' The package uses DuckDB with a Parquet-backed persistence layout under the
-#' `db/` folder. `initialize_db()` creates an in-memory DuckDB database,
-#' creates the schema, populates default location sets, and exports the database
-#' as Parquet files to `db/`.
+#' `db/` folder. `initialize_db()` creates a transient in-memory DuckDB
+#' database, builds the schema, populates default location sets, and exports
+#' the result as Parquet files to `db/`. The in-memory connection is closed
+#' before the function returns; call [start_db()] to open a working session.
 #'
-#' If the database files already exist, the function will not overwrite them.
-#' If files exist but are incomplete, the function errors to prevent accidental
-#' use of a corrupted store.
+#' If all required Parquet files already exist the function returns early
+#' without overwriting anything. If only some files are present (indicating a
+#' partial or corrupted store) the function stops with an error.
 #'
 #' Default location sets written to `data_locations`:
-#' \itemize{
-#'   \item `countries`: ISO 3166-1 alpha-2 codes (GDP share threshold; see `countries`).
-#'   \item `us_states`: ISO 3166-2 codes for US states and DC (see `us_states`).
+#' \describe{
+#'   \item{`countries`}{ISO 3166-1 alpha-2 codes for countries above the GDP
+#'     share threshold (see [countries]).}
+#'   \item{`us_states`}{ISO 3166-2 codes for US states and Washington DC
+#'     (see [us_states]).}
 #' }
 #'
 #' @section Concurrency:
@@ -25,12 +27,16 @@
 #' underlying storage and process model. If you run parallel download workers,
 #' use one database directory per worker and merge results afterwards.
 #'
-#' @return Invisibly returns `TRUE` on success. Called for its side effects
-#'   (creating files under `db/`).
+#' @return Invisibly returns `TRUE`. Called for its side effects (creating
+#'   files under `db/`).
+#'
+#' @seealso [start_db()] to open a working session after initialization;
+#'   [disconnect_db()] to persist changes and close the session.
 #'
 #' @examples
 #' \dontrun{
 #' initialize_db()
+#' start_db()
 #' }
 #'
 #' @export
@@ -74,8 +80,6 @@ initialize_db <- function() {
   con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
   on.exit(dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
-  assign("globaltrends_db", con, envir = gt.env)
-
   walk(schema_sql, ~ dbExecute(con, .x))
 
   # Populate default location sets (writes into data_locations)
@@ -92,6 +96,7 @@ initialize_db <- function() {
 # Internal helpers for DB filesystem layout
 # -------------------------------------------------------------------------
 
+#' @description Create `db/` directory if it does not yet exist.
 #' @keywords internal
 #' @noRd
 
@@ -102,7 +107,7 @@ initialize_db <- function() {
   invisible(TRUE)
 }
 
-#' @title List of required tables/files
+#' @description Return the canonical list of table/Parquet-file names.
 #' @keywords internal
 #' @noRd
 
@@ -121,10 +126,11 @@ initialize_db <- function() {
   )
 }
 
-#' @title Check database files under `db/`
 #' @description
-#' Verifies whether all required Parquet files exist. If some but not all are
-#' present, the store is treated as corrupted/incomplete and an error is thrown.
+#' Check whether the required Parquet files exist under `path`. Returns a
+#' logical vector (one element per file). Stops with an informative error if
+#' only a subset of files is present, which indicates a partial or corrupted
+#' store.
 #' @keywords internal
 #' @noRd
 
@@ -148,10 +154,9 @@ initialize_db <- function() {
   present
 }
 
-#' @title Write default location sets into the database
 #' @description
-#' Inserts the package's default location sets (`countries`, `us_states`) into
-#' `data_locations`. This is called during `initialize_db()`.
+#' Insert the package's built-in location sets (`countries`, `us_states`) into
+#' the `data_locations` table of `con`. Called once by [initialize_db()].
 #' @keywords internal
 #' @noRd
 #' @importFrom DBI dbAppendTable
@@ -159,29 +164,18 @@ initialize_db <- function() {
 #' @importFrom tibble tibble
 
 .enter_location_defaults <- function(con) {
-  # Ensure add_locations writes to the connection we just created
-  assign("globaltrends_db", con, envir = gt.env)
-
   data_to_add <- bind_rows(
-    tibble(
-      location = globaltrends::countries,
-      type = "countries"
-    ),
-    tibble(
-      location = globaltrends::us_states,
-      type = "us_states"
-    )
+    tibble(location = globaltrends::countries, type = "countries"),
+    tibble(location = globaltrends::us_states, type = "us_states")
   )
-
-  dbAppendTable(
-    conn = gt.env$globaltrends_db,
-    name = "data_locations",
-    value = data_to_add
-  )
-
+  dbAppendTable(conn = con, name = "data_locations", value = data_to_add)
   invisible(TRUE)
 }
 
+#' @description
+#' Export all tables in `con` as Parquet files to `path` using DuckDB's
+#' `EXPORT DATABASE` statement, then remove the `load.sql` / `schema.sql`
+#' helper files that DuckDB writes alongside the data files.
 #' @keywords internal
 #' @noRd
 
@@ -202,31 +196,68 @@ initialize_db <- function() {
   invisible(TRUE)
 }
 
+#' @description
+#' Filter a lazy table to rows where `type == type_val`, drop the `type`
+#' column, and collect the result into a local tibble. Used in [start_db()]
+#' to populate the `keywords_*` and `time_*` caches.
+#' @keywords internal
+#' @noRd
+#' @importFrom dplyr filter select collect
+#' @importFrom rlang .data
+
+.collect_by_type <- function(tbl, type_val) {
+  tbl |>
+    filter(.data$type == type_val) |>
+    select(-.data$type) |>
+    collect()
+}
+
 # -------------------------------------------------------------------------
 # Start / Stop lifecycle
 # -------------------------------------------------------------------------
 
-#' @title Start database (load Parquet store into DuckDB)
+#' Start a database session
 #'
-#' @description
-#' Loads the Parquet-backed database store under `db/` into an in-memory DuckDB
-#' connection and registers lazy `dplyr` table handles in `gt.env`.
+#' Loads the Parquet-backed store under `db/` into an in-memory DuckDB
+#' connection and registers lazy `dplyr` table handles and cached tibbles in
+#' `gt.env`.
 #'
 #' @details
-#' `start_db()` requires that [initialize_db()] has been run in the current
-#' working directory. It creates an in-memory DuckDB database, reads all Parquet
-#' tables from `db/`, and assigns:
-#' \itemize{
-#'   \item `gt.env$globaltrends_db`: DBI connection (DuckDB).
-#'   \item `gt.env$tbl_*`: lazy table references for all tables.
-#'   \item `gt.env$keywords_*`, `gt.env$time_*`, `gt.env$keyword_synonyms`: cached tibbles.
+#' Requires [initialize_db()] to have been run in the current working
+#' directory. All Parquet files are read into an in-memory DuckDB instance;
+#' the following bindings are written to `gt.env`:
+#' \describe{
+#'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory DuckDB
+#'     instance.}
+#'   \item{`tbl_locations`}{Lazy reference to `data_locations`.}
+#'   \item{`tbl_keywords`}{Lazy reference to `batch_keywords`.}
+#'   \item{`tbl_time`}{Lazy reference to `batch_time`.}
+#'   \item{`tbl_synonyms`}{Lazy reference to `keyword_synonyms`.}
+#'   \item{`tbl_doi`}{Lazy reference to `data_doi`.}
+#'   \item{`tbl_control`}{Lazy reference to `data_control`.}
+#'   \item{`tbl_object`}{Lazy reference to `data_object`.}
+#'   \item{`tbl_score`}{Lazy reference to `data_score`.}
+#'   \item{`tbl_region`}{Lazy reference to `data_region`.}
+#'   \item{`tbl_related`}{Lazy reference to `data_related`.}
+#'   \item{`keywords_control`, `keywords_object`}{Collected tibbles of control
+#'     and object keywords by batch (without the `type` column).}
+#'   \item{`time_control`, `time_object`}{Collected tibbles of batch time
+#'     windows for control and object runs (without the `type` column).}
+#'   \item{`keyword_synonyms`}{Collected tibble of all keyword/synonym pairs.}
 #' }
+#' Location sets are exported as named character vectors via
+#' `.export_locations()`.
 #'
-#' @return Invisibly returns `TRUE` on success.
+#' @return Invisibly returns `TRUE`. Called primarily for its side effects.
+#'
+#' @seealso [initialize_db()] to create the store before the first session;
+#'   [disconnect_db()] to persist changes and close the session.
 #'
 #' @examples
 #' \dontrun{
 #' start_db()
+#' # ... downloads and computations ...
+#' disconnect_db()
 #' }
 #'
 #' @export
@@ -249,12 +280,10 @@ start_db <- function() {
   assign("globaltrends_db", con, envir = gt.env)
 
   # Import Parquet tables into the in-memory DB
+  tables <- .list_files()
   import_sql <- paste0(
-    "CREATE TABLE ",
-    .list_files(),
-    " AS SELECT * FROM read_parquet('db/",
-    .list_files(),
-    ".parquet');"
+    "CREATE TABLE ", tables,
+    " AS SELECT * FROM read_parquet('db/", tables, ".parquet');"
   )
   walk(import_sql, ~ dbExecute(con, .x))
 
@@ -272,27 +301,11 @@ start_db <- function() {
   tbl_related <- tbl(con, "data_related")
 
   # Cache small, frequently-used tables as in-memory tibbles
-  keywords_control <- tbl_keywords |>
-    filter(.data$type == "control") |>
-    select(-.data$type) |>
-    collect()
-
-  keywords_object <- tbl_keywords |>
-    filter(.data$type == "object") |>
-    select(-.data$type) |>
-    collect()
-
-  time_control <- tbl_time |>
-    filter(.data$type == "control") |>
-    select(-.data$type) |>
-    collect()
-
-  time_object <- tbl_time |>
-    filter(.data$type == "object") |>
-    select(-.data$type) |>
-    collect()
-
-  keyword_synonyms <- collect(tbl_synonyms)
+  keywords_control <- .collect_by_type(tbl_keywords, "control")
+  keywords_object <- .collect_by_type(tbl_keywords, "object")
+  time_control <- .collect_by_type(tbl_time, "control")
+  time_object <- .collect_by_type(tbl_time, "object")
+  keyword_synonyms <- tbl_synonyms |> collect()
 
   # Assign into gt.env
   lst_object <- list(
@@ -321,21 +334,30 @@ start_db <- function() {
   invisible(TRUE)
 }
 
-#' @title Disconnect from the database and persist changes
+#' Disconnect from the database and persist changes
 #'
-#' @description
-#' Exports the current in-memory DuckDB database to the Parquet store under
+#' Exports the current in-memory DuckDB state to the Parquet store under
 #' `db/` and closes the DBI connection.
 #'
 #' @details
-#' Call this after downloads/computations to persist changes to disk. The
-#' function overwrites the Parquet files under `db/` with the current in-memory
-#' state.
+#' Call this function after all downloads and computations are complete. It
+#' overwrites the Parquet files under `db/` with the current in-memory state
+#' and then shuts down the DuckDB instance. `gt.env$globaltrends_db` is set
+#' to `NULL` afterwards; all lazy `tbl_*` handles become invalid.
 #'
-#' @return Invisibly returns `TRUE` on success.
+#' Data written to the in-memory database during the session will be **lost**
+#' if this function is not called before the R session ends.
+#'
+#' @return Invisibly returns `TRUE`. Called for its side effects (writing
+#'   files under `db/` and closing the connection).
+#'
+#' @seealso [initialize_db()] to create the store; [start_db()] to open a
+#'   new session.
 #'
 #' @examples
 #' \dontrun{
+#' start_db()
+#' # ... downloads and computations ...
 #' disconnect_db()
 #' }
 #'

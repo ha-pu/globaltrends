@@ -25,50 +25,86 @@ export_voi(keyword = NULL, object = NULL, control = NULL)
 export_doi(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 }
 \arguments{
-\item{control}{Integer-ish batch id(s) for control data (\code{batch_c} or \code{batch}).}
+\item{control}{Integer scalar batch id for control data (\code{batch_c} or
+\code{batch}).}
 
 \item{location}{Character vector (or list coercible via \code{unlist()}) of
-location codes to export (e.g., \code{countries}, \code{us_states}). Applicable to
-control/object/score exports.}
+location codes to filter by (e.g., values from \link{countries} or
+\link{us_states}).}
 
 \item{keyword}{Character vector (or list coercible via \code{unlist()}) of object
-keywords to export. When provided, it overrides \code{object}.}
+keywords to export. When provided, overrides \code{object}.}
 
-\item{object}{Integer-ish batch id(s) for object data (\code{batch_o}). Ignored if
-\code{keyword} is supplied.}
+\item{object}{Integer scalar batch id for object data (\code{batch_o}). Ignored
+if \code{keyword} is supplied.}
 
-\item{locations}{Character vector (or list coercible via \code{unlist()}) of
-location-set names (e.g., \code{"countries"}, \code{"us_states"}). Applicable to DOI.}
+\item{locations}{Character scalar naming a location set (e.g.,
+\code{"countries"}, \code{"us_states"}). Applies to \code{export_doi()} only.}
 }
 \value{
-A \code{data.frame} (tibble) with the requested rows. Date columns are
-converted to \code{Date}.
+A tibble with the requested rows and a \code{date} column of class
+\code{Date}. Batch identifier columns are renamed for clarity:
+\itemize{
+\item \code{export_control()}, \code{export_control_global()}: \code{location}, \code{keyword},
+\code{date}, \code{hits}, \code{control} (renamed from \code{batch}).
+\item \code{export_object()}, \code{export_object_global()}: \code{location}, \code{keyword},
+\code{date}, \code{hits}, \code{object} (from \code{batch_o}), \code{control} (from \code{batch_c}).
+\item \code{export_score()}, \code{export_voi()}: \code{location}, \code{keyword}, \code{date},
+\code{score}, \code{control} (from \code{batch_c}), \code{object} (from \code{batch_o}).
+\item \code{export_doi()}: \code{keyword}, \code{date}, \code{gini}, \code{hhi}, \code{entropy},
+\code{control} (from \code{batch_c}), \code{object} (from \code{batch_o}), \code{locations}.
+}
 }
 \description{
-Export and filter data from the package's database-backed tables (control,
-object, score/VOI, and DOI). The exported result can be written to disk using
-standard R I/O functions (e.g., \code{readr::write_csv()}, \code{writexl::write_xlsx()}).
+Seven functions for exporting filtered subsets of the four computed data
+tables. Each function returns a tibble that can be passed directly to
+standard R I/O functions such as \code{readr::write_csv()} or
+\code{writexl::write_xlsx()}.\tabular{lll}{
+   Function \tab Source table \tab Location scope \cr
+   \code{export_control()} \tab \code{data_control} (control hits) \tab country/region level \cr
+   \code{export_control_global()} \tab \code{data_control} \tab world aggregate only \cr
+   \code{export_object()} \tab \code{data_object} (object hits) \tab country/region level \cr
+   \code{export_object_global()} \tab \code{data_object} \tab world aggregate only \cr
+   \code{export_score()} \tab \code{data_score} (normalized scores) \tab country/region level \cr
+   \code{export_voi()} \tab \code{data_score} \tab world aggregate only (VOI) \cr
+   \code{export_doi()} \tab \code{data_doi} (internationalization) \tab aggregated across locations \cr
+}
 }
 \details{
-Each export function is a thin wrapper around an internal helper
-(\code{.export_data()}) that applies optional filters. Passing \code{NULL} to a filter
-argument disables that filter.
+All filter arguments default to \code{NULL}, which disables that filter and
+returns all rows for that dimension. When \code{keyword} is provided it takes
+precedence over \code{object}: the \code{object} argument is silently ignored.
 
-Precedence rule: if \code{keyword} is provided, it takes precedence over \code{object}
-(i.e., \code{object} is ignored when \code{keyword} is not \code{NULL}), matching the
-behavior described in this documentation.
+Non-\verb{_global} functions (\code{export_control()}, \code{export_object()},
+\code{export_score()}) exclude the \code{"world"} aggregate row. The \verb{_global}
+counterparts (\code{export_control_global()}, \code{export_object_global()},
+\code{export_voi()}) return only the \code{"world"} row.
 }
 \examples{
 \dontrun{
+# Control hits for batch 2
 export_control(control = 2)
 
+# World-aggregate control hits
+export_control_global(control = 1)
+
+# Object hits for a keyword across all locations
 export_object(keyword = "manchester united", location = countries)
 
+# Object hits for multiple keywords
 export_object(keyword = c("manchester united", "real madrid"))
 
+# World-aggregate object hits
+export_object_global(keyword = "manchester united", control = 1)
+
+# Location-level scores, written to CSV
 export_score(object = 3, control = 1, location = us_states) |>
   readr::write_csv("data_score.csv")
 
+# Volume of interest (world-aggregate scores)
+export_voi(keyword = "manchester united", control = 1)
+
+# Degree of internationalization for a keyword, written to Excel
 export_doi(keyword = "manchester united", control = 2, locations = "us_states") |>
   writexl::write_xlsx("data_doi.xlsx")
 }
@@ -76,9 +112,10 @@ export_doi(keyword = "manchester united", control = 2, locations = "us_states") 
 }
 \seealso{
 \itemize{
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=example_doi]{example_doi()}}
+\item \link{example_control}, \link{example_object}, \link{example_score}, \link{example_doi}
+for the column structure of each table.
+\item \code{\link[=download_control]{download_control()}}, \code{\link[=download_object]{download_object()}} to populate the source tables.
+\item \code{\link[=compute_score]{compute_score()}}, \code{\link[=compute_doi]{compute_doi()}} to compute scores and DOI metrics.
+\item \code{\link[=start_db]{start_db()}} to open a database session before exporting.
 }
 }

@@ -2,30 +2,53 @@
 % Please edit documentation in R/database_functions.r
 \name{start_db}
 \alias{start_db}
-\title{Start database (load Parquet store into DuckDB)}
+\title{Start a database session}
 \usage{
 start_db()
 }
 \value{
-Invisibly returns \code{TRUE} on success.
+Invisibly returns \code{TRUE}. Called primarily for its side effects.
 }
 \description{
-Loads the Parquet-backed database store under \verb{db/} into an in-memory DuckDB
-connection and registers lazy \code{dplyr} table handles in \code{gt.env}.
+Loads the Parquet-backed store under \verb{db/} into an in-memory DuckDB
+connection and registers lazy \code{dplyr} table handles and cached tibbles in
+\code{gt.env}.
 }
 \details{
-\code{start_db()} requires that \code{\link[=initialize_db]{initialize_db()}} has been run in the current
-working directory. It creates an in-memory DuckDB database, reads all Parquet
-tables from \verb{db/}, and assigns:
-\itemize{
-\item \code{gt.env$globaltrends_db}: DBI connection (DuckDB).
-\item \verb{gt.env$tbl_*}: lazy table references for all tables.
-\item \verb{gt.env$keywords_*}, \verb{gt.env$time_*}, \code{gt.env$keyword_synonyms}: cached tibbles.
+Requires \code{\link[=initialize_db]{initialize_db()}} to have been run in the current working
+directory. All Parquet files are read into an in-memory DuckDB instance;
+the following bindings are written to \code{gt.env}:
+\describe{
+\item{\code{globaltrends_db}}{Active \code{DBI} connection to the in-memory DuckDB
+instance.}
+\item{\code{tbl_locations}}{Lazy reference to \code{data_locations}.}
+\item{\code{tbl_keywords}}{Lazy reference to \code{batch_keywords}.}
+\item{\code{tbl_time}}{Lazy reference to \code{batch_time}.}
+\item{\code{tbl_synonyms}}{Lazy reference to \code{keyword_synonyms}.}
+\item{\code{tbl_doi}}{Lazy reference to \code{data_doi}.}
+\item{\code{tbl_control}}{Lazy reference to \code{data_control}.}
+\item{\code{tbl_object}}{Lazy reference to \code{data_object}.}
+\item{\code{tbl_score}}{Lazy reference to \code{data_score}.}
+\item{\code{tbl_region}}{Lazy reference to \code{data_region}.}
+\item{\code{tbl_related}}{Lazy reference to \code{data_related}.}
+\item{\code{keywords_control}, \code{keywords_object}}{Collected tibbles of control
+and object keywords by batch (without the \code{type} column).}
+\item{\code{time_control}, \code{time_object}}{Collected tibbles of batch time
+windows for control and object runs (without the \code{type} column).}
+\item{\code{keyword_synonyms}}{Collected tibble of all keyword/synonym pairs.}
 }
+Location sets are exported as named character vectors via
+\code{.export_locations()}.
 }
 \examples{
 \dontrun{
 start_db()
+# ... downloads and computations ...
+disconnect_db()
 }
 
+}
+\seealso{
+\code{\link[=initialize_db]{initialize_db()}} to create the store before the first session;
+\code{\link[=disconnect_db]{disconnect_db()}} to persist changes and close the session.
 }

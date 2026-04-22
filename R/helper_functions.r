@@ -49,7 +49,7 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- gt.env$querty_trend(
+    out <- gt.env$query_trend(
       terms = term,
       start_date = start_date,
       end_date = end_date,
@@ -143,11 +143,9 @@
 
   if (inherits(out, "try-error")) {
     stop(
-      paste0(
-        "Download failed after ",
+      sprintf(
+        "Download failed after %d attempts.\nLast error: %s",
         max_tries,
-        " attempts.\n",
-        "Last error: ",
         conditionMessage(attr(out, "condition"))
       ),
       call. = FALSE
@@ -200,23 +198,30 @@
 #' Returns the set of location codes that already exist in a data table for a
 #' given batch combination. Used to avoid duplicate downloads/computations.
 #'
-#' Supported `table` values:
-#' - `"data_control"`: filters on `data_control.batch == batch_c`
-#' - `"data_object"`: filters on `data_object.batch_c == batch_c` and `batch_o == batch_o`
-#' - `"data_score"`:  filters on `data_score.batch_c == batch_c` and `batch_o == batch_o`
-#' - `"data_region"`: filters on `data_region.batch_o == batch_o`
+#' Supported `table` values and their filter logic:
+#' - `"data_control"`: `batch == in_batch_c`
+#' - `"data_object"`: `batch_c == in_batch_c` and `batch_o == in_batch_o`
+#' - `"data_score"`:  `batch_c == in_batch_c` and `batch_o == in_batch_o`
+#' - `"data_region"`: `batch_o == in_batch_o`
+#' - `"data_related"`: `batch_o == in_batch_o`, `topic == in_topic`, `rising == in_rising`
 #'
 #' @param table Character scalar. One of `"data_control"`, `"data_object"`,
-#'   `"data_score"`, `"data_region"`.
-#' @param batch_c Integer-like scalar. Control batch id.
-#' @param batch_o Integer-like scalar. Object batch id (required for object/score).
+#'   `"data_score"`, `"data_region"`, or `"data_related"`.
+#' @param in_batch_c Integer-like scalar. Control batch id. Required for
+#'   `"data_control"`, `"data_object"`, and `"data_score"`.
+#' @param in_batch_o Integer-like scalar. Object batch id. Required for all
+#'   tables except `"data_control"`.
+#' @param in_topic Logical scalar. Whether to filter for topics (`TRUE`) or
+#'   queries (`FALSE`). Required for `"data_related"`.
+#' @param in_rising Logical scalar. Whether to filter for rising (`TRUE`) or
+#'   top (`FALSE`) terms. Required for `"data_related"`.
 #'
 #' @return Character vector of distinct location codes present in the table for
-#'   the specified identifiers.
+#'   the specified identifiers. Returns `character(0)` if no matching rows exist.
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect count filter pull select
+#' @importFrom dplyr collect distinct filter pull select
 #' @importFrom rlang .data
 
 .get_full <- function(
@@ -242,8 +247,7 @@
     .check_input(in_rising, "logical")
   }
 
-  tbl <- switch(
-    table,
+  tbl <- switch(table,
     data_control = {
       if (is.null(in_batch_c)) {
         stop(
@@ -309,9 +313,9 @@
       }
       filter(
         gt.env$tbl_related,
-        .data$batch_o == in_batch_o &
-          .data$topic == in_topic &
-          .data$rising == in_rising
+        .data$batch_o == in_batch_o,
+        .data$topic == in_topic,
+        .data$rising == in_rising
       )
     },
     stop(
@@ -321,16 +325,36 @@
   )
 
   tbl |>
-    count(.data$location, name = "n") |>
-    select(.data$location) |>
+    distinct(.data$location) |>
     collect() |>
     pull(.data$location)
 }
 
-#' @title Download Google Trends regional data for one request
+#' @title Download Google Trends regional interest breakdown for one request
+#'
+#' @description
+#' Internal helper that downloads a sub-regional interest breakdown for a single
+#' keyword, location, and time window using the Research API (Python) backend.
+#' There is no `gtrendsR` fallback; the function requires `initialize_python()`
+#' to have been called first.
+#'
+#' @param location Character scalar. Location code accepted by Google Trends.
+#'   Use `""` or `NULL` for the global aggregate. Default is `NULL`.
+#' @param term Character scalar. Single keyword to request.
+#' @param start_date Character scalar in `"YYYY-MM"` format defining the start
+#'   month of the requested time range.
+#' @param end_date Character scalar in `"YYYY-MM"` format defining the end
+#'   month of the requested time range.
+#'
+#' @return A tibble with columns `term`, `location`, `start_date`, `end_date`,
+#'   `region_code`, `region_name`, and `hits`. If the Python query fails, returns
+#'   a one-row tibble with all columns set to `NA`.
 #'
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr mutate
+#' @importFrom purrr map_dfr
+#' @importFrom tibble tibble
 
 .get_region <- function(
   location = NULL,
@@ -361,7 +385,7 @@
       api_key = gt.env$api_key
     ))
 
-    if (!is.null(attr(out, "class"))) {
+    if (inherits(out, "try-error")) {
       out <- tibble(
         term = NA,
         location = NA,
@@ -386,7 +410,7 @@
     ) |>
       mutate(
         term = term,
-        location = ifelse(is_global, "world", location),
+        location = if (is_global) "world" else location,
         start_date = as.Date(paste0(start_date, "-01")),
         end_date = as.Date(paste0(end_date, "-01")),
         .before = region_code
@@ -398,10 +422,34 @@
   }
 }
 
-#' @title Download Google Trends related terms/topic data for one request
+#' @title Download Google Trends related queries or topics for one request
+#'
+#' @description
+#' Internal helper that downloads related queries or topics from Google Trends
+#' for a single keyword, location, and time window using the Research API
+#' (Python) backend. There is no `gtrendsR` fallback; the function requires
+#' `initialize_python()` to have been called first.
+#'
+#' @param location Character scalar. Location code accepted by Google Trends.
+#'   Use `""` or `NULL` for the global aggregate. Default is `NULL`.
+#' @param term Character scalar. Single keyword to request.
+#' @param start_date Character scalar in `"YYYY-MM"` format defining the start
+#'   month of the requested time range.
+#' @param end_date Character scalar in `"YYYY-MM"` format defining the end
+#'   month of the requested time range.
+#' @param topic Logical scalar. If `TRUE`, returns related topics; if `FALSE`,
+#'   returns related queries.
+#' @param rising Logical scalar. If `TRUE`, returns rising (breakout) terms;
+#'   if `FALSE`, returns top terms.
+#'
+#' @return A tibble with columns `related_term`, `hits`, `term`, `topic`,
+#'   `rising`, `location`, `start_date`, and `end_date`.
 #'
 #' @keywords internal
 #' @noRd
+#' @importFrom dplyr mutate
+#' @importFrom purrr map_dfr
+#' @importFrom tibble tibble
 
 .get_related <- function(
   location = NULL,
@@ -450,7 +498,7 @@
         term = term,
         topic = topic,
         rising = rising,
-        location = ifelse(is_global, "world", location),
+        location = if (is_global) "world" else location,
         start_date = as.Date(paste0(start_date, "-01")),
         end_date = as.Date(paste0(end_date, "-01"))
       )

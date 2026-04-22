@@ -12,13 +12,16 @@ A tibble with 6 variables:
 \item{keyword}{Character. Object keyword.}
 \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
 \code{lubridate::as_date(date)}.}
-\item{hits}{Double. Search interest (Google Trends).}
-\item{batch_c}{Integer. Control batch id used for mapping/baseline.}
+\item{hits}{Integer. Relative search interest in [0, 100] within the
+query window. The peak value across all keywords in that query equals 100.}
+\item{batch_c}{Integer. Control batch id. Identifies which control batch
+was co-downloaded for scale mapping in \code{\link[=compute_score]{compute_score()}}.}
 \item{batch_o}{Integer. Object batch id.}
 }
 }
 \source{
-Google Trends. See the Trends UI and documentation.
+Google Trends (\url{https://trends.google.com}). Simulated to match
+empirical distributional statistics from real downloads.
 }
 \usage{
 example_object
@@ -26,14 +29,18 @@ example_object
 \description{
 Example data representing the database table \code{data_object}.
 Each row contains Google Trends \code{hits} for an object \code{keyword} in a given
-\code{location} on a given \code{date}. Object data (\code{batch_o}) are downloaded and
-mapped to a control batch (\code{batch_c}) for subsequent score computation.
+\code{location} on a given \code{date}. Each download pairs an object batch
+(\code{batch_o}) with a control batch (\code{batch_c}): one control keyword is
+included in every object query so that object and control hits can be
+mapped onto a common scale during score computation.
 
 In a live database, data are downloaded via \code{\link[=download_object]{download_object()}} and are
 available through \code{gt.env$tbl_object} after \code{\link[=start_db]{start_db()}}. Global aggregates
 use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble real Google Trends output.
+Simulated values are bounded to the empirical [min, max] range observed in
+actual downloads for each keyword--location pair.
 }
 \seealso{
 \code{\link[=download_object]{download_object()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}
