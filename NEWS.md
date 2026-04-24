@@ -1,6 +1,8 @@
 # globaltrends 0.2.0.9000
 
-## Change License to CC-BY-4.0
+* General revision and improvement of code base
+* General revision and improvement of tests
+* General revision and improvement of documentation
 
 ## Change in database handling
 
@@ -8,6 +10,10 @@
   * Database tables are stored as individual parquet files
   * `start_db()` loads the parquet files to memory
   * All database actions are conducted in memory and later written to parquet
+
+## Technical issues and bug fixes
+
+* Updated dependency to testthat 3.0.0
 
 # globaltrends 0.1.0
 

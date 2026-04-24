@@ -7,7 +7,7 @@
 #' - the Research API backend (Python) initialized via `initialize_python()`, or
 #' - `gtrendsR::gtrends()` (unofficial scraping endpoint).
 #'
-#' The function returns a standardized tibble with columns:
+#' The function returns a data frame with columns:
 #' `location`, `keyword`, `date`, `hits`.
 #'
 #' @param location Character scalar. Location code accepted by Google Trends.
@@ -16,18 +16,11 @@
 #' @param start_date,end_date Character scalars in `"YYYY-MM"` format defining
 #'   the start and end month of the requested time range.
 #'
-#' @return A tibble with columns `location`, `keyword`, `date`, `hits`, or `NULL`
+#' @return A data frame with columns `location`, `keyword`, `date`, `hits`, or `NULL`
 #'   if no interest-over-time data is returned.
 #'
 #' @keywords internal
 #' @noRd
-#'
-#' @importFrom dplyr mutate select
-#' @importFrom lubridate as_date
-#' @importFrom purrr map_chr map_dbl map_dfr
-#' @importFrom rlang .data
-#' @importFrom stringr str_replace
-#' @importFrom tibble tibble
 
 .get_trend <- function(
   location = NULL,
@@ -57,16 +50,14 @@
       api_key = gt.env$api_key
     )
 
-    # `out$lines` is expected to be list-like; each element has $term and $points.
-    ts <- map_dfr(
-      out$lines,
-      ~ {
-        kw <- .x$term
-        values <- map_dbl(.x$points, ~ .x$value)
-        dates <- map_chr(.x$points, ~ .x$date)
-        tibble(keyword = kw, date = as.Date(dates), hits = values)
-      }
-    )
+    ts <- do.call(rbind, lapply(out$lines, function(line) {
+      data.frame(
+        keyword = line$term,
+        date = as.Date(vapply(line$points, function(p) p$date, character(1))),
+        hits = vapply(line$points, function(p) p$value, numeric(1)),
+        stringsAsFactors = FALSE
+      )
+    }))
 
     ts$location <- if (is_global) "world" else location
 
@@ -91,12 +82,11 @@
     return(NULL)
   }
 
-  ts <- out$interest_over_time |>
-    mutate(
-      hits = as.double(str_replace(.data$hits, "<1", "0.1")),
-      date = as_date(.data$date)
-    ) |>
-    select(location = .data$geo, .data$keyword, .data$date, .data$hits)
+  ts_raw <- out$interest_over_time
+  ts_raw$hits <- as.double(sub("<1", "0.1", ts_raw$hits, fixed = TRUE))
+  ts_raw$date <- as.Date(ts_raw$date)
+  ts <- ts_raw[, c("geo", "keyword", "date", "hits")]
+  names(ts)[1] <- "location"
 
   # Add some jitter to reduce rate-limit risk.
   Sys.sleep(stats::runif(1, min = 5, max = 10))
@@ -119,7 +109,6 @@
 #' @keywords internal
 #' @noRd
 #' @importFrom gtrendsR gtrends
-#' @importFrom stringr str_detect
 
 .retry_gtrends <- function(..., max_tries = 10) {
   i <- 1L
@@ -127,7 +116,7 @@
 
   while (inherits(out, "try-error") && i < max_tries) {
     msg <- conditionMessage(attr(out, "condition"))
-    is_500 <- isTRUE(str_detect(msg, "Returned status code:500"))
+    is_500 <- isTRUE(grepl("Returned status code:500", msg, fixed = TRUE))
 
     if (is_500) {
       message("globaltrends retrying download in 1s (HTTP 500).")
@@ -170,8 +159,6 @@
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect filter
-#' @importFrom rlang .data
 
 .test_empty <- function(batch_c = NULL, batch_o = NULL, locations = NULL) {
   .check_batch(batch_c)
@@ -180,14 +167,15 @@
     .check_locations(locations)
   }
 
-  out <- gt.env$tbl_doi |>
-    filter(
-      .data$batch_c == batch_c,
-      .data$batch_o == batch_o,
-      .data$locations == locations
-    ) |>
-    utils::head(1) |>
-    collect()
+  out <- DBI::dbGetQuery(
+    gt.env$globaltrends_db,
+    sprintf(
+      "SELECT 1 FROM data_doi WHERE batch_c = %d AND batch_o = %d AND locations = %s LIMIT 1",
+      batch_c,
+      batch_o,
+      DBI::dbQuoteString(gt.env$globaltrends_db, locations)
+    )
+  )
 
   nrow(out) == 0
 }
@@ -221,8 +209,6 @@
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect distinct filter pull select
-#' @importFrom rlang .data
 
 .get_full <- function(
   table,
@@ -234,100 +220,58 @@
   .check_input(table, "character")
   .check_length(table, 1)
 
-  if (!is.null(in_batch_c)) {
-    .check_batch(in_batch_c)
-  }
-  if (!is.null(in_batch_o)) {
-    .check_batch(in_batch_o)
-  }
-  if (!is.null(in_topic)) {
-    .check_input(in_topic, "logical")
-  }
-  if (!is.null(in_rising)) {
-    .check_input(in_rising, "logical")
-  }
+  if (!is.null(in_batch_c)) .check_batch(in_batch_c)
+  if (!is.null(in_batch_o)) .check_batch(in_batch_o)
+  if (!is.null(in_topic)) .check_input(in_topic, "logical")
+  if (!is.null(in_rising)) .check_input(in_rising, "logical")
 
-  tbl <- switch(table,
+  con <- gt.env$globaltrends_db
+
+  switch(table,
     data_control = {
-      if (is.null(in_batch_c)) {
-        stop(
-          "`batch_c` must be provided for table = 'data_control'.",
-          call. = FALSE
-        )
-      }
-      filter(gt.env$tbl_control, .data$batch == in_batch_c)
+      if (is.null(in_batch_c)) stop("`batch_c` must be provided for table = 'data_control'.", call. = FALSE)
+      DBI::dbGetQuery(con, sprintf(
+        "SELECT DISTINCT location FROM data_control WHERE batch = %d",
+        in_batch_c
+      ))$location
     },
     data_object = {
-      if (is.null(in_batch_o)) {
-        stop(
-          "`batch_o` must be provided for table = 'data_object'.",
-          call. = FALSE
-        )
-      }
-      filter(
-        gt.env$tbl_object,
-        .data$batch_c == in_batch_c,
-        .data$batch_o == in_batch_o
-      )
+      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_object'.", call. = FALSE)
+      DBI::dbGetQuery(con, sprintf(
+        "SELECT DISTINCT location FROM data_object WHERE batch_c = %d AND batch_o = %d",
+        in_batch_c, in_batch_o
+      ))$location
     },
     data_score = {
-      if (is.null(in_batch_o)) {
-        stop(
-          "`batch_o` must be provided for table = 'data_score'.",
-          call. = FALSE
-        )
-      }
-      filter(
-        gt.env$tbl_score,
-        .data$batch_c == in_batch_c,
-        .data$batch_o == in_batch_o
-      )
+      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_score'.", call. = FALSE)
+      DBI::dbGetQuery(con, sprintf(
+        "SELECT DISTINCT location FROM data_score WHERE batch_c = %d AND batch_o = %d",
+        in_batch_c, in_batch_o
+      ))$location
     },
     data_region = {
-      if (is.null(in_batch_o)) {
-        stop(
-          "`batch_o` must be provided for table = 'data_region'.",
-          call. = FALSE
-        )
-      }
-      filter(gt.env$tbl_region, .data$batch_o == in_batch_o)
+      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_region'.", call. = FALSE)
+      DBI::dbGetQuery(con, sprintf(
+        "SELECT DISTINCT location FROM data_region WHERE batch_o = %d",
+        in_batch_o
+      ))$location
     },
     data_related = {
-      if (is.null(in_batch_o)) {
-        stop(
-          "`batch_o` must be provided for table = 'data_related'.",
-          call. = FALSE
-        )
-      }
-      if (is.null(in_topic)) {
-        stop(
-          "`topic` must be provided for table = 'data_related'.",
-          call. = FALSE
-        )
-      }
-      if (is.null(in_rising)) {
-        stop(
-          "`rising` must be provided for table = 'data_related'.",
-          call. = FALSE
-        )
-      }
-      filter(
-        gt.env$tbl_related,
-        .data$batch_o == in_batch_o,
-        .data$topic == in_topic,
-        .data$rising == in_rising
-      )
+      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_related'.", call. = FALSE)
+      if (is.null(in_topic)) stop("`topic` must be provided for table = 'data_related'.", call. = FALSE)
+      if (is.null(in_rising)) stop("`rising` must be provided for table = 'data_related'.", call. = FALSE)
+      DBI::dbGetQuery(con, sprintf(
+        "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
+        in_batch_o,
+        tolower(as.character(in_topic)),
+        tolower(as.character(in_rising))
+      ))$location
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",
       call. = FALSE
     )
   )
-
-  tbl |>
-    distinct(.data$location) |>
-    collect() |>
-    pull(.data$location)
 }
 
 #' @title Download Google Trends regional interest breakdown for one request
@@ -346,15 +290,12 @@
 #' @param end_date Character scalar in `"YYYY-MM"` format defining the end
 #'   month of the requested time range.
 #'
-#' @return A tibble with columns `term`, `location`, `start_date`, `end_date`,
+#' @return A data frame with columns `term`, `location`, `start_date`, `end_date`,
 #'   `region_code`, `region_name`, and `hits`. If the Python query fails, returns
-#'   a one-row tibble with all columns set to `NA`.
+#'   a one-row data frame with all columns set to `NA`.
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr mutate
-#' @importFrom purrr map_dfr
-#' @importFrom tibble tibble
 
 .get_region <- function(
   location = NULL,
@@ -386,35 +327,31 @@
     ))
 
     if (inherits(out, "try-error")) {
-      out <- tibble(
-        term = NA,
-        location = NA,
-        start_date = NA,
-        end_date = NA,
-        region_code = NA,
-        region_name = NA,
-        hits = NA,
-        batch_o = NA
-      )
-      return(out)
+      return(data.frame(
+        term = NA_character_,
+        location = NA_character_,
+        start_date = as.Date(NA),
+        end_date = as.Date(NA),
+        region_code = NA_character_,
+        region_name = NA_character_,
+        hits = NA_real_,
+        stringsAsFactors = FALSE
+      ))
     }
 
-    # `out$regions` is expected to be list-like; each element has $regionCode, $regionName, and $value.
-    region <- map_dfr(
-      out$regions,
-      ~ tibble(
-        region_code = .x$regionCode,
-        region_name = .x$regionName,
-        hits = .x$value
+    region <- do.call(rbind, lapply(out$regions, function(r) {
+      data.frame(
+        region_code = r$regionCode,
+        region_name = r$regionName,
+        hits = r$value,
+        stringsAsFactors = FALSE
       )
-    ) |>
-      mutate(
-        term = term,
-        location = if (is_global) "world" else location,
-        start_date = as.Date(paste0(start_date, "-01")),
-        end_date = as.Date(paste0(end_date, "-01")),
-        .before = region_code
-      )
+    }))
+    region$term <- term
+    region$location <- if (is_global) "world" else location
+    region$start_date <- as.Date(paste0(start_date, "-01"))
+    region$end_date <- as.Date(paste0(end_date, "-01"))
+    region <- region[, c("term", "location", "start_date", "end_date", "region_code", "region_name", "hits")]
 
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)
@@ -442,14 +379,11 @@
 #' @param rising Logical scalar. If `TRUE`, returns rising (breakout) terms;
 #'   if `FALSE`, returns top terms.
 #'
-#' @return A tibble with columns `related_term`, `hits`, `term`, `topic`,
+#' @return A data frame with columns `related_term`, `hits`, `term`, `topic`,
 #'   `rising`, `location`, `start_date`, and `end_date`.
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr mutate
-#' @importFrom purrr map_dfr
-#' @importFrom tibble tibble
 
 .get_related <- function(
   location = NULL,
@@ -486,22 +420,19 @@
       rising = rising
     )
 
-    # `out$item` is expected to be list-like; each element has $title and $value.
-    item <- map_dfr(
-      out$item,
-      ~ tibble(
-        related_term = .x$title,
-        hits = .x$value
+    item <- do.call(rbind, lapply(out$item, function(x) {
+      data.frame(
+        related_term = x$title,
+        hits = x$value,
+        stringsAsFactors = FALSE
       )
-    ) |>
-      mutate(
-        term = term,
-        topic = topic,
-        rising = rising,
-        location = if (is_global) "world" else location,
-        start_date = as.Date(paste0(start_date, "-01")),
-        end_date = as.Date(paste0(end_date, "-01"))
-      )
+    }))
+    item$term <- term
+    item$topic <- topic
+    item$rising <- rising
+    item$location <- if (is_global) "world" else location
+    item$start_date <- as.Date(paste0(start_date, "-01"))
+    item$end_date <- as.Date(paste0(end_date, "-01"))
 
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)

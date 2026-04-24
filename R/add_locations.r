@@ -66,10 +66,7 @@
 #'
 #' @export
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect distinct filter pull
-#' @importFrom rlang .data
 #' @importFrom stats na.omit
-#' @importFrom tibble tibble
 
 add_locations <- function(locations, type, export = TRUE) {
   # --- validate inputs --------------------------------------------------------
@@ -129,13 +126,19 @@ add_locations <- function(locations, type, export = TRUE) {
 
   # --- avoid duplicates in the database --------------------------------------
   # Only append (type, location) pairs that do not already exist.
-  if (is.null(gt.env$tbl_locations)) {
+  if (is.null(gt.env$globaltrends_db)) {
     already_present <- NULL
   } else {
-    x.type <- type
-    existing <- gt.env$tbl_locations |>
-      filter(.data$type == x.type & .data$location %in% locations) |>
-      collect()
+    con <- gt.env$globaltrends_db
+    loc_in <- paste(
+      vapply(locations, function(l) DBI::dbQuoteString(con, l), character(1)),
+      collapse = ", "
+    )
+    existing <- DBI::dbGetQuery(con, paste0(
+      "SELECT location FROM data_locations WHERE type = ",
+      DBI::dbQuoteString(con, type),
+      " AND location IN (", loc_in, ")"
+    ))
     already_present <- existing$location
   }
   to_add <- setdiff(locations, already_present)
@@ -154,10 +157,10 @@ add_locations <- function(locations, type, export = TRUE) {
         ")."
       )
     )
-    return(invisible(tibble(location = character(), type = character())))
+    return(invisible(data.frame(location = character(), type = character(), stringsAsFactors = FALSE)))
   }
 
-  data_to_add <- tibble(location = to_add, type = type)
+  data_to_add <- data.frame(location = to_add, type = type, stringsAsFactors = FALSE)
   dbAppendTable(
     conn = gt.env$globaltrends_db,
     name = "data_locations",
@@ -218,17 +221,13 @@ add_locations <- function(locations, type, export = TRUE) {
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect distinct
-#' @importFrom rlang .data
 
 .export_locations <- function() {
-  df <- gt.env$tbl_locations |>
-    distinct(.data$type, .data$location) |>
-    collect()
+  df <- DBI::dbGetQuery(
+    gt.env$globaltrends_db,
+    "SELECT DISTINCT type, location FROM data_locations"
+  )
 
-  # Split to a named list: each element is a character vector of locations
   lst_locations <- split(df$location, df$type)
-
-  # Assign into package environment
   invisible(list2env(lst_locations, envir = gt.env))
 }

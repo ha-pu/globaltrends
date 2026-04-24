@@ -42,7 +42,7 @@ test_that("add_loc2", {
     add_locations(locations = location_set[1:3], type = "dach", export = FALSE)
     add_locations(locations = location_set[4:5], type = "asia", export = FALSE)
     disconnect_db()
-    start_db()  # start_db() calls .export_locations() on reconnect
+    start_db() # start_db() calls .export_locations() on reconnect
   })
   withr::defer(suppressMessages(disconnect_db()))
 

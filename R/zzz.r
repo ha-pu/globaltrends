@@ -19,6 +19,8 @@
 #'   \item `tbl_control`: Lazy table reference for control search-volume data.
 #'   \item `tbl_object`: Lazy table reference for object search-volume data.
 #'   \item `tbl_score`: Lazy table reference for computed scores.
+#'   \item `tbl_related`: Lazy table reference for related search terms.
+#'   \item `tbl_region`: Lazy table reference for regional search-volume data.
 #'   \item `keywords_control`: Cached tibble of control keywords by batch (populated by `start_db()` / exports).
 #'   \item `time_control`: Cached tibble of control batch time windows.
 #'   \item `keywords_object`: Cached tibble of object keywords by batch.
@@ -60,6 +62,8 @@ gt.env <- new.env(parent = emptyenv())
     tbl_control = NULL,
     tbl_object = NULL,
     tbl_score = NULL,
+    tbl_related = NULL,
+    tbl_region = NULL,
     keywords_control = NULL,
     time_control = NULL,
     keywords_object = NULL,

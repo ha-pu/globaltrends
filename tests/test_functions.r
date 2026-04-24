@@ -5,14 +5,14 @@ test_control <- function(fun, incl = 1:4, ...) {
   if (1 %in% incl) {
     expect_error(
       do.call(fun, c(args, control = 1.5)),
-      "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
+      "Batch id must be an integer value.\nYou provided a non-integer numeric value."
     )
   }
 
   fun_tmp <- function(value) {
     expect_error(
       do.call(fun, c(args, control = value)),
-      "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
+      "Batch id must be an integer value.\nYou provided an object of type "
     )
   }
 
@@ -23,7 +23,7 @@ test_control <- function(fun, incl = 1:4, ...) {
   if (5 %in% incl) {
     expect_error(
       do.call(fun, c(args, control = list(1:5))),
-      "'control' must be object of length 1.\nYou provided an object of length 5."
+      "must have length <= 1.\nYou provided an object of length 5."
     )
   }
 
@@ -46,14 +46,14 @@ test_object <- function(fun, incl = 1:4, ...) {
   if (1 %in% incl) {
     expect_error(
       do.call(fun, c(args, object = 1.5)),
-      "Batch number must be object of type integer.\nYou provided a non-integer numeric value."
+      "Batch id must be an integer value.\nYou provided a non-integer numeric value."
     )
   }
 
   fun_tmp <- function(value) {
     expect_error(
       do.call(fun, c(args, object = value)),
-      "Error: Batch number must be object of type integer.\nYou provided a non-integer value."
+      "Batch id must be an integer value.\nYou provided an object of type "
     )
   }
 
@@ -64,7 +64,7 @@ test_object <- function(fun, incl = 1:4, ...) {
   if (5 %in% incl) {
     expect_error(
       do.call(fun, c(args, object = list(1:5))),
-      "'object' must be object of length 1.\nYou provided an object of length 5."
+      "must have length <= 1.\nYou provided an object of length 5."
     )
   }
 
@@ -87,7 +87,7 @@ test_keyword <- function(fun, incl = 1:3, ...) {
   fun_tmp <- function(value, var_type) {
     expect_error(
       do.call(fun, c(args, keyword = value)),
-      paste0("'keyword' must be object of type character.\nYou provided an object of type ", var_type, ".")
+      paste0("`keyword` must be of type character.\nYou provided an object of type ", var_type, ".")
     )
   }
 
@@ -114,7 +114,7 @@ test_locations <- function(fun, incl = FALSE, ...) {
   fun_tmp <- function(value, var_type) {
     expect_error(
       do.call(fun, c(args, locations = value)),
-      paste0("'locations' must be object of type character.\nYou provided an object of type ", var_type, ".")
+      paste0("must be of type character.\nYou provided an object of type ", var_type, ".")
     )
   }
 
@@ -123,7 +123,7 @@ test_locations <- function(fun, incl = FALSE, ...) {
   if (incl) {
     expect_error(
       do.call(fun, c(args, locations = list(letters[1:5]))),
-      "'locations' must be object of length 1.\nYou provided an object of length 5."
+      "must have length <= 1.\nYou provided an object of length 5."
     )
   }
 }

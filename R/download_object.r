@@ -94,9 +94,6 @@
 #' @export
 #' @rdname download_object
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect filter mutate summarise
-#' @importFrom purrr iwalk walk
-#' @importFrom rlang .data
 
 download_object <- function(object, control = 1, locations = NULL) {
   UseMethod("download_object", object)
@@ -171,141 +168,119 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
 
   if (length(loc_remaining) == 0) {
     message(paste0(
-      "No new locations to download | object: ",
-      object,
-      " | control: ",
-      control,
-      "."
+      "No new locations to download | object: ", object,
+      " | control: ", control, "."
     ))
     return(invisible(TRUE))
   }
 
-  iwalk(
-    loc_remaining,
-    ~ {
-      loc <- .x
+  con <- gt.env$globaltrends_db
+  n_locs <- length(loc_remaining)
 
-      # We require `data_control` for the same control batch and location to
-      # pick an appropriate control keyword for mapping.
-      qry_control <- gt.env$tbl_control |>
-        filter(.data$batch == control, .data$location == loc) |>
-        collect()
+  for (i in seq_along(loc_remaining)) {
+    loc <- loc_remaining[i]
 
-      if (nrow(qry_control) == 0) {
-        message(paste0(
-          "Skipped object download (missing control baseline) | object: ",
-          object,
-          " | control: ",
-          control,
-          " | location: ",
-          loc,
-          "."
-        ))
-        return(invisible(NULL))
-      }
+    # We require `data_control` for the same control batch and location to
+    # pick an appropriate control keyword for mapping.
+    qry_control <- DBI::dbGetQuery(con, sprintf(
+      "SELECT keyword, hits FROM data_control WHERE batch = %d AND location = %s",
+      control,
+      DBI::dbQuoteString(con, loc)
+    ))
 
-      # Rank control keywords by average hits (ascending) and keep only those with signal.
-      # We try control keywords with lower average hits first to reduce saturation risk.
-      terms_con <- qry_control |>
-        summarise(hits = mean(.data$hits, na.rm = TRUE), .by = .data$keyword) |>
-        filter(.data$hits > 0)
+    if (nrow(qry_control) == 0) {
+      message(paste0(
+        "Skipped object download (missing control baseline) | object: ", object,
+        " | control: ", control,
+        " | location: ", loc, "."
+      ))
+      next
+    }
 
-      if (nrow(terms_con) == 0) {
-        stop(
-          paste0(
-            "Too little signal in control batch ",
-            control,
-            " for location ",
-            loc,
-            ". ",
-            "Reconsider choice of control keywords."
-          ),
-          call. = FALSE
-        )
-      }
+    # Rank control keywords by average hits (ascending) and keep only those with signal.
+    # We try control keywords with lower average hits first to reduce saturation risk.
+    avg_hits <- tapply(qry_control$hits, qry_control$keyword, mean, na.rm = TRUE)
+    avg_hits <- avg_hits[avg_hits > 0]
 
-      terms_con <- terms_con$keyword[order(terms_con$hits)]
+    if (length(avg_hits) == 0) {
+      stop(
+        paste0(
+          "Too little signal in control batch ", control,
+          " for location ", loc, ". ",
+          "Reconsider choice of control keywords."
+        ),
+        call. = FALSE
+      )
+    }
 
-      # Try control keywords until one returns non-zero signal in the result.
-      success <- FALSE
-      out <- NULL
+    terms_con <- names(sort(avg_hits))
 
-      for (term_c in terms_con) {
-        if (identical(loc, "world")) {
-          if (isTRUE(gt.env$py_setup)) {
-            out <- .get_trend(
-              term = c(term_c, terms_obj),
-              start_date = start_date,
-              end_date = end_date
-            )
-          } else {
-            out <- .get_trend(
-              term = c(term_c, terms_obj),
-              start_date = start_date,
-              end_date = end_date,
-              location = ""
-            )
-          }
-        } else {
+    # Try control keywords until one returns non-zero signal in the result.
+    success <- FALSE
+    out <- NULL
+
+    for (term_c in terms_con) {
+      if (identical(loc, "world")) {
+        if (isTRUE(gt.env$py_setup)) {
           out <- .get_trend(
-            location = loc,
             term = c(term_c, terms_obj),
             start_date = start_date,
             end_date = end_date
           )
+        } else {
+          out <- .get_trend(
+            term = c(term_c, terms_obj),
+            start_date = start_date,
+            end_date = end_date,
+            location = ""
+          )
         }
-
-        # Accept only if we got data and the control term has positive mean hits.
-        if (!is.null(out)) {
-          ctrl_hits <- out$hits[out$keyword == term_c]
-          if (length(ctrl_hits) > 0 && mean(ctrl_hits, na.rm = TRUE) > 0) {
-            success <- TRUE
-            break
-          }
-        }
-      }
-
-      if (!success) {
-        stop(
-          paste0(
-            "Download failed: no control keyword produced usable signal for object batch ",
-            object,
-            " (control batch ",
-            control,
-            ", location ",
-            loc,
-            "). ",
-            "Reconsider control keywords or time window."
-          ),
-          call. = FALSE
+      } else {
+        out <- .get_trend(
+          location = loc,
+          term = c(term_c, terms_obj),
+          start_date = start_date,
+          end_date = end_date
         )
       }
 
-      # Persist data
-      out <- mutate(out, batch_c = control, batch_o = object)
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_object",
-        value = out
-      )
-
-      message(paste0(
-        "Downloaded object data | object: ",
-        object,
-        " | control: ",
-        control,
-        " | location: ",
-        loc,
-        " [",
-        .y,
-        "/",
-        length(loc_remaining),
-        "]"
-      ))
-
-      invisible(TRUE)
+      # Accept only if we got data and the control term has positive mean hits.
+      if (!is.null(out)) {
+        ctrl_hits <- out$hits[out$keyword == term_c]
+        if (length(ctrl_hits) > 0 && mean(ctrl_hits, na.rm = TRUE) > 0) {
+          success <- TRUE
+          break
+        }
+      }
     }
-  )
+
+    if (!success) {
+      stop(
+        paste0(
+          "Download failed: no control keyword produced usable signal for object batch ",
+          object, " (control batch ", control, ", location ", loc, "). ",
+          "Reconsider control keywords or time window."
+        ),
+        call. = FALSE
+      )
+    }
+
+    # Persist data
+    out$batch_c <- control
+    out$batch_o <- object
+    dbAppendTable(
+      conn = gt.env$globaltrends_db,
+      name = "data_object",
+      value = out
+    )
+
+    message(paste0(
+      "Downloaded object data | object: ", object,
+      " | control: ", control,
+      " | location: ", loc,
+      " [", i, "/", n_locs, "]"
+    ))
+  }
 
   invisible(TRUE)
 }
@@ -324,7 +299,7 @@ download_object.list <- function(object, control = 1, locations = NULL) {
   }
   .check_input(locations, "character")
 
-  walk(object, download_object, control = control, locations = locations)
+  for (o in object) download_object(o, control = control, locations = locations)
   invisible(TRUE)
 }
 

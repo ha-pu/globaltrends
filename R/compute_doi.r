@@ -63,11 +63,11 @@
 #'   Defaults to `"countries"`.
 #'
 #' @return
-#' Invisibly returns the tibble appended to `data_doi` for the processed batch,
-#' with columns `date`, `keyword`, `gini`, `hhi`, `entropy`, `batch_c`,
-#' `batch_o`, and `locations`. Returns an empty tibble when DOI already exists
-#' or when no matching score data is found. Called primarily for its side
-#' effects (database writes) and emits a progress message per batch.
+#' Invisibly returns the data frame appended to `data_doi` for the processed
+#' batch, with columns `date`, `keyword`, `gini`, `hhi`, `entropy`, `batch_c`,
+#' `batch_o`, and `locations`. Returns an empty data frame when DOI already
+#' exists or when no matching score data is found. Called primarily for its
+#' side effects (database writes) and emits a progress message per batch.
 #'
 #' @seealso [compute_score()] to produce the score data consumed by this
 #'   function; `data_doi` for the database table schema.
@@ -81,10 +81,6 @@
 #' @export
 #' @rdname compute_doi
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect distinct filter inner_join mutate select
-#' @importFrom purrr map_dbl walk
-#' @importFrom rlang .data
-#' @importFrom tidyr nest
 
 compute_doi <- function(object, control = 1, locations = "countries") {
   UseMethod("compute_doi", object)
@@ -117,47 +113,52 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
       "DOI already exists | control: %s | object: %s | locations: %s.",
       control, object, locations
     ))
-    return(invisible(tibble()))
+    return(invisible(data.frame()))
   }
 
-  score_df <- gt.env$tbl_locations |>
-    filter(.data$type == locations) |>
-    distinct(.data$location) |>
-    inner_join(gt.env$tbl_score, by = "location") |>
-    filter(.data$batch_c == control, .data$batch_o == object) |>
-    select(.data$date, .data$keyword, .data$location, .data$score, .data$batch_c) |>
-    collect()
+  score_df <- DBI::dbGetQuery(
+    gt.env$globaltrends_db,
+    sprintf(
+      "SELECT s.date, s.keyword, s.location, s.score, s.batch_c
+       FROM data_score s
+       INNER JOIN (SELECT DISTINCT location FROM data_locations WHERE type = %s) l
+         ON l.location = s.location
+       WHERE s.batch_c = %d AND s.batch_o = %d",
+      DBI::dbQuoteString(gt.env$globaltrends_db, locations),
+      control,
+      object
+    )
+  )
+  score_df$date <- as.Date(score_df$date)
 
   if (nrow(score_df) == 0) {
     message(sprintf(
       "No score data found | control: %s | object: %s | locations: %s.",
       control, object, locations
     ))
-    return(invisible(tibble()))
+    return(invisible(data.frame()))
   }
 
-  out <- score_df |>
-    tidyr::nest(
-      data = c(.data$location, .data$score),
-      .by = c(.data$date, .data$keyword, .data$batch_c)
-    ) |>
-    mutate(
-      gini    = map_dbl(.data$data, ~ .compute_gini(.x$score)),
-      hhi     = map_dbl(.data$data, ~ .compute_hhi(.x$score)),
-      entropy = map_dbl(.data$data, ~ .compute_entropy(.x$score))
-    ) |>
-    select(
-      .data$date,
-      .data$keyword,
-      .data$gini,
-      .data$hhi,
-      .data$entropy,
-      .data$batch_c
-    ) |>
-    mutate(
-      batch_o   = object,
-      locations = locations
+  groups <- split(
+    score_df,
+    list(score_df$date, score_df$keyword, score_df$batch_c),
+    drop = TRUE
+  )
+
+  out_rows <- lapply(groups, function(g) {
+    data.frame(
+      date = g$date[1],
+      keyword = g$keyword[1],
+      gini = .compute_gini(g$score),
+      hhi = .compute_hhi(g$score),
+      entropy = .compute_entropy(g$score),
+      batch_c = g$batch_c[1],
+      stringsAsFactors = FALSE
     )
+  })
+  out <- do.call(rbind, out_rows)
+  out$batch_o <- object
+  out$locations <- locations
 
   dbAppendTable(
     conn = gt.env$globaltrends_db,
@@ -191,8 +192,8 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
   .check_length(locations, 1)
   .check_input(locations, "character")
 
-  walk(object, compute_doi, control = control, locations = locations)
-  invisible(TRUE)
+  for (o in object) compute_doi(o, control = control, locations = locations)
+  invisible(data.frame())
 }
 
 # -------------------------------------------------------------------------
@@ -216,7 +217,6 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr coalesce
 
 .compute_gini <- function(series) {
   x <- series[!is.na(series)]
@@ -232,7 +232,8 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
   x <- sort(x)
   n <- length(x)
   g <- (2 * sum(x * seq_len(n)) / s - (n + 1)) / n
-  coalesce(1 - g, 0)
+  val <- 1 - g
+  if (is.na(val)) 0 else val
 }
 
 #' @title Inverted Herfindahl-Hirschman index (HHI)
@@ -252,7 +253,6 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr coalesce
 
 .compute_hhi <- function(series) {
   x <- series[!is.na(series)]
@@ -266,7 +266,8 @@ compute_doi.list <- function(object, control = 1, locations = "countries") {
   }
 
   p <- x / s
-  coalesce(1 - sum(p^2), 0)
+  val <- 1 - sum(p^2)
+  if (is.na(val)) 0 else val
 }
 
 #' @title Entropy-based dispersion measure

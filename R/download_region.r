@@ -76,9 +76,6 @@
 #' @export
 #' @rdname download_region
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr filter mutate
-#' @importFrom purrr iwalk map_dfr walk
-#' @importFrom rlang .data
 
 download_region <- function(object, locations = NULL) {
   UseMethod("download_region", object)
@@ -155,62 +152,45 @@ download_region.numeric <- function(object, locations = NULL) {
     return(invisible(TRUE))
   }
 
-  iwalk(
-    loc_remaining,
-    ~ {
-      loc <- .x
-      # location = NULL omits the geo restriction (world aggregate).
-      geo <- if (identical(loc, "world")) NULL else loc
+  n_locs <- length(loc_remaining)
+  for (i in seq_along(loc_remaining)) {
+    loc <- loc_remaining[i]
+    # location = NULL omits the geo restriction (world aggregate).
+    geo <- if (identical(loc, "world")) NULL else loc
 
-      out <- map_dfr(
-        terms_obj,
-        ~ .get_region(
-          location = geo,
-          term = .x,
-          start_date = start_date,
-          end_date = end_date
-        )
+    out <- do.call(rbind, lapply(terms_obj, function(t) {
+      .get_region(
+        location = geo,
+        term = t,
+        start_date = start_date,
+        end_date = end_date
       )
-      out <- filter(out, !is.na(.data$term))
+    }))
+    out <- out[!is.na(out$term), , drop = FALSE]
 
-      if (nrow(out) == 0) {
-        message(paste0(
-          "No region data returned | object: ",
-          object,
-          " | location: ",
-          loc,
-          " [",
-          .y,
-          "/",
-          length(loc_remaining),
-          "]"
-        ))
-        return(invisible(TRUE))
-      }
-
-      out <- mutate(out, batch_o = object)
-
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_region",
-        value = out
-      )
-
+    if (nrow(out) == 0) {
       message(paste0(
-        "Downloaded region data | object: ",
-        object,
-        " | location: ",
-        loc,
-        " [",
-        .y,
-        "/",
-        length(loc_remaining),
-        "]"
+        "No region data returned | object: ", object,
+        " | location: ", loc,
+        " [", i, "/", n_locs, "]"
       ))
-
-      invisible(TRUE)
+      next
     }
-  )
+
+    out$batch_o <- object
+
+    dbAppendTable(
+      conn = gt.env$globaltrends_db,
+      name = "data_region",
+      value = out
+    )
+
+    message(paste0(
+      "Downloaded region data | object: ", object,
+      " | location: ", loc,
+      " [", i, "/", n_locs, "]"
+    ))
+  }
 
   invisible(TRUE)
 }
@@ -229,7 +209,7 @@ download_region.list <- function(object, locations = NULL) {
   }
   .check_input(locations, "character")
 
-  walk(object, download_region, locations = locations)
+  for (o in object) download_region(o, locations = locations)
   invisible(TRUE)
 }
 

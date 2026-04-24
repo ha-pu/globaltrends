@@ -28,7 +28,7 @@
 #'   after aggregation to reclaim space freed by the row deletions.
 #'
 #' @return
-#' Invisibly returns a tibble of the rows written to `data_score`. Called
+#' Invisibly returns a data frame of the rows written to `data_score`. Called
 #' primarily for its side effects (database modifications).
 #'
 #' @seealso
@@ -45,9 +45,6 @@
 #' @export
 #' @rdname aggregate_synonyms
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr anti_join collect distinct filter inner_join rename select summarise union_all
-#' @importFrom purrr walk
-#' @importFrom rlang .data
 
 aggregate_synonyms <- function(control, vacuum = TRUE) {
   .check_length(control, 1)
@@ -55,92 +52,83 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
   .check_input(vacuum, "logical")
   .check_length(vacuum, 1)
 
+  con <- gt.env$globaltrends_db
+
   # -----------------------------------------------------------------------
   # 1) Build canonical<->synonym mapping with both object batches in one query.
   # -----------------------------------------------------------------------
-  syn_map <- gt.env$tbl_synonyms |>
-    inner_join(gt.env$tbl_keywords, by = "keyword") |>
-    inner_join(gt.env$tbl_keywords, by = c("synonym" = "keyword"), suffix = c("_canonical", "_synonym")) |>
-    select(
-      keyword_canonical = keyword,
-      keyword_synonym = synonym,
-      batch_o_canonical = batch_canonical,
-      batch_o_synonym = batch_synonym
-    ) |>
-    collect()
+  syn_map <- DBI::dbGetQuery(
+    con,
+    "SELECT ks.keyword AS keyword_canonical,
+            ks.synonym AS keyword_synonym,
+            bk_c.batch AS batch_o_canonical,
+            bk_s.batch AS batch_o_synonym
+     FROM keyword_synonyms ks
+     INNER JOIN batch_keywords bk_c ON bk_c.keyword = ks.keyword  AND bk_c.type = 'object'
+     INNER JOIN batch_keywords bk_s ON bk_s.keyword = ks.synonym AND bk_s.type = 'object'"
+  )
 
   if (nrow(syn_map) == 0) {
     message("No synonym mappings found in the database. Nothing to aggregate.")
-    return(invisible(tibble()))
+    return(invisible(data.frame()))
   }
 
   affected_batches <- unique(c(syn_map$batch_o_canonical, syn_map$batch_o_synonym))
+  batch_in <- paste(affected_batches, collapse = ", ")
 
   # -----------------------------------------------------------------------
   # 2) Pull relevant score rows for affected object batches.
   # -----------------------------------------------------------------------
-  score_tbl <- gt.env$tbl_score |>
-    filter(.data$batch_c == control, .data$batch_o %in% affected_batches) |>
-    collect()
+  score_tbl <- DBI::dbGetQuery(con, sprintf(
+    "SELECT * FROM data_score WHERE batch_c = %d AND batch_o IN (%s)",
+    control, batch_in
+  ))
+  score_tbl$date <- as.Date(score_tbl$date)
 
   if (nrow(score_tbl) == 0) {
-    message(
-      "No score data found for the specified control batch and affected object batches."
-    )
-    return(invisible(tibble()))
+    message("No score data found for the specified control batch and affected object batches.")
+    return(invisible(data.frame()))
   }
 
   # -----------------------------------------------------------------------
-  # 3) Compute synonym rollups:
-  #    - Map synonym keyword rows to the canonical keyword
-  #    - Sum scores by (batch_o, keyword, location, date, batch_c)
+  # 3) Compute synonym rollups.
   # -----------------------------------------------------------------------
+  merged <- merge(
+    syn_map,
+    score_tbl,
+    by.x = c("batch_o_synonym", "keyword_synonym"),
+    by.y = c("batch_o", "keyword")
+  )
 
-  score_syn_rolled <- syn_map |>
-    inner_join(
-      score_tbl,
-      by = c("batch_o_synonym" = "batch_o", "keyword_synonym" = "keyword")
-    ) |>
-    summarise(
-      score = sum(.data$score, na.rm = TRUE),
-      .by = c(
-        batch_o_canonical,
-        keyword_canonical,
-        location,
-        date,
-        batch_c
-      )
-    ) |>
-    rename(
-      batch_o = batch_o_canonical,
-      keyword = keyword_canonical
-    )
+  score_syn_rolled <- aggregate(
+    score ~ batch_o_canonical + keyword_canonical + location + date + batch_c,
+    data = merged,
+    FUN = function(x) sum(x, na.rm = TRUE)
+  )
+  names(score_syn_rolled)[names(score_syn_rolled) == "batch_o_canonical"] <- "batch_o"
+  names(score_syn_rolled)[names(score_syn_rolled) == "keyword_canonical"] <- "keyword"
 
-  score_non_syn <- score_tbl |>
-    anti_join(
-      distinct(syn_map, batch = batch_o_synonym, keyword = keyword_synonym),
-      by = c("batch_o" = "batch", "keyword")
-    )
+  syn_key <- paste(syn_map$batch_o_synonym, syn_map$keyword_synonym)
+  score_non_syn <- score_tbl[!paste(score_tbl$batch_o, score_tbl$keyword) %in% syn_key, ]
 
-  score_new <- union_all(score_non_syn, score_syn_rolled) |>
-    summarise(
-      score = sum(.data$score, na.rm = TRUE),
-      .by = c(batch_o, keyword, location, date, batch_c)
-    )
+  score_combined <- rbind(score_non_syn, score_syn_rolled)
+  score_new <- aggregate(
+    score ~ batch_o + keyword + location + date + batch_c,
+    data = score_combined,
+    FUN = function(x) sum(x, na.rm = TRUE)
+  )
 
   if (nrow(score_new) == 0) {
     message("Aggregation produced no rows. No database changes were made.")
-    return(invisible(tibble()))
+    return(invisible(data.frame()))
   }
 
   # -----------------------------------------------------------------------
   # 4) Replace affected rows in `data_score`
   # -----------------------------------------------------------------------
-  walk(
-    affected_batches,
-    ~ remove_data(table = "data_score", control = control, object = .x),
-    .progress = TRUE
-  )
+  for (batch in affected_batches) {
+    remove_data(table = "data_score", control = control, object = batch)
+  }
 
   dbAppendTable(
     conn = gt.env$globaltrends_db,
@@ -148,9 +136,7 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     value = score_new
   )
 
-  message(
-    "Successfully aggregated synonyms into canonical keywords for data_score."
-  )
+  message("Successfully aggregated synonyms into canonical keywords for data_score.")
 
   # -----------------------------------------------------------------------
   # 5) Optional vacuum

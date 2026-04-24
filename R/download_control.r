@@ -80,9 +80,6 @@
 #' @export
 #' @rdname download_control
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr mutate
-#' @importFrom purrr iwalk walk
-#' @importFrom rlang .data
 
 download_control <- function(control, locations = NULL) {
   UseMethod("download_control", control)
@@ -148,66 +145,52 @@ download_control.numeric <- function(control, locations = NULL) {
     return(invisible(TRUE))
   }
 
-  iwalk(
-    loc_remaining,
-    ~ {
-      loc <- .x
+  n_locs <- length(loc_remaining)
+  for (i in seq_along(loc_remaining)) {
+    loc <- loc_remaining[i]
 
-      # Global download: gtrendsR uses geo = "", Research API requires geo = NULL
-      # (Python's _geo_kwargs() only omits restrictions_geo when geo is None).
-      out <- if (identical(loc, "world")) {
-        if (isTRUE(gt.env$py_setup)) {
-          .get_trend(term = terms, start_date = start_date, end_date = end_date)
-        } else {
-          .get_trend(
-            term = terms,
-            start_date = start_date,
-            end_date = end_date,
-            location = ""
-          )
-        }
+    # Global download: gtrendsR uses geo = "", Research API requires geo = NULL
+    # (Python's _geo_kwargs() only omits restrictions_geo when geo is None).
+    out <- if (identical(loc, "world")) {
+      if (isTRUE(gt.env$py_setup)) {
+        .get_trend(term = terms, start_date = start_date, end_date = end_date)
       } else {
         .get_trend(
-          location = loc,
           term = terms,
           start_date = start_date,
-          end_date = end_date
+          end_date = end_date,
+          location = ""
         )
       }
-
-      if (!is.null(out)) {
-        out <- mutate(out, batch = control)
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "data_control",
-          value = out
-        )
-        message(paste0(
-          "Downloaded control data | control: ",
-          control,
-          " | location: ",
-          loc,
-          " [",
-          .y,
-          "/",
-          length(loc_remaining),
-          "]"
-        ))
-      } else {
-        message(paste0(
-          "No data returned | control: ",
-          control,
-          " | location: ",
-          loc,
-          " [",
-          .y,
-          "/",
-          length(loc_remaining),
-          "]"
-        ))
-      }
+    } else {
+      .get_trend(
+        location = loc,
+        term = terms,
+        start_date = start_date,
+        end_date = end_date
+      )
     }
-  )
+
+    if (!is.null(out)) {
+      out$batch <- control
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "data_control",
+        value = out
+      )
+      message(paste0(
+        "Downloaded control data | control: ", control,
+        " | location: ", loc,
+        " [", i, "/", n_locs, "]"
+      ))
+    } else {
+      message(paste0(
+        "No data returned | control: ", control,
+        " | location: ", loc,
+        " [", i, "/", n_locs, "]"
+      ))
+    }
+  }
 
   invisible(TRUE)
 }
@@ -226,7 +209,7 @@ download_control.list <- function(control, locations = NULL) {
   }
   .check_input(locations, "character")
 
-  walk(control, download_control, locations = locations)
+  for (c in control) download_control(c, locations = locations)
   invisible(TRUE)
 }
 

@@ -67,8 +67,8 @@
 #' `location` on a given `date`, along with the control `batch` identifier.
 #'
 #' In a live database, data are downloaded via [download_control()] and are
-#' available through `gt.env$tbl_control` (a lazy table reference) after
-#' [start_db()]. Global aggregates use `"world"` as `location`.
+#' queryable through `gt.env$globaltrends_db` after [start_db()]. Global
+#' aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
 #' Simulated values are bounded to the empirical \[min, max\] range observed in
@@ -80,7 +80,7 @@
 #'   codes supported by Google Trends). Global data uses `"world"`.}
 #'   \item{keyword}{Character. Control keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01 (Unix epoch).
-#'   Convert with `lubridate::as_date(date)`.}
+#'   Convert with `as.Date(date, origin = "1970-01-01")`.}
 #'   \item{hits}{Integer. Relative search interest in \[0, 100\]. Google Trends
 #'   normalizes all values within a single query window so the peak observation
 #'   equals 100.}
@@ -91,7 +91,7 @@
 #'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
-#' [download_control()], [start_db()], [dplyr::tbl()]
+#' [download_control()], [start_db()]
 #'
 #' @name data_control
 "example_control"
@@ -107,8 +107,8 @@
 #' mapped onto a common scale during score computation.
 #'
 #' In a live database, data are downloaded via [download_object()] and are
-#' available through `gt.env$tbl_object` after [start_db()]. Global aggregates
-#' use `"world"` as `location`.
+#' queryable through `gt.env$globaltrends_db` after [start_db()]. Global
+#' aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
 #' Simulated values are bounded to the empirical \[min, max\] range observed in
@@ -119,7 +119,7 @@
 #'   \item{location}{Character. Location code. Global data uses `"world"`.}
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
-#'   `lubridate::as_date(date)`.}
+#'   `as.Date(date, origin = "1970-01-01")`.}
 #'   \item{hits}{Integer. Relative search interest in \[0, 100\] within the
 #'   query window. The peak value across all keywords in that query equals 100.}
 #'   \item{batch_c}{Integer. Control batch id. Identifies which control batch
@@ -131,7 +131,7 @@
 #'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
-#' [download_object()], [start_db()], [dplyr::tbl()]
+#' [download_object()], [start_db()]
 #'
 #' @name data_object
 "example_object"
@@ -151,8 +151,8 @@
 #' benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
 #' greater than 1 are possible when object interest exceeds control interest.
 #'
-#' In a live database, scores are available through `gt.env$tbl_score` after
-#' [start_db()]. Global aggregates use `"world"` as `location`.
+#' In a live database, scores are queryable through `gt.env$globaltrends_db`
+#' after [start_db()]. Global aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble outputs derived from real
 #' Google Trends data.
@@ -162,7 +162,7 @@
 #'   \item{location}{Character. Location code. Global data uses `"world"`.}
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
-#'   `lubridate::as_date(date)`.}
+#'   `as.Date(date, origin = "1970-01-01")`.}
 #'   \item{score}{Double. Normalised search interest (object hits divided by
 #'   total mapped control hits). Non-negative; 0 when no control data are
 #'   available.}
@@ -176,7 +176,7 @@
 #' *161*, 149--153. \doi{10.1016/j.econlet.2017.09.032}
 #'
 #' @seealso
-#' [compute_score()], [compute_voi()], [start_db()], [dplyr::tbl()]
+#' [compute_score()], [start_db()]
 #'
 #' @name data_score
 "example_score"
@@ -195,9 +195,9 @@
 #' complementary dispersion measures are provided — see [compute_doi()] for
 #' their exact formulae.
 #'
-#' DOI is computed via [compute_doi()] and is available through `gt.env$tbl_doi`
-#' after [start_db()]. The `batch_c` column indicates the control batch used as
-#' baseline, and `batch_o` indicates the object batch.
+#' DOI is computed via [compute_doi()] and is queryable through
+#' `gt.env$globaltrends_db` after [start_db()]. The `batch_c` column indicates
+#' the control batch used as baseline, and `batch_o` indicates the object batch.
 #'
 #' The example dataset is simulated to resemble outputs derived from real
 #' Google Trends data.
@@ -206,7 +206,7 @@
 #' \describe{
 #'   \item{keyword}{Character. Object keyword.}
 #'   \item{date}{Integer. Date stored as days since 1970-01-01. Convert with
-#'   `lubridate::as_date(date)`.}
+#'   `as.Date(date, origin = "1970-01-01")`.}
 #'   \item{gini}{Double. `1 - Gini(score)` across locations. Range \[0, 1\]:
 #'   1 = perfectly equal distribution; 0 = all search interest in one location.}
 #'   \item{hhi}{Double. `1 - HHI(score)` across locations. Range

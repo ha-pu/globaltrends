@@ -36,6 +36,7 @@ dbAppendTable(gt.env$globaltrends_db, "data_doi", data)
 test_that("export_control1", {
   out <- export_control()
   expect_equal(nrow(out), 1200)
+  expect_s3_class(out$date, "Date")
 })
 
 test_that("export_control2", {
@@ -61,6 +62,7 @@ test_that("export_control5", {
 test_that("export_control_global1", {
   out <- export_control_global()
   expect_equal(nrow(out), 600)
+  expect_s3_class(out$date, "Date")
 })
 
 test_that("export_control_global2", {
@@ -86,6 +88,9 @@ test_that("export_control_global5", {
 test_that("export_object1", {
   out <- export_object()
   expect_equal(nrow(out), 3120)
+  expect_s3_class(out$date, "Date")
+  expect_true(all(c("control", "object") %in% names(out)))
+  expect_false(any(c("batch_c", "batch_o") %in% names(out)))
 })
 
 test_that("export_object2", {
@@ -127,6 +132,7 @@ test_that("export_object7", {
 test_that("export_object_global1", {
   out <- export_object_global()
   expect_equal(nrow(out), 1560)
+  expect_s3_class(out$date, "Date")
 })
 
 test_that("export_object_global2", {
@@ -170,6 +176,9 @@ test_that("export_object_global7", {
 test_that("export_score1", {
   out <- export_score()
   expect_equal(nrow(out), 1920)
+  expect_s3_class(out$date, "Date")
+  expect_true(all(c("control", "object") %in% names(out)))
+  expect_false(any(c("batch_c", "batch_o") %in% names(out)))
 })
 
 test_that("export_score2", {
@@ -211,6 +220,7 @@ test_that("export_score7", {
 test_that("export_voi1", {
   out <- export_voi()
   expect_equal(nrow(out), 1200)
+  expect_s3_class(out$date, "Date")
 })
 
 test_that("export_voi2", {
@@ -252,6 +262,12 @@ test_that("export_voi7", {
 test_that("export_doi1", {
   out <- export_doi()
   expect_equal(nrow(out), 1200)
+  expect_s3_class(out$date, "Date")
+  expect_true(all(c("control", "object") %in% names(out)))
+  expect_false(any(c("batch_c", "batch_o") %in% names(out)))
+  expect_type(out$gini, "double")
+  expect_type(out$hhi, "double")
+  expect_type(out$entropy, "double")
 })
 
 test_that("export_doi2", {

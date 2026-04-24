@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Seven functions for exporting filtered subsets of the four computed data
-#' tables. Each function returns a tibble that can be passed directly to
+#' tables. Each function returns a data frame that can be passed directly to
 #' standard R I/O functions such as `readr::write_csv()` or
 #' `writexl::write_xlsx()`.
 #'
@@ -42,7 +42,7 @@
 #' @param locations Character scalar naming a location set (e.g.,
 #'   `"countries"`, `"us_states"`). Applies to `export_doi()` only.
 #'
-#' @return A tibble with the requested rows and a `date` column of class
+#' @return A data frame with the requested rows and a `date` column of class
 #'   `Date`. Batch identifier columns are renamed for clarity:
 #'
 #'   - `export_control()`, `export_control_global()`: `location`, `keyword`,
@@ -92,19 +92,16 @@
 #'
 #' @rdname export_data
 #' @export
-#' @importFrom dplyr filter rename
-#' @importFrom rlang .data
 
 export_control <- function(control = NULL, location = NULL) {
   out <- .export_data(
-    table = gt.env$tbl_control,
+    table = "data_control",
     in_batch = control,
     in_location = location
   )
-
-  # By convention, non-global exports exclude the aggregated "world" location.
-  out <- filter(out, .data$location != "world")
-  rename(out, control = .data$batch)
+  out <- out[out$location != "world", , drop = FALSE]
+  names(out)[names(out) == "batch"] <- "control"
+  out
 }
 
 #' @rdname export_data
@@ -112,11 +109,12 @@ export_control <- function(control = NULL, location = NULL) {
 
 export_control_global <- function(control = NULL) {
   out <- .export_data(
-    table = gt.env$tbl_control,
+    table = "data_control",
     in_batch = control,
     in_location = "world"
   )
-  rename(out, control = .data$batch)
+  names(out)[names(out) == "batch"] <- "control"
+  out
 }
 
 #' @rdname export_data
@@ -129,16 +127,16 @@ export_object <- function(
   location = NULL
 ) {
   out <- .export_data(
-    table = gt.env$tbl_object,
+    table = "data_object",
     in_keyword = keyword,
     in_object = object,
     in_control = control,
     in_location = location
   )
-
-  # By convention, non-global exports exclude the aggregated "world" location.
-  out <- filter(out, .data$location != "world")
-  rename(out, object = .data$batch_o, control = .data$batch_c)
+  out <- out[out$location != "world", , drop = FALSE]
+  names(out)[names(out) == "batch_o"] <- "object"
+  names(out)[names(out) == "batch_c"] <- "control"
+  out
 }
 
 #' @rdname export_data
@@ -150,13 +148,15 @@ export_object_global <- function(
   control = NULL
 ) {
   out <- .export_data(
-    table = gt.env$tbl_object,
+    table = "data_object",
     in_keyword = keyword,
     in_object = object,
     in_control = control,
     in_location = "world"
   )
-  rename(out, object = .data$batch_o, control = .data$batch_c)
+  names(out)[names(out) == "batch_o"] <- "object"
+  names(out)[names(out) == "batch_c"] <- "control"
+  out
 }
 
 #' @rdname export_data
@@ -169,16 +169,16 @@ export_score <- function(
   location = NULL
 ) {
   out <- .export_data(
-    table = gt.env$tbl_score,
+    table = "data_score",
     in_keyword = keyword,
     in_object = object,
     in_control = control,
     in_location = location
   )
-
-  # By convention, non-global exports exclude the aggregated "world" location.
-  out <- filter(out, .data$location != "world")
-  rename(out, control = .data$batch_c, object = .data$batch_o)
+  out <- out[out$location != "world", , drop = FALSE]
+  names(out)[names(out) == "batch_c"] <- "control"
+  names(out)[names(out) == "batch_o"] <- "object"
+  out
 }
 
 #' @rdname export_data
@@ -186,13 +186,15 @@ export_score <- function(
 
 export_voi <- function(keyword = NULL, object = NULL, control = NULL) {
   out <- .export_data(
-    table = gt.env$tbl_score,
+    table = "data_score",
     in_keyword = keyword,
     in_object = object,
     in_control = control,
     in_location = "world"
   )
-  rename(out, control = .data$batch_c, object = .data$batch_o)
+  names(out)[names(out) == "batch_c"] <- "control"
+  names(out)[names(out) == "batch_o"] <- "object"
+  out
 }
 
 #' @rdname export_data
@@ -205,25 +207,27 @@ export_doi <- function(
   locations = NULL
 ) {
   out <- .export_data(
-    table = gt.env$tbl_doi,
+    table = "data_doi",
     in_keyword = keyword,
     in_object = object,
     in_control = control,
     in_locations = locations
   )
-  rename(out, control = .data$batch_c, object = .data$batch_o)
+  names(out)[names(out) == "batch_c"] <- "control"
+  names(out)[names(out) == "batch_o"] <- "object"
+  out
 }
 
 #' @description
-#' Internal helper: apply optional filters to a lazy database table, collect
-#' the result, and convert the `date` column to class `Date`.
+#' Internal helper: build a SQL query from optional filters, execute it, and
+#' convert the `date` column to class `Date`.
 #'
 #' All `in_*` arguments are coerced via `unlist()` before validation, so both
 #' atomic vectors and lists are accepted from callers. Filters are applied only
 #' when the corresponding argument is non-`NULL`. If `in_keyword` is supplied,
 #' `in_object` is skipped entirely (keyword has precedence).
 #'
-#' @param table A lazy `dplyr` table backed by DBI/DuckDB.
+#' @param table Character scalar. Name of the database table to query.
 #' @param in_keyword Character vector of keywords; takes precedence over
 #'   `in_object`.
 #' @param in_object Integer scalar object batch id (`batch_o`). Ignored when
@@ -234,13 +238,10 @@ export_doi <- function(
 #' @param in_location Character vector of location codes.
 #' @param in_locations Character scalar location-set name (DOI table only).
 #'
-#' @return A collected tibble with `date` converted to `Date`.
+#' @return A data frame with `date` converted to `Date`.
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect filter mutate
-#' @importFrom lubridate as_date
-#' @importFrom rlang .data
 
 .export_data <- function(
   table,
@@ -259,49 +260,53 @@ export_doi <- function(
   in_locations <- unlist(in_locations)
 
   # --- validate inputs --------------------------------------------------------
-  if (!is.null(in_keyword)) {
-    .check_input(in_keyword, "character")
-  }
-  if (!is.null(in_control)) {
-    .check_batch(in_control)
-  }
-  if (!is.null(in_batch)) {
-    .check_batch(in_batch)
-  }
-  if (!is.null(in_location)) {
-    .check_input(in_location, "character")
-  }
-  if (!is.null(in_locations)) {
-    .check_input(in_locations, "character")
-  }
+  if (!is.null(in_keyword)) .check_input(in_keyword, "character", name = "keyword")
+  if (!is.null(in_control)) .check_batch(in_control)
+  if (!is.null(in_batch)) .check_batch(in_batch)
+  if (!is.null(in_location)) .check_input(in_location, "character")
+  if (!is.null(in_locations)) .check_input(in_locations, "character")
+  if (is.null(in_keyword) && !is.null(in_object)) .check_batch(in_object)
 
-  # Only validate `in_object` if it can actually be used (keyword has precedence).
-  if (is.null(in_keyword) && !is.null(in_object)) {
-    .check_batch(in_object)
-  }
+  con <- gt.env$globaltrends_db
+  where_parts <- character(0)
 
-  # --- apply filters (on lazy table) -----------------------------------------
   if (!is.null(in_keyword)) {
-    table <- filter(table, .data$keyword %in% in_keyword)
+    kw_in <- paste(
+      vapply(in_keyword, function(k) DBI::dbQuoteString(con, k), character(1)),
+      collapse = ", "
+    )
+    where_parts <- c(where_parts, paste0("keyword IN (", kw_in, ")"))
   } else if (!is.null(in_object)) {
-    table <- filter(table, .data$batch_o %in% in_object)
+    where_parts <- c(where_parts, paste0("batch_o IN (", paste(in_object, collapse = ", "), ")"))
   }
 
   if (!is.null(in_control)) {
-    table <- filter(table, .data$batch_c %in% in_control)
+    where_parts <- c(where_parts, paste0("batch_c IN (", paste(in_control, collapse = ", "), ")"))
   }
   if (!is.null(in_batch)) {
-    table <- filter(table, .data$batch %in% in_batch)
+    where_parts <- c(where_parts, paste0("batch IN (", paste(in_batch, collapse = ", "), ")"))
   }
   if (!is.null(in_location)) {
-    table <- filter(table, .data$location %in% in_location)
+    loc_in <- paste(
+      vapply(in_location, function(l) DBI::dbQuoteString(con, l), character(1)),
+      collapse = ", "
+    )
+    where_parts <- c(where_parts, paste0("location IN (", loc_in, ")"))
   }
   if (!is.null(in_locations)) {
-    table <- filter(table, .data$locations %in% in_locations)
+    locs_in <- paste(
+      vapply(in_locations, function(l) DBI::dbQuoteString(con, l), character(1)),
+      collapse = ", "
+    )
+    where_parts <- c(where_parts, paste0("locations IN (", locs_in, ")"))
   }
 
-  # --- collect and normalize --------------------------------------------------
-  table |>
-    collect() |>
-    mutate(date = as_date(.data$date))
+  sql <- paste0(
+    "SELECT * FROM ", table,
+    if (length(where_parts) > 0) paste0(" WHERE ", paste(where_parts, collapse = " AND ")) else ""
+  )
+
+  out <- DBI::dbGetQuery(con, sql)
+  out$date <- as.Date(out$date)
+  out
 }

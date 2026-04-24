@@ -32,7 +32,7 @@ local_synonyms_db <- function(env = parent.frame()) {
         c("bayern munich", "bayern munchen")
       ),
       start_date = "2010-01",
-      end_date   = "2019-12"
+      end_date = "2019-12"
     )
     DBI::dbAppendTable(
       gt.env$globaltrends_db, "data_control",

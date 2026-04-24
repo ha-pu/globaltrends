@@ -327,6 +327,9 @@ vacuum_data <- function() {
 #' @noRd
 
 .remove_data_by_batch_o <- function(table, batch_o) {
+  if (is.null(batch_o)) {
+    return(invisible(NULL))
+  }
   .check_batch_optional(batch_o)
   .db_delete(
     paste0("DELETE FROM ", table, " WHERE batch_o = ?"),
@@ -454,15 +457,13 @@ vacuum_data <- function() {
 #'   `gt.env$keywords_<type>` so downstream calls see a consistent state.
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect filter select
-#' @importFrom rlang .data
 
 .refresh_keywords <- function(x.type) {
-  df <- gt.env$tbl_keywords |>
-    filter(.data$type == x.type) |>
-    select(-.data$type) |>
-    collect()
-
+  con <- gt.env$globaltrends_db
+  df <- DBI::dbGetQuery(con, paste0(
+    "SELECT batch, keyword FROM batch_keywords WHERE type = ",
+    DBI::dbQuoteString(con, x.type)
+  ))
   assign(paste0("keywords_", x.type), df, envir = gt.env)
   invisible(TRUE)
 }
@@ -471,15 +472,13 @@ vacuum_data <- function() {
 #'   `gt.env$time_<type>` so downstream calls see a consistent state.
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr collect filter select
-#' @importFrom rlang .data
 
 .refresh_time <- function(x.type) {
-  df <- gt.env$tbl_time |>
-    filter(.data$type == x.type) |>
-    select(-.data$type) |>
-    collect()
-
+  con <- gt.env$globaltrends_db
+  df <- DBI::dbGetQuery(con, paste0(
+    "SELECT batch, start_date, end_date FROM batch_time WHERE type = ",
+    DBI::dbQuoteString(con, x.type)
+  ))
   assign(paste0("time_", x.type), df, envir = gt.env)
   invisible(TRUE)
 }

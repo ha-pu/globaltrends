@@ -44,7 +44,7 @@ test_that("aggregate_synonyms2", {
   )
 
   out <- capture_messages(aggregate_synonyms(control = 1))
-  expect_match(out, "Running vacuum_data",            all = FALSE)
+  expect_match(out, "Running vacuum_data", all = FALSE)
   expect_match(out, "Successfully aggregated synonyms", all = FALSE)
 })
 
@@ -77,13 +77,13 @@ test_that("keyword_score", {
   # CN appears in both batch 1 (canonical) and batch 2 (synonyms), so the
   # mean score must increase after aggregation.
   before_cn <- dplyr::filter(score_before, location == "CN")
-  after_cn  <- dplyr::filter(score_after,  location == "CN")
+  after_cn <- dplyr::filter(score_after, location == "CN")
   expect_gt(mean(after_cn$score, na.rm = TRUE), mean(before_cn$score, na.rm = TRUE))
 
   # JP had no canonical (batch 1) data before aggregation; synonym batch 2
   # covers JP, so aggregation must introduce rows there.
   expect_equal(nrow(dplyr::filter(score_before, location == "JP")), 0L)
-  expect_gt(   nrow(dplyr::filter(score_after,  location == "JP")), 0L)
+  expect_gt(nrow(dplyr::filter(score_after, location == "JP")), 0L)
 })
 
 test_that("aggregate_synonyms_exact_score", {
@@ -133,14 +133,14 @@ test_that("add_synonyms2", {
 
 test_that("add_synonyms4", {
   withr::local_envvar(LANGUAGE = "EN")
-  expect_error(add_synonym(keyword = 1,    synonym = "A"), "must be of type character")
+  expect_error(add_synonym(keyword = 1, synonym = "A"), "must be of type character")
   expect_error(add_synonym(keyword = TRUE, synonym = "A"), "must be of type character")
-  expect_error(add_synonym(keyword = sum,  synonym = "A"), "must be of type character")
+  expect_error(add_synonym(keyword = sum, synonym = "A"), "must be of type character")
 })
 
 test_that("add_synonyms5", {
   withr::local_envvar(LANGUAGE = "EN")
-  expect_error(add_synonym(keyword = "A", synonym = 1),   "must be of type character")
+  expect_error(add_synonym(keyword = "A", synonym = 1), "must be of type character")
   expect_error(add_synonym(keyword = "A", synonym = TRUE), "must be of type character")
   # unlist() on a builtin may produce "no applicable method" before the type
   # check is reached; accept either message.
@@ -150,15 +150,15 @@ test_that("add_synonyms5", {
 # aggregate_synonyms() input validation ----------------------------------------
 test_that("aggregate_synonyms3", {
   withr::local_envvar(LANGUAGE = "EN")
-  expect_error(aggregate_synonyms(control = 1.5),  "non-integer")
-  expect_error(aggregate_synonyms(control = "A"),  "Batch id must be an integer")
+  expect_error(aggregate_synonyms(control = 1.5), "non-integer")
+  expect_error(aggregate_synonyms(control = "A"), "Batch id must be an integer")
   expect_error(aggregate_synonyms(control = TRUE), "Batch id must be an integer")
-  expect_error(aggregate_synonyms(control = sum),  "Batch id must be an integer")
+  expect_error(aggregate_synonyms(control = sum), "Batch id must be an integer")
 })
 
 test_that("aggregate_synonyms4", {
   withr::local_envvar(LANGUAGE = "EN")
-  expect_error(aggregate_synonyms(control = 1, vacuum = 1),   "must be of type logical")
+  expect_error(aggregate_synonyms(control = 1, vacuum = 1), "must be of type logical")
   expect_error(aggregate_synonyms(control = 1, vacuum = "A"), "must be of type logical")
   expect_error(aggregate_synonyms(control = 1, vacuum = sum), "must be of type logical")
 })

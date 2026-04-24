@@ -23,8 +23,8 @@
 #' for additional information on search topics.
 #'
 #' @section Note:
-#' To avoid trailing spaces `stringr::str_squish` is automatically
-#' applied to all keywords.
+#' Leading, trailing, and internal whitespace is automatically trimmed from all
+#' keywords via `trimws()`.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of type
 #' `character` or a `list` of `character` vectors. The function also allows the
@@ -89,7 +89,6 @@
 #' @seealso
 #' * [example_keywords()]
 #' * [example_time()]
-#' * [stringr::str_squish()]
 #'
 #' @rdname add_keyword
 #' @export
@@ -136,9 +135,6 @@ add_object_keyword <- function(
 #'
 #' @importFrom DBI dbAppendTable
 #' @importFrom DBI dbWithTransaction
-#' @importFrom purrr map_int
-#' @importFrom stringr str_squish
-#' @importFrom tibble tibble
 
 .add_batch <- function(type, keyword, start_date, end_date, max) {
   type <- match.arg(type, c("control", "object"))
@@ -165,8 +161,8 @@ add_object_keyword <- function(
   first_id <- .next_batch_id(type)
   batch_ids <- seq.int(first_id, length.out = length(batches))
 
-  out <- map_int(seq_along(batches), function(i) {
-    kw_batch <- str_squish(batches[[i]])
+  out <- vapply(seq_along(batches), function(i) {
+    kw_batch <- trimws(batches[[i]])
     .check_length(kw_batch, max)
     batch_id <- batch_ids[[i]]
 
@@ -174,21 +170,23 @@ add_object_keyword <- function(
       dbAppendTable(
         conn = gt.env$globaltrends_db,
         name = "batch_keywords",
-        value = tibble(
+        value = data.frame(
           batch = batch_id,
           keyword = kw_batch,
-          type = type
+          type = type,
+          stringsAsFactors = FALSE
         )
       )
 
       dbAppendTable(
         conn = gt.env$globaltrends_db,
         name = "batch_time",
-        value = tibble(
+        value = data.frame(
           batch = batch_id,
           start_date = start_date,
           end_date = end_date,
-          type = type
+          type = type,
+          stringsAsFactors = FALSE
         )
       )
     })
@@ -202,8 +200,8 @@ add_object_keyword <- function(
       end_date
     ))
 
-    batch_id
-  })
+    as.integer(batch_id)
+  }, integer(1))
 
   .refresh_keywords(type)
   .refresh_time(type)
@@ -238,8 +236,8 @@ add_object_keyword <- function(
 #' refer to the same entity and should be aggregated.
 #'
 #' @section Note:
-#' [stringr::str_squish()] is applied to both `keyword` and `synonym` to
-#' remove leading, trailing, and internal whitespace.
+#' `trimws()` is applied to both `keyword` and `synonym` to remove leading,
+#' trailing, and internal whitespace.
 #'
 #' @param keyword Character scalar. The canonical object keyword for which the
 #'   synonyms are registered. Must already exist as an object keyword in the
@@ -256,7 +254,6 @@ add_object_keyword <- function(
 #'
 #' @seealso
 #' * [compute_score()]
-#' * [stringr::str_squish()]
 #'
 #' @examples
 #' \dontrun{
@@ -276,28 +273,29 @@ add_object_keyword <- function(
 #' @export
 #' @rdname add_synonym
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect
-#' @importFrom purrr walk
-#' @importFrom stringr str_squish
-#' @importFrom tibble tibble
 
 add_synonym <- function(keyword, synonym) {
   .check_length(keyword, 1)
   .check_input(keyword, "character")
   synonyms <- unlist(synonym, use.names = FALSE)
   .check_input(synonyms, "character")
-  keyword <- str_squish(keyword)
-  synonyms <- str_squish(synonyms)
+  keyword <- trimws(keyword)
+  synonyms <- trimws(synonyms)
 
   dbAppendTable(
     conn = gt.env$globaltrends_db,
     name = "keyword_synonyms",
-    value = tibble(keyword = keyword, synonym = synonyms)
+    value = data.frame(keyword = keyword, synonym = synonyms, stringsAsFactors = FALSE)
   )
-  walk(synonyms, ~ message(sprintf(
-    "Successfully added synonym | keyword: %s | synonym: %s.",
-    keyword, .x
-  )))
+  for (s in synonyms) {
+    message(sprintf(
+      "Successfully added synonym | keyword: %s | synonym: %s.",
+      keyword, s
+    ))
+  }
 
-  gt.env$keyword_synonyms <- collect(gt.env$tbl_synonyms)
+  gt.env$keyword_synonyms <- DBI::dbGetQuery(
+    gt.env$globaltrends_db,
+    "SELECT * FROM keyword_synonyms"
+  )
 }

@@ -95,9 +95,6 @@
 #' @export
 #' @rdname download_related
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr mutate
-#' @importFrom purrr iwalk map_dfr walk
-#' @importFrom rlang .data
 
 download_related <- function(
   object,
@@ -293,77 +290,54 @@ download_related.numeric <- function(
 
   if (length(loc_remaining) == 0) {
     message(paste0(
-      "No new locations to download | object: ",
-      object,
-      " | topic: ",
-      topic,
-      " | rising: ",
-      rising,
-      "."
+      "No new locations to download | object: ", object,
+      " | topic: ", topic,
+      " | rising: ", rising, "."
     ))
     return(invisible(TRUE))
   }
 
-  iwalk(
-    loc_remaining,
-    ~ {
-      loc <- .x
-      # .get_related() treats location = NULL as global; "world" maps to NULL.
-      geo <- if (identical(loc, "world")) NULL else loc
+  n_locs <- length(loc_remaining)
+  for (i in seq_along(loc_remaining)) {
+    loc <- loc_remaining[i]
+    # .get_related() treats location = NULL as global; "world" maps to NULL.
+    geo <- if (identical(loc, "world")) NULL else loc
 
-      out <- map_dfr(
-        terms_obj,
-        ~ .get_related(
-          location = geo,
-          term = .x,
-          start_date = start_date,
-          end_date = end_date,
-          topic = topic,
-          rising = rising
-        )
+    out <- do.call(rbind, lapply(terms_obj, function(t) {
+      .get_related(
+        location = geo,
+        term = t,
+        start_date = start_date,
+        end_date = end_date,
+        topic = topic,
+        rising = rising
       )
+    }))
 
-      if (!is.null(out) && nrow(out) > 0) {
-        out <- mutate(out, batch_o = object)
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "data_related",
-          value = out
-        )
-        message(paste0(
-          "Downloaded related data | object: ",
-          object,
-          " | location: ",
-          loc,
-          " | topic: ",
-          topic,
-          " | rising: ",
-          rising,
-          " [",
-          .y,
-          "/",
-          length(loc_remaining),
-          "]"
-        ))
-      } else {
-        message(paste0(
-          "No data returned | object: ",
-          object,
-          " | location: ",
-          loc,
-          " | topic: ",
-          topic,
-          " | rising: ",
-          rising,
-          " [",
-          .y,
-          "/",
-          length(loc_remaining),
-          "]"
-        ))
-      }
+    if (!is.null(out) && nrow(out) > 0) {
+      out$batch_o <- object
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "data_related",
+        value = out
+      )
+      message(paste0(
+        "Downloaded related data | object: ", object,
+        " | location: ", loc,
+        " | topic: ", topic,
+        " | rising: ", rising,
+        " [", i, "/", n_locs, "]"
+      ))
+    } else {
+      message(paste0(
+        "No data returned | object: ", object,
+        " | location: ", loc,
+        " | topic: ", topic,
+        " | rising: ", rising,
+        " [", i, "/", n_locs, "]"
+      ))
     }
-  )
+  }
 
   invisible(TRUE)
 }
@@ -387,12 +361,8 @@ download_related.list <- function(
   }
   .check_input(locations, "character")
 
-  walk(
-    object,
-    download_related,
-    locations = locations,
-    topic = topic,
-    rising = rising
-  )
+  for (o in object) {
+    download_related(o, locations = locations, topic = topic, rising = rising)
+  }
   invisible(TRUE)
 }

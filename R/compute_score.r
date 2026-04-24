@@ -84,11 +84,7 @@
 #'
 #' @export
 #' @rdname compute_score
-#' @importFrom DBI dbExecute SQL
-#' @importFrom dbplyr sql_render
-#' @importFrom dplyr anti_join coalesce count distinct filter if_else inner_join left_join mutate pull select summarise
-#' @importFrom purrr walk
-#' @importFrom rlang .data
+#' @importFrom DBI dbExecute
 
 compute_score <- function(object, control = 1, locations = NULL) {
   UseMethod("compute_score", object)
@@ -131,25 +127,18 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
     return(invisible(0L))
   }
 
-  # Restrict the raw downloads to remaining locations
-  exp_object <- gt.env$tbl_object |>
-    filter(
-      .data$batch_c == control,
-      .data$batch_o == object,
-      .data$location %in% loc_remaining
-    )
+  con <- gt.env$globaltrends_db
 
-  exp_control <- gt.env$tbl_control |>
-    filter(
-      .data$batch == control,
-      .data$location %in% loc_remaining
-    )
+  loc_in <- paste(
+    vapply(loc_remaining, function(l) DBI::dbQuoteString(con, l), character(1)),
+    collapse = ", "
+  )
 
-  # Fast emptiness check (avoid building long lazy pipelines if no data exists)
-  n_obj <- exp_object |>
-    count() |>
-    collect() |>
-    pull(.data$n)
+  # Fast emptiness check
+  n_obj <- DBI::dbGetQuery(con, sprintf(
+    "SELECT COUNT(*) AS n FROM data_object WHERE batch_c = %d AND batch_o = %d AND location IN (%s)",
+    control, object, loc_in
+  ))$n
 
   if (n_obj == 0) {
     message(sprintf(
@@ -159,71 +148,75 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
     return(invisible(0L))
   }
 
-  # -----------------------------------------------------------------------
-  # Benchmark construction
-  # -----------------------------------------------------------------------
-  # Identify which keywords are control keywords (from the control batch table)
-  control_terms <- exp_control |>
-    distinct(.data$keyword)
-
-  # Join object/control hits for the *control keywords* and compute a benchmark
-  # per (location, date). We guard against zeros by replacing 0 with 1 when
-  # forming ratios, mirroring the intent of the original implementation.
-  benchmark <- exp_object |>
-    inner_join(control_terms, by = "keyword") |>
-    inner_join(
-      exp_control,
-      by = c("location", "keyword", "date"),
-      suffix = c("_o", "_c")
-    ) |>
-    mutate(
-      hits_o = if_else(coalesce(.data$hits_o, 0) == 0, 1, .data$hits_o),
-      hits_c = if_else(coalesce(.data$hits_c, 0) == 0, 1, .data$hits_c),
-      ratio = .data$hits_o / .data$hits_c
-    ) |>
-    summarise(
-      benchmark = mean(.data$ratio, na.rm = TRUE),
-      .by = c(.data$location, .data$date)
-    )
-
-  # Map control hits to the object scale and compute total mapped control mass
-  control_mass <- exp_control |>
-    inner_join(benchmark, by = c("location", "date")) |>
-    mutate(hits_mapped = .data$hits * coalesce(.data$benchmark, 0)) |>
-    summarise(
-      hits_c = sum(.data$hits_mapped, na.rm = TRUE),
-      .by = c(.data$location, .data$date)
-    )
-
-  # Compute scores for object keywords (exclude control keywords)
-  out <- exp_object |>
-    anti_join(control_terms, by = "keyword") |>
-    left_join(control_mass, by = c("location", "date")) |>
-    mutate(
-      score = if_else(
-        is.na(.data$hits_c) | .data$hits_c <= 0,
-        0,
-        coalesce(.data$hits, 0) / .data$hits_c
-      ),
-      batch_c = control,
-      batch_o = object
-    ) |>
-    select(
-      .data$location,
-      .data$keyword,
-      .data$date,
-      .data$score,
-      .data$batch_c,
-      .data$batch_o
-    )
-
-  # dbplyr appends a trailing semicolon that is invalid inside INSERT ... SELECT
-  sql_select <- sub(";\\s*$", "", sql_render(out))
-
-  n_out <- dbExecute(
-    gt.env$globaltrends_db,
-    SQL(paste0("INSERT INTO data_score ", sql_select))
+  # -------------------------------------------------------------------------
+  # INSERT INTO data_score using a single SQL statement.
+  #
+  # The query mirrors the dplyr pipeline it replaces:
+  #   benchmark  = mean(o_hits / c_hits) per (location, date) for overlap keywords
+  #   control_mass = sum(c_hits * benchmark) per (location, date)
+  #   score      = o_hits / control_mass  for non-control object keywords
+  # -------------------------------------------------------------------------
+  insert_sql <- sprintf(
+    "INSERT INTO data_score
+     SELECT
+       o.location,
+       o.keyword,
+       o.date,
+       CASE
+         WHEN mass.hits_c IS NULL OR mass.hits_c <= 0.0 THEN 0.0
+         ELSE COALESCE(o.hits, 0.0) / mass.hits_c
+       END AS score,
+       %d AS batch_c,
+       %d AS batch_o
+     FROM (
+       SELECT *
+       FROM data_object
+       WHERE batch_c = %d AND batch_o = %d AND location IN (%s)
+         AND keyword NOT IN (
+           SELECT DISTINCT keyword FROM data_control
+           WHERE batch = %d AND location IN (%s)
+         )
+     ) o
+     LEFT JOIN (
+       SELECT
+         c.location,
+         c.date,
+         SUM(c.hits * COALESCE(bm.benchmark, 0.0)) AS hits_c
+       FROM data_control c
+       INNER JOIN (
+         SELECT
+           o2.location,
+           o2.date,
+           AVG(
+             (CASE WHEN COALESCE(o2.hits, 0.0) = 0.0 THEN 1.0 ELSE COALESCE(o2.hits, 0.0) END) /
+             (CASE WHEN COALESCE(c2.hits, 0.0) = 0.0 THEN 1.0 ELSE COALESCE(c2.hits, 0.0) END)
+           ) AS benchmark
+         FROM data_object o2
+         INNER JOIN data_control c2
+           ON c2.location = o2.location
+           AND c2.keyword = o2.keyword
+           AND c2.date    = o2.date
+         WHERE o2.batch_c = %d AND o2.batch_o = %d AND o2.location IN (%s)
+           AND c2.batch = %d AND c2.location IN (%s)
+           AND o2.keyword IN (
+             SELECT DISTINCT keyword FROM data_control
+             WHERE batch = %d AND location IN (%s)
+           )
+         GROUP BY o2.location, o2.date
+       ) bm ON bm.location = c.location AND bm.date = c.date
+       WHERE c.batch = %d AND c.location IN (%s)
+       GROUP BY c.location, c.date
+     ) mass ON mass.location = o.location AND mass.date = o.date",
+    control, object, # INSERT batch_c, batch_o literals
+    control, object, loc_in, # outer object filter
+    control, loc_in, # exclude control keywords
+    control, object, loc_in, # benchmark o2 filter
+    control, loc_in, # benchmark c2 filter
+    control, loc_in, # benchmark overlap-keyword subquery
+    control, loc_in # control_mass c filter
   )
+
+  n_out <- dbExecute(gt.env$globaltrends_db, insert_sql)
 
   message(sprintf(
     "Successfully computed search scores | control: %s | object: %s.",
@@ -239,7 +232,7 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
 
 compute_score.list <- function(object, control = 1, locations = NULL) {
   args <- .resolve_score_args(control, locations)
-  walk(object, compute_score, control = args$control, locations = args$locations)
+  for (o in object) compute_score(o, control = args$control, locations = args$locations)
   invisible(TRUE)
 }
 

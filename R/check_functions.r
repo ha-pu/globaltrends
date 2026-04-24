@@ -18,10 +18,9 @@
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom rlang as_name enquo
 
-.check_input <- function(input, type) {
-  name_input <- as_name(enquo(input))
+.check_input <- function(input, type, name = NULL) {
+  name_input <- if (!is.null(name)) name else deparse(substitute(input))
 
   if (!is.character(type) || length(type) != 1L || is.na(type)) {
     stop(
@@ -73,10 +72,9 @@
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom rlang as_name enquo
 
 .check_length <- function(input, max) {
-  name_input <- as_name(enquo(input))
+  name_input <- deparse(substitute(input))
 
   if (
     !is.numeric(max) ||
@@ -148,10 +146,6 @@
     return(invisible(TRUE))
   }
 
-  if (length(batch) != 1L) {
-    stop("Error: Batch id must be a scalar (length 1).", call. = FALSE)
-  }
-
   if (is.integer(batch)) {
     return(invisible(TRUE))
   }
@@ -163,11 +157,11 @@
     )
   }
 
-  if (!is.finite(batch)) {
+  if (!all(is.finite(batch))) {
     stop("Error: Batch id must be a finite integer value.", call. = FALSE)
   }
 
-  if (batch %% 1 != 0) {
+  if (any(batch %% 1 != 0)) {
     stop(
       "Error: Batch id must be an integer value.\nYou provided a non-integer numeric value.",
       call. = FALSE

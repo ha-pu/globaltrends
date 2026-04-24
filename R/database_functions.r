@@ -42,7 +42,6 @@
 #' @export
 #' @importFrom DBI dbConnect dbDisconnect dbExecute
 #' @importFrom duckdb duckdb
-#' @importFrom purrr walk
 
 initialize_db <- function() {
   .ensure_db_dir()
@@ -80,7 +79,7 @@ initialize_db <- function() {
   con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
   on.exit(dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
-  walk(schema_sql, ~ dbExecute(con, .x))
+  for (sql in schema_sql) dbExecute(con, sql)
 
   # Populate default location sets (writes into data_locations)
   .enter_location_defaults(con)
@@ -160,13 +159,11 @@ initialize_db <- function() {
 #' @keywords internal
 #' @noRd
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr bind_rows
-#' @importFrom tibble tibble
 
 .enter_location_defaults <- function(con) {
-  data_to_add <- bind_rows(
-    tibble(location = globaltrends::countries, type = "countries"),
-    tibble(location = globaltrends::us_states, type = "us_states")
+  data_to_add <- rbind(
+    data.frame(location = globaltrends::countries, type = "countries", stringsAsFactors = FALSE),
+    data.frame(location = globaltrends::us_states, type = "us_states", stringsAsFactors = FALSE)
   )
   dbAppendTable(conn = con, name = "data_locations", value = data_to_add)
   invisible(TRUE)
@@ -196,22 +193,6 @@ initialize_db <- function() {
   invisible(TRUE)
 }
 
-#' @description
-#' Filter a lazy table to rows where `type == type_val`, drop the `type`
-#' column, and collect the result into a local tibble. Used in [start_db()]
-#' to populate the `keywords_*` and `time_*` caches.
-#' @keywords internal
-#' @noRd
-#' @importFrom dplyr filter select collect
-#' @importFrom rlang .data
-
-.collect_by_type <- function(tbl, type_val) {
-  tbl |>
-    filter(.data$type == type_val) |>
-    select(-.data$type) |>
-    collect()
-}
-
 # -------------------------------------------------------------------------
 # Start / Stop lifecycle
 # -------------------------------------------------------------------------
@@ -229,21 +210,11 @@ initialize_db <- function() {
 #' \describe{
 #'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory DuckDB
 #'     instance.}
-#'   \item{`tbl_locations`}{Lazy reference to `data_locations`.}
-#'   \item{`tbl_keywords`}{Lazy reference to `batch_keywords`.}
-#'   \item{`tbl_time`}{Lazy reference to `batch_time`.}
-#'   \item{`tbl_synonyms`}{Lazy reference to `keyword_synonyms`.}
-#'   \item{`tbl_doi`}{Lazy reference to `data_doi`.}
-#'   \item{`tbl_control`}{Lazy reference to `data_control`.}
-#'   \item{`tbl_object`}{Lazy reference to `data_object`.}
-#'   \item{`tbl_score`}{Lazy reference to `data_score`.}
-#'   \item{`tbl_region`}{Lazy reference to `data_region`.}
-#'   \item{`tbl_related`}{Lazy reference to `data_related`.}
-#'   \item{`keywords_control`, `keywords_object`}{Collected tibbles of control
-#'     and object keywords by batch (without the `type` column).}
-#'   \item{`time_control`, `time_object`}{Collected tibbles of batch time
-#'     windows for control and object runs (without the `type` column).}
-#'   \item{`keyword_synonyms`}{Collected tibble of all keyword/synonym pairs.}
+#'   \item{`keywords_control`, `keywords_object`}{Data frames of control and
+#'     object keywords by batch (without the `type` column).}
+#'   \item{`time_control`, `time_object`}{Data frames of batch time windows for
+#'     control and object runs (without the `type` column).}
+#'   \item{`keyword_synonyms`}{Data frame of all keyword/synonym pairs.}
 #' }
 #' Location sets are exported as named character vectors via
 #' `.export_locations()`.
@@ -263,9 +234,7 @@ initialize_db <- function() {
 #' @export
 #' @importFrom DBI dbConnect dbExecute
 #' @importFrom duckdb duckdb
-#' @importFrom dplyr tbl collect filter select
-#' @importFrom rlang .data
-#' @importFrom purrr walk
+#' @importFrom dplyr tbl
 
 start_db <- function() {
   check <- .check_files()
@@ -285,46 +254,33 @@ start_db <- function() {
     "CREATE TABLE ", tables,
     " AS SELECT * FROM read_parquet('db/", tables, ".parquet');"
   )
-  walk(import_sql, ~ dbExecute(con, .x))
+  for (sql in import_sql) dbExecute(con, sql)
 
-  # Register lazy table handles
-  tbl_locations <- tbl(con, "data_locations")
-  tbl_keywords <- tbl(con, "batch_keywords")
-  tbl_time <- tbl(con, "batch_time")
-  tbl_synonyms <- tbl(con, "keyword_synonyms")
-
-  tbl_doi <- tbl(con, "data_doi")
-  tbl_control <- tbl(con, "data_control")
-  tbl_object <- tbl(con, "data_object")
-  tbl_score <- tbl(con, "data_score")
-  tbl_region <- tbl(con, "data_region")
-  tbl_related <- tbl(con, "data_related")
-
-  # Cache small, frequently-used tables as in-memory tibbles
-  keywords_control <- .collect_by_type(tbl_keywords, "control")
-  keywords_object <- .collect_by_type(tbl_keywords, "object")
-  time_control <- .collect_by_type(tbl_time, "control")
-  time_object <- .collect_by_type(tbl_time, "object")
-  keyword_synonyms <- tbl_synonyms |> collect()
+  # Cache small, frequently-used tables as in-memory data frames
+  keywords_control <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'control'")
+  keywords_object <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'object'")
+  time_control <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'control'")
+  time_object <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'object'")
+  keyword_synonyms <- DBI::dbGetQuery(con, "SELECT * FROM keyword_synonyms")
 
   # Assign into gt.env
   lst_object <- list(
-    globaltrends_db = con,
-    tbl_locations = tbl_locations,
-    tbl_keywords = tbl_keywords,
-    tbl_time = tbl_time,
-    tbl_synonyms = tbl_synonyms,
-    tbl_doi = tbl_doi,
-    tbl_control = tbl_control,
-    tbl_object = tbl_object,
-    tbl_score = tbl_score,
-    tbl_region = tbl_region,
-    tbl_related = tbl_related,
+    globaltrends_db  = con,
     keywords_control = keywords_control,
-    time_control = time_control,
-    keywords_object = keywords_object,
-    time_object = time_object,
-    keyword_synonyms = keyword_synonyms
+    keywords_object  = keywords_object,
+    time_control     = time_control,
+    time_object      = time_object,
+    keyword_synonyms = keyword_synonyms,
+    tbl_locations    = dplyr::tbl(con, "data_locations"),
+    tbl_keywords     = dplyr::tbl(con, "batch_keywords"),
+    tbl_time         = dplyr::tbl(con, "batch_time"),
+    tbl_synonyms     = dplyr::tbl(con, "keyword_synonyms"),
+    tbl_control      = dplyr::tbl(con, "data_control"),
+    tbl_object       = dplyr::tbl(con, "data_object"),
+    tbl_score        = dplyr::tbl(con, "data_score"),
+    tbl_doi          = dplyr::tbl(con, "data_doi"),
+    tbl_related      = dplyr::tbl(con, "data_related"),
+    tbl_region       = dplyr::tbl(con, "data_region")
   )
   invisible(list2env(lst_object, envir = gt.env))
 
@@ -375,7 +331,21 @@ disconnect_db <- function() {
   .export_db_to_parquet(gt.env$globaltrends_db)
 
   dbDisconnect(conn = gt.env$globaltrends_db, shutdown = TRUE)
-  assign("globaltrends_db", NULL, envir = gt.env)
+
+  nulls <- list(
+    globaltrends_db = NULL,
+    tbl_locations   = NULL,
+    tbl_keywords    = NULL,
+    tbl_time        = NULL,
+    tbl_synonyms    = NULL,
+    tbl_control     = NULL,
+    tbl_object      = NULL,
+    tbl_score       = NULL,
+    tbl_doi         = NULL,
+    tbl_related     = NULL,
+    tbl_region      = NULL
+  )
+  invisible(list2env(nulls, envir = gt.env))
 
   message("Successfully disconnected and persisted database to 'db/'.")
   invisible(TRUE)
