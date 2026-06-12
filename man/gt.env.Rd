@@ -5,7 +5,7 @@
 \alias{gt.env}
 \title{Package environment for internal state}
 \format{
-An object of class \code{environment} of length 18.
+An object of class \code{environment} of length 20.
 }
 \usage{
 gt.env
@@ -38,6 +38,8 @@ after calling initialization functions such as \code{start_db()}:
 \item \code{keyword_synonyms}: Cached tibble of keyword/synonym mappings.
 \item \code{query_wait}: Numeric scalar. Seconds to wait between API calls (default: \code{0.1}).
 \item \code{py_setup}: Logical scalar. \code{TRUE} if \code{\link[=initialize_python]{initialize_python()}} has been called successfully.
+\item \code{api_calls}: Integer scalar. Number of Research API calls made today (reset automatically at midnight).
+\item \code{api_calls_date}: Date scalar. The date for which \code{api_calls} is counted; used to detect day boundaries.
 }
 }
 \section{Implementation notes}{

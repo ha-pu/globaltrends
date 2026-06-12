@@ -1,3 +1,15 @@
+#' @keywords internal
+#' @noRd
+
+.increment_api_counter <- function() {
+  today <- Sys.Date()
+  if (!identical(gt.env$api_calls_date, today)) {
+    gt.env$api_calls <- 0L
+    gt.env$api_calls_date <- today
+  }
+  gt.env$api_calls <- gt.env$api_calls + 1L
+}
+
 #' @title Download Google Trends time series for one request
 #'
 #' @description
@@ -61,6 +73,7 @@
 
     ts$location <- if (is_global) "world" else location
 
+    .increment_api_counter()
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)
     return(ts)
@@ -353,6 +366,7 @@
     region$end_date <- as.Date(paste0(end_date, "-01"))
     region <- region[, c("term", "location", "start_date", "end_date", "region_code", "region_name", "hits")]
 
+    .increment_api_counter()
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)
     return(region)
@@ -434,6 +448,7 @@
     item$start_date <- as.Date(paste0(start_date, "-01"))
     item$end_date <- as.Date(paste0(end_date, "-01"))
 
+    .increment_api_counter()
     # Respect configured wait between API calls
     Sys.sleep(gt.env$query_wait)
     return(item)

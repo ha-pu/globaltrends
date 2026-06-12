@@ -110,3 +110,49 @@ initialize_python <- function(api_key, conda_env = NULL, python_env = NULL) {
   gt.env$py_setup <- TRUE
   invisible(TRUE)
 }
+
+#' @title Report daily Research API usage
+#'
+#' @description
+#' Returns the number of Google Trends Research API calls made today, the
+#' number remaining before the daily limit is reached, and the limit itself.
+#' The counter is stored in `gt.env` and resets automatically when the
+#' calendar date changes.
+#'
+#' @details
+#' The counter is incremented once per successful call to the internal helpers
+#' `.get_trend()`, `.get_region()`, and `.get_related()` whenever the Research
+#' API backend is active (i.e., after [initialize_python()] has been called).
+#' Calls routed through the default `gtrendsR` scraping backend are not counted.
+#'
+#' The daily limit of 10,000 calls is set by Google. The counter does **not**
+#' enforce this limit; it only tracks usage so that callers can monitor their
+#' consumption.
+#'
+#' @return
+#' A named integer vector with three elements:
+#' \describe{
+#'   \item{`calls`}{Number of Research API calls made today.}
+#'   \item{`remaining`}{Calls remaining before the daily limit is reached.}
+#'   \item{`limit`}{The daily limit (always `10000`).}
+#' }
+#'
+#' @seealso [initialize_python()] to enable the Research API backend.
+#'
+#' @examples
+#' get_api_usage()
+#'
+#' @export
+
+get_api_usage <- function() {
+  today <- Sys.Date()
+  if (!identical(gt.env$api_calls_date, today)) {
+    gt.env$api_calls <- 0L
+    gt.env$api_calls_date <- today
+  }
+  c(
+    calls     = gt.env$api_calls,
+    remaining = 10000L - gt.env$api_calls,
+    limit     = 10000L
+  )
+}

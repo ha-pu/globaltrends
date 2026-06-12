@@ -28,6 +28,8 @@
 #'   \item `keyword_synonyms`: Cached tibble of keyword/synonym mappings.
 #'   \item `query_wait`: Numeric scalar. Seconds to wait between API calls (default: `0.1`).
 #'   \item `py_setup`: Logical scalar. `TRUE` if [initialize_python()] has been called successfully.
+#'   \item `api_calls`: Integer scalar. Number of Research API calls made today (reset automatically at midnight).
+#'   \item `api_calls_date`: Date scalar. The date for which `api_calls` is counted; used to detect day boundaries.
 #' }
 #'
 #' @section Implementation notes:
@@ -70,7 +72,9 @@ gt.env <- new.env(parent = emptyenv())
     time_object = NULL,
     keyword_synonyms = NULL,
     query_wait = 0.1,
-    py_setup = FALSE
+    py_setup = FALSE,
+    api_calls = 0L,
+    api_calls_date = Sys.Date()
   )
 
   # Assign without copying into the search path; keep state contained in gt.env.

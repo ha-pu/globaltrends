@@ -225,7 +225,7 @@ add_locations <- function(locations, type, export = TRUE) {
 .export_locations <- function() {
   df <- DBI::dbGetQuery(
     gt.env$globaltrends_db,
-    "SELECT DISTINCT type, location FROM data_locations"
+    "SELECT DISTINCT type, location FROM data_locations ORDER BY type, location"
   )
 
   lst_locations <- split(df$location, df$type)

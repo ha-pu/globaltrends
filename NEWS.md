@@ -3,6 +3,7 @@
 * General revision and improvement of code base
 * General revision and improvement of tests
 * General revision and improvement of documentation
+* Inclusion of API-usage counter for downloads through Google Trends API (10,000 daily downloads)
 
 ## Change in database handling
 
