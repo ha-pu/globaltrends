@@ -54,13 +54,49 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- gt.env$query_trend(
-      terms = term,
-      start_date = start_date,
-      end_date = end_date,
-      geo = geo,
-      api_key = gt.env$api_key
+    out <- tryCatch(
+      gt.env$query_trend(
+        terms = term,
+        start_date = start_date,
+        end_date = end_date,
+        geo = geo,
+        api_key = gt.env$api_key
+      ),
+      error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          stop(
+            paste0(
+              "Google Trends API daily quota exceeded. ",
+              "Wait until quota resets before continuing.\n",
+              "Original error: ", msg
+            ),
+            call. = FALSE
+          )
+        }
+        if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: API returned HTTP 400 (invalid argument) for term=",
+            paste(term, collapse = ","), " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+          return(NULL)
+        }
+        if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: connection timeout for term=",
+            paste(term, collapse = ","), " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+          return(NULL)
+        }
+        stop(e)
+      }
     )
+
+    if (is.null(out)) {
+      return(NULL)
+    }
 
     ts <- do.call(rbind, lapply(out$lines, function(line) {
       data.frame(
@@ -331,26 +367,53 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- try(gt.env$query_region(
-      terms = term,
-      start_date = start_date,
-      end_date = end_date,
-      geo = geo,
-      api_key = gt.env$api_key
-    ))
-
-    if (inherits(out, "try-error")) {
-      return(data.frame(
-        term = NA_character_,
-        location = NA_character_,
-        start_date = as.Date(NA),
-        end_date = as.Date(NA),
-        region_code = NA_character_,
-        region_name = NA_character_,
-        hits = NA_real_,
-        stringsAsFactors = FALSE
-      ))
-    }
+    out <- tryCatch(
+      gt.env$query_region(
+        terms = term,
+        start_date = start_date,
+        end_date = end_date,
+        geo = geo,
+        api_key = gt.env$api_key
+      ),
+      error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          stop(
+            paste0(
+              "Google Trends API daily quota exceeded. ",
+              "Wait until quota resets before continuing.\n",
+              "Original error: ", msg
+            ),
+            call. = FALSE
+          )
+        }
+        if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: API returned HTTP 400 (invalid argument) for term=",
+            term, " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+        } else if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: connection timeout for term=",
+            term, " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+        } else {
+          stop(e)
+        }
+        data.frame(
+          term = NA_character_,
+          location = NA_character_,
+          start_date = as.Date(NA),
+          end_date = as.Date(NA),
+          region_code = NA_character_,
+          region_name = NA_character_,
+          hits = NA_real_,
+          stringsAsFactors = FALSE
+        )
+      }
+    )
 
     region <- do.call(rbind, lapply(out$regions, function(r) {
       data.frame(
@@ -424,15 +487,49 @@
     # ---------------------------------------------------------------------
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
-    out <- gt.env$query_terms(
-      terms = term,
-      start_date = start_date,
-      end_date = end_date,
-      geo = geo,
-      api_key = gt.env$api_key,
-      topic = topic,
-      rising = rising
+    out <- tryCatch(
+      gt.env$query_terms(
+        terms = term,
+        start_date = start_date,
+        end_date = end_date,
+        geo = geo,
+        api_key = gt.env$api_key,
+        topic = topic,
+        rising = rising
+      ),
+      error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          stop(
+            paste0(
+              "Google Trends API daily quota exceeded. ",
+              "Wait until quota resets before continuing.\n",
+              "Original error: ", msg
+            ),
+            call. = FALSE
+          )
+        }
+        if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: API returned HTTP 400 (invalid argument) for term=",
+            term, " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+          return(NULL)
+        }
+        if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+          message(
+            "Skipping: connection timeout for term=",
+            term, " geo=", if (is.null(geo)) "world" else geo,
+            " [", start_date, "/", end_date, "]"
+          )
+          return(NULL)
+        }
+        stop(e)
+      }
     )
+
+    if (is.null(out)) return(NULL)
 
     item <- do.call(rbind, lapply(out$item, function(x) {
       data.frame(
