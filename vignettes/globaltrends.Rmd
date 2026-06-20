@@ -16,19 +16,14 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-library(dplyr)
-library(ggplot2)
-library(lubridate)
-```
-
-```{r setup, eval = FALSE}
+```{r setup}
 # install package --------------------------------------------------------------
-devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
+install.packages("globaltrends")
 
 # load package -----------------------------------------------------------------
 library(globaltrends)
@@ -75,7 +70,7 @@ Research projects that use Google Trends generate a substantial amount of data. 
 
 Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates the Parquet files within this folder. For more information on database tables, please refer to their built-in documentation, e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
-```{r, eval = FALSE}
+```{r}
 # initialize_db ----------------------------------------------------------------
 setwd("your/globaltrends/folder")
 initialize_db()
@@ -84,7 +79,7 @@ initialize_db()
 
 After initialization or when resuming work on an existing database, it is sufficient to call `start_db` from the respective working directory. This command loads the Parquet files from the folder *db* into an in-memory SQLite database and exports table handles and cached keyword tables to the package environment `gt.env`.
 
-```{r, eval = FALSE}
+```{r}
 # start_db ---------------------------------------------------------------------
 setwd("your/globaltrends/folder")
 start_db()
@@ -93,7 +88,7 @@ start_db()
 
 After work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`. This persists the in-memory state back to the Parquet files.
 
-```{r, eval = FALSE}
+```{r}
 # disconnect_db ----------------------------------------------------------------
 disconnect_db()
 #> Successfully disconnected and persisted database to 'db/'.
@@ -115,7 +110,7 @@ Before you can use the research API for downloads, you must call `initialize_pyt
 
 **Using the API ensures consistent download speed and an overview of the available download quota.**
 
-```{r, eval = FALSE}
+```{r}
 # initialize python ------------------------------------------------------------
 initialize_python(
   api_key = Sys.getenv("GOOGLE_API_KEY"), # Google Trends API key
@@ -124,9 +119,9 @@ initialize_python(
 )
 ```
 
-If you run `globaltrends` on a headless machiine (e.g., a virtual machine), you can adapt the daily downloads to Google's API quota. The `get_api_usage` function provides tracks the amount of downloads and provides information on how many downloads are left until the daily limit of 10,000 downloads is met. You can use this function to create a while loop that stops, when the download limit is met:
+If you run `globaltrends` on a headless machine (e.g., a virtual machine), you can adapt the daily downloads to Google's API quota. The `get_api_usage` function provides tracks the amount of downloads and provides information on how many downloads are left until the daily limit of 10,000 downloads is met. You can use this function to create a while loop that stops, when the download limit is met:
 
-```{r, eval = FALSE}
+```{r}
 batch_object <- read_rds("data/batch_object.rds")
 
 i <- 1
@@ -147,7 +142,7 @@ If the Python function to use the research API has not been imported (i.e., `ini
 
 First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of "standard" search volumes on Google, we propose them as control keywords for global trend analysis. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](https://trends.google.com/trends/) beforehand. The output of `add_control_keyword` is an integer vector of new control batch numbers that can serve as input for other functions.
 
-```{r, eval = FALSE}
+```{r}
 # add_control_keyword ----------------------------------------------------------
 new_control <- add_control_keyword(
   keyword = c("gmail", "maps", "translate", "wikipedia", "youtube"),
@@ -159,7 +154,7 @@ new_control <- add_control_keyword(
 
 The function `add_control_keyword` also updates the object `keywords_control` in the package environment `gt.env`. This data frame can be used for batch lookup.
 
-```{r, eval = FALSE}
+```{r}
 # keywords_control and dplyr interaction ---------------------------------------
 dplyr::filter(gt.env$keywords_control, keyword == "gmail")
 #> # A tibble: 1 x 2
@@ -170,7 +165,7 @@ dplyr::filter(gt.env$keywords_control, keyword == "gmail")
 
 As a second step, we download the control data with `download_control`, using the output from `add_control_keyword` as `control` input, the number of control batches for which we want to download data. The input defaults to `countries`, see [below](#changing-locations) for further details.
 
-```{r, eval = FALSE}
+```{r}
 # download_control -------------------------------------------------------------
 download_control(control = new_control, locations = countries)
 #> Successfully downloaded control data | control: 1 | location: US [1/66]
@@ -180,7 +175,7 @@ download_control(control = new_control, locations = countries)
 
 A message indicates each successful download of search volumes for control keywords. The data is written directly to the table *data_control* in the database. The function `download_control_global` follows the same approach and downloads control data on a global level.
 
-```{r, eval = FALSE}
+```{r}
 # download_control_global ------------------------------------------------------
 download_control_global(control = new_control)
 #> Successfully downloaded control data | control: 1 | location: world [1/1]
@@ -190,7 +185,7 @@ download_control_global(control = new_control)
 
 For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five, for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
 
-```{r, eval = FALSE}
+```{r}
 # add_object_keyword -----------------------------------------------------------
 new_object <- add_object_keyword(
   keyword = list(
@@ -206,7 +201,7 @@ new_object <- add_object_keyword(
 
 As for control keywords, the function `add_object_keyword` also updates the object `keywords_object` in the package environment `gt.env`. This data frame can be used for batch lookup.
 
-```{r, eval = FALSE}
+```{r}
 # keywords_object and dplyr interaction ----------------------------------------
 dplyr::filter(gt.env$keywords_object, keyword == "coca cola")
 #> # A tibble: 1 x 2
@@ -217,7 +212,7 @@ dplyr::filter(gt.env$keywords_object, keyword == "coca cola")
 
 Again, the second step is to download the object data with `download_object`, using the output from `add_object_keyword` as `object` input, and the number of object batches for which we want to download data. As above, the input `locations` defaults to `countries`. The package automatically adds a control keyword to each batch of four object keywords. This control keyword then allows a mapping between control batches and object batches.
 
-```{r, eval = FALSE}
+```{r}
 # download_object --------------------------------------------------------------
 download_object(object = new_object, locations = countries)
 #> Successfully downloaded object data | object: 1 | location: US [1/66]
@@ -227,7 +222,7 @@ download_object(object = new_object, locations = countries)
 
 A message indicates each successful download of search volumes for object keywords. The data is written directly to the table *data_object* in the database. The function `download_object_global` follows the same approach and downloads object data on a global level.
 
-```{r, eval = FALSE}
+```{r}
 # download_object_global -------------------------------------------------------
 download_object_global(object = new_object)
 #> Successfully downloaded object data | object: 1 | location: world [1/1]
@@ -242,7 +237,7 @@ Once the user has completed all control and object downloads, `globaltrends` com
 
 The function `compute_score` divides the search volumes for an object keyword by the sum of search volumes for the keywords in the respective control batch. The search score computation proceeds in four steps. First, the function aggregates all search volumes to monthly data. Then, it applies some optional time series adjustments that we outline in greater detail [below](#time-series-adjustments). Next, it follows the procedure proposed by Castelnuovo and Tran (2017, pp. A1-A2) and outlined in the [Appendix B](#appendix-b) to map control and object data. After the mapping, object search volumes are divided by the sum of control search volumes in the respective control batch. We use the sum of search volumes for a set of control keywords, rather than the search volumes for a single control keyword, to smooth-out variation in the underlying control data. Because of this division, it is essential to define a set of control keywords that mirrors "standard" Google usage for the given research setting.
 
-```{r, eval = FALSE}
+```{r}
 # compute_score ----------------------------------------------------------------
 compute_score(object = new_object, control = new_control[[1]], locations = countries)
 #> Successfully computed search score | control: 1 | object: 1 | location: US [1/66]
@@ -252,7 +247,7 @@ compute_score(object = new_object, control = new_control[[1]], locations = count
 
 A message indicates each successful computation of search scores. The data is written directly to the table *data_score* in the database. The computation of the volume of internationalization follows the same principles. Instead of search volumes of control and object keywords at the country level, the function `compute_voi` compares control and object search volumes at the global level.
 
-```{r, eval = FALSE}
+```{r}
 # compute_voi ------------------------------------------------------------------
 compute_voi(object = new_object, control = new_control[[1]])
 #> Successfully computed search score | control: 1 | object: 1 | location: world [1/1]
@@ -263,7 +258,7 @@ compute_voi(object = new_object, control = new_control[[1]])
 
 The `globaltrends` package uses the distribution of search scores across countries to compute the degree of internationalization for objects of interest. The function `compute_doi` uses an inverted Gini coefficient as a measure of the degree of internationalization. The more uniform the distribution of search scores across all countries, the higher the inverted Gini coefficient and the greater the degree of internationalization. In addition to the Gini coefficient, the package uses the inverted Herfindahl index and entropy as measures of internationalization ([details below](#alternative-dispersion-measures)).
 
-```{r, eval = FALSE}
+```{r}
 # compute_doi ------------------------------------------------------------------
 compute_doi(object = new_object, control = new_control[[1]], locations = "countries")
 #> Successfully computed DOI | control: 1 | object: 1 [1/2]
@@ -276,7 +271,7 @@ A message indicates each successful computation. The data is written directly to
 
 Functions in `globaltrends` write all data directly to tables in the database. With the help of functions from the `dplyr` package and connections exported from `start_db`, users can access database tables and prepare their own analysis.
 
-```{r, eval = FALSE}
+```{r}
 # manual exports ---------------------------------------------------------------
 library(dplyr)
 gt.env$tbl_score %>%
@@ -293,7 +288,7 @@ gt.env$tbl_score %>%
 
 To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as a `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data, is `NULL`. In this case, all values from the database are exported. Alternatively, users can specify filters (e.g., keywords, batches, locations) individually, as a vector or as a list.
 
-```{r, eval = FALSE}
+```{r}
 # export_control ---------------------------------------------------------------
 export_control(control = 1)
 #> # A tibble: 39,600 x 5
@@ -327,7 +322,7 @@ purrr::map_dfr(c("coca cola", "microsoft"), export_doi, control = 1)
 
 The export functions from `globaltrends` also allow direct interaction with `dplyr` or other packages for further analysis.
 
-```{r, eval = FALSE}
+```{r}
 # export and dplyr interaction -------------------------------------------------
 library(dplyr)
 export_doi(object = 1, control = 1) %>%
@@ -383,7 +378,7 @@ The `globaltrends` package computes degree of internationalization based on the 
 
 By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input `locations` to *us_states*, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from `compute_doi`, all functions use the name of the variable that contains the location vector as inputs for `locations` (e.g., *countries*, *us_states*). The function `start_db` exports these vectors of ISO2 codes to the package environment `gt.env`. Function `compute_doi`, however does not directly refer to these objects, but to their names (e.g., "countries", "us_states"). Using state or district level locations allows users to analyze within-country dispersion of firms.
 
-```{r, eval = FALSE}
+```{r}
 # change locations -------------------------------------------------------------
 download_control(control = 1, locations = us_states)
 download_object(object = 1:2, locations = us_states)
@@ -395,7 +390,7 @@ compute_doi(object = 1:2, control = 1, locations = "us_states")
 
 Users can add individual sets of locations through the function `add_locations`. In the variable `locations`, users specify the location codes (e.g., "AT", "CH", "DE") and `type` takes the name of the location set (e.g., "DACH"). The new location set can be used in all functions. Since all functions check whether data on a location already exists, `globaltrends` does not duplicate data for new location sets.
 
-```{r, eval = FALSE}
+```{r}
 add_locations(c("AT", "CH", "DE"), type = "dach")
 #> Successfully created new location set dach (AT, CH, DE).
 data <- export_score(keyword = "coca cola", location = dach)
@@ -452,88 +447,15 @@ The enormous detail of the data opens additional research applications that are 
 
 Google Trends does not query the total population of search queries on Google—an impossible task given the massive volume of data involved. Users specify which keyword $ko$ they want to query for location $l$ within timeframe $T$. We follow Costola, Iacopini, and Santagiustina (2021) to illustrate the data preparation steps applied by Google below.  
 
-```{r, include = FALSE}
-Sys.setlocale("LC_ALL", "English")
+<center>
+![](plot_appendix_a1.png){height=45%, width=45%}
+![](plot_appendix_a2.png){height=45%, width=45%}
+</center>
 
-set.seed(123)
-
-population <- tibble(
-  x = runif(10000),
-  y = runif(10000),
-  q = sample(letters[1:2], 10000, replace = TRUE, prob = c(0.25, 0.85)),
-  day = sample(1:10, 10000, replace = TRUE)
-) %>%
-  mutate(day = ymd(paste0("2022-01-", day)))
-
-sample <- slice_sample(population, n = 1000)
-
-max_queries <- sample %>%
-  count(day) %>%
-  filter(n == max(n)) %>%
-  slice(1) %>%
-  pull(n)
-```
-
-```{r, echo = FALSE}
-par(mfrow = c(2, 2))
-
-population %>%
-  ggplot() +
-  geom_point(aes(x, y, colour = q)) +
-  labs(tag = "A") +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank()
-  )
-
-sample %>%
-  ggplot() +
-  geom_point(aes(x, y, colour = q)) +
-  labs(tag = "B") +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank()
-  )
-
-sample %>%
-  ggplot() +
-  geom_bar(aes(day, fill = q)) +
-  labs(
-    x = NULL,
-    y = "Number of queries",
-    tag = "C"
-  ) +
-  ylim(c(0, max_queries)) +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  )
-
-sample %>%
-  mutate(q = q == "a") %>%
-  summarise(share = sum(q) / n(), .by = day) %>%
-  mutate(share = round(100 * share / max(share))) %>%
-  ggplot() +
-  geom_line(aes(x = day, y = share)) +
-  labs(
-    x = NULL,
-    y = "Google Trends search volume",
-    tag = "D"
-  ) +
-  ylim(0, 100) +
-  theme_bw()
-```
+<center>
+![](plot_appendix_a3.png){height=45%, width=45%}
+![](plot_appendix_a4.png){height=45%, width=45%}
+</center>
 
 Google filters the total population of search queries on its platform to those queries that fit with the user-specified location $l$ and time period $T$. This sample (Panel A) includes all relevant search queries, those that relate to keyword $ko$ (in red) and those do not (in green). To limit computational requirements, Google takes a random sample of the relevant search queries (Panel B) to compute the Google Trends search volume $SV_{ko,l,t}$. Although a substantially lower number of queries is included in the sub-sample, the relation between queries that relate to $ko$ and those that do no, remains the same. Next, Google compares the number of queries that relate to $ko$ for each day $t \in T$ to compute a relative search score (Panel C). To compute the Google Trends search volume $SV_{ko,l,t}$, Google normalizes the relative search score to a value between 0 and 100, where 100 is the maximum search score in the analyzed combination of $ko$, $l$, and $T$.  
 
