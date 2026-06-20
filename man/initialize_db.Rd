@@ -15,11 +15,12 @@ Creates the local database store used by \code{globaltrends} in the current
 working directory and initializes all required tables and indexes.
 }
 \details{
-The package uses DuckDB with a Parquet-backed persistence layout under the
-\verb{db/} folder. \code{initialize_db()} creates a transient in-memory DuckDB
+The package uses SQLite with a Parquet-backed persistence layout under the
+\verb{db/} folder. \code{initialize_db()} creates a transient in-memory SQLite
 database, builds the schema, populates default location sets, and exports
-the result as Parquet files to \verb{db/}. The in-memory connection is closed
-before the function returns; call \code{\link[=start_db]{start_db()}} to open a working session.
+the result as Parquet files (via \code{arrow}) to \verb{db/}. The in-memory connection
+is closed before the function returns; call \code{\link[=start_db]{start_db()}} to open a working
+session.
 
 If all required Parquet files already exist the function returns early
 without overwriting anything. If only some files are present (indicating a
@@ -35,9 +36,9 @@ share threshold (see \link{countries}).}
 }
 \section{Concurrency}{
 
-DuckDB allows concurrent readers but has write constraints depending on the
-underlying storage and process model. If you run parallel download workers,
-use one database directory per worker and merge results afterwards.
+SQLite allows concurrent readers but only one writer at a time. If you run
+parallel download workers, use one database directory per worker and merge
+results afterwards.
 }
 
 \examples{

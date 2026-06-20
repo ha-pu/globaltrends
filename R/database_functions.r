@@ -4,11 +4,12 @@
 #' working directory and initializes all required tables and indexes.
 #'
 #' @details
-#' The package uses DuckDB with a Parquet-backed persistence layout under the
-#' `db/` folder. `initialize_db()` creates a transient in-memory DuckDB
+#' The package uses SQLite with a Parquet-backed persistence layout under the
+#' `db/` folder. `initialize_db()` creates a transient in-memory SQLite
 #' database, builds the schema, populates default location sets, and exports
-#' the result as Parquet files to `db/`. The in-memory connection is closed
-#' before the function returns; call [start_db()] to open a working session.
+#' the result as Parquet files (via `arrow`) to `db/`. The in-memory connection
+#' is closed before the function returns; call [start_db()] to open a working
+#' session.
 #'
 #' If all required Parquet files already exist the function returns early
 #' without overwriting anything. If only some files are present (indicating a
@@ -23,9 +24,9 @@
 #' }
 #'
 #' @section Concurrency:
-#' DuckDB allows concurrent readers but has write constraints depending on the
-#' underlying storage and process model. If you run parallel download workers,
-#' use one database directory per worker and merge results afterwards.
+#' SQLite allows concurrent readers but only one writer at a time. If you run
+#' parallel download workers, use one database directory per worker and merge
+#' results afterwards.
 #'
 #' @return Invisibly returns `TRUE`. Called for its side effects (creating
 #'   files under `db/`).
@@ -41,7 +42,7 @@
 #'
 #' @export
 #' @importFrom DBI dbConnect dbDisconnect dbExecute
-#' @importFrom duckdb duckdb
+#' @importFrom RSQLite SQLite
 
 initialize_db <- function() {
   .ensure_db_dir()
@@ -54,16 +55,16 @@ initialize_db <- function() {
 
   # Schema definition (DuckDB SQL)
   schema_sql <- c(
-    "CREATE TABLE batch_keywords(type VARCHAR, batch INTEGER, keyword VARCHAR);",
-    "CREATE TABLE batch_time(type VARCHAR, batch INTEGER, start_date VARCHAR, end_date VARCHAR);",
-    "CREATE TABLE data_control(location VARCHAR, keyword VARCHAR, date DATE, hits DOUBLE, batch INTEGER);",
-    "CREATE TABLE data_object(location VARCHAR, keyword VARCHAR, date DATE, hits DOUBLE, batch_c INTEGER, batch_o INTEGER);",
-    "CREATE TABLE data_score(location VARCHAR, keyword VARCHAR, date DATE, score DOUBLE, batch_c INTEGER, batch_o INTEGER);",
-    "CREATE TABLE data_doi(keyword VARCHAR, date DATE, gini DOUBLE, hhi DOUBLE, entropy DOUBLE, batch_c INTEGER, batch_o INTEGER, locations VARCHAR);",
-    "CREATE TABLE data_locations(location VARCHAR, type VARCHAR);",
-    "CREATE TABLE data_region(term VARCHAR, location VARCHAR, start_date DATE, end_date DATE, region_code VARCHAR, region_name VARCHAR, hits DOUBLE, batch_o INTEGER);",
-    "CREATE TABLE data_related(term VARCHAR, topic BOOLEAN, rising BOOLEAN, location VARCHAR, start_date DATE, end_date DATE, related_term VARCHAR, hits DOUBLE, batch_o INTEGER);",
-    "CREATE TABLE keyword_synonyms(keyword VARCHAR, synonym VARCHAR);",
+    "CREATE TABLE batch_keywords(type TEXT, batch INTEGER, keyword TEXT);",
+    "CREATE TABLE batch_time(type TEXT, batch INTEGER, start_date TEXT, end_date TEXT);",
+    "CREATE TABLE data_control(location TEXT, keyword TEXT, date DATE, hits REAL, batch INTEGER);",
+    "CREATE TABLE data_object(location TEXT, keyword TEXT, date DATE, hits REAL, batch_c INTEGER, batch_o INTEGER);",
+    "CREATE TABLE data_score(location TEXT, keyword TEXT, date DATE, score REAL, batch_c INTEGER, batch_o INTEGER);",
+    "CREATE TABLE data_doi(keyword TEXT, date DATE, gini REAL, hhi REAL, entropy REAL, batch_c INTEGER, batch_o INTEGER, locations TEXT);",
+    "CREATE TABLE data_locations(location TEXT, type TEXT);",
+    "CREATE TABLE data_region(term TEXT, location TEXT, start_date DATE, end_date DATE, region_code TEXT, region_name TEXT, hits REAL, batch_o INTEGER);",
+    "CREATE TABLE data_related(term TEXT, topic INTEGER, rising INTEGER, location TEXT, start_date DATE, end_date DATE, related_term TEXT, hits REAL, batch_o INTEGER);",
+    "CREATE TABLE keyword_synonyms(keyword TEXT, synonym TEXT);",
     "CREATE INDEX idx_doi_batch ON data_doi(batch_o);",
     "CREATE INDEX idx_control_batch ON data_control(batch);",
     "CREATE INDEX idx_locations_loc ON data_locations(location);",
@@ -76,8 +77,8 @@ initialize_db <- function() {
     "CREATE INDEX idx_time_batch ON batch_time(batch);"
   )
 
-  con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
-  on.exit(dbDisconnect(con, shutdown = TRUE), add = TRUE)
+  con <- dbConnect(RSQLite::SQLite(), ":memory:", extended_types = TRUE)
+  on.exit(dbDisconnect(con), add = TRUE)
 
   for (sql in schema_sql) dbExecute(con, sql)
 
@@ -170,26 +171,17 @@ initialize_db <- function() {
 }
 
 #' @description
-#' Export all tables in `con` as Parquet files to `path` using DuckDB's
-#' `EXPORT DATABASE` statement, then remove the `load.sql` / `schema.sql`
-#' helper files that DuckDB writes alongside the data files.
+#' Export all tables in `con` as Parquet files to `path` using
+#' `arrow::write_parquet()`.
 #' @keywords internal
 #' @noRd
 
 .export_db_to_parquet <- function(con, path = "db") {
-  dbExecute(
-    con,
-    paste0(
-      "EXPORT DATABASE '",
-      path,
-      "' (FORMAT parquet, USE_TMP_FILE false);"
-    )
-  )
-
-  # DuckDB export creates helper SQL files; remove to keep db/ tidy
-  helper_sql <- file.path(path, c("load.sql", "schema.sql"))
-  suppressWarnings(file.remove(helper_sql))
-
+  tables <- .list_files()
+  for (tbl_name in tables) {
+    df <- DBI::dbReadTable(con, tbl_name)
+    arrow::write_parquet(df, file.path(path, paste0(tbl_name, ".parquet")))
+  }
   invisible(TRUE)
 }
 
@@ -199,16 +191,16 @@ initialize_db <- function() {
 
 #' Start a database session
 #'
-#' Loads the Parquet-backed store under `db/` into an in-memory DuckDB
+#' Loads the Parquet-backed store under `db/` into an in-memory SQLite
 #' connection and registers lazy `dplyr` table handles and cached tibbles in
 #' `gt.env`.
 #'
 #' @details
 #' Requires [initialize_db()] to have been run in the current working
-#' directory. All Parquet files are read into an in-memory DuckDB instance;
+#' directory. All Parquet files are read into an in-memory SQLite instance;
 #' the following bindings are written to `gt.env`:
 #' \describe{
-#'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory DuckDB
+#'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory SQLite
 #'     instance.}
 #'   \item{`keywords_control`, `keywords_object`}{Data frames of control and
 #'     object keywords by batch (without the `type` column).}
@@ -233,8 +225,8 @@ initialize_db <- function() {
 #'
 #' @export
 #' @importFrom DBI dbConnect dbExecute
-#' @importFrom dbplyr translate_sql
-#' @importFrom duckdb duckdb
+#' @importFrom dbplyr sql
+#' @importFrom RSQLite SQLite
 #' @importFrom dplyr tbl
 
 start_db <- function() {
@@ -246,16 +238,19 @@ start_db <- function() {
     )
   }
 
-  con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
+  con <- dbConnect(RSQLite::SQLite(), ":memory:", extended_types = TRUE)
   assign("globaltrends_db", con, envir = gt.env)
 
-  # Import Parquet tables into the in-memory DB
+  # Import Parquet tables into the in-memory DB (ReadableFile avoids
+  # memory-mapping so the files can be overwritten later on Windows)
   tables <- .list_files()
-  import_sql <- paste0(
-    "CREATE TABLE ", tables,
-    " AS SELECT * FROM read_parquet('db/", tables, ".parquet');"
-  )
-  for (sql in import_sql) dbExecute(con, sql)
+  for (tbl_name in tables) {
+    pq_path <- file.path("db", paste0(tbl_name, ".parquet"))
+    raw_file <- arrow::ReadableFile$create(pq_path)
+    df <- as.data.frame(arrow::read_parquet(raw_file))
+    raw_file$close()
+    DBI::dbWriteTable(con, tbl_name, df)
+  }
 
   # Cache small, frequently-used tables as in-memory data frames
   keywords_control <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'control'")
@@ -293,13 +288,13 @@ start_db <- function() {
 
 #' Disconnect from the database and persist changes
 #'
-#' Exports the current in-memory DuckDB state to the Parquet store under
+#' Exports the current in-memory SQLite state to the Parquet store under
 #' `db/` and closes the DBI connection.
 #'
 #' @details
 #' Call this function after all downloads and computations are complete. It
 #' overwrites the Parquet files under `db/` with the current in-memory state
-#' and then shuts down the DuckDB instance. `gt.env$globaltrends_db` is set
+#' and then closes the SQLite connection. `gt.env$globaltrends_db` is set
 #' to `NULL` afterwards; all lazy `tbl_*` handles become invalid.
 #'
 #' Data written to the in-memory database during the session will be **lost**
@@ -331,7 +326,7 @@ disconnect_db <- function() {
 
   .export_db_to_parquet(gt.env$globaltrends_db)
 
-  dbDisconnect(conn = gt.env$globaltrends_db, shutdown = TRUE)
+  dbDisconnect(conn = gt.env$globaltrends_db)
 
   nulls <- list(
     globaltrends_db = NULL,

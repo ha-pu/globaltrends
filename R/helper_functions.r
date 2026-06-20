@@ -407,8 +407,8 @@
         sprintf(
           "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
           in_batch_o,
-          tolower(as.character(in_topic)),
-          tolower(as.character(in_rising))
+          as.integer(in_topic),
+          as.integer(in_rising)
         )
       )$location
     },

@@ -11,13 +11,13 @@ Invisibly returns \code{TRUE}. Called for its side effects (writing
 files under \verb{db/} and closing the connection).
 }
 \description{
-Exports the current in-memory DuckDB state to the Parquet store under
+Exports the current in-memory SQLite state to the Parquet store under
 \verb{db/} and closes the DBI connection.
 }
 \details{
 Call this function after all downloads and computations are complete. It
 overwrites the Parquet files under \verb{db/} with the current in-memory state
-and then shuts down the DuckDB instance. \code{gt.env$globaltrends_db} is set
+and then closes the SQLite connection. \code{gt.env$globaltrends_db} is set
 to \code{NULL} afterwards; all lazy \verb{tbl_*} handles become invalid.
 
 Data written to the in-memory database during the session will be \strong{lost}
