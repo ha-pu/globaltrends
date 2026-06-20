@@ -32,7 +32,9 @@ Imports:
     stats (>= 3.5.0),
     utils (>= 3.5.0)
 Suggests:
+    ggplot2 (>= 3.3.0),
     knitr (>= 1.29),
+    lubridate (>= 1.7.0),
     rmarkdown (>= 2.3),
     testthat (>= 3.0.0),
     withr (>= 2.5.0)
