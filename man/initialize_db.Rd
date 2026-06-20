@@ -2,57 +2,52 @@
 % Please edit documentation in R/database_functions.r
 \name{initialize_db}
 \alias{initialize_db}
-\title{Initialize database}
+\title{Initialize the local database store}
 \usage{
 initialize_db()
 }
 \value{
-Database is created.
+Invisibly returns \code{TRUE}. Called for its side effects (creating
+files under \verb{db/}).
 }
 \description{
-The function creates a new database for the \code{globaltrends} package and
-creates all necessary tables within the database.
+Creates the local database store used by \code{globaltrends} in the current
+working directory and initializes all required tables and indexes.
 }
 \details{
-The function creates a new SQLite database for the \code{globaltrends}
-package. The database is saved as file \emph{db/globaltrends_db.sqlite} in
-the working directory. If the folder \emph{db} does not exists in the working
-directory, the folder is created. If the database already exists in the
-working directory, the function exits with an error. Within the database all
-tables are created and the default location sets are added to the respective
-table:
-\itemize{
-\item \emph{countries} - all countries with a share in global GDP >= 0.1\\%
-in 2018.
-\item \emph{us_states} - all US federal states and Washington DC.
-}
-After creating the database, the function disconnects from the database.
-}
-\section{Warning}{
+The package uses DuckDB with a Parquet-backed persistence layout under the
+\verb{db/} folder. \code{initialize_db()} creates a transient in-memory DuckDB
+database, builds the schema, populates default location sets, and exports
+the result as Parquet files to \verb{db/}. The in-memory connection is closed
+before the function returns; call \code{\link[=start_db]{start_db()}} to open a working session.
 
-SQLite databases only allow one writer at any instant in time. To run
-parallel downloads use one database for each download client and merge them
-once all downloads are complete.
+If all required Parquet files already exist the function returns early
+without overwriting anything. If only some files are present (indicating a
+partial or corrupted store) the function stops with an error.
+
+Default location sets written to \code{data_locations}:
+\describe{
+\item{\code{countries}}{ISO 3166-1 alpha-2 codes for countries above the GDP
+share threshold (see \link{countries}).}
+\item{\code{us_states}}{ISO 3166-2 codes for US states and Washington DC
+(see \link{us_states}).}
+}
+}
+\section{Concurrency}{
+
+DuckDB allows concurrent readers but has write constraints depending on the
+underlying storage and process model. If you run parallel download workers,
+use one database directory per worker and merge results afterwards.
 }
 
 \examples{
 \dontrun{
 initialize_db()
+start_db()
 }
 
 }
 \seealso{
-\itemize{
-\item \code{\link[=start_db]{start_db()}}
-\item \code{\link[=disconnect_db]{disconnect_db()}}
-\item \code{\link[=countries]{countries()}}
-\item \code{\link[=us_states]{us_states()}}
-\item \code{\link[=example_keywords]{example_keywords()}}
-\item \code{\link[=example_time]{example_time()}}
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=example_doi]{example_doi()}}
-\item \url{https://www.sqlite.org/index.html}
-}
+\code{\link[=start_db]{start_db()}} to open a working session after initialization;
+\code{\link[=disconnect_db]{disconnect_db()}} to persist changes and close the session.
 }

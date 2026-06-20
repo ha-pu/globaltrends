@@ -1,42 +1,40 @@
-#' @title Aggregate search scores for synonym terms
+#' @title Aggregate search scores across synonym terms
 #'
 #' @description
-#' The function aggregates search scores for object keywords across synonyms
-#' defined through `add_synonyms`. Users should run this funciton **after**
-#' running `compute_score`. Then, search scores will be added and the synonym
-#' terms removed from the *data_score* table. For efficiency reasons, the
-#' function uses `purrr::map` to iterate across `batch_o`.
+#' Merges synonym keyword scores into their canonical keyword scores in
+#' `data_score`. Run this after [compute_score()]. Synonym relationships are
+#' defined with [add_synonym()].
 #'
 #' @details
-#' The function proceeds in five steps:
+#' For a given `control` batch (`batch_c`), this function:
+#' \enumerate{
+#'   \item Retrieves all canonical-synonym pairs and their associated object
+#'   batches (`batch_o`) in a single database query.
+#'   \item Pulls the relevant `data_score` rows, remaps synonym rows onto their
+#'   canonical keyword, and sums scores across duplicates.
+#'   \item Deletes the affected `data_score` rows for those object batches.
+#'   \item Writes the aggregated rows back to `data_score`.
+#'   \item Optionally calls [vacuum_data()] to reclaim disk space.
+#' }
 #'
-#' 1. Export data from the database using `purrr::map_dfr`
-#' 2. Aggreagate score data from synonyms to main term
-#' 3. Remove batches that include synonyms from the database using `purrr::walk`
-#' 4. If `vacuum = TRUE`, run `vacuum_data()` on the database
-#' 5. Write aggregated data to the database using `purrr::walk`
+#' The delete-and-reinsert pattern can be slow for large datasets. Vacuuming
+#' adds the most overhead and can be deferred by setting `vacuum = FALSE`.
 #'
-#' During these steps, `map_dfr` and `walk` calls return progress information
-#' through `.progress = TRUE`.
+#' @param control Numeric/integer scalar. The control batch id (`batch_c`),
+#'   identifying the reference search used for score normalisation. In most
+#'   single-control setups this is `1`.
 #'
-#' @section Note:
-#' The aggregation of synonyms can be very time-consuming when using a large
-#' dataset! Particulalry, the `vacuum_data()` call can require substantial time
-#' to run.
+#' @param vacuum Logical scalar. If `TRUE` (default), calls [vacuum_data()]
+#'   after aggregation to reclaim space freed by the row deletions.
 #'
-#' @param control Control batch for which the data is downloaded. Object
-#' of type `numeric`. Defaults to 1.
-#'
-#' @param vacuum Indicator whether the function should call `vacuum_data()`.
-#' Object of type `logical`. Defaults to `TRUE`.
+#' @return
+#' Invisibly returns a data frame of the rows written to `data_score`. Called
+#' primarily for its side effects (database modifications).
 #'
 #' @seealso
-#' * [add_synonym()]
-#' * [vacuum_data()]
-#'
-#' @return Message that the aggregation of synonyms is complete. During the
-#' aggregation process, messages regarding each step. The function shows the
-#' `purrr::map_dfr` and `purrr:walk` progress bars.
+#' [compute_score()] to populate `data_score` before aggregating,
+#' [add_synonym()] to define synonym relationships,
+#' [vacuum_data()] for manual space reclamation.
 #'
 #' @examples
 #' \dontrun{
@@ -47,141 +45,124 @@
 #' @export
 #' @rdname aggregate_synonyms
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
-#' @importFrom dplyr anti_join
-#' @importFrom dplyr inner_join
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom purrr map_dfr
-#' @importFrom purrr walk
-#' @importFrom rlang .data
-#' @importFrom rlang env_parent
+#' @importFrom stats aggregate
 
 aggregate_synonyms <- function(control, vacuum = TRUE) {
   .check_length(control, 1)
   .check_batch(control)
   .check_input(vacuum, "logical")
+  .check_length(vacuum, 1)
 
-  lst_org_syn <- inner_join(
-    gt.env$tbl_keywords,
-    gt.env$tbl_synonyms,
-    by = "keyword"
-  )
-  lst_org_syn <- collect(lst_org_syn)
+  con <- gt.env$globaltrends_db
 
-  lst_syn_org <- inner_join(
-    gt.env$tbl_synonyms,
-    gt.env$tbl_keywords,
-    by = c("synonym" = "keyword")
-  )
-  lst_syn_org <- collect(lst_syn_org)
-
-  lst_batch <- c(
-    lst_org_syn$batch,
-    lst_syn_org$batch
-  )
-  lst_batch <- unique(lst_batch)
-
-  message("Start exporting from DB.")
-  df_score <- map_dfr(
-    lst_batch,
-    ~ {
-      out <- filter(
-        gt.env$tbl_score,
-        .data$batch_o == .x & .data$batch_c == control
-      )
-      out <- collect(out)
-      return(out)
-    },
-    .progress = TRUE
+  # -----------------------------------------------------------------------
+  # 1) Build canonical<->synonym mapping with both object batches in one query.
+  # -----------------------------------------------------------------------
+  syn_map <- DBI::dbGetQuery(
+    con,
+    "SELECT ks.keyword AS keyword_canonical,
+            ks.synonym AS keyword_synonym,
+            bk_c.batch AS batch_o_canonical,
+            bk_s.batch AS batch_o_synonym
+     FROM keyword_synonyms ks
+     INNER JOIN batch_keywords bk_c ON bk_c.keyword = ks.keyword  AND bk_c.type = 'object'
+     INNER JOIN batch_keywords bk_s ON bk_s.keyword = ks.synonym AND bk_s.type = 'object'"
   )
 
-  df_score_s <- inner_join(
-    lst_syn_org,
-    lst_org_syn,
-    by = c("keyword", "synonym")
-  )
-  df_score_s <- select(
-    df_score_s,
-    batch_oo = batch.y,
-    keyword_o = keyword,
-    batch_os = batch.x,
-    keyword_s = synonym
-  )
-  df_score_s <- inner_join(
-    df_score_s,
-    df_score,
-    by = c("batch_os" = "batch_o", "keyword_s" = "keyword")
-  )
-  df_score_s <- summarise(
-    df_score_s,
-    score = sum(.data$score, na.rm = TRUE),
-    .by = c(
-      batch_oo,
-      keyword_o,
-      location,
-      date,
-      batch_c
+  if (nrow(syn_map) == 0) {
+    message("No synonym mappings found in the database. Nothing to aggregate.")
+    return(invisible(data.frame()))
+  }
+
+  affected_batches <- unique(c(
+    syn_map$batch_o_canonical,
+    syn_map$batch_o_synonym
+  ))
+  batch_in <- paste(affected_batches, collapse = ", ")
+
+  # -----------------------------------------------------------------------
+  # 2) Pull relevant score rows for affected object batches.
+  # -----------------------------------------------------------------------
+  score_tbl <- DBI::dbGetQuery(
+    con,
+    sprintf(
+      "SELECT * FROM data_score WHERE batch_c = %d AND batch_o IN (%s)",
+      control,
+      batch_in
     )
   )
-  df_score_s <- rename(
-    df_score_s,
-    batch_o = batch_oo,
-    keyword = keyword_o
-  )
+  score_tbl$date <- as.Date(score_tbl$date)
 
-  df_score_o <- anti_join(
-    df_score,
-    lst_syn_org,
-    by = c("batch_o" = "batch", "keyword" = "synonym")
-  )
-
-  df_score_new <- bind_rows(
-    df_score_o,
-    df_score_s
-  )
-  df_score_new <- summarise(
-    df_score_new,
-    score = sum(.data$score, na.rm = TRUE),
-    .by = c(
-      batch_o,
-      keyword,
-      location,
-      date,
-      batch_c
+  if (nrow(score_tbl) == 0) {
+    message(
+      "No score data found for the specified control batch and affected object batches."
     )
+    return(invisible(data.frame()))
+  }
+
+  # -----------------------------------------------------------------------
+  # 3) Compute synonym rollups.
+  # -----------------------------------------------------------------------
+  merged <- merge(
+    syn_map,
+    score_tbl,
+    by.x = c("batch_o_synonym", "keyword_synonym"),
+    by.y = c("batch_o", "keyword")
   )
 
-  message("Start removing from DB.")
-  walk(
-    lst_batch,
-    ~ remove_data(table = "data_score", control = control, object = .x),
-    .progress = TRUE
+  score_syn_rolled <- aggregate(
+    score ~ batch_o_canonical + keyword_canonical + location + date + batch_c,
+    data = merged,
+    FUN = function(x) sum(x, na.rm = TRUE)
+  )
+  names(score_syn_rolled)[
+    names(score_syn_rolled) == "batch_o_canonical"
+  ] <- "batch_o"
+  names(score_syn_rolled)[
+    names(score_syn_rolled) == "keyword_canonical"
+  ] <- "keyword"
+
+  syn_key <- paste(syn_map$batch_o_synonym, syn_map$keyword_synonym)
+  score_non_syn <- score_tbl[
+    !paste(score_tbl$batch_o, score_tbl$keyword) %in% syn_key,
+  ]
+
+  score_combined <- rbind(score_non_syn, score_syn_rolled)
+  score_new <- aggregate(
+    score ~ batch_o + keyword + location + date + batch_c,
+    data = score_combined,
+    FUN = function(x) sum(x, na.rm = TRUE)
   )
 
-  if (vacuum) {
-    message("Start vacuum_data().")
+  if (nrow(score_new) == 0) {
+    message("Aggregation produced no rows. No database changes were made.")
+    return(invisible(data.frame()))
+  }
+
+  # -----------------------------------------------------------------------
+  # 4) Replace affected rows in `data_score`
+  # -----------------------------------------------------------------------
+  for (batch in affected_batches) {
+    remove_data(table = "data_score", control = control, object = batch)
+  }
+
+  dbAppendTable(
+    conn = gt.env$globaltrends_db,
+    name = "data_score",
+    value = score_new
+  )
+
+  message(
+    "Successfully aggregated synonyms into canonical keywords for data_score."
+  )
+
+  # -----------------------------------------------------------------------
+  # 5) Optional vacuum
+  # -----------------------------------------------------------------------
+  if (isTRUE(vacuum)) {
+    message("Running vacuum_data() to reclaim disk space.")
     vacuum_data()
   }
 
-  message("Start appending to DB.")
-  walk(
-    lst_batch,
-    ~ {
-      df <- filter(df_score_new, .data$batch_o == .x)
-      if (nrow(df) > 0) {
-        dbAppendTable(
-          conn = gt.env$globaltrends_db,
-          name = "data_score",
-          value = df
-        )
-      }
-    },
-    .progress = TRUE
-  )
-
-  message("Successfully aggregated synonyms.")
+  invisible(score_new)
 }

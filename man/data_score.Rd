@@ -4,50 +4,49 @@
 \name{data_score}
 \alias{data_score}
 \alias{example_score}
-\title{data_score}
+\title{Example table: computed scores (\code{data_score})}
 \format{
-A tibble with 6,000 rows and 7 variables:
+A tibble with 6 variables:
 \describe{
-\item{location}{Column of type \code{character} showing the ISO2 code of
-the country or region for which the data was computed.}
-\item{keyword}{Column of type \code{character} showing the keyword for
-which the data was downloaded.}
-\item{date}{Column of type \code{integer} showing the date for which the
-data was computed Can be transformed into date format with
-\code{lubridate::as_date}.}
-\item{score}{Column of type \code{double} showing search score for the
-respective location-keyword-date combination.}
-\item{batch_c}{Column of type \code{integer} showing the number of each
-control batch.}
-\item{batch_o}{Column of type \code{integer} showing the number of each
-object batch.}
+\item{location}{Character. Location code. Global data uses \code{"world"}.}
+\item{keyword}{Character. Object keyword.}
+\item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+\code{as.Date(date, origin = "1970-01-01")}.}
+\item{score}{Double. Normalised search interest (object hits divided by
+total mapped control hits). Non-negative; 0 when no control data are
+available.}
+\item{batch_c}{Integer. Control batch id used as baseline.}
+\item{batch_o}{Integer. Object batch id.}
 }
 }
 \usage{
 example_score
 }
 \description{
-The table \emph{data_score} contains the search scores for each object batch.
-Each line contains the search score (\emph{score}) for each \emph{keyword} in an
-object \emph{batch_o} for a given \emph{location} and \emph{date}. The column
-\emph{batch_c} indicates the control batch that has been used as baseline
-for mapping. Global data takes the value \emph{world} as location. Search
-scores are computed and automatically written to the table with the function
-\code{compute_score}. The function \code{start_db} exports the table
-\emph{data_score} as database connection \code{tbl_score} to
-the package environment \code{gt.env}. Users can access the database
-table through \code{dplyr::tbl}.
-The sample data included in \code{data_score} was simulated based on actual
-Google Trends data.
+Example data representing the database table \code{data_score}.
+Each row contains a computed \code{score} for an object \code{keyword} in a given
+\code{location} on a given \code{date}, along with the associated control batch
+(\code{batch_c}) and object batch (\code{batch_o}).
 
-Example data for the table \emph{data_score} is available as R object
-\code{example_score}.
+Scores are computed by \code{\link[=compute_score]{compute_score()}} as:
+\deqn{score = \frac{hits_o}{\sum_{k \in C} \tilde{hits}_k}}
+where \eqn{hits_o} are object search volumes and \eqn{\tilde{hits}_k} are
+control keyword hits mapped to the object scale via an overlap-based
+benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
+greater than 1 are possible when object interest exceeds control interest.
+
+In a live database, scores are queryable through \code{gt.env$globaltrends_db}
+after \code{\link[=start_db]{start_db()}}. Global aggregates use \code{"world"} as \code{location}.
+
+The example dataset is simulated to resemble outputs derived from real
+Google Trends data.
+}
+\references{
+Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+Uncertainty index for the United States and Australia. \emph{Economics Letters},
+\emph{161}, 149--153. \doi{10.1016/j.econlet.2017.09.032}
 }
 \seealso{
-\itemize{
-\item \code{\link[=compute_score]{compute_score()}}
-\item \code{\link[=compute_voi]{compute_voi()}}
-\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
-}
+\code{\link[=compute_score]{compute_score()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

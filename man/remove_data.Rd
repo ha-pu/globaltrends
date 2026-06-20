@@ -10,50 +10,123 @@ remove_data(table, control = NULL, object = NULL)
 vacuum_data()
 }
 \arguments{
-\item{table}{Database table from which the batch should be removed.  Object
-of type \code{character}.}
+\item{table}{Character scalar. The table to delete from. One of
+\code{"batch_keywords"}, \code{"batch_time"}, \code{"data_control"}, \code{"data_object"},
+\code{"data_score"}, \code{"data_doi"}, \code{"data_related"}, \code{"data_region"}.
+See the argument requirements table in Details for which of \code{control}
+and \code{object} are required, optional, or ignored for each table.}
 
-\item{control}{Control batch for which the data is removed Object
-of type \code{numeric}.}
+\item{control}{Optional integer-like scalar. Control batch id.
+\itemize{
+\item \strong{Required} for \code{table = "data_control"}.
+\item \strong{Exactly one} of \code{control} or \code{object} for \code{"batch_keywords"} and
+\code{"batch_time"}.
+\item \strong{At least one} of \code{control} or \code{object} for \code{"data_object"},
+\code{"data_score"}, and \code{"data_doi"}.
+\item \strong{Ignored} (with a warning) for \code{"data_related"} and \code{"data_region"}.
+}}
 
-\item{object}{Object batch for which the data is removed Object
-of type \code{numeric}.}
+\item{object}{Optional integer-like scalar. Object batch id.
+\itemize{
+\item \strong{Required} for \code{table = "data_related"} and \code{"data_region"}.
+\item \strong{Exactly one} of \code{control} or \code{object} for \code{"batch_keywords"} and
+\code{"batch_time"}.
+\item \strong{At least one} of \code{control} or \code{object} for \code{"data_object"},
+\code{"data_score"}, and \code{"data_doi"}.
+\item \strong{Ignored} (with a warning) for \code{"data_control"}.
+}}
 }
 \value{
-Message that data has been removed successfully. Data is removed
-from database tables.
+Invisibly returns \code{TRUE} on success. The function is called for its side
+effects (deleting rows).
+
+Invisibly returns \code{TRUE} on success.
 }
 \description{
-The function removes data from database tables for control or object batches.
+Removes batches and derived data from the database. Deletions are \emph{greedy}:
+all downstream tables that depend on the deleted entry are automatically
+cleaned up to keep the database consistent.
+
+Reclaims unused disk space by running \code{VACUUM} on the underlying database.
+Call this after bulk deletions via \code{\link[=remove_data]{remove_data()}} to compact the file and
+free storage.
 }
 \details{
-The function removes data "greedily": all data that builds on the deleted
-data is removed. For example, when data from \emph{data_control} is removed
-data in \emph{data_object} that maps to this control batch is also removed.
-The dependency structure works as follows: \emph{batch_keyword} / \emph{batch_time} ->
-\emph{data_control} -> \emph{data_object} -> \emph{data_score} -> \emph{data_doi}.
+\subsection{Dependency chain}{
 
-After using \code{remove_data}, run \code{vacuum_data} to free-up unused memory in
-the database file. Depending on the database size, \code{vacuum_data} might
-take some minutes for execution.
+Deletions cascade through the following dependency graph:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{batch_keywords / batch_time
+       |
+       v
+  data_control
+       |
+       v
+  data_object ---> data_related
+       |      \\--> data_region
+       v
+  data_score
+       |
+       v
+   data_doi
+}\if{html}{\out{</div>}}
+
+For example:
+\itemize{
+\item Deleting a control batch from \code{data_control} removes all \code{data_object}
+rows for that control, then the associated \code{data_score}, \code{data_doi},
+\code{data_related}, and \code{data_region} rows.
+\item Deleting an object batch from \code{batch_keywords} removes the corresponding
+\code{batch_time} entry, all \code{data_object} rows for that object batch, and
+everything downstream.
+}
+}
+
+\subsection{Argument requirements by table}{\tabular{lll}{
+   \code{table} \tab \code{control} \tab \code{object} \cr
+   \code{"batch_keywords"}, \code{"batch_time"} \tab exactly one of \tab exactly one of \cr
+   \code{"data_control"} \tab required \tab ignored \cr
+   \code{"data_object"}, \code{"data_score"}, \code{"data_doi"} \tab at least one of \tab at least one of \cr
+   \code{"data_related"}, \code{"data_region"} \tab ignored \tab required \cr
+}
+
+
+After deletions, consider running \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space.
+Vacuuming can take several minutes for large database files.
+}
+
+For SQLite-based backends, \code{VACUUM} rewrites the entire database file in
+place and may take several minutes for large databases. No data is modified;
+only free pages are reclaimed.
 }
 \examples{
 \dontrun{
-remove_data(
-  table = "batch_keywords",
-  control = 1
-)
-remove_data(
-  table = "data_score",
-  control = 1,
-  object = 1
-)
+# Remove a control keyword batch and all data derived from it
+remove_data(table = "batch_keywords", control = 1)
+
+# Remove an object keyword batch and all data derived from it
+remove_data(table = "batch_keywords", object = 1)
+
+# Remove all object data linked to a control batch
+remove_data(table = "data_object", control = 1)
+
+# Remove scores for one specific control-object combination
+remove_data(table = "data_score", control = 1, object = 1)
+
+# Remove related-query data for an object batch
+remove_data(table = "data_related", object = 1)
+
+# Remove regional breakdown data for an object batch
+remove_data(table = "data_region", object = 1)
+
+# Reclaim disk space after bulk deletions
 vacuum_data()
 }
 
 }
 \seealso{
 \itemize{
+\item \code{\link[=vacuum_data]{vacuum_data()}}
 \item \code{\link[=example_keywords]{example_keywords()}}
 \item \code{\link[=example_time]{example_time()}}
 \item \code{\link[=example_control]{example_control()}}

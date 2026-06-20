@@ -8,7 +8,7 @@
 \alias{export_score}
 \alias{export_voi}
 \alias{export_doi}
-\title{Export data from database table}
+\title{Export data from database tables}
 \usage{
 export_control(control = NULL, location = NULL)
 
@@ -25,95 +25,97 @@ export_voi(keyword = NULL, object = NULL, control = NULL)
 export_doi(keyword = NULL, object = NULL, control = NULL, locations = NULL)
 }
 \arguments{
-\item{control}{Control batch number for which data should be exported. Only
-for \code{export_control} and \code{export_control_global}, input is also possible as
-list.}
+\item{control}{Integer scalar batch id for control data (\code{batch_c} or
+\code{batch}).}
 
-\item{location}{List of locations for which the data is exported. Refers to
-lists generated in \code{start_db} or \code{character} objects in these lists. Only for
-\code{export_control}, \code{export_object}, or \code{export_score}.}
+\item{location}{Character vector (or list coercible via \code{unlist()}) of
+location codes to filter by (e.g., values from \link{countries} or
+\link{us_states}).}
 
-\item{keyword}{Object keywords for which data should be exported. Object or
-list of objects of type \code{character}.}
+\item{keyword}{Character vector (or list coercible via \code{unlist()}) of object
+keywords to export. When provided, overrides \code{object}.}
 
-\item{object}{Object batch number for which data should be exported.}
+\item{object}{Integer scalar batch id for object data (\code{batch_o}). Ignored
+if \code{keyword} is supplied.}
 
-\item{locations}{List of locations for which the data is exported. Refers to
-names of lists generated in \code{start_db} as an object of type \code{character}. Only
-for \code{export_doi}.}
+\item{locations}{Character scalar naming a location set (e.g.,
+\code{"countries"}, \code{"us_states"}). Applies to \code{export_doi()} only.}
 }
 \value{
-The functions export and filter the respective database tables.
+A data frame with the requested rows and a \code{date} column of class
+\code{Date}. Batch identifier columns are renamed for clarity:
 \itemize{
-\item \code{export_control} and \code{export_control_global} export data from table
-\code{data_control} with columns location, keyword, date, hits, control. Object
-of class \code{"data.frame"}. Methods are applied based on input \emph{control}.
-\item \code{export_object} and \code{export_object_global} export data from table
-\code{data_object} with columns location, keyword, date, hits, object. Object of
-class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
-\item \code{export_score} exports data from table \code{data_score} with
-columns location, keyword, date, score, control,
-object. Object of class \code{"data.frame"}. Methods are applied based on input
-\emph{keyword}.
-\item \code{export_voi} exports data from table \code{data_score} with
-columns keyword, date, score, control, filters for
-\code{location == "world"}. Object of class \code{"data.frame"}. Methods are applied
-based on input \emph{keyword}.
-\item \code{export_doi} exports data from table \code{data_doi} with columns
-keyword, date, gini, hhi, entropy, control, object, locations. Object
-of class \code{"data.frame"}. Methods are applied based on input \emph{keyword}.
+\item \code{export_control()}, \code{export_control_global()}: \code{location}, \code{keyword},
+\code{date}, \code{hits}, \code{control} (renamed from \code{batch}).
+\item \code{export_object()}, \code{export_object_global()}: \code{location}, \code{keyword},
+\code{date}, \code{hits}, \code{object} (from \code{batch_o}), \code{control} (from \code{batch_c}).
+\item \code{export_score()}, \code{export_voi()}: \code{location}, \code{keyword}, \code{date},
+\code{score}, \code{control} (from \code{batch_c}), \code{object} (from \code{batch_o}).
+\item \code{export_doi()}: \code{keyword}, \code{date}, \code{gini}, \code{hhi}, \code{entropy},
+\code{control} (from \code{batch_c}), \code{object} (from \code{batch_o}), \code{locations}.
 }
 }
 \description{
-The function allows to export data from database tables. In combination with
-various \emph{write} functions in R, the functions allow exports from the
-database to local files.
+Seven functions for exporting filtered subsets of the four computed data
+tables. Each function returns a data frame that can be passed directly to
+standard R I/O functions such as \code{readr::write_csv()} or
+\code{writexl::write_xlsx()}.\tabular{lll}{
+   Function \tab Source table \tab Location scope \cr
+   \code{export_control()} \tab \code{data_control} (control hits) \tab country/region level \cr
+   \code{export_control_global()} \tab \code{data_control} \tab world aggregate only \cr
+   \code{export_object()} \tab \code{data_object} (object hits) \tab country/region level \cr
+   \code{export_object_global()} \tab \code{data_object} \tab world aggregate only \cr
+   \code{export_score()} \tab \code{data_score} (normalized scores) \tab country/region level \cr
+   \code{export_voi()} \tab \code{data_score} \tab world aggregate only (VOI) \cr
+   \code{export_doi()} \tab \code{data_doi} (internationalization) \tab aggregated across locations \cr
+}
 }
 \details{
-Exports can be filtered by \emph{keyword}, \emph{object}, \emph{control}, \emph{location},
-\emph{locations}, or \emph{type}. Not all filters are applicable for all
-functions. When filter \emph{keyword} and \emph{object} are used together,
-\emph{keyword} overrules \emph{object}. When supplying \code{NULL} as input, no filter is
-applied to the variable.
+All filter arguments default to \code{NULL}, which disables that filter and
+returns all rows for that dimension. When \code{keyword} is provided it takes
+precedence over \code{object}: the \code{object} argument is silently ignored.
+
+Non-\verb{_global} functions (\code{export_control()}, \code{export_object()},
+\code{export_score()}) exclude the \code{"world"} aggregate row. The \verb{_global}
+counterparts (\code{export_control_global()}, \code{export_object_global()},
+\code{export_voi()}) return only the \code{"world"} row.
 }
 \examples{
 \dontrun{
+# Control hits for batch 2
 export_control(control = 2)
 
-export_object(
-  keyword = "manchester united",
-  locations = countries
-)
+# World-aggregate control hits
+export_control_global(control = 1)
 
-export_object(
-  keyword = c("manchester united", "real madrid")
-)
+# Object hits for a keyword across all locations
+export_object(keyword = "manchester united", location = countries)
 
-export_object(
-  keyword = list("manchester united", "real madrid")
-)
+# Object hits for multiple keywords
+export_object(keyword = c("manchester united", "real madrid"))
 
-export_score(
-  object = 3,
-  control = 1,
-  location = us_states
-) \%>\%
+# World-aggregate object hits
+export_object_global(keyword = "manchester united", control = 1)
+
+# Location-level scores, written to CSV
+export_score(object = 3, control = 1, location = us_states) |>
   readr::write_csv("data_score.csv")
 
-export_doi(
-  keyword = "manchester united",
-  control = 2,
-  locations = "us_states"
-) \%>\%
+# Volume of interest (world-aggregate scores)
+export_voi(keyword = "manchester united", control = 1)
+
+# Degree of internationalization for a keyword, written to Excel
+export_doi(keyword = "manchester united", control = 2, locations = "us_states") |>
   writexl::write_xlsx("data_doi.xlsx")
 }
 
 }
 \seealso{
 \itemize{
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=example_doi]{example_doi()}}
+\item \link{example_control}, \link{example_object}, \link{example_score}, \link{example_doi}
+for the column structure of each table.
+\item \code{\link[=download_control]{download_control()}}, \code{\link[=download_object]{download_object()}} to populate the source tables.
+\item \code{\link[=compute_score]{compute_score()}}, \code{\link[=compute_doi]{compute_doi()}} to compute scores and DOI metrics.
+\item \code{\link[=start_db]{start_db()}} to open a database session before exporting.
 }
 }

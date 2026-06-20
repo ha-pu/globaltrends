@@ -4,36 +4,35 @@
 \name{batch_keywords}
 \alias{batch_keywords}
 \alias{example_keywords}
-\title{batch_keywords}
+\title{Example table: keyword batches (\code{batch_keywords})}
 \format{
-A tibble with 19 rows and 3 variables:
+A tibble with 3 variables:
 \describe{
-\item{type}{Column of type \code{character} showing the type of each batch,
-takes "control" for control batches and "object" for object batches.}
-\item{batch}{Column of type \code{integer} showing the number of each
-batch.}
-\item{keyword}{Column of type \code{character} showing the keywords
-included in each batch.}
+\item{type}{Character. Batch type: \code{"control"} or \code{"object"}.}
+\item{batch}{Integer. Batch identifier within \code{type}.}
+\item{keyword}{Character. Keyword assigned to the batch.}
 }
 }
 \usage{
 example_keywords
 }
 \description{
-The table \emph{batch_keywords} contains the keywords for each batch. Each
-line contains one \emph{keyword}, the \emph{type} of the batch (i.e., control
-or object) and the id of the \emph{batch} to which the keyword is assigned.
-Keywords can be added with the function \code{add_keywords}. The function
-\code{start_db} exports the table \emph{batch_keywords} as objects
-\code{keywords_control} and \code{keywords_object} to the package environment
-\code{gt.env}.
+Example data representing the database table \code{batch_keywords}.
+Each row assigns a single \code{keyword} to a \code{batch} and a \code{type}
+(\code{"control"} or \code{"object"}).
 
-Example data for the table \emph{batch_keywords} is available as R object
-\code{example_keywords}.
+The example contains one control batch (5 keywords: gmail, maps, translate,
+wikipedia, youtube) and four object batches (14 object keywords covering
+football clubs and technology firms), all covering the period 2010-01 to
+2019-12.
+
+In a live database, keyword batches are created via \code{\link[=add_keyword]{add_keyword()}} and are
+exported to the package environment \code{gt.env} by \code{\link[=start_db]{start_db()}} as
+\code{gt.env$keywords_control} and \code{gt.env$keywords_object}. Control batches hold
+up to five keywords; object batches hold up to four (one slot is reserved for
+the overlap keyword used in score mapping).
 }
 \seealso{
-\itemize{
-\item \code{\link[=add_control_keyword]{add_control_keyword()}}
-}
+\code{\link[=add_keyword]{add_keyword()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

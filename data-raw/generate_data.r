@@ -41,7 +41,7 @@ kw_object <- tibble(
     c("amazon", "apple", "facebook", "google"),
     c("instagram", "microsoft", "netflix", "twitter")
   )
-) %>%
+) |>
   unnest(cols = keyword)
 
 example_keywords <- bind_rows(kw_control, kw_object)
@@ -76,14 +76,14 @@ out <- map(
   )
 )
 
-example_control <- stat_control %>%
-  select(location, keyword) %>%
+example_control <- stat_control |>
+  select(location, keyword) |>
   mutate(
     hits = out,
     date = lst_dates,
     batch = 1L
-  ) %>%
-  unnest(cols = c(hits, date)) %>%
+  ) |>
+  unnest(cols = c(hits, date)) |>
   mutate(hits = as.integer(hits))
 
 usethis::use_data(example_control, overwrite = TRUE)
@@ -99,14 +99,14 @@ out <- map(
   )
 )
 
-example_object <- stat_object %>%
-  select(location, keyword, batch_o) %>%
+example_object <- stat_object |>
+  select(location, keyword, batch_o) |>
   mutate(
     hits = out,
     date = lst_dates,
     batch_c = 1L
-  ) %>%
-  unnest(cols = c(hits, date)) %>%
+  ) |>
+  unnest(cols = c(hits, date)) |>
   mutate(hits = as.integer(hits))
 
 usethis::use_data(example_object, overwrite = TRUE)
@@ -122,19 +122,19 @@ out <- map(
   )
 )
 
-example_score <- stat_score %>%
-  select(location, keyword) %>%
-  left_join(example_keywords, by = "keyword") %>%
+example_score <- stat_score |>
+  select(location, keyword) |>
+  left_join(example_keywords, by = "keyword") |>
   select(
     location,
     keyword,
     batch_o = batch
-  ) %>%
+  ) |>
   mutate(
     score = out,
     date = lst_dates,
     batch_c = 1L
-  ) %>%
+  ) |>
   unnest(cols = c(score, date))
 
 usethis::use_data(example_score, overwrite = TRUE)
@@ -150,18 +150,18 @@ out <- map(
   )
 )
 
-example_doi <- stat_doi %>%
-  select(keyword, measure) %>%
-  left_join(example_keywords, by = "keyword") %>%
-  rename(batch_o = batch) %>%
-  select(-type) %>%
+example_doi <- stat_doi |>
+  select(keyword, measure) |>
+  left_join(example_keywords, by = "keyword") |>
+  rename(batch_o = batch) |>
+  select(-type) |>
   mutate(
     doi = out,
     date = lst_dates,
     batch_c = 1L,
     locations = "countries"
-  ) %>%
-  unnest(cols = c(doi, date)) %>%
+  ) |>
+  unnest(cols = c(doi, date)) |>
   pivot_wider(names_from = measure, values_from = doi)
 
 usethis::use_data(example_doi, overwrite = TRUE)

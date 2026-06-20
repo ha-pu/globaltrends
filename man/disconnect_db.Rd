@@ -2,32 +2,36 @@
 % Please edit documentation in R/database_functions.r
 \name{disconnect_db}
 \alias{disconnect_db}
-\title{Disconnect from database}
+\title{Disconnect from the database and persist changes}
 \usage{
 disconnect_db()
 }
 \value{
-Message that disconnection was successful.
+Invisibly returns \code{TRUE}. Called for its side effects (writing
+files under \verb{db/} and closing the connection).
 }
 \description{
-The function closes the connection to the database file
-\emph{db/globaltrends_db.sqlite} in the working directory.
+Exports the current in-memory DuckDB state to the Parquet store under
+\verb{db/} and closes the DBI connection.
 }
-\section{Warning}{
+\details{
+Call this function after all downloads and computations are complete. It
+overwrites the Parquet files under \verb{db/} with the current in-memory state
+and then shuts down the DuckDB instance. \code{gt.env$globaltrends_db} is set
+to \code{NULL} afterwards; all lazy \verb{tbl_*} handles become invalid.
 
-SQLite databases only allow one writer at any instant in time. To run
-parallel downloads use one database for each download client and merge them
-once all downloads are complete.
+Data written to the in-memory database during the session will be \strong{lost}
+if this function is not called before the R session ends.
 }
-
 \examples{
 \dontrun{
+start_db()
+# ... downloads and computations ...
 disconnect_db()
 }
+
 }
 \seealso{
-\itemize{
-\item \code{\link[=initialize_db]{initialize_db()}}
-\item \code{\link[=start_db]{start_db()}}
-}
+\code{\link[=initialize_db]{initialize_db()}} to create the store; \code{\link[=start_db]{start_db()}} to open a
+new session.
 }

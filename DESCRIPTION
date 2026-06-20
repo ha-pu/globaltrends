@@ -1,7 +1,7 @@
 Type: Package
 Package: globaltrends
 Title: Download and Measure Global Trends Through Google Search Volumes
-Version: 0.1.0
+Version: 0.2.0.9000
 Authors@R: c(
     person("Harald", "Puhr", email = "harald.puhr@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3308-9553")),
     person("Jakob", "Muellner", role = "ccp", comment = c(ORCID = "0000-0002-3443-0469"))
@@ -22,30 +22,28 @@ License: MIT + file LICENSE
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     DBI (>= 1.1.0),
-    dbplyr (>= 1.4.4),
-    dplyr (>= 1.1.1),
+    dbplyr (>= 2.1.0),
+    dplyr (>= 1.0.0),
+    duckdb (>= 1.3.2),
     gtrendsR (>= 1.5.1),
-    lubridate (>= 1.7.9),
-    purrr (>= 0.3.4),
     reticulate (>= 1.38),
-    rlang (>= 0.4.7),
-    RSQLite (>= 2.2.0),
-    stats (>= 3.5.0),
-    stringr (>= 1.4.0),
-    tibble (>= 3.0.3),
-    tidyr (>= 1.0.0),
-    utils (>= 3.5.0)
-Suggests: 
-    ggplot2 (>= 4.0.1),
+    stats (>= 3.5.0)
+Suggests:
+    ggplot2 (>= 3.3.0),
     knitr (>= 1.29),
+    lubridate (>= 1.7.0),
+    purrr (>= 0.3.0),
     rmarkdown (>= 2.3),
-    testthat (>= 2.3.2)
+    testthat (>= 3.0.0),
+    tibble (>= 3.0.0),
+    withr (>= 2.5.0)
+Config/testthat/edition: 3
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

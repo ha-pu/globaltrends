@@ -2,49 +2,77 @@
 % Please edit documentation in R/add_locations.r
 \name{add_locations}
 \alias{add_locations}
-\title{Add sets of locations}
+\title{Add a location set}
 \usage{
 add_locations(locations, type, export = TRUE)
 }
 \arguments{
-\item{locations}{Locations that should be added as set of locations. Vector of
-type \code{character}.}
+\item{locations}{Character vector of location codes to add. Each code must
+appear in \code{gtrendsR::countries$country_code} (country level) or
+\code{gtrendsR::countries$sub_code} (subnational level). Leading/trailing
+whitespace and duplicates are removed automatically.}
 
-\item{type}{Name of the location set that should be added. Object of type
-\code{character} of length 1.}
+\item{type}{Character scalar. Name of the location set to which \code{locations}
+should be added (e.g., \code{"DACH"}, \code{"EU"}). After export the set is
+available as \verb{gt.env$<type>}.}
 
-\item{export}{Indicator whether the new location set should be directly
-exported to the package environment \code{gt.env}. Object of type \code{logical},
-defaults to \code{TRUE}.}
+\item{export}{Logical scalar. If \code{TRUE} (default), \code{gt.env} is refreshed so
+the updated set is available immediately. Set to \code{FALSE} when calling
+\code{add_locations()} several times in sequence to avoid a redundant database
+read after each call; run \code{add_locations(..., export = TRUE)} on the final
+call, or restart the session, to make all sets available.}
 }
 \value{
-Message that the location set has been created successfully. Location data is
-written to table \emph{data_locations}.
+Invisibly returns a tibble of the rows appended to \code{data_locations} (columns:
+\code{location}, \code{type}). Returns a zero-row tibble when all supplied codes
+already exist in the set. A message is emitted in either case summarising
+how many codes were added and how many were skipped.
 }
 \description{
-The function adds a new set of locations for downloads and computations to
-the database. The location set serves as input for all download and
-computation functions.
+Adds location codes to a named \emph{location set} in the \code{data_locations}
+database table. A location set is a named group of codes (e.g.,
+\code{"countries"}, \code{"DACH"}) that is passed as the \code{locations} argument to
+download and computation functions. After insertion the set is immediately
+accessible as \verb{gt.env$<type>}.
 }
 \details{
-Location sets control the locations for which data is downloaded or to which
-computations are applied. By adding new location sets, the default sets
-\emph{countries} and \emph{us_states} can be expanded by additional sets.
-Thereby, users can compute DOI within a region (e.g., adding EU countries as
-a set) or single countries (e.g., adding regions of France as a set). Download
-and computation functions check whether data for a location already exists.
-Therefore, data will not be duplicated when location data already exists from
-another set.
-}
-\section{Warning}{
+The package ships with two default sets — \code{"countries"} and \code{"us_states"} —
+written to the database by \code{\link[=start_db]{start_db()}}. Use \code{add_locations()} to define
+additional sets such as \code{"EU"}, \code{"DACH"}, or subnational regions for a
+specific country.
 
-Unfortunately, the Google Trends API cannot handle the location
-"NA - Namibia". Therefore, the location will be dropped automatically.
+The function is idempotent with respect to \verb{(type, location)} pairs: codes
+that already exist in the named set are silently skipped, so repeated calls
+are safe. Leading and trailing whitespace is trimmed from all codes before
+validation and insertion.
+}
+\section{Known API limitation}{
+
+The Google Trends API cannot handle the location code \code{"NA"} (Namibia). If
+\code{"NA"} is supplied it is dropped with a warning. If it is the only code
+supplied, the function errors.
 }
 
 \examples{
 \dontrun{
+# Create a custom set for the DACH region
 add_locations(locations = c("AT", "CH", "DE"), type = "DACH")
+
+# Add subnational codes (US states from the built-in vector)
+add_locations(locations = us_states, type = "us_states")
+
+# Add several sets without redundant DB reads; refresh once at the end
+add_locations(locations = c("AT", "CH", "DE"), type = "DACH", export = FALSE)
+add_locations(locations = c("BE", "LU", "NL"), type = "benelux", export = TRUE)
 }
 
+}
+\seealso{
+\itemize{
+\item \code{\link[=download_control]{download_control()}} and \code{\link[=download_object]{download_object()}} — pass a location set here
+\item \code{\link[=compute_score]{compute_score()}} and \code{\link[=compute_doi]{compute_doi()}} — pass a location set here
+\item \link{countries} and \link{us_states} — built-in location vectors
+\item \code{\link[=start_db]{start_db()}} — populates the default \code{"countries"} and \code{"us_states"} sets
+\item \link[gtrendsR:countries]{gtrendsR::countries} — source of all valid location codes
+}
 }

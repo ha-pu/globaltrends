@@ -23,25 +23,25 @@
 #' for additional information on search topics.
 #'
 #' @section Note:
-#' To avoid trailing spaces `stringr::str_squish` is automatically
-#' applied to all keywords.
+#' Leading, trailing, and internal whitespace is automatically trimmed from all
+#' keywords via `trimws()`.
 #'
 #' @param keyword Keywords that should be added as batch. Vector of type
 #' `character` or a `list` of `character` vectors. The function also allows the
 #' usage of codes for search topics instead of search terms.
 #'
-#' @param start_date Start of time frame for which the batch data should be downloaded. Object
-#' of type `character` that takes the from "YYYY-MM".
-#' Defaults to *"2010-01"*.
+#' @param start_date Start of the time frame for which batch data should be
+#' downloaded. Character scalar in the format `"YYYY-MM"`.
+#' Defaults to `"2010-01"`.
 #'
-#' @param end_date End of time frame for which the batch data should be downloaded. Object
-#' of type `character` that takes the from "YYYY-MM".
-#' Defaults to *"2020-12"*.
+#' @param end_date End of the time frame for which batch data should be
+#' downloaded. Character scalar in the format `"YYYY-MM"`.
+#' Defaults to `"2020-12"`.
 #'
 #' @return
-#' Message that the batch has been created successfully. Batch data is
-#' written to tables *batch_keywords* and *batch_time*.
-#' Numeric vector containing the newly added batch numbers are returned.
+#' Integer vector of the newly added batch IDs (one element per batch
+#' created). Batch data is written to tables *batch_keywords* and
+#' *batch_time*. A message is printed for each batch.
 #'
 #' @examples
 #' \dontrun{
@@ -89,23 +89,43 @@
 #' @seealso
 #' * [example_keywords()]
 #' * [example_time()]
-#' * [stringr::str_squish()]
 #'
+#' @aliases add_keyword
 #' @rdname add_keyword
 #' @export
 
-add_control_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
-  out <- .add_batch(type = "control", keyword = keyword, start_date = start_date, end_date = end_date, max = 5)
+add_control_keyword <- function(
+  keyword,
+  start_date = "2010-01",
+  end_date = "2020-12"
+) {
+  out <- .add_batch(
+    type = "control",
+    keyword = keyword,
+    start_date = start_date,
+    end_date = end_date,
+    max = 5
+  )
   return(out)
 }
 
-#' @title Add batch of object keywords
+#' @title Add batches of object keywords
 #'
 #' @rdname add_keyword
 #' @export
 
-add_object_keyword <- function(keyword, start_date = "2010-01", end_date = "2020-12") {
-  out <- .add_batch(type = "object", keyword = keyword, start_date = start_date, end_date = end_date, max = 4)
+add_object_keyword <- function(
+  keyword,
+  start_date = "2010-01",
+  end_date = "2020-12"
+) {
+  out <- .add_batch(
+    type = "object",
+    keyword = keyword,
+    start_date = start_date,
+    end_date = end_date,
+    max = 4
+  )
   return(out)
 }
 
@@ -115,181 +135,168 @@ add_object_keyword <- function(keyword, start_date = "2010-01", end_date = "2020
 #' @noRd
 #'
 #' @importFrom DBI dbAppendTable
-#' @importFrom dplyr collect
-#' @importFrom dplyr filter
-#' @importFrom purrr map
-#' @importFrom rlang .data
-#' @importFrom stringr str_squish
-#' @importFrom tibble tibble
+#' @importFrom DBI dbWithTransaction
 
-.add_batch <- function(type, keyword, start_date, end_date, max) UseMethod(".add_batch", keyword)
+.add_batch <- function(type, keyword, start_date, end_date, max) {
+  type <- match.arg(type, c("control", "object"))
 
-#' @keywords internal
-#' @noRd
-
-.add_batch.character <- function(type, keyword, start_date, end_date, max) {
-  if (length(keyword) > max) {
-    keyword <- split(keyword, ceiling(seq_along(keyword) / max))
-  } else {
-    keyword <- list(keyword)
-  }
-  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, start_date = start_date, end_date = end_date, max = max))
-  new_batches <- unname(new_batches)
-  return(new_batches)
-}
-
-#' @keywords internal
-#' @noRd
-
-.add_batch.list <- function(type, keyword, start_date, end_date, max) {
-  new_batches <- map_dbl(keyword, ~ .add_keyword_batch(type = type, keyword = .x, start_date = start_date, end_date = end_date, max = max))
-  new_batches <- unname(new_batches)
-  return(new_batches)
-}
-
-#' @title Add batch of keywords
-#' @keywords internal
-#' @noRd
-
-.add_keyword_batch <- function(type, keyword, start_date, end_date, max) {
-  .check_length(keyword, max)
-  .check_input(keyword, "character")
   .check_length(start_date, 1)
   .check_length(end_date, 1)
   .check_input(start_date, "character")
   .check_input(end_date, "character")
-  if (type == "control") {
-    if (nrow(gt.env$keywords_control) == 0) {
-      new_batch <- 1
-    } else {
-      new_batch <- max(gt.env$keywords_control$batch) + 1
-    }
-    keyword <- str_squish(keyword)
-    data <- tibble(batch = new_batch, keyword, type = "control")
-    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
-    data <- tibble(batch = new_batch, start_date = start_date, end_date = end_date, type = "control")
-    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
-    keywords_control <- filter(gt.env$tbl_keywords, .data$type == "control")
-    keywords_control <- select(keywords_control, -type)
-    keywords_control <- collect(keywords_control)
-    lst_export <- list(keywords_control, keywords_control)
-    names(lst_export) <- list("keywords_control", "keywords_control")
-    invisible(list2env(lst_export, envir = gt.env))
-    time_control <- filter(gt.env$tbl_time, .data$type == "control")
-    time_control <- select(time_control, -type)
-    time_control <- collect(time_control)
-    lst_export <- list(time_control, time_control)
-    names(lst_export) <- list("time_control", "time_control")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully created new control batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", start_date, "-", end_date, ")."))
-    return(new_batch)
-  } else if (type == "object") {
-    if (nrow(gt.env$keywords_object) == 0) {
-      new_batch <- 1
-    } else {
-      new_batch <- max(gt.env$keywords_object$batch) + 1
-    }
-    data <- tibble(batch = new_batch, keyword, type = "object")
-    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_keywords", value = data)
-    data <- tibble(batch = new_batch, start_date = start_date, end_date = end_date, type = "object")
-    dbAppendTable(conn = gt.env$globaltrends_db, name = "batch_time", value = data)
-    keywords_object <- filter(gt.env$tbl_keywords, .data$type == "object")
-    keywords_object <- select(keywords_object, -type)
-    keywords_object <- collect(keywords_object)
-    lst_export <- list(keywords_object, keywords_object)
-    names(lst_export) <- list("keywords_object", "keywords_object")
-    invisible(list2env(lst_export, envir = gt.env))
-    time_object <- filter(gt.env$tbl_time, .data$type == "object")
-    time_object <- select(time_object, -type)
-    time_object <- collect(time_object)
-    lst_export <- list(time_object, time_object)
-    names(lst_export) <- list("time_object", "time_object")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully created new object batch ", new_batch, " (", paste(keyword, collapse = ", "), ", ", start_date, "-", end_date, ")."))
-    return(new_batch)
-  } else {
-    stop("Error: 'type' allows only 'control' or 'object'.\nYou provided another value.")
+  .check_length(max, 1)
+
+  if (!is.numeric(max) || is.na(max) || max < 1) {
+    stop("`max` must be a positive integer.", call. = FALSE)
   }
+  max <- as.integer(max)
+
+  keyword_vec <- unlist(keyword, use.names = FALSE)
+  keyword_vec <- as.character(keyword_vec)
+
+  if (length(keyword_vec) == 0) {
+    stop("`keyword` must contain at least one term.", call. = FALSE)
+  }
+
+  batches <- split(keyword_vec, ceiling(seq_along(keyword_vec) / max))
+  first_id <- .next_batch_id(type)
+  batch_ids <- seq.int(first_id, length.out = length(batches))
+
+  out <- vapply(seq_along(batches), function(i) {
+    kw_batch <- trimws(batches[[i]])
+    .check_length(kw_batch, max)
+    batch_id <- batch_ids[[i]]
+
+    dbWithTransaction(gt.env$globaltrends_db, {
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "batch_keywords",
+        value = data.frame(
+          batch = batch_id,
+          keyword = kw_batch,
+          type = type,
+          stringsAsFactors = FALSE
+        )
+      )
+
+      dbAppendTable(
+        conn = gt.env$globaltrends_db,
+        name = "batch_time",
+        value = data.frame(
+          batch = batch_id,
+          start_date = start_date,
+          end_date = end_date,
+          type = type,
+          stringsAsFactors = FALSE
+        )
+      )
+    })
+
+    message(sprintf(
+      "Successfully created new %s batch %d (%s, %s-%s).",
+      type,
+      batch_id,
+      paste(kw_batch, collapse = ", "),
+      start_date,
+      end_date
+    ))
+
+    as.integer(batch_id)
+  }, integer(1))
+
+  .refresh_keywords(type)
+  .refresh_time(type)
+  out
+}
+
+# ---- helpers ----
+
+#' @keywords internal
+#' @noRd
+
+.next_batch_id <- function(in_type) {
+  cache_name <- paste0("keywords_", in_type)
+
+  cache <- get0(cache_name, envir = gt.env, inherits = FALSE, ifnotfound = NULL)
+  if (is.null(cache) || !is.data.frame(cache) || nrow(cache) == 0) {
+    return(1L)
+  }
+
+  max_id <- suppressWarnings(max(as.integer(cache$batch), na.rm = TRUE))
+  if (!is.finite(max_id)) 0L else (max_id + 1L)
 }
 
 #' Add synonyms for object keywords
 #'
-#' @aliases
-#' add_synonym
-#' add_synonym.character
-#' add_synonym.list
-#'
 #' @description
-#' The function allows to add synonyms for object keywords. Sometimes, objects
-#' of interest can be searched with different keywords on Google e.g., FC Bayern
-#' for Bayern Munich. Search scores for keywords that are added as synonyms are
-#' aggregated when running `compute_score`. The function allows to add
-#' synonyms for a single keyword at a time.
+#' Registers one or more synonyms for a single object keyword. When
+#' [compute_score()] aggregates search scores, all synonyms are treated as
+#' equivalent to the canonical keyword and their scores are summed.
+#'
+#' A common use-case is alternate names: e.g., "FC Bayern" and "Bayern Munich"
+#' refer to the same entity and should be aggregated.
 #'
 #' @section Note:
-#' To avoid trailing spaces `stringr::str_squish` is automatically
-#' applied to all keywords and synonyms.
+#' `trimws()` is applied to both `keyword` and `synonym` to remove leading,
+#' trailing, and internal whitespace.
 #'
-#' @param keyword Keyword of type `character` and length 1 for which the
-#' synonyms are added.
+#' @param keyword Character scalar. The canonical object keyword for which the
+#'   synonyms are registered. Must already exist as an object keyword in the
+#'   database.
 #'
-#' @param synonym Synonym of type `character`.
+#' @param synonym Character scalar or vector, or a `list` of character vectors.
+#'   One or more synonyms to associate with `keyword`. Each element is inserted
+#'   as a separate row in *keyword_synonyms*.
 #'
 #' @return
-#' Message that the synonym has been added successfully. Synonym data is
-#' written to table *keyword_synonyms*.
+#' Invisibly returns `NULL`. Synonym rows are written to table
+#' *keyword_synonyms* and the in-memory cache `gt.env$keyword_synonyms` is
+#' refreshed. A message is printed for each synonym added.
 #'
 #' @seealso
 #' * [compute_score()]
-#' * [stringr::str_squish()]
 #'
 #' @examples
 #' \dontrun{
+#' # Single synonym
 #' add_synonym(
 #'   keyword = "fc bayern",
 #'   synonym = "bayern munich"
+#' )
+#'
+#' # Multiple synonyms in one call
+#' add_synonym(
+#'   keyword = "fc barcelona",
+#'   synonym = c("barcelona", "barca", "fcb")
 #' )
 #' }
 #'
 #' @export
 #' @rdname add_synonym
 #' @importFrom DBI dbAppendTable
-#' @importFrom purrr walk
-#' @importFrom stringr str_squish
-#' @importFrom tibble tibble
 
-add_synonym <- function(keyword, synonym) UseMethod("add_synonym", synonym)
-
-#' @export
-#' @rdname add_synonym
-
-add_synonym.character <- function(keyword, synonym) {
+add_synonym <- function(keyword, synonym) {
   .check_length(keyword, 1)
   .check_input(keyword, "character")
-  if (length(synonym) > 1) {
-    add_synonym(keyword = keyword, synonym = as.list(synonym))
-  } else {
-    if (!is.character(synonym)) stop(paste0("Error:'synonym' must of type 'character'.\nYou provided an object of type ", typeof(synonym), "."))
-    keyword <- str_squish(keyword)
-    synonym <- str_squish(synonym)
-    out <- tibble(keyword, synonym)
-    dbAppendTable(
-      conn = gt.env$globaltrends_db,
-      name = "keyword_synonyms",
-      value = out,
-      append = TRUE
-    )
-    keyword_synonyms <- collect(gt.env$tbl_synonyms)
-    lst_export <- list(keyword_synonyms, keyword_synonyms)
-    names(lst_export) <- list("keyword_synonyms", "keyword_synonyms")
-    invisible(list2env(lst_export, envir = gt.env))
-    message(paste0("Successfully added synonym | keyword: ", keyword, " | synonym: ", synonym, "."))
+  synonyms <- unlist(synonym, use.names = FALSE)
+  .check_input(synonyms, "character")
+  keyword <- trimws(keyword)
+  synonyms <- trimws(synonyms)
+
+  dbAppendTable(
+    conn = gt.env$globaltrends_db,
+    name = "keyword_synonyms",
+    value = data.frame(keyword = keyword, synonym = synonyms, stringsAsFactors = FALSE)
+  )
+  for (s in synonyms) {
+    message(sprintf(
+      "Successfully added synonym | keyword: %s | synonym: %s.",
+      keyword, s
+    ))
   }
-}
 
-#' @export
-#' @rdname add_synonym
-
-add_synonym.list <- function(keyword, synonym) {
-  walk(synonym, add_synonym, keyword = keyword)
+  gt.env$keyword_synonyms <- DBI::dbGetQuery(
+    gt.env$globaltrends_db,
+    "SELECT * FROM keyword_synonyms"
+  )
 }

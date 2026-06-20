@@ -1,408 +1,353 @@
-#' @title Initialize database
+#' Initialize the local database store
 #'
-#' @description
-#' The function creates a new database for the `globaltrends` package and
-#' creates all necessary tables within the database.
+#' Creates the local database store used by `globaltrends` in the current
+#' working directory and initializes all required tables and indexes.
 #'
 #' @details
-#' The function creates a new SQLite database for the `globaltrends`
-#' package. The database is saved as file *db/globaltrends_db.sqlite* in
-#' the working directory. If the folder *db* does not exists in the working
-#' directory, the folder is created. If the database already exists in the
-#' working directory, the function exits with an error. Within the database all
-#' tables are created and the default location sets are added to the respective
-#' table:
-#' \itemize{
-#'   \item *countries* - all countries with a share in global GDP >= 0.1\%
-#'   in 2018.
-#'   \item *us_states* - all US federal states and Washington DC.
+#' The package uses DuckDB with a Parquet-backed persistence layout under the
+#' `db/` folder. `initialize_db()` creates a transient in-memory DuckDB
+#' database, builds the schema, populates default location sets, and exports
+#' the result as Parquet files to `db/`. The in-memory connection is closed
+#' before the function returns; call [start_db()] to open a working session.
+#'
+#' If all required Parquet files already exist the function returns early
+#' without overwriting anything. If only some files are present (indicating a
+#' partial or corrupted store) the function stops with an error.
+#'
+#' Default location sets written to `data_locations`:
+#' \describe{
+#'   \item{`countries`}{ISO 3166-1 alpha-2 codes for countries above the GDP
+#'     share threshold (see [countries]).}
+#'   \item{`us_states`}{ISO 3166-2 codes for US states and Washington DC
+#'     (see [us_states]).}
 #' }
-#' After creating the database, the function disconnects from the database.
 #'
-#' @section Warning:
-#' SQLite databases only allow one writer at any instant in time. To run
-#' parallel downloads use one database for each download client and merge them
-#' once all downloads are complete.
+#' @section Concurrency:
+#' DuckDB allows concurrent readers but has write constraints depending on the
+#' underlying storage and process model. If you run parallel download workers,
+#' use one database directory per worker and merge results afterwards.
 #'
-#' @seealso
-#' * [start_db()]
-#' * [disconnect_db()]
-#' * [countries()]
-#' * [us_states()]
-#' * [example_keywords()]
-#' * [example_time()]
-#' * [example_control()]
-#' * [example_object()]
-#' * [example_score()]
-#' * [example_doi()]
-#' * <https://www.sqlite.org/index.html>
+#' @return Invisibly returns `TRUE`. Called for its side effects (creating
+#'   files under `db/`).
 #'
-#' @return Database is created.
+#' @seealso [start_db()] to open a working session after initialization;
+#'   [disconnect_db()] to persist changes and close the session.
 #'
 #' @examples
 #' \dontrun{
 #' initialize_db()
-#' }
-#'
-#' @export
-#' @importFrom DBI dbConnect
-#' @importFrom DBI dbCreateTable
-#' @importFrom DBI dbDisconnect
-#' @importFrom DBI dbExecute
-#' @importFrom dbplyr sql
-#' @importFrom RSQLite SQLite
-
-initialize_db <- function() {
-  # create db folder -----------------------------------------------------------
-  if (!dir.exists("db")) {
-    dir.create("db")
-  }
-
-  # create db ------------------------------------------------------------------
-  if (file.exists("db/globaltrends_db.sqlite")) {
-    stop("Error: File 'db/globaltrends_db.sqlite' already exists.")
-  }
-  globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
-  assign("globaltrends_db", globaltrends_db, envir = gt.env)
-  message("Successfully created database.")
-
-  # batch_keywords -------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT")
-  names(db_cols) <- c("type", "batch", "keyword")
-  dbCreateTable(
-    conn = globaltrends_db,
-    name = "batch_keywords",
-    fields = db_cols
-  )
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_terms ON batch_keywords (batch);"
-  )
-  message("Successfully created table 'batch_keywords'.")
-
-  # batch_time -----------------------------------------------------------------
-  db_cols <- c("TEXT", "INTEGER", "TEXT", "TEXT")
-  names(db_cols) <- c("type", "batch", "start_date", "end_date")
-  dbCreateTable(conn = globaltrends_db, name = "batch_time", fields = db_cols)
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_time ON batch_time (batch);"
-  )
-  message("Successfully created table 'batch_time'.")
-
-  # keyword_synonyms -----------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT")
-  names(db_cols) <- c("keyword", "synonym")
-  dbCreateTable(
-    conn = globaltrends_db,
-    name = "keyword_synonyms",
-    fields = db_cols
-  )
-  message("Successfully created table 'keyword_synonyms'.")
-
-  # data_locations -------------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT")
-  names(db_cols) <- c("location", "type")
-  dbCreateTable(
-    conn = globaltrends_db,
-    name = "data_locations",
-    fields = db_cols
-  )
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_location ON data_locations (location);"
-  )
-  message("Successfully created table 'data_locations'.")
-  .enter_location(globaltrends_db = globaltrends_db)
-
-  # data_control ---------------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER")
-  names(db_cols) <- c("location", "keyword", "date", "hits", "batch")
-  dbCreateTable(conn = globaltrends_db, name = "data_control", fields = db_cols)
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_con ON data_control (batch);"
-  )
-  message("Successfully created table 'batch_keywords'.")
-
-  # data_object ----------------------------------------------------------------
-  db_cols <- c("TEXT", "TEXT", "INTEGER", "REAL", "INTEGER", "INTEGER")
-  names(db_cols) <- c(
-    "location",
-    "keyword",
-    "date",
-    "hits",
-    "batch_c",
-    "batch_o"
-  )
-  dbCreateTable(conn = globaltrends_db, name = "data_object", fields = db_cols)
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_obj ON data_object (batch_c, batch_o);"
-  )
-  message("Successfully created table 'data_control'.")
-
-  # data_score -----------------------------------------------------------------
-  db_cols <- c(
-    "TEXT",
-    "TEXT",
-    "INTEGER",
-    "REAL",
-    "INTEGER",
-    "INTEGER",
-    "INTEGER"
-  )
-  names(db_cols) <- c(
-    "location",
-    "keyword",
-    "date",
-    "score",
-    "batch_c",
-    "batch_o",
-    "synonym"
-  )
-  dbCreateTable(conn = globaltrends_db, name = "data_score", fields = db_cols)
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_score ON data_score (batch_c, batch_o);"
-  )
-  message("Successfully created table 'data_score'.")
-
-  # data_doi -------------------------------------------------------------------
-  db_cols <- c(
-    "TEXT",
-    "INTEGER",
-    "REAL",
-    "REAL",
-    "REAL",
-    "INTEGER",
-    "INTEGER",
-    "TEXT"
-  )
-  names(db_cols) <- c(
-    "keyword",
-    "date",
-    "gini",
-    "hhi",
-    "entropy",
-    "batch_c",
-    "batch_o",
-    "locations"
-  )
-  dbCreateTable(conn = globaltrends_db, name = "data_doi", fields = db_cols)
-  dbExecute(
-    conn = globaltrends_db,
-    statement = "CREATE INDEX idx_agg ON data_doi (batch_c, batch_o);"
-  )
-  message("Successfully created table 'data_doi'.")
-
-  # disconnect from db ---------------------------------------------------------
-  disconnect_db()
-}
-
-#' @title Enter location data into database
-#'
-#' @rdname hlprs
-#' @keywords internal
-#' @noRd
-#'
-#' @importFrom DBI dbAppendTable
-#' @importFrom dplyr arrange
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr case_when
-#' @importFrom dplyr filter
-#' @importFrom dplyr mutate
-#' @importFrom dplyr mutate_all
-#' @importFrom dplyr select
-#' @importFrom rlang .data
-#' @importFrom tibble as_tibble
-#' @importFrom tibble tibble
-
-.enter_location <- function(globaltrends_db) {
-  # create countries -----------------------------------------------------------
-  add_locations(
-    locations = globaltrends::countries,
-    type = "countries",
-    export = FALSE
-  )
-
-  # create us_states -----------------------------------------------------------
-  add_locations(
-    locations = globaltrends::us_states,
-    type = "us_states",
-    export = FALSE
-  )
-
-  message("Successfully entered data into 'data_locations'.")
-}
-
-#' @title Load globaltrends database and tables
-#'
-#' @description
-#' The function connects to the database file *db/globaltrends_db.sqlite*
-#' in the working directory. After connecting to the database connections to the
-#' database tables (through `dplyr::tbl`) are created. Data from the tables
-#' *batch_keywords* and *batch_time* are exported to the `tibble`
-#' objects *keywords_control*, *keywords_object*, *time_control*,
-#' and *time_object*.
-#'
-#' @section Warning:
-#' SQLite databases only allow one writer at any instant in time. To run
-#' parallel downloads use one database for each download client and merge them
-#' once all downloads are complete.
-#'
-#' @seealso
-#' * [initialize_db()]
-#' * [disconnect_db()]
-#' * [dplyr::tbl()]
-#'
-#' @return
-#' The function exports the following objects to the package environment `globaltrends_db`:
-#' \itemize{
-#'   \item globaltrends_db A DBIConnection object, as returned by
-#'   `DBI::dbConnect()`, connecting to the SQLite database in the working
-#'   directory
-#'   \item tbl_doi A remote data source pointing to the table *data_doi* in
-#'   the connected SQLite database
-#'   \item tbl_control A remote data source pointing to the table
-#'   *data_control* in the connected SQLite database
-#'   \item tbl_mapping A remote data source pointing to the table
-#'   *data_mapping* in the connected SQLite database
-#'   \item tbl_object A remote data source pointing to the table
-#'   *data_object* in the connected SQLite database
-#'   \item tbl_score A remote data source pointing to the table
-#'   *data_score* in the connected SQLite database
-#'   \item countries A `character` vector containing ISO2 country codes of
-#'   countries that add at least 0.1\% to global GDP
-#'   \item us_states A `character` vector containing ISO2 regional codes of
-#'   US states
-#'   \item keywords_control A `tibble` containing keywords of control
-#'   batches
-#'   \item time_control A `tibble` containing times of control batches
-#'   \item keywords_object A `tibble` containing keywords of object batches
-#'   \item time_object A `tibble` containing times of control batches
-#'   \item keyword_synonyms A `tibble` containing synonymous keywords
-#' }
-#'
-#' @examples
-#' \dontrun{
 #' start_db()
 #' }
 #'
 #' @export
-#' @importFrom DBI dbConnect
-#' @importFrom dplyr collect
-#' @importFrom dplyr distinct
-#' @importFrom dplyr filter
-#' @importFrom dplyr pull
-#' @importFrom dplyr tbl
-#' @importFrom rlang .data
-#' @importFrom RSQLite SQLite
+#' @importFrom DBI dbConnect dbDisconnect dbExecute
+#' @importFrom duckdb duckdb
 
-start_db <- function() {
-  # connect to db --------------------------------------------------------------
-  if (file.exists("db/globaltrends_db.sqlite")) {
-    globaltrends_db <- dbConnect(SQLite(), "db/globaltrends_db.sqlite")
-    message("Successfully connected to database.")
-  } else {
+initialize_db <- function() {
+  .ensure_db_dir()
+
+  check <- .check_files()
+  if (isTRUE(all(check))) {
+    message("Database files already exist under 'db/'.")
+    return(invisible(TRUE))
+  }
+
+  # Schema definition (DuckDB SQL)
+  schema_sql <- c(
+    "CREATE TABLE batch_keywords(type VARCHAR, batch INTEGER, keyword VARCHAR);",
+    "CREATE TABLE batch_time(type VARCHAR, batch INTEGER, start_date VARCHAR, end_date VARCHAR);",
+    "CREATE TABLE data_control(location VARCHAR, keyword VARCHAR, date DATE, hits DOUBLE, batch INTEGER);",
+    "CREATE TABLE data_object(location VARCHAR, keyword VARCHAR, date DATE, hits DOUBLE, batch_c INTEGER, batch_o INTEGER);",
+    "CREATE TABLE data_score(location VARCHAR, keyword VARCHAR, date DATE, score DOUBLE, batch_c INTEGER, batch_o INTEGER);",
+    "CREATE TABLE data_doi(keyword VARCHAR, date DATE, gini DOUBLE, hhi DOUBLE, entropy DOUBLE, batch_c INTEGER, batch_o INTEGER, locations VARCHAR);",
+    "CREATE TABLE data_locations(location VARCHAR, type VARCHAR);",
+    "CREATE TABLE data_region(term VARCHAR, location VARCHAR, start_date DATE, end_date DATE, region_code VARCHAR, region_name VARCHAR, hits DOUBLE, batch_o INTEGER);",
+    "CREATE TABLE data_related(term VARCHAR, topic BOOLEAN, rising BOOLEAN, location VARCHAR, start_date DATE, end_date DATE, related_term VARCHAR, hits DOUBLE, batch_o INTEGER);",
+    "CREATE TABLE keyword_synonyms(keyword VARCHAR, synonym VARCHAR);",
+    "CREATE INDEX idx_doi_batch ON data_doi(batch_o);",
+    "CREATE INDEX idx_control_batch ON data_control(batch);",
+    "CREATE INDEX idx_locations_loc ON data_locations(location);",
+    "CREATE INDEX idx_regions_term ON data_region(term);",
+    "CREATE INDEX idx_regions_loc ON data_region(location);",
+    "CREATE INDEX idx_related_term ON data_related(term);",
+    "CREATE INDEX idx_object_batch ON data_object(batch_o);",
+    "CREATE INDEX idx_score_batch ON data_score(batch_o);",
+    "CREATE INDEX idx_terms_batch ON batch_keywords(batch);",
+    "CREATE INDEX idx_time_batch ON batch_time(batch);"
+  )
+
+  con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
+  on.exit(dbDisconnect(con, shutdown = TRUE), add = TRUE)
+
+  for (sql in schema_sql) dbExecute(con, sql)
+
+  # Populate default location sets (writes into data_locations)
+  .enter_location_defaults(con)
+
+  # Persist database as Parquet under db/
+  .export_db_to_parquet(con)
+
+  message("Database files created successfully under 'db/'.")
+  invisible(TRUE)
+}
+
+# -------------------------------------------------------------------------
+# Internal helpers for DB filesystem layout
+# -------------------------------------------------------------------------
+
+#' @description Create `db/` directory if it does not yet exist.
+#' @keywords internal
+#' @noRd
+
+.ensure_db_dir <- function(path = "db") {
+  if (!dir.exists(path)) {
+    dir.create(path, recursive = TRUE)
+  }
+  invisible(TRUE)
+}
+
+#' @description Return the canonical list of table/Parquet-file names.
+#' @keywords internal
+#' @noRd
+
+.list_files <- function() {
+  c(
+    "batch_keywords",
+    "batch_time",
+    "data_control",
+    "data_doi",
+    "data_locations",
+    "data_object",
+    "data_score",
+    "data_region",
+    "data_related",
+    "keyword_synonyms"
+  )
+}
+
+#' @description
+#' Check whether the required Parquet files exist under `path`. Returns a
+#' logical vector (one element per file). Stops with an informative error if
+#' only a subset of files is present, which indicates a partial or corrupted
+#' store.
+#' @keywords internal
+#' @noRd
+
+.check_files <- function(path = "db") {
+  required <- paste0(.list_files(), ".parquet")
+  present <- file.exists(file.path(path, required))
+
+  if (any(present) && !all(present)) {
     stop(
-      "Error: File 'db/globaltrends_db.sqlite' does not exist in working directory.\nSet working directory to correct path."
+      paste0(
+        "Database files appear incomplete under '",
+        path,
+        "'. Missing file(s): ",
+        paste(required[!present], collapse = ", "),
+        "."
+      ),
+      call. = FALSE
     )
   }
 
-  # get tables -----------------------------------------------------------------
-  tbl_locations <- tbl(globaltrends_db, "data_locations")
-  tbl_keywords <- tbl(globaltrends_db, "batch_keywords")
-  tbl_time <- tbl(globaltrends_db, "batch_time")
-  tbl_synonyms <- tbl(globaltrends_db, "keyword_synonyms")
+  present
+}
 
-  tbl_doi <- tbl(globaltrends_db, "data_doi")
-  tbl_control <- tbl(globaltrends_db, "data_control")
-  tbl_object <- tbl(globaltrends_db, "data_object")
-  tbl_score <- tbl(globaltrends_db, "data_score")
+#' @description
+#' Insert the package's built-in location sets (`countries`, `us_states`) into
+#' the `data_locations` table of `con`. Called once by [initialize_db()].
+#' @keywords internal
+#' @noRd
+#' @importFrom DBI dbAppendTable
 
-  # load files -----------------------------------------------------------------
-  keywords_control <- filter(tbl_keywords, .data$type == "control")
-  keywords_control <- select(keywords_control, -type)
-  keywords_control <- collect(keywords_control)
-  time_control <- filter(tbl_time, .data$type == "control")
-  time_control <- select(time_control, -type)
-  time_control <- collect(time_control)
-  keywords_object <- filter(tbl_keywords, .data$type == "object")
-  keywords_object <- select(keywords_object, -type)
-  keywords_object <- collect(keywords_object)
-  time_object <- filter(tbl_time, .data$type == "object")
-  time_object <- select(time_object, -type)
-  time_object <- collect(time_object)
-  keyword_synonyms <- collect(tbl_synonyms)
-
-  # write objects to the package environment gt.env ----------------------------
-  lst_object <- list(
-    globaltrends_db,
-    tbl_locations,
-    tbl_keywords,
-    tbl_time,
-    tbl_synonyms,
-    tbl_doi,
-    tbl_control,
-    tbl_object,
-    tbl_score,
-    keywords_control,
-    time_control,
-    keywords_object,
-    time_object,
-    keyword_synonyms,
-    0.1
+.enter_location_defaults <- function(con) {
+  data_to_add <- rbind(
+    data.frame(location = globaltrends::countries, type = "countries", stringsAsFactors = FALSE),
+    data.frame(location = globaltrends::us_states, type = "us_states", stringsAsFactors = FALSE)
   )
-  names(lst_object) <- list(
-    "globaltrends_db",
-    "tbl_locations",
-    "tbl_keywords",
-    "tbl_time",
-    "tbl_synonyms",
-    "tbl_doi",
-    "tbl_control",
-    "tbl_object",
-    "tbl_score",
-    "keywords_control",
-    "time_control",
-    "keywords_object",
-    "time_object",
-    "keyword_synonyms",
-    "query_wait"
+  dbAppendTable(conn = con, name = "data_locations", value = data_to_add)
+  invisible(TRUE)
+}
+
+#' @description
+#' Export all tables in `con` as Parquet files to `path` using DuckDB's
+#' `EXPORT DATABASE` statement, then remove the `load.sql` / `schema.sql`
+#' helper files that DuckDB writes alongside the data files.
+#' @keywords internal
+#' @noRd
+
+.export_db_to_parquet <- function(con, path = "db") {
+  dbExecute(
+    con,
+    paste0(
+      "EXPORT DATABASE '",
+      path,
+      "' (FORMAT parquet, USE_TMP_FILE false);"
+    )
+  )
+
+  # DuckDB export creates helper SQL files; remove to keep db/ tidy
+  helper_sql <- file.path(path, c("load.sql", "schema.sql"))
+  suppressWarnings(file.remove(helper_sql))
+
+  invisible(TRUE)
+}
+
+# -------------------------------------------------------------------------
+# Start / Stop lifecycle
+# -------------------------------------------------------------------------
+
+#' Start a database session
+#'
+#' Loads the Parquet-backed store under `db/` into an in-memory DuckDB
+#' connection and registers lazy `dplyr` table handles and cached tibbles in
+#' `gt.env`.
+#'
+#' @details
+#' Requires [initialize_db()] to have been run in the current working
+#' directory. All Parquet files are read into an in-memory DuckDB instance;
+#' the following bindings are written to `gt.env`:
+#' \describe{
+#'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory DuckDB
+#'     instance.}
+#'   \item{`keywords_control`, `keywords_object`}{Data frames of control and
+#'     object keywords by batch (without the `type` column).}
+#'   \item{`time_control`, `time_object`}{Data frames of batch time windows for
+#'     control and object runs (without the `type` column).}
+#'   \item{`keyword_synonyms`}{Data frame of all keyword/synonym pairs.}
+#' }
+#' Location sets are exported as named character vectors via
+#' `.export_locations()`.
+#'
+#' @return Invisibly returns `TRUE`. Called primarily for its side effects.
+#'
+#' @seealso [initialize_db()] to create the store before the first session;
+#'   [disconnect_db()] to persist changes and close the session.
+#'
+#' @examples
+#' \dontrun{
+#' start_db()
+#' # ... downloads and computations ...
+#' disconnect_db()
+#' }
+#'
+#' @export
+#' @importFrom DBI dbConnect dbExecute
+#' @importFrom dbplyr translate_sql
+#' @importFrom duckdb duckdb
+#' @importFrom dplyr tbl
+
+start_db <- function() {
+  check <- .check_files()
+  if (!isTRUE(all(check))) {
+    stop(
+      "Database files do not exist under 'db/'. Run `initialize_db()` first.",
+      call. = FALSE
+    )
+  }
+
+  con <- dbConnect(duckdb::duckdb(), dbdir = ":memory:")
+  assign("globaltrends_db", con, envir = gt.env)
+
+  # Import Parquet tables into the in-memory DB
+  tables <- .list_files()
+  import_sql <- paste0(
+    "CREATE TABLE ", tables,
+    " AS SELECT * FROM read_parquet('db/", tables, ".parquet');"
+  )
+  for (sql in import_sql) dbExecute(con, sql)
+
+  # Cache small, frequently-used tables as in-memory data frames
+  keywords_control <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'control'")
+  keywords_object <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'object'")
+  time_control <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'control'")
+  time_object <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'object'")
+  keyword_synonyms <- DBI::dbGetQuery(con, "SELECT * FROM keyword_synonyms")
+
+  # Assign into gt.env
+  lst_object <- list(
+    globaltrends_db  = con,
+    keywords_control = keywords_control,
+    keywords_object  = keywords_object,
+    time_control     = time_control,
+    time_object      = time_object,
+    keyword_synonyms = keyword_synonyms,
+    tbl_locations    = dplyr::tbl(con, "data_locations"),
+    tbl_keywords     = dplyr::tbl(con, "batch_keywords"),
+    tbl_time         = dplyr::tbl(con, "batch_time"),
+    tbl_synonyms     = dplyr::tbl(con, "keyword_synonyms"),
+    tbl_control      = dplyr::tbl(con, "data_control"),
+    tbl_object       = dplyr::tbl(con, "data_object"),
+    tbl_score        = dplyr::tbl(con, "data_score"),
+    tbl_doi          = dplyr::tbl(con, "data_doi"),
+    tbl_related      = dplyr::tbl(con, "data_related"),
+    tbl_region       = dplyr::tbl(con, "data_region")
   )
   invisible(list2env(lst_object, envir = gt.env))
 
   .export_locations()
-  message("Successfully exported all objects to package environment gt.env.")
+
+  message("Successfully loaded database and exported table handles to gt.env.")
+  invisible(TRUE)
 }
 
-#' @title Disconnect from database
+#' Disconnect from the database and persist changes
 #'
-#' @description
-#' The function closes the connection to the database file
-#' *db/globaltrends_db.sqlite* in the working directory.
+#' Exports the current in-memory DuckDB state to the Parquet store under
+#' `db/` and closes the DBI connection.
 #'
-#' @section Warning:
-#' SQLite databases only allow one writer at any instant in time. To run
-#' parallel downloads use one database for each download client and merge them
-#' once all downloads are complete.
+#' @details
+#' Call this function after all downloads and computations are complete. It
+#' overwrites the Parquet files under `db/` with the current in-memory state
+#' and then shuts down the DuckDB instance. `gt.env$globaltrends_db` is set
+#' to `NULL` afterwards; all lazy `tbl_*` handles become invalid.
 #'
-#' @seealso
-#' * [initialize_db()]
-#' * [start_db()]
+#' Data written to the in-memory database during the session will be **lost**
+#' if this function is not called before the R session ends.
 #'
-#' @return
-#' Message that disconnection was successful.
+#' @return Invisibly returns `TRUE`. Called for its side effects (writing
+#'   files under `db/` and closing the connection).
+#'
+#' @seealso [initialize_db()] to create the store; [start_db()] to open a
+#'   new session.
 #'
 #' @examples
 #' \dontrun{
+#' start_db()
+#' # ... downloads and computations ...
 #' disconnect_db()
 #' }
+#'
 #' @export
 #' @importFrom DBI dbDisconnect
 
 disconnect_db <- function() {
-  dbDisconnect(conn = gt.env$globaltrends_db)
-  message("Successfully disconnected.")
+  if (is.null(gt.env$globaltrends_db)) {
+    stop(
+      "No active database connection found in `gt.env$globaltrends_db`.",
+      call. = FALSE
+    )
+  }
+
+  .export_db_to_parquet(gt.env$globaltrends_db)
+
+  dbDisconnect(conn = gt.env$globaltrends_db, shutdown = TRUE)
+
+  nulls <- list(
+    globaltrends_db = NULL,
+    tbl_locations   = NULL,
+    tbl_keywords    = NULL,
+    tbl_time        = NULL,
+    tbl_synonyms    = NULL,
+    tbl_control     = NULL,
+    tbl_object      = NULL,
+    tbl_score       = NULL,
+    tbl_doi         = NULL,
+    tbl_related     = NULL,
+    tbl_region      = NULL
+  )
+  invisible(list2env(nulls, envir = gt.env))
+
+  message("Successfully disconnected and persisted database to 'db/'.")
+  invisible(TRUE)
 }

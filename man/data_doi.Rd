@@ -4,54 +4,59 @@
 \name{data_doi}
 \alias{data_doi}
 \alias{example_doi}
-\title{data_doi}
+\title{Example table: degree of internationalization (\code{data_doi})}
 \format{
-A tibble with 4,320 rows and 9 variables:
+A tibble with 8 variables:
 \describe{
-\item{keyword}{Column of type \code{character} showing the keyword for
-which the data was computed.}
-\item{date}{Column of type \code{integer} showing the date for which the
-data was computed Can be transformed into date format with
-\code{lubridate::as_date}.}
-\item{gini}{Column of type \code{double} showing the DOI computed as
-inverted Gini coefficient of the search score distribution from
-\code{data_score}.}
-\item{hhi}{Column of type \code{double} showing the DOI computed as
-inverted Herfindahl-Hirschman index of the search score distribution from
-\code{data_score}.}
-\item{entropy}{Column of type \code{double} showing the DOI computed as
-inverted Entropy measure for the search score distribution from
-\code{data_score}.}
-\item{batch_c}{Column of type \code{integer} showing the number of each
-control batch.}
-\item{batch_o}{Column of type \code{integer} showing the number of each
-object batch.}
-\item{locations}{Column of type \code{character} showing the list of
-locations for which the search score distribution is used.}
+\item{keyword}{Character. Object keyword.}
+\item{date}{Integer. Date stored as days since 1970-01-01. Convert with
+\code{as.Date(date, origin = "1970-01-01")}.}
+\item{gini}{Double. \code{1 - Gini(score)} across locations. Range [0, 1]:
+1 = perfectly equal distribution; 0 = all search interest in one location.}
+\item{hhi}{Double. \code{1 - HHI(score)} across locations. Range
+[0, 1 - 1/n] where n is the number of locations: higher values indicate
+more equal distributions.}
+\item{entropy}{Double. \code{H(p) - log(n)} (Shannon entropy deficit).
+Range (-Inf, 0]: 0 = perfectly uniform distribution; more negative values
+indicate greater concentration.}
+\item{batch_c}{Integer. Control batch id used as baseline.}
+\item{batch_o}{Integer. Object batch id.}
+\item{locations}{Character. Name of the location set used (e.g.,
+\code{"countries"}, \code{"us_states"}).}
 }
 }
 \usage{
 example_doi
 }
 \description{
-The table \emph{data_doi} contains the degree of internationalization (DOI)
-for each object batch. Each line contains the DOI computed as inverted
-\emph{gini} coefficient, as inverted \emph{hhi}, or inverted \emph{entropy}
-for each \emph{keyword} in an object \emph{batch_o} for a given \emph{date}.
-The column \emph{batch_c} indicates the control batch that has been used
-as baseline for mapping. Column \emph{locations} indicates which set of
-locations was used to compute the distribution of search scores.
-DOI is computed and automatically written to the table with the
-function \code{compute_doi}. The function \code{start_db} exports the table
-\emph{data_doi} as database connection \code{tbl_doi} to the package environment
-\code{gt.env}. Users can access the database table through \code{dplyr::tbl}.
-The sample data included in \code{data_doi} was simulated based on actual
+Example data representing the database table \code{data_doi}.
+Each row contains degree-of-internationalization (DOI) metrics for an object
+\code{keyword} on a given \code{date}, computed from the distribution of \code{data_score}
+across a specified set of \code{locations}.
+
+DOI captures how evenly search interest is spread across locations: a
+perfectly uniform score distribution yields the maximum value for each
+metric; concentration in a single location yields the minimum. Three
+complementary dispersion measures are provided — see \code{\link[=compute_doi]{compute_doi()}} for
+their exact formulae.
+
+DOI is computed via \code{\link[=compute_doi]{compute_doi()}} and is queryable through
+\code{gt.env$globaltrends_db} after \code{\link[=start_db]{start_db()}}. The \code{batch_c} column indicates
+the control batch used as baseline, and \code{batch_o} indicates the object batch.
+
+The example dataset is simulated to resemble outputs derived from real
 Google Trends data.
 }
-\seealso{
-\itemize{
-\item \code{\link[=compute_doi]{compute_doi()}}
-\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
+\references{
+Castelnuovo, E. & Tran, T. D. (2017). Google It Up! A Google Trends-based
+Uncertainty index for the United States and Australia. \emph{Economics Letters},
+\emph{161}, 149--153. \doi{10.1016/j.econlet.2017.09.032}
+
+Puhr, H. & Müllner, J. (2022). Let me Google that for you: Capturing
+internationalization using Google Trends. Available at SSRN:
+\url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
 }
+\seealso{
+\code{\link[=compute_doi]{compute_doi()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}
 }
 \keyword{datasets}

@@ -3,89 +3,33 @@
 \docType{data}
 \name{countries}
 \alias{countries}
-\title{countries}
+\title{Default location set: countries}
 \format{
-An object of class \code{character} of length 71.
+A character vector of ISO 3166-1 alpha-2 country codes.
 }
 \usage{
 countries
 }
 \description{
-A character vector that includes ISO2 codes for all countries with a share in
-global GDP >= 0.1\\% in 2018. Data on GDP is retrieved from the World Bank's
-World Development Indicators database. The data includes:
-\itemize{
-\item AE
-\item AO
-\item AR
-\item AT
-\item AU
-\item BD
-\item BE
-\item BR
-\item CA
-\item CH
-\item CL
-\item CN
-\item CO
-\item CU
-\item CZ
-\item DE
-\item DK
-\item DO
-\item DZ
-\item EC
-\item EG
-\item ES
-\item ET
-\item FI
-\item FR
-\item GB
-\item GR
-\item HK
-\item HU
-\item ID
-\item IE
-\item IL
-\item IN
-\item IQ
-\item IR
-\item IT
-\item JP
-\item KR
-\item KW
-\item KZ
-\item LK
-\item MA
-\item MX
-\item MY
-\item NG
-\item NL
-\item NO
-\item NZ
-\item OM
-\item PE
-\item PH
-\item PK
-\item PL
-\item PR
-\item PT
-\item QA
-\item RO
-\item RU
-\item SA
-\item SD
-\item SE
-\item SG
-\item SK
-\item TH
-\item TR
-\item TW
-\item UA
-\item US
-\item UZ
-\item VN
-\item ZA
+Character vector of country location codes used by the package as a default
+location set for cross-country computations.
+
+The vector contains ISO 3166-1 alpha-2 country codes selected from
+\link{countries_wdi} based on a GDP share threshold (>= 0.1\% of world GDP in
+2018) using World Bank World Development Indicators (WDI). This threshold
+retains the economically significant countries while keeping query volume
+manageable. Pass this vector as the \code{locations} argument to \code{\link[=compute_score]{compute_score()}}
+or \code{\link[=compute_doi]{compute_doi()}} for standard cross-country analyses.
+
+Note that \code{"NA"} (Namibia's ISO code) is excluded because the Google Trends
+API cannot handle it; see \code{\link[=add_locations]{add_locations()}} for details.
 }
+\examples{
+length(countries)
+head(countries)
+
+}
+\seealso{
+\link{countries_wdi}, \code{\link[=add_locations]{add_locations()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

@@ -4,38 +4,34 @@
 \name{batch_time}
 \alias{batch_time}
 \alias{example_time}
-\title{batch_time}
+\title{Example table: batch time windows (\code{batch_time})}
 \format{
-A tibble with 5 rows and 3 variables:
+A tibble with 4 variables:
 \describe{
-\item{type}{Column of type \code{character} showing the type of each batch,
-takes "control" for control batches and "object" for object batches.}
-\item{batch}{Column of type \code{integer} showing number of each batch.}
-\item{start_date}{Column of type \code{character} showing the start date for
-each batch as "YYYY-MM".}
-\item{end_date}{Column of type \code{character} showing the end date for
-each batch as "YYYY-MM".}
+\item{type}{Character. Batch type: \code{"control"} or \code{"object"}.}
+\item{batch}{Integer. Batch identifier within \code{type}.}
+\item{start_date}{Character. Window start in \code{"YYYY-MM"}.}
+\item{end_date}{Character. Window end in \code{"YYYY-MM"}.}
 }
 }
 \usage{
 example_time
 }
 \description{
-The table \emph{batch_time} contains the time period for which data is
-downloaded for each batch. Each line contains the \emph{start date}, the
-\emph{end date}, the \emph{type} of the batch (i.e., control or object), and the id of
-the \emph{batch} to which the time period is assigned. Start and end dates take
-the form \code{"YYYY-MM"}. Time periods are added automatically through
-the function \code{add_keywords}. The function \code{start_db} exports the
-table \emph{batch_time} as objects \code{time_control} and \code{time_object}
-to \code{.GlobalEnv}.
+Example data representing the database table \code{batch_time}.
+Each row assigns a time window (\code{start_date}, \code{end_date}) to a \code{batch}
+and a \code{type} (\code{"control"} or \code{"object"}). Each \verb{(type, batch)} combination
+has exactly one row.
 
-Example data for the table \emph{batch_time} is available as R object
-\code{example_time}.
+In a live database, batch time windows are generated when keywords are added
+(see \code{\link[=add_keyword]{add_keyword()}}) and are exported to the package environment \code{gt.env}
+by \code{\link[=start_db]{start_db()}} as \code{gt.env$time_control} and \code{gt.env$time_object}.
+
+Dates are stored as \code{"YYYY-MM"} strings to represent monthly windows. To
+change the time window for an existing batch, all downloads and computations
+for that batch must be re-run.
 }
 \seealso{
-\itemize{
-\item \code{\link[=add_control_keyword]{add_control_keyword()}}
-}
+\code{\link[=add_keyword]{add_keyword()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

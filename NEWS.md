@@ -1,6 +1,28 @@
-# globaltrends 0.1.0
+# globaltrends 0.2.0.9000
 
-* Removed globaltrends from CRAN
+* General revision and improvement of code base
+* General revision and improvement of tests
+* General revision and improvement of documentation
+* Inclusion of API-usage counter for downloads through Google Trends API (10,000 daily downloads)
+
+## Change in database handling
+
+* Switch from sqlite to duckdb
+  * Database tables are stored as individual parquet files
+  * `start_db()` loads the parquet files to memory
+  * All database actions are conducted in memory and later written to parquet
+  * The download functions write in-memory data to parquet after every 1,000 downloads
+
+## Technical issues and bug fixes
+
+* Updated dependency to testthat 3.0.0
+* Improved error handling for Google Trends API calls:
+.get_trend() now catches three classes of errors from the Research API backend (HTTP via reticulate) instead of crashing with a Python traceback
+  * Quota exceeded (HTTP 429): writes in-membory data to parquet and then aborts with a clear message asking the user to wait for the quota to reset.
+  * Invalid argument (HTTP 400): skips the offending term/location/date combination silently and continues.
+  * Timeout (WinError 10060): skips the affected location and continues; the missing data can be filled by re-running download_object().
+
+# globaltrends 0.1.0
 
 ## Change in downloading approach
 

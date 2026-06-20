@@ -53,7 +53,7 @@ The `globaltrends` package computes two conceptually distinct measures of intern
 
 ![](plot001.png){width=100%}
 
-In the `globaltrends` package, we provide a tailor-made operationalization of internationalization that relies on the global recognition of objects of interest. This complements traditional approaches in international business research that approximate the configuration of a firm’s international operations. Our package allows users to download time series of Google search volumes from 2004 onwards. Because Google Trends organizes its data output as single-country keyword batches, the package uses batched downloads. Within these batches, Google Trends normalizes search volumes to values between 0 and 100. We devise a mapping algorithm to transform Google Trends output to a more general data structure. For each country, `globaltrends` downloads a set of control keywords that captures “standard” search volumes in the country. Then, the package downloads batches of company names, including synonyms and alternative spellings, for each country. We follow Castelnuovo and Tran (2017) to implement a mapping of search volumes for firms to search volumes for control keywords in each country. The package then uses these time series to compute search scores as the ratio between search volumes for a firm in comparison to search volumes for control keywords in each country. We offer a detailed outline of this approach in the [Appendix B](#appendix-b).  
+In the `globaltrends` package, we provide a tailor-made operationalization of internationalization that relies on the global recognition of objects of interest. This complements traditional approaches in international business research that approximate the configuration of a firm’s international operations. Our package allows users to download time series of Google search volumes from 2004 onwards. Because Google Trends organizes its data output as single-country keyword batches, the package uses batched downloads. Within these batches, Google Trends normalizes search volumes to values between 0 and 100. We devise a mapping algorithm to transform Google Trends output to a more general data structure. For each country, `globaltrends` downloads a set of control keywords that captures "standard" search volumes in the country. Then, the package downloads batches of company names, including synonyms and alternative spellings, for each country. We follow Castelnuovo and Tran (2017) to implement a mapping of search volumes for firms to search volumes for control keywords in each country. The package then uses these time series to compute search scores as the ratio between search volumes for a firm in comparison to search volumes for control keywords in each country. We offer a detailed outline of this approach in the [Appendix B](#appendix-b).  
 
 Search scores are interpretable as the proportion of search volume for an object of interest relative to search volume for control keywords within a country. Search scores, therefore, allow comparison across different types of objects (e.g., firms, persons, products…), time periods, and countries, and provide insights into the local relevance of objects and their exposure to the respective countries.
 
@@ -118,7 +118,8 @@ disconnect_db()
 ```
 
 ## Download data from Google Trends
-The next step in the `globaltrends` workflow is data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses either the official Google Trends research API (recommended) or the `gtrendsR::gtrends` function to access Google Trends. Google Trends allows inputs of up to five keywords for a given location and period (see [Appendix A](#appendix-a) for a discussion of data manipulation applied by Google). Therefore, the `globaltrends` package works with “keyword batches” that combine up to five keywords. The respective batch numbers are an input to all functions – either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include keywords indicating baseline search activity and **object** batches that include keywords relating to the objects of interest (e.g., firms, persons, products…). By default, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018, and the *us_states* set, covering all US states and Washington, DC, see [below](#changing-locations) for further details.
+
+The next step in the `globaltrends` workflow is data download from Google Trends. The `globaltrends` package includes four types of download functions that we explain in detail below. Each of these functions uses the `gtrendsR::gtrends` function to access the Google Trends API. The Google Trends API allows inputs of up to five keywords for a given location and period. Therefore, the `globaltrends` package works with "keyword batches" that combine up to five keywords (see [Appendix A](#appendix-a) for a discussion of data manipulation applied by Google). The respective batch numbers are an input to all functions - either as `list` or as single `integer` objects. In the package, we distinguish two types of batches: **control** batches that include keywords indicating baseline search activity and **object** batches that include keywords relating to the objects of interest (e.g., firms, persons, products…). Currently, `globaltrends` only includes two sets of locations. The *countries* set, which covers all countries that generated at least 0.1% of world GDP in 2018 and the *us_states* set, covering all US states and Washington DC, see [below](#changing-locations) for further details.   
 
 ### Managing downloads from Google Trends
 
@@ -147,7 +148,7 @@ If the Python function to use the research API has not been imported (i.e., `ini
 
 ### Download control data
 
-First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](https://trends.google.com/trends/) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
+First, we add a batch of control keywords to the database using `add_control_keyword`. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of "standard" search volumes on Google, we propose them as control keywords for global trend analysis. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting keywords to the respective setting and testing them on the [Google Trends portal](https://trends.google.com/trends/) beforehand. The output of `add_control_keyword` is a `list` object of new control batch numbers that can serve as input for other functions.
 
 ```{r, eval = FALSE}
 # add_control_keyword ----------------------------------------------------------
@@ -240,7 +241,7 @@ Once the user has completed all control and object downloads, `globaltrends` com
 
 ### Compute country search scores and volume of internationalization
 
-The function `compute_score` divides the search volumes for an object keyword by the sum of search volumes for the keywords in the respective control batch. The search score computation proceeds in four steps. First, the function aggregates all search volumes into monthly data. Next, it follows the procedure proposed by Castelnuovo and Tran (2017, pp. A1-A2) and outlined in the [Appendix B](#appendix-b) to map control and object data. After the mapping, object search volumes are divided by the sum of control search volumes in the respective control batch. We use the sum of search volumes for a set of control keywords, rather than the search volumes for a single control keyword, to smooth out variation in the underlying control data. Because of this division, it is essential to define a set of control keywords that mirrors “standard” Google usage for the given research setting.
+The function `compute_score` divides the search volumes for an object keyword by the sum of search volumes for the keywords in the respective control batch. The search score computation proceeds in four steps. First, the function aggregates all search volumes to monthly data. Then, it applies some optional time series adjustments that we outline in greater detail [below](#time-series-adjustments). Next, it follows the procedure proposed by Castelnuovo and Tran (2017, pp. A1-A2) and outlined in the [Appendix B](#appendix-b) to map control and object data. After the mapping, object search volumes are divided by the sum of control search volumes in the respective control batch. We use the sum of search volumes for a set of control keywords, rather than the search volumes for a single control keyword, to smooth-out variation in the underlying control data. Because of this division, it is essential to define a set of control keywords that mirrors "standard" Google usage for the given research setting.
 
 ```{r, eval = FALSE}
 # compute_score ----------------------------------------------------------------
@@ -341,6 +342,109 @@ export_doi(object = 1, control = 1) %>%
 #> 3 microsoft 0.682
 ```
 
+Exports from `globaltrends` also serve as input for plot functions and the computation of abnormal changes in internationalization implemented in the package. Except for `plot_voi_doi`, plot functions have methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. Alternatively, all plot-functions provide options to work without the respective class e.g., for cases where the class gets lost in a `join`. The function `plot_bar` uses the output from `export_score` as input and shows the locations with the highest search scores for a given object keyword. The function uses only the first keyword in the dataset and averages the search scores for the input dataset - we therefore suggest filtering the output from `export_score` to a specific period. The plot shows that Coca-Cola has high search scores across Latin America and India.
+
+```{r, eval = FALSE}
+# plot_score -------------------------------------------------------------------
+library(dplyr)
+export_score(keyword = "coca cola", control = 1) %>%
+  filter(lubridate::year(date) == 2019) %>%
+  plot_bar()
+```
+
+![](plot002.png){width=100%}
+
+The functions `plot_box` and `plot_ts` have methods for classes of output from `export_score`, `export_voi`, and `export_doi`. The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest develops over time. The function `plot_box` generates boxplots of search score and volume or degree of internationalization distributions. The four plots below compare volume and degree of internationalization for the six companies in our sample. At first glance, we see that Coca-Cola, Facebook, and Microsoft have higher degrees of internationalization than Alaska Air Group, Illinois Tool Works, and J.M. Smucker. It seems as if the degree of internationalization of Facebook and Microsoft increased slightly from 2010 to 2015. Although the overall trend remains stable, Coca-Cola shows greater variation than the other companies.
+
+```{r, eval = FALSE}
+# plot_doi_ts and plot_doi_box -------------------------------------------------
+data <- purrr::map_dfr(1:2, export_doi, keyword = NULL, control = 1, type = "obs")
+plot_ts(data)
+plot_box(data)
+```
+
+![](plot003.png){width=100%}
+
+![](plot004.png){width=100%}
+
+With the function `plot_voi_doi`, users can compare the volume of internationalization for an object of interest to its degree of internationalization. Like `plot_bar`, the function uses only the first keyword in a dataset, filtering might be necessary. In the plot below, we compare Facebook’s volume of internationalization to its degree of internationalization. While volume of internationalization indicates the level of global search scores, degree of internationalization relates to the global distribution of search scores. We see that Facebook’s volume of internationalization constantly decreased after its peak in 2013. At the same time, we observe that its degree of internationalization grew from 2010 before peaking in 2013.
+
+```{r, eval = FALSE}
+# plot_voi_doi -----------------------------------------------------------------
+out_voi <- export_voi(keyword = "facebook", type = "obs")
+out_doi <- export_doi(keyword = "facebook", object = 1, type = "obs")
+plot_voi_doi(data_voi = out_voi, data_doi = out_doi)
+```
+
+![](plot005.png){width=100%}
+
+## Abnormal changes in internationalization
+A unique feature of internationalization data from `globaltrends` is that it allows time series analysis. For a better understanding of changes in the data, the function provides the `get_abnorm_hist` function that implements functionality used in financial event studies (MacKinlay, 1997; McWilliams & Siegel, 1997). The function compares search scores and volume or degree of internationalization to a historic baseline. By default, the historic baseline is the average from the preceding twelve months. Users can specify the window of the baseline period (`train_win`) and a can use a break between baseline and date of interest (`train_break`). Since they are used as baseline, the first `train_win + train_break` abnormal changes are `NA`. The `get_abnorm_hist` function has methods for classes of outputs from `export_score`, `export_voi`, and `export_doi`. For each month in the dataset, the deviation from the historic baseline is computed. To identify abnormal changes, the function provides the percentile rank for each change within the distribution of changes.
+
+```{r, eval = FALSE}
+data <- export_score(keyword = "facebook", locations = countries)
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 7,590 x 8
+#>   keyword  location date       control object score score_abnorm quantile
+#>   <chr>    <chr>    <date>       <int>  <int> <dbl>        <dbl>    <dbl>
+#>  1 facebook US       2011-01-01       1      1  1.19      0.0220     0.728
+#>  ...
+#> 10 facebook US       2011-10-01       1      1  1.32     -0.0669     0.456
+#> # ... with 7,580 more rows
+
+data <- export_voi(object = 1)
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 345 x 7
+#>    keyword   date       control object     voi voi_abnorm quantile
+#>    <chr>     <date>       <int>  <int>   <dbl>      <dbl>    <dbl>
+#>  1 coca cola 2011-01-01       1      1 0.00320  -0.000299    0.316
+#>  ...
+#> 10 coca cola 2011-10-01       1      1 0.00274  -0.000458    0.193
+#> # ... with 335 more rows
+
+data <- export_doi(keyword = "microsoft", locations = "us_states")
+out <- get_abnorm_hist(data)
+na.omit(out) # to drop baseline NA values
+#> # A tibble: 345 x 9
+#>    keyword   date       type      control object locations   doi doi_abnorm quantile
+#>    <chr>     <date>     <chr>       <int>  <int> <chr>     <dbl>      <dbl>    <dbl>
+#>  1 microsoft 2011-01-01 score_obs       1      1 us_states 0.919    0.0330     0.991
+#>  ...
+#> 10 microsoft 2011-04-01 score_obs       1      1 us_states 0.909    0.0171     0.886
+#> # ... with 335 more rows
+```
+
+The functions `plot_bar`, `plot_box`, and `plot_ts` have methods for classes of output from `get_abnorm_hist`. This allows seamless plotting of changes in internationalization. The function `plot_bar` shows the five locations with the highest and lowest changes in search scores for a given object keyword. The function uses only the first keyword in the dataset and averages changes in search scores for the input dataset - we therefore suggest filtering the output from ` get_abnorm_hist` to a specific period. The plot shows that while positive abnormal changes in search scores for Facebook were greatest in Ecuador and Myanmar, negative abnormal changes were greatest in Italy and Argentina.
+
+```{r, eval = FALSE}
+data <- export_score(object = 1, locations = countries)
+data <- dplyr::filter(data, keyword == "facebook" & lubridate::year(date) >= 2018)
+# use 2018 as baseline to compute abnormal changes in 2019
+out <- get_abnorm_hist(data)
+plot_bar(out)
+```
+
+![](plot006.png){width=100%}
+
+The time series plot function `plot_ts` shows how search scores and volume or degree of internationalization for objects of interest changed over time. The function `plot_box` generates boxplots of changes in search score and volume or degree of internationalization distributions. The input `ci` allows users to set a confidence interval for plotting. Changes with percentile ranks outside this two-tailed confidence interval are highlighted with red dots. The left-hand plot shows abnormal changes in Facebook’s search score for Germany. Search scores increased "abnormally" (i.e., compared to the historic average) in 2012 and decreased abnormally in 2014. The right-hand plot shows the distribution for Coca Cola’s degree of internationalization and indicates abnormal changes.
+
+```{r, eval = FALSE}
+data <- export_score(keyword = "facebook", locations = "DE")
+out <- get_abnorm_hist(data)
+plot_ts(out)
+
+data <- export_doi(keyword = "coca cola", locations = "countries")
+out <- get_abnorm_hist(data)
+plot_box(out)
+```
+
+<center>
+![](plot007.png){height=45%, width=45%}
+![](plot008.png){height=45%, width=45%}
+</center>
+
 ## Additional options
 
 The `globaltrends` package offers several options that allow adjustments for default computations. Users can use other measures besides the inverted Gini coefficient, or change the set of locations.
@@ -356,7 +460,7 @@ The `globaltrends` package computes degree of internationalization based on the 
 
 ### Alternative sets of locations
 
-By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input `locations` to *us_states*, the package uses US states and Washington, D.C. as a basis for downloads and computations instead. Apart from `compute_doi`, all functions use the name of the variable that contains the location vector as inputs for `locations` (e.g., *countries*, *us_states*). The function `start_db` exports these vectors of ISO2 codes to the global environment. Function `compute_doi`, however, does not directly refer to these objects, but to their names (e.g., “countries”, “us_states”). Using state or district-level locations allows users to analyze the within-country dispersion of firms.
+By default, `globaltrends` makes all downloads and computations for the *countries* set of locations. The *countries* set covers all countries that generated at least 0.1% of world GDP in 2018. By changing the input `locations` to *us_states*, the package uses US states and Washington DC as basis for downloads and computations instead. Apart from `compute_doi`, all functions use the name of the variable that contains the location vector as inputs for `locations` (e.g., *countries*, *us_states*). The function `start_db` exports these vectors of ISO2 codes to the global environment. Function `compute_doi`, however does not directly refer to these objects, but to their names (e.g., "countries", "us_states"). Using state or district level locations allows users to analyze within-country dispersion of firms.
 
 ```{r, eval = FALSE}
 # change locations -------------------------------------------------------------
@@ -368,7 +472,7 @@ compute_doi(control = 1, object = 1:2, locations = "us_states")
 
 ![](plot013.png){width=100%}
 
-Users can add individual sets of locations through the function `add_locations`. In the variable `locations`, users specify the location codes (e.g., “AT”, “CH”, “DE”) and `type` takes the name of the location set (e.g., “DACH”). The new location set can be used in all functions. Since all functions check whether data on a location already exists, `globaltrends` does not duplicate data for new location sets.
+Users can add individual sets of locations through the function `add_locations`. In the variable `locations`, users specify the location codes (e.g., "AT", "CH", "DE") and `type` takes the name of the location set (e.g., "DACH"). The new location set can be used in all functions. Since all functions check whether data on a location already exists, `globaltrends` does not duplicate data for new location sets.
 
 ```{r, eval = FALSE}
 add_locations(c("AT", "CH", "DE"), type = "dach")
@@ -384,6 +488,8 @@ dplyr::count(data, location)
 ```
 
 # Search topics vs search terms
+
+Results for individual keywords as search terms (e.g., *weather*, *apple*, *coca cola*) might be distorted by translation issues (i.e., keywords are search for in different languages), keyword contamination (i.e., keywords relate to different queries: apple vs. Apple Inc.), and keyword dilution (i.e., multiple keywords relate to the same query: election, vote). Search topics allow users to partly overcome these issues. [Google](https://web.archive.org/web/20230117193147/https://support.google.com/trends/answer/4359550/) defines a search topic as "a group of terms that share the same concept in any language." Thereby, queries that use search topics are language-independent, cover queries for different terms, and differentiate between queries.  
 
 Results for individual keywords as search terms (e.g., *weather*, *apple*, *coca cola*) might be distorted by translation issues (i.e., keywords are search for in different languages), keyword contamination (i.e., keywords relate to different queries: apple vs. Apple Inc.), and keyword dilution (i.e., multiple keywords relate to the same query: election, vote). Search topics help users partly overcome these issues. [Google](https://support.google.com/trends/answer/4359550?hl=en) defines a search topic as “a group of terms that share the same concept in any language.” Thereby, queries that use search topics are language-independent, cover different terms, and differentiate between them.  
 
@@ -542,7 +648,7 @@ After the releveling, search volumes from all object batches use control batch $
 
 ## Computing search scores
 
-The outcome of the releveling is not a de-normalization but that search volumes are releveled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ by search volumes for a set of control keywords $KC$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of “standard” search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting control keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in KC$:
+The outcome of the releveling is not a de-normalization but that search volumes are releveled to control batch $bc$. This means that $\tilde{SV}_{ko,bc,l,t}$ may still be distorted by $max(SV_{bo,l})$. To overcome such distortion, functions `compute_score` and `compute_voi` divide $\tilde{SV}_{ko,bc,l,t}$ by search volumes for a set of control keywords $KC$. Since *gmail*, *maps*, *translate*, *wikipedia*, and *youtube* allow an approximation of "standard" search volumes on Google, we propose them as control keywords for global trend analysis. These keywords approximate the baseline search traffic on Google. For specific research settings, we suggest adapting control keywords to the respective setting and testing them on the Google Trends portal beforehand. To compute search score $SC_{ko,l,t}$, we divide search volumes for object keywords by the sum of search volumes for control keywords $kc \in KC$:
 
 \begin{equation}
 SC_{ko,l,t}=\frac{\tilde{SV}_{ko,bc,l,t}}{\sum_{kc \in KC} \tilde{SV}_{kc,bc,l,t}}.

@@ -1,4 +1,6 @@
-
+.env
 .Rhistory
 revdep/
 dev/submission_checks.nb.html
+tests/testthat/_snaps
+tests/testthat/db

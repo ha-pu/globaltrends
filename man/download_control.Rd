@@ -5,71 +5,97 @@
 \alias{download_control.numeric}
 \alias{download_control.list}
 \alias{download_control_global}
-\title{Download data for control keywords}
+\title{Download data for control keyword batches}
 \usage{
-download_control(control, locations = gt.env$countries)
+download_control(control, locations = NULL)
 
-\method{download_control}{numeric}(control, locations = gt.env$countries)
+\method{download_control}{numeric}(control, locations = NULL)
 
-\method{download_control}{list}(control, locations = gt.env$countries)
+\method{download_control}{list}(control, locations = NULL)
 
 download_control_global(control)
 }
 \arguments{
-\item{control}{Control batch for which the data is downloaded. Object
-of type \code{numeric} or object of type \code{list} containing single
-objects of type \code{numeric}.}
+\item{control}{Numeric scalar, numeric vector, or list of numeric scalars.
+Control batch id(s) to download.}
 
-\item{locations}{List of countries or regions for which the data is
-downloaded. Refers to lists generated in \code{start_db}. Defaults to
-\code{gt.env$countries}.}
+\item{locations}{Character vector of ISO 3166-1 alpha-2 location codes.
+Defaults to \code{gt.env$countries} when set by \code{\link[=start_db]{start_db()}}; otherwise falls
+back to \code{globaltrends::countries}. Pass \code{"world"} (or use
+\code{\link[=download_control_global]{download_control_global()}}) to download the worldwide aggregate instead of
+country-level data.}
 }
 \value{
-Message that data has been downloaded successfully. Data is written
-to table \emph{data_control}.
+Invisibly returns \code{TRUE}. The function is called for its side effects:
+downloaded rows are appended to \code{data_control} in the active database, and
+one progress message is emitted per location indicating whether data was
+written or no data was returned.
+
+Invisibly returns \code{TRUE}. See \code{\link[=download_control]{download_control()}} for details on
+side effects and emitted messages.
 }
 \description{
-The function downloads search volumes from Google Trends for a \emph{control}
-batch in a set of \emph{locations}. Data is automatically written to table
-\emph{data_control}. For \code{download_control_global} the input
-\emph{location} is automatically set to \emph{world}.
+Downloads Google Trends search volumes for one or more \emph{control} batches
+across a set of locations and appends the results to the database table
+\code{data_control}.
+
+Convenience wrapper around \code{\link[=download_control]{download_control()}} that downloads the worldwide
+aggregate instead of country-level data. Equivalent to calling
+\code{download_control(control, locations = "world")}.
 }
 \details{
-Downloads through the Google Trends API are made through
-\code{gtrendsR::gtrends}. Each control batch can consist of up to five
-keywords and is predefined in tables \emph{batch_keywords} and
-\emph{batch_time} through \code{add_keywords}. The download for a single
-keyword batch for a single location takes about 30 seconds. This includes a
-randomized waiting period of 5-10 seconds between downloads. Depending on
-the frequency of downloads, Google Trends might block users for some time
-(about 1,500 downloads within 24 hours). In this case, \code{download_control}
-waits 60 minutes before it retries the download.
-}
-\section{Warning}{
+\strong{Prerequisites.} \code{\link[=start_db]{start_db()}} must be called before \code{download_control()}.
+It connects to the database and populates \code{gt.env$keywords_control} and
+\code{gt.env$time_control} from the tables \code{batch_keywords} and \code{batch_time}
+(created via \code{\link[=add_keyword]{add_keyword()}}). These in-memory objects are used to look up
+the keywords and time window for each requested batch.
 
-We advise against the usage of \emph{category codes} in
-downloads. If you use \emph{categories} to narrow the context of keyword usage,
-these categories are applied to \strong{ALL} keywords in the batch. This applies
-to \emph{control} keywords as well as \emph{object} keywords and can result in
-unintended behavior.
+\strong{Dispatch.} \code{download_control()} is an S3 generic that dispatches on the
+class of \code{control}. Passing a numeric scalar routes to the \code{.numeric} method,
+which performs the actual download. Passing a numeric vector of length > 1
+coerces \code{control} to a list and delegates to the \code{.list} method, which
+iterates over batches sequentially. Passing a list directly also routes to
+the \code{.list} method.
+
+\strong{Download backend.} Requests are issued through the internal \code{.get_trend()}
+helper, which uses either \code{gtrendsR::gtrends()} (default) or the Google
+Trends Research API when \code{\link[=initialize_python]{initialize_python()}} has been called.
+
+\strong{Deduplication.} Before downloading, the function queries \code{data_control}
+for locations already present for the requested batch. Only locations not yet
+in the database are downloaded. If all locations are already present, the
+function returns early with a message and no requests are made.
+
+\strong{Missing data.} If the API returns no data for a location (e.g. due to
+insufficient search volume), the result for that location is silently skipped
+(nothing is written to \code{data_control}) and a "No data returned" message is
+emitted.
+}
+\section{Category codes}{
+
+Avoid category codes unless you are confident they apply uniformly to all
+keywords in the batch. Google Trends applies a category constraint to the
+entire request, which can unintentionally change the meaning of control and
+object keywords.
 }
 
 \examples{
 \dontrun{
-download_control(
-  control = 1,
-  locations = countries
-)
-download_control(
-  control = as.list(1:5),
-  locations = countries
-)
+# Download one control batch for all countries
+download_control(control = 1, locations = countries)
+
+# Download several batches sequentially
+download_control(control = as.list(1:5), locations = countries)
+
+# Download worldwide aggregate
+download_control_global(control = 1)
 }
 
 }
 \seealso{
-\itemize{
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[gtrendsR:gtrends]{gtrendsR::gtrends()}}
-}
+\code{\link[=start_db]{start_db()}} to connect to the database and populate \code{gt.env}.
+\code{\link[=add_keyword]{add_keyword()}} to register control batches before downloading.
+\code{\link[=download_control_global]{download_control_global()}} for a convenience wrapper for worldwide data.
+\code{\link[=download_object]{download_object()}} to download object keyword data using a control batch for
+scaling.
 }

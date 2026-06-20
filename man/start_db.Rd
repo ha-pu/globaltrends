@@ -2,63 +2,43 @@
 % Please edit documentation in R/database_functions.r
 \name{start_db}
 \alias{start_db}
-\title{Load globaltrends database and tables}
+\title{Start a database session}
 \usage{
 start_db()
 }
 \value{
-The function exports the following objects to the package environment \code{globaltrends_db}:
-\itemize{
-\item globaltrends_db A DBIConnection object, as returned by
-\code{DBI::dbConnect()}, connecting to the SQLite database in the working
-directory
-\item tbl_doi A remote data source pointing to the table \emph{data_doi} in
-the connected SQLite database
-\item tbl_control A remote data source pointing to the table
-\emph{data_control} in the connected SQLite database
-\item tbl_mapping A remote data source pointing to the table
-\emph{data_mapping} in the connected SQLite database
-\item tbl_object A remote data source pointing to the table
-\emph{data_object} in the connected SQLite database
-\item tbl_score A remote data source pointing to the table
-\emph{data_score} in the connected SQLite database
-\item countries A \code{character} vector containing ISO2 country codes of
-countries that add at least 0.1\\% to global GDP
-\item us_states A \code{character} vector containing ISO2 regional codes of
-US states
-\item keywords_control A \code{tibble} containing keywords of control
-batches
-\item time_control A \code{tibble} containing times of control batches
-\item keywords_object A \code{tibble} containing keywords of object batches
-\item time_object A \code{tibble} containing times of control batches
-\item keyword_synonyms A \code{tibble} containing synonymous keywords
-}
+Invisibly returns \code{TRUE}. Called primarily for its side effects.
 }
 \description{
-The function connects to the database file \emph{db/globaltrends_db.sqlite}
-in the working directory. After connecting to the database connections to the
-database tables (through \code{dplyr::tbl}) are created. Data from the tables
-\emph{batch_keywords} and \emph{batch_time} are exported to the \code{tibble}
-objects \emph{keywords_control}, \emph{keywords_object}, \emph{time_control},
-and \emph{time_object}.
+Loads the Parquet-backed store under \verb{db/} into an in-memory DuckDB
+connection and registers lazy \code{dplyr} table handles and cached tibbles in
+\code{gt.env}.
 }
-\section{Warning}{
-
-SQLite databases only allow one writer at any instant in time. To run
-parallel downloads use one database for each download client and merge them
-once all downloads are complete.
+\details{
+Requires \code{\link[=initialize_db]{initialize_db()}} to have been run in the current working
+directory. All Parquet files are read into an in-memory DuckDB instance;
+the following bindings are written to \code{gt.env}:
+\describe{
+\item{\code{globaltrends_db}}{Active \code{DBI} connection to the in-memory DuckDB
+instance.}
+\item{\code{keywords_control}, \code{keywords_object}}{Data frames of control and
+object keywords by batch (without the \code{type} column).}
+\item{\code{time_control}, \code{time_object}}{Data frames of batch time windows for
+control and object runs (without the \code{type} column).}
+\item{\code{keyword_synonyms}}{Data frame of all keyword/synonym pairs.}
 }
-
+Location sets are exported as named character vectors via
+\code{.export_locations()}.
+}
 \examples{
 \dontrun{
 start_db()
+# ... downloads and computations ...
+disconnect_db()
 }
 
 }
 \seealso{
-\itemize{
-\item \code{\link[=initialize_db]{initialize_db()}}
-\item \code{\link[=disconnect_db]{disconnect_db()}}
-\item \code{\link[dplyr:tbl]{dplyr::tbl()}}
-}
+\code{\link[=initialize_db]{initialize_db()}} to create the store before the first session;
+\code{\link[=disconnect_db]{disconnect_db()}} to persist changes and close the session.
 }

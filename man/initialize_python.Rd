@@ -2,44 +2,70 @@
 % Please edit documentation in R/initialize_python.r
 \name{initialize_python}
 \alias{initialize_python}
-\title{Initialize gtrends Python module}
+\title{Initialize Python backend for Google Trends Research API}
 \usage{
 initialize_python(api_key, conda_env = NULL, python_env = NULL)
 }
 \arguments{
-\item{api_key}{API key obtained from Google. Object of type \code{character}.}
+\item{api_key}{Character scalar. API key obtained from Google.}
 
-\item{conda_env}{Storage location of a Conda environment. Object of type
-\code{character}.}
+\item{conda_env}{Optional character scalar. Name or path of a Conda
+environment (passed to \code{\link[reticulate:use_condaenv]{reticulate::use_condaenv()}}). Supply either this
+or \code{python_env}, not both.}
 
-\item{python_env}{Storage location of a Python environment. Object of type
-\code{character}.}
+\item{python_env}{Optional character scalar. Path to a Python virtual
+environment (passed to \code{\link[reticulate:use_virtualenv]{reticulate::use_virtualenv()}}). Supply either this
+or \code{conda_env}, not both.}
 }
 \value{
-The functions sets the environment variable \code{gt.env} to \code{TRUE}. This channels
-downloads to the API. Otherwise, \code{globaltrends} uses \code{gtrendsR::gtrends} for
-downloads.
+Invisibly returns \code{TRUE}. Called for its side effects: stores \code{api_key} in
+\code{gt.env}, sources \code{python/query_gtrends.py}, and sets \code{gt.env$py_setup} to
+\code{TRUE} to activate the Research API download backend.
 }
 \description{
-The function initializes the Python session required to download data from
-Google Trends using the Google Trends research API. The user can define an
-API key and either a Conda or Python environment.
+Initializes the Python session required to download data via the Google
+Trends \emph{Research API} (not the public \code{gtrendsR::gtrends()} scraping route).
+The function configures the Python interpreter (Conda or virtualenv),
+stores the API key in \code{gt.env}, sources the package's Python helper code,
+and marks the session as ready for API-based downloads.
 }
 \details{
-To use this API acces, you must:
+\strong{Prerequisites.} Before calling \code{initialize_python()}:
 \enumerate{
-\item Apply for API access \href{https://support.google.com/trends/contact/trends_api}{online}.
-and generate an API key in your Google developer console.
-\item Create a Python or Conda environment where you install the
-\code{google-api-python-client} package with pip.
+\item Apply for Research API access and obtain an API key via Google's request
+form.
+\item Create a Python environment (Conda or virtualenv) with
+\code{google-api-python-client} installed.
 }
+
+\strong{Environment specification.} Exactly one of \code{conda_env} or \code{python_env}
+must be supplied; providing neither or both is an error.
+
+\strong{Effect on the download backend.} Once initialized, all download functions
+(\code{\link[=download_control]{download_control()}}, \code{\link[=download_object]{download_object()}}, \code{\link[=download_region]{download_region()}},
+\code{\link[=download_related]{download_related()}}) switch from the default \code{gtrendsR::gtrends()} scraping
+route to the Research API.
 }
 \examples{
 \dontrun{
+# Conda environment
 initialize_python(
-  api_key = "XXX",
-  conda_env = "/xxx/venv"
+  api_key   = "YOUR_API_KEY",
+  conda_env = "/path/to/conda/env"
+)
+
+# Virtual environment
+initialize_python(
+  api_key    = "YOUR_API_KEY",
+  python_env = "/path/to/venv"
 )
 }
 
+}
+\seealso{
+\code{\link[=download_control]{download_control()}}, \code{\link[=download_object]{download_object()}}, \code{\link[=download_region]{download_region()}},
+\code{\link[=download_related]{download_related()}} for the download functions that use the Research API
+once initialized.
+\code{\link[reticulate:use_condaenv]{reticulate::use_condaenv()}} and \code{\link[reticulate:use_virtualenv]{reticulate::use_virtualenv()}} for Python
+environment configuration.
 }

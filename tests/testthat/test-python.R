@@ -37,64 +37,64 @@ test_that("initialize_py4", {
     initialize_python(
       api_key = "XXX"
     ),
-    "Specify 'env'!"
+    "Specify exactly one of"
   )
 })
 
 test_that("signals1", {
   expect_error(
     initialize_python(api_key = 1, conda_env = "XXX"),
-    "'api_key' must be object of type character.\nYou provided an object of type double."
+    "`api_key` must be of type character"
   )
   expect_error(
     initialize_python(api_key = TRUE, conda_env = "XXX"),
-    "'api_key' must be object of type character.\nYou provided an object of type logical."
+    "`api_key` must be of type character"
   )
   expect_error(
     initialize_python(api_key = sum, conda_env = "XXX"),
-    "'api_key' must be object of type character.\nYou provided an object of type builtin."
+    "`api_key` must be of type character"
   )
   expect_error(
     initialize_python(api_key = c(TRUE, TRUE), conda_env = "XXX"),
-    "'api_key' must be object of length 1.\nYou provided an object of length 2."
+    "`api_key` must have length"
   )
 })
 
 test_that("signals2", {
   expect_error(
     initialize_python(conda_env = 1, api_key = "XXX"),
-    "'conda_env' must be object of type character.\nYou provided an object of type double."
+    "`conda_env` must be of type character"
   )
   expect_error(
     initialize_python(conda_env = TRUE, api_key = "XXX"),
-    "'conda_env' must be object of type character.\nYou provided an object of type logical."
+    "`conda_env` must be of type character"
   )
   expect_error(
     initialize_python(conda_env = sum, api_key = "XXX"),
-    "'conda_env' must be object of type character.\nYou provided an object of type builtin."
+    "`conda_env` must be of type character"
   )
   expect_error(
     initialize_python(conda_env = c(TRUE, TRUE), api_key = "XXX"),
-    "'conda_env' must be object of length 1.\nYou provided an object of length 2."
+    "`conda_env` must have length"
   )
 })
 
 test_that("signals3", {
   expect_error(
     initialize_python(python_env = 1, api_key = "XXX"),
-    "'python_env' must be object of type character.\nYou provided an object of type double."
+    "`python_env` must be of type character"
   )
   expect_error(
     initialize_python(python_env = TRUE, api_key = "XXX"),
-    "'python_env' must be object of type character.\nYou provided an object of type logical."
+    "`python_env` must be of type character"
   )
   expect_error(
     initialize_python(python_env = sum, api_key = "XXX"),
-    "'python_env' must be object of type character.\nYou provided an object of type builtin."
+    "`python_env` must be of type character"
   )
   expect_error(
     initialize_python(python_env = c(TRUE, TRUE), api_key = "XXX"),
-    "'python_env' must be object of length 1.\nYou provided an object of length 2."
+    "`python_env` must have length"
   )
 })
 
