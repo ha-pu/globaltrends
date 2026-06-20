@@ -45,6 +45,7 @@
 #' @export
 #' @rdname aggregate_synonyms
 #' @importFrom DBI dbAppendTable
+#' @importFrom stats aggregate
 
 aggregate_synonyms <- function(control, vacuum = TRUE) {
   .check_length(control, 1)

@@ -7,7 +7,6 @@
 \alias{download_control_global}
 \title{Download data for control keyword batches}
 \usage{
-
 download_control(control, locations = NULL)
 
 \method{download_control}{numeric}(control, locations = NULL)

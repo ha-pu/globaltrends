@@ -90,6 +90,7 @@
 #' * [example_keywords()]
 #' * [example_time()]
 #'
+#' @aliases add_keyword
 #' @rdname add_keyword
 #' @export
 

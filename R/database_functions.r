@@ -233,6 +233,7 @@ initialize_db <- function() {
 #'
 #' @export
 #' @importFrom DBI dbConnect dbExecute
+#' @importFrom dbplyr translate_sql
 #' @importFrom duckdb duckdb
 #' @importFrom dplyr tbl
 

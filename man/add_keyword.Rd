@@ -2,6 +2,7 @@
 % Please edit documentation in R/add_keywords.r
 \name{add_control_keyword}
 \alias{add_control_keyword}
+\alias{add_keyword}
 \alias{add_object_keyword}
 \title{Add batches of control or object keywords}
 \usage{
