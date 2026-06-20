@@ -10,16 +10,16 @@ start_db()
 Invisibly returns \code{TRUE}. Called primarily for its side effects.
 }
 \description{
-Loads the Parquet-backed store under \verb{db/} into an in-memory DuckDB
+Loads the Parquet-backed store under \verb{db/} into an in-memory SQLite
 connection and registers lazy \code{dplyr} table handles and cached tibbles in
 \code{gt.env}.
 }
 \details{
 Requires \code{\link[=initialize_db]{initialize_db()}} to have been run in the current working
-directory. All Parquet files are read into an in-memory DuckDB instance;
+directory. All Parquet files are read into an in-memory SQLite instance;
 the following bindings are written to \code{gt.env}:
 \describe{
-\item{\code{globaltrends_db}}{Active \code{DBI} connection to the in-memory DuckDB
+\item{\code{globaltrends_db}}{Active \code{DBI} connection to the in-memory SQLite
 instance.}
 \item{\code{keywords_control}, \code{keywords_object}}{Data frames of control and
 object keywords by batch (without the \code{type} column).}
