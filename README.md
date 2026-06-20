@@ -124,6 +124,26 @@ out_doi <- export_doi(locations = "countries")
 disconnect_db()
 ````
 
+If you run `globaltrends` on a headless machiine (e.g., a virtual machine),
+you can adapt the daily downloads to Google's API quota. The `get_api_usage`
+function provides tracks the amount of downloads and provides information on how
+many downloads are left until the daily limit of 10,000 downloads is met. You
+can use this function to create a while loop that stops, when the download limit
+is met:
+
+````
+batch_object <- read_rds("data/batch_object.rds")
+
+i <- 1
+while (get_api_usage()[2] >= 100 & i <= max(batch_object)) {
+  download_object(object = i, control = 1)
+  download_object_global(object = i, control = 1)
+  i <- i + 1
+}
+````
+
+**Note:** Limits are reset at midnight Pacific Time (UTC-8).
+
 If you use the `globaltrends` package, please cite it as:
 Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing
 globalization using Google Trends (SSRN Working Paper 3969013). Available at
