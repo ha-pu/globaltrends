@@ -8,6 +8,15 @@
     gt.env$api_calls_date <- today
   }
   gt.env$api_calls <- gt.env$api_calls + 1L
+
+  if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$globaltrends_db)) {
+    message(
+      "Persisting in-memory data to parquet after ",
+      gt.env$api_calls, " API calls."
+    )
+    disconnect_db()
+    start_db()
+  }
 }
 
 #' @title Download Google Trends time series for one request
@@ -65,6 +74,9 @@
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          tryCatch(disconnect_db(), error = function(dc_err) {
+            message("disconnect_db() failed: ", conditionMessage(dc_err))
+          })
           stop(
             paste0(
               "Google Trends API daily quota exceeded. ",
@@ -378,6 +390,9 @@
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          tryCatch(disconnect_db(), error = function(dc_err) {
+            message("disconnect_db() failed: ", conditionMessage(dc_err))
+          })
           stop(
             paste0(
               "Google Trends API daily quota exceeded. ",
@@ -500,6 +515,9 @@
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
+          tryCatch(disconnect_db(), error = function(dc_err) {
+            message("disconnect_db() failed: ", conditionMessage(dc_err))
+          })
           stop(
             paste0(
               "Google Trends API daily quota exceeded. ",
@@ -529,7 +547,9 @@
       }
     )
 
-    if (is.null(out)) return(NULL)
+    if (is.null(out)) {
+      return(NULL)
+    }
 
     item <- do.call(rbind, lapply(out$item, function(x) {
       data.frame(

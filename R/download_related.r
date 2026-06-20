@@ -1,9 +1,6 @@
 #' @title Download related topics and themes for object keyword batches
 #'
-#' @aliases download_related download_related.numeric download_related.list
-#'   download_topics download_themes download_topics_rising download_themes_rising
-#'   download_topics_global download_themes_global download_topics_rising_global
-#'   download_themes_rising_global
+#' @aliases download_related download_related.numeric download_related.list download_topics download_themes download_topics_rising download_themes_rising download_topics_global download_themes_global download_topics_rising_global download_themes_rising_global
 #'
 #' @description
 #' Downloads Google Trends related topics or themes for one or more *object*

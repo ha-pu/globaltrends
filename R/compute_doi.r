@@ -1,9 +1,6 @@
 #' @title Compute degree of internationalization (DOI)
 #'
-#' @aliases
-#' compute_doi
-#' compute_doi.numeric
-#' compute_doi.list
+#' @aliases compute_doi compute_doi.numeric compute_doi.list
 #'
 #' @description
 #' Computes degree of internationalization (DOI) for object keywords based on
