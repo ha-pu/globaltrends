@@ -29,11 +29,11 @@ Imports:
     dbplyr (>= 2.1.0),
     dplyr (>= 1.0.0),
     gtrendsR (>= 1.5.1),
-    hms (>= 1.1.0),
     reticulate (>= 1.38),
     RSQLite (>= 2.3.0),
     stats (>= 3.5.0)
 Suggests:
+    hms (>= 1.1.0),
     knitr (>= 1.29),
     rmarkdown (>= 2.3),
     testthat (>= 3.0.0),

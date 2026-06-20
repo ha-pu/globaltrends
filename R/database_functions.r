@@ -77,7 +77,7 @@ initialize_db <- function() {
     "CREATE INDEX idx_time_batch ON batch_time(batch);"
   )
 
-  con <- dbConnect(RSQLite::SQLite(), ":memory:", extended_types = TRUE)
+  con <- dbConnect(RSQLite::SQLite(), ":memory:")
   on.exit(dbDisconnect(con), add = TRUE)
 
   for (sql in schema_sql) dbExecute(con, sql)
@@ -238,7 +238,7 @@ start_db <- function() {
     )
   }
 
-  con <- dbConnect(RSQLite::SQLite(), ":memory:", extended_types = TRUE)
+  con <- dbConnect(RSQLite::SQLite(), ":memory:")
   assign("globaltrends_db", con, envir = gt.env)
 
   # Import Parquet tables into the in-memory DB (ReadableFile avoids
