@@ -2,6 +2,7 @@
 
 ## Test environments
 * local Windows 11 x64 (build 26200), R 4.6.0
+* R-hub: Linux (R-devel), Windows (R-devel), macOS arm64 (R-devel)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTEs.
