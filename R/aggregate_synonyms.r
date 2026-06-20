@@ -73,20 +73,29 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     return(invisible(data.frame()))
   }
 
-  affected_batches <- unique(c(syn_map$batch_o_canonical, syn_map$batch_o_synonym))
+  affected_batches <- unique(c(
+    syn_map$batch_o_canonical,
+    syn_map$batch_o_synonym
+  ))
   batch_in <- paste(affected_batches, collapse = ", ")
 
   # -----------------------------------------------------------------------
   # 2) Pull relevant score rows for affected object batches.
   # -----------------------------------------------------------------------
-  score_tbl <- DBI::dbGetQuery(con, sprintf(
-    "SELECT * FROM data_score WHERE batch_c = %d AND batch_o IN (%s)",
-    control, batch_in
-  ))
+  score_tbl <- DBI::dbGetQuery(
+    con,
+    sprintf(
+      "SELECT * FROM data_score WHERE batch_c = %d AND batch_o IN (%s)",
+      control,
+      batch_in
+    )
+  )
   score_tbl$date <- as.Date(score_tbl$date)
 
   if (nrow(score_tbl) == 0) {
-    message("No score data found for the specified control batch and affected object batches.")
+    message(
+      "No score data found for the specified control batch and affected object batches."
+    )
     return(invisible(data.frame()))
   }
 
@@ -105,11 +114,17 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     data = merged,
     FUN = function(x) sum(x, na.rm = TRUE)
   )
-  names(score_syn_rolled)[names(score_syn_rolled) == "batch_o_canonical"] <- "batch_o"
-  names(score_syn_rolled)[names(score_syn_rolled) == "keyword_canonical"] <- "keyword"
+  names(score_syn_rolled)[
+    names(score_syn_rolled) == "batch_o_canonical"
+  ] <- "batch_o"
+  names(score_syn_rolled)[
+    names(score_syn_rolled) == "keyword_canonical"
+  ] <- "keyword"
 
   syn_key <- paste(syn_map$batch_o_synonym, syn_map$keyword_synonym)
-  score_non_syn <- score_tbl[!paste(score_tbl$batch_o, score_tbl$keyword) %in% syn_key, ]
+  score_non_syn <- score_tbl[
+    !paste(score_tbl$batch_o, score_tbl$keyword) %in% syn_key,
+  ]
 
   score_combined <- rbind(score_non_syn, score_syn_rolled)
   score_new <- aggregate(
@@ -136,7 +151,9 @@ aggregate_synonyms <- function(control, vacuum = TRUE) {
     value = score_new
   )
 
-  message("Successfully aggregated synonyms into canonical keywords for data_score.")
+  message(
+    "Successfully aggregated synonyms into canonical keywords for data_score."
+  )
 
   # -----------------------------------------------------------------------
   # 5) Optional vacuum

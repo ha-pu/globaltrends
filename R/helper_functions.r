@@ -12,7 +12,8 @@
   if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$globaltrends_db)) {
     message(
       "Persisting in-memory data to parquet after ",
-      gt.env$api_calls, " API calls."
+      gt.env$api_calls,
+      " API calls."
     )
     disconnect_db()
     start_db()
@@ -81,7 +82,8 @@
             paste0(
               "Google Trends API daily quota exceeded. ",
               "Wait until quota resets before continuing.\n",
-              "Original error: ", msg
+              "Original error: ",
+              msg
             ),
             call. = FALSE
           )
@@ -89,16 +91,34 @@
         if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
           message(
             "Skipping: API returned HTTP 400 (invalid argument) for term=",
-            paste(term, collapse = ","), " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            paste(term, collapse = ","),
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
           return(NULL)
         }
-        if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+        if (
+          grepl(
+            "TimeoutError|WinError 10060|timed out",
+            msg,
+            ignore.case = TRUE
+          )
+        ) {
           message(
             "Skipping: connection timeout for term=",
-            paste(term, collapse = ","), " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            paste(term, collapse = ","),
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
           return(NULL)
         }
@@ -110,14 +130,17 @@
       return(NULL)
     }
 
-    ts <- do.call(rbind, lapply(out$lines, function(line) {
-      data.frame(
-        keyword = line$term,
-        date = as.Date(vapply(line$points, function(p) p$date, character(1))),
-        hits = vapply(line$points, function(p) p$value, numeric(1)),
-        stringsAsFactors = FALSE
-      )
-    }))
+    ts <- do.call(
+      rbind,
+      lapply(out$lines, function(line) {
+        data.frame(
+          keyword = line$term,
+          date = as.Date(vapply(line$points, function(p) p$date, character(1))),
+          hits = vapply(line$points, function(p) p$value, numeric(1)),
+          stringsAsFactors = FALSE
+        )
+      })
+    )
 
     ts$location <- if (is_global) "world" else location
 
@@ -281,52 +304,113 @@
   .check_input(table, "character")
   .check_length(table, 1)
 
-  if (!is.null(in_batch_c)) .check_batch(in_batch_c)
-  if (!is.null(in_batch_o)) .check_batch(in_batch_o)
-  if (!is.null(in_topic)) .check_input(in_topic, "logical")
-  if (!is.null(in_rising)) .check_input(in_rising, "logical")
+  if (!is.null(in_batch_c)) {
+    .check_batch(in_batch_c)
+  }
+  if (!is.null(in_batch_o)) {
+    .check_batch(in_batch_o)
+  }
+  if (!is.null(in_topic)) {
+    .check_input(in_topic, "logical")
+  }
+  if (!is.null(in_rising)) {
+    .check_input(in_rising, "logical")
+  }
 
   con <- gt.env$globaltrends_db
 
-  switch(table,
+  switch(
+    table,
     data_control = {
-      if (is.null(in_batch_c)) stop("`batch_c` must be provided for table = 'data_control'.", call. = FALSE)
-      DBI::dbGetQuery(con, sprintf(
-        "SELECT DISTINCT location FROM data_control WHERE batch = %d",
-        in_batch_c
-      ))$location
+      if (is.null(in_batch_c)) {
+        stop(
+          "`batch_c` must be provided for table = 'data_control'.",
+          call. = FALSE
+        )
+      }
+      DBI::dbGetQuery(
+        con,
+        sprintf(
+          "SELECT DISTINCT location FROM data_control WHERE batch = %d",
+          in_batch_c
+        )
+      )$location
     },
     data_object = {
-      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_object'.", call. = FALSE)
-      DBI::dbGetQuery(con, sprintf(
-        "SELECT DISTINCT location FROM data_object WHERE batch_c = %d AND batch_o = %d",
-        in_batch_c, in_batch_o
-      ))$location
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_object'.",
+          call. = FALSE
+        )
+      }
+      DBI::dbGetQuery(
+        con,
+        sprintf(
+          "SELECT DISTINCT location FROM data_object WHERE batch_c = %d AND batch_o = %d",
+          in_batch_c,
+          in_batch_o
+        )
+      )$location
     },
     data_score = {
-      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_score'.", call. = FALSE)
-      DBI::dbGetQuery(con, sprintf(
-        "SELECT DISTINCT location FROM data_score WHERE batch_c = %d AND batch_o = %d",
-        in_batch_c, in_batch_o
-      ))$location
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_score'.",
+          call. = FALSE
+        )
+      }
+      DBI::dbGetQuery(
+        con,
+        sprintf(
+          "SELECT DISTINCT location FROM data_score WHERE batch_c = %d AND batch_o = %d",
+          in_batch_c,
+          in_batch_o
+        )
+      )$location
     },
     data_region = {
-      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_region'.", call. = FALSE)
-      DBI::dbGetQuery(con, sprintf(
-        "SELECT DISTINCT location FROM data_region WHERE batch_o = %d",
-        in_batch_o
-      ))$location
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_region'.",
+          call. = FALSE
+        )
+      }
+      DBI::dbGetQuery(
+        con,
+        sprintf(
+          "SELECT DISTINCT location FROM data_region WHERE batch_o = %d",
+          in_batch_o
+        )
+      )$location
     },
     data_related = {
-      if (is.null(in_batch_o)) stop("`batch_o` must be provided for table = 'data_related'.", call. = FALSE)
-      if (is.null(in_topic)) stop("`topic` must be provided for table = 'data_related'.", call. = FALSE)
-      if (is.null(in_rising)) stop("`rising` must be provided for table = 'data_related'.", call. = FALSE)
-      DBI::dbGetQuery(con, sprintf(
-        "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
-        in_batch_o,
-        tolower(as.character(in_topic)),
-        tolower(as.character(in_rising))
-      ))$location
+      if (is.null(in_batch_o)) {
+        stop(
+          "`batch_o` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      if (is.null(in_topic)) {
+        stop(
+          "`topic` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      if (is.null(in_rising)) {
+        stop(
+          "`rising` must be provided for table = 'data_related'.",
+          call. = FALSE
+        )
+      }
+      DBI::dbGetQuery(
+        con,
+        sprintf(
+          "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
+          in_batch_o,
+          tolower(as.character(in_topic)),
+          tolower(as.character(in_rising))
+        )
+      )$location
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",
@@ -397,7 +481,8 @@
             paste0(
               "Google Trends API daily quota exceeded. ",
               "Wait until quota resets before continuing.\n",
-              "Original error: ", msg
+              "Original error: ",
+              msg
             ),
             call. = FALSE
           )
@@ -405,14 +490,32 @@
         if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
           message(
             "Skipping: API returned HTTP 400 (invalid argument) for term=",
-            term, " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            term,
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
-        } else if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+        } else if (
+          grepl(
+            "TimeoutError|WinError 10060|timed out",
+            msg,
+            ignore.case = TRUE
+          )
+        ) {
           message(
             "Skipping: connection timeout for term=",
-            term, " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            term,
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
         } else {
           stop(e)
@@ -430,19 +533,30 @@
       }
     )
 
-    region <- do.call(rbind, lapply(out$regions, function(r) {
-      data.frame(
-        region_code = r$regionCode,
-        region_name = r$regionName,
-        hits = r$value,
-        stringsAsFactors = FALSE
-      )
-    }))
+    region <- do.call(
+      rbind,
+      lapply(out$regions, function(r) {
+        data.frame(
+          region_code = r$regionCode,
+          region_name = r$regionName,
+          hits = r$value,
+          stringsAsFactors = FALSE
+        )
+      })
+    )
     region$term <- term
     region$location <- if (is_global) "world" else location
     region$start_date <- as.Date(paste0(start_date, "-01"))
     region$end_date <- as.Date(paste0(end_date, "-01"))
-    region <- region[, c("term", "location", "start_date", "end_date", "region_code", "region_name", "hits")]
+    region <- region[, c(
+      "term",
+      "location",
+      "start_date",
+      "end_date",
+      "region_code",
+      "region_name",
+      "hits"
+    )]
 
     .increment_api_counter()
     # Respect configured wait between API calls
@@ -522,7 +636,8 @@
             paste0(
               "Google Trends API daily quota exceeded. ",
               "Wait until quota resets before continuing.\n",
-              "Original error: ", msg
+              "Original error: ",
+              msg
             ),
             call. = FALSE
           )
@@ -530,16 +645,34 @@
         if (grepl("400|badRequest|invalid argument", msg, ignore.case = TRUE)) {
           message(
             "Skipping: API returned HTTP 400 (invalid argument) for term=",
-            term, " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            term,
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
           return(NULL)
         }
-        if (grepl("TimeoutError|WinError 10060|timed out", msg, ignore.case = TRUE)) {
+        if (
+          grepl(
+            "TimeoutError|WinError 10060|timed out",
+            msg,
+            ignore.case = TRUE
+          )
+        ) {
           message(
             "Skipping: connection timeout for term=",
-            term, " geo=", if (is.null(geo)) "world" else geo,
-            " [", start_date, "/", end_date, "]"
+            term,
+            " geo=",
+            if (is.null(geo)) "world" else geo,
+            " [",
+            start_date,
+            "/",
+            end_date,
+            "]"
           )
           return(NULL)
         }
@@ -551,13 +684,16 @@
       return(NULL)
     }
 
-    item <- do.call(rbind, lapply(out$item, function(x) {
-      data.frame(
-        related_term = x$title,
-        hits = x$value,
-        stringsAsFactors = FALSE
-      )
-    }))
+    item <- do.call(
+      rbind,
+      lapply(out$item, function(x) {
+        data.frame(
+          related_term = x$title,
+          hits = x$value,
+          stringsAsFactors = FALSE
+        )
+      })
+    )
     item$term <- term
     item$topic <- topic
     item$rising <- rising

@@ -179,15 +179,27 @@ download_control.numeric <- function(control, locations = NULL) {
         value = out
       )
       message(paste0(
-        "Downloaded control data | control: ", control,
-        " | location: ", loc,
-        " [", i, "/", n_locs, "]"
+        "Downloaded control data | control: ",
+        control,
+        " | location: ",
+        loc,
+        " [",
+        i,
+        "/",
+        n_locs,
+        "]"
       ))
     } else {
       message(paste0(
-        "No data returned | control: ", control,
-        " | location: ", loc,
-        " [", i, "/", n_locs, "]"
+        "No data returned | control: ",
+        control,
+        " | location: ",
+        loc,
+        " [",
+        i,
+        "/",
+        n_locs,
+        "]"
       ))
     }
   }
@@ -209,7 +221,9 @@ download_control.list <- function(control, locations = NULL) {
   }
   .check_input(locations, "character")
 
-  for (c in control) download_control(c, locations = locations)
+  for (c in control) {
+    download_control(c, locations = locations)
+  }
   invisible(TRUE)
 }
 

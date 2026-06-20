@@ -168,8 +168,11 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
 
   if (length(loc_remaining) == 0) {
     message(paste0(
-      "No new locations to download | object: ", object,
-      " | control: ", control, "."
+      "No new locations to download | object: ",
+      object,
+      " | control: ",
+      control,
+      "."
     ))
     return(invisible(TRUE))
   }
@@ -182,31 +185,46 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
 
     # We require `data_control` for the same control batch and location to
     # pick an appropriate control keyword for mapping.
-    qry_control <- DBI::dbGetQuery(con, sprintf(
-      "SELECT keyword, hits FROM data_control WHERE batch = %d AND location = %s",
-      control,
-      DBI::dbQuoteString(con, loc)
-    ))
+    qry_control <- DBI::dbGetQuery(
+      con,
+      sprintf(
+        "SELECT keyword, hits FROM data_control WHERE batch = %d AND location = %s",
+        control,
+        DBI::dbQuoteString(con, loc)
+      )
+    )
 
     if (nrow(qry_control) == 0) {
       message(paste0(
-        "Skipped object download (missing control baseline) | object: ", object,
-        " | control: ", control,
-        " | location: ", loc, "."
+        "Skipped object download (missing control baseline) | object: ",
+        object,
+        " | control: ",
+        control,
+        " | location: ",
+        loc,
+        "."
       ))
       next
     }
 
     # Rank control keywords by average hits (ascending) and keep only those with signal.
     # We try control keywords with lower average hits first to reduce saturation risk.
-    avg_hits <- tapply(qry_control$hits, qry_control$keyword, mean, na.rm = TRUE)
+    avg_hits <- tapply(
+      qry_control$hits,
+      qry_control$keyword,
+      mean,
+      na.rm = TRUE
+    )
     avg_hits <- avg_hits[avg_hits > 0]
 
     if (length(avg_hits) == 0) {
       stop(
         paste0(
-          "Too little signal in control batch ", control,
-          " for location ", loc, ". ",
+          "Too little signal in control batch ",
+          control,
+          " for location ",
+          loc,
+          ". ",
           "Reconsider choice of control keywords."
         ),
         call. = FALSE
@@ -258,7 +276,12 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
       stop(
         paste0(
           "Download failed: no control keyword produced usable signal for object batch ",
-          object, " (control batch ", control, ", location ", loc, "). ",
+          object,
+          " (control batch ",
+          control,
+          ", location ",
+          loc,
+          "). ",
           "Reconsider control keywords or time window."
         ),
         call. = FALSE
@@ -275,10 +298,17 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     )
 
     message(paste0(
-      "Downloaded object data | object: ", object,
-      " | control: ", control,
-      " | location: ", loc,
-      " [", i, "/", n_locs, "]"
+      "Downloaded object data | object: ",
+      object,
+      " | control: ",
+      control,
+      " | location: ",
+      loc,
+      " [",
+      i,
+      "/",
+      n_locs,
+      "]"
     ))
   }
 
@@ -299,7 +329,9 @@ download_object.list <- function(object, control = 1, locations = NULL) {
   }
   .check_input(locations, "character")
 
-  for (o in object) download_object(o, control = control, locations = locations)
+  for (o in object) {
+    download_object(o, control = control, locations = locations)
+  }
   invisible(TRUE)
 }
 

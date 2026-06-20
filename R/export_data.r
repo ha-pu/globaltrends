@@ -260,12 +260,24 @@ export_doi <- function(
   in_locations <- unlist(in_locations)
 
   # --- validate inputs --------------------------------------------------------
-  if (!is.null(in_keyword)) .check_input(in_keyword, "character", name = "keyword")
-  if (!is.null(in_control)) .check_batch(in_control)
-  if (!is.null(in_batch)) .check_batch(in_batch)
-  if (!is.null(in_location)) .check_input(in_location, "character")
-  if (!is.null(in_locations)) .check_input(in_locations, "character")
-  if (is.null(in_keyword) && !is.null(in_object)) .check_batch(in_object)
+  if (!is.null(in_keyword)) {
+    .check_input(in_keyword, "character", name = "keyword")
+  }
+  if (!is.null(in_control)) {
+    .check_batch(in_control)
+  }
+  if (!is.null(in_batch)) {
+    .check_batch(in_batch)
+  }
+  if (!is.null(in_location)) {
+    .check_input(in_location, "character")
+  }
+  if (!is.null(in_locations)) {
+    .check_input(in_locations, "character")
+  }
+  if (is.null(in_keyword) && !is.null(in_object)) {
+    .check_batch(in_object)
+  }
 
   con <- gt.env$globaltrends_db
   where_parts <- character(0)
@@ -277,14 +289,23 @@ export_doi <- function(
     )
     where_parts <- c(where_parts, paste0("keyword IN (", kw_in, ")"))
   } else if (!is.null(in_object)) {
-    where_parts <- c(where_parts, paste0("batch_o IN (", paste(in_object, collapse = ", "), ")"))
+    where_parts <- c(
+      where_parts,
+      paste0("batch_o IN (", paste(in_object, collapse = ", "), ")")
+    )
   }
 
   if (!is.null(in_control)) {
-    where_parts <- c(where_parts, paste0("batch_c IN (", paste(in_control, collapse = ", "), ")"))
+    where_parts <- c(
+      where_parts,
+      paste0("batch_c IN (", paste(in_control, collapse = ", "), ")")
+    )
   }
   if (!is.null(in_batch)) {
-    where_parts <- c(where_parts, paste0("batch IN (", paste(in_batch, collapse = ", "), ")"))
+    where_parts <- c(
+      where_parts,
+      paste0("batch IN (", paste(in_batch, collapse = ", "), ")")
+    )
   }
   if (!is.null(in_location)) {
     loc_in <- paste(
@@ -295,15 +316,24 @@ export_doi <- function(
   }
   if (!is.null(in_locations)) {
     locs_in <- paste(
-      vapply(in_locations, function(l) DBI::dbQuoteString(con, l), character(1)),
+      vapply(
+        in_locations,
+        function(l) DBI::dbQuoteString(con, l),
+        character(1)
+      ),
       collapse = ", "
     )
     where_parts <- c(where_parts, paste0("locations IN (", locs_in, ")"))
   }
 
   sql <- paste0(
-    "SELECT * FROM ", table,
-    if (length(where_parts) > 0) paste0(" WHERE ", paste(where_parts, collapse = " AND ")) else ""
+    "SELECT * FROM ",
+    table,
+    if (length(where_parts) > 0) {
+      paste0(" WHERE ", paste(where_parts, collapse = " AND "))
+    } else {
+      ""
+    }
   )
 
   out <- DBI::dbGetQuery(con, sql)

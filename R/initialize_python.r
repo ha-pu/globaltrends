@@ -151,8 +151,8 @@ get_api_usage <- function() {
     gt.env$api_calls_date <- today
   }
   c(
-    calls     = gt.env$api_calls,
+    calls = gt.env$api_calls,
     remaining = 10000L - gt.env$api_calls,
-    limit     = 10000L
+    limit = 10000L
   )
 }

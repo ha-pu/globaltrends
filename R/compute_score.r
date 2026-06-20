@@ -122,7 +122,8 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
   if (length(loc_remaining) == 0) {
     message(sprintf(
       "No new locations to compute | control: %s | object: %s.",
-      control, object
+      control,
+      object
     ))
     return(invisible(0L))
   }
@@ -135,15 +136,21 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
   )
 
   # Fast emptiness check
-  n_obj <- DBI::dbGetQuery(con, sprintf(
-    "SELECT COUNT(*) AS n FROM data_object WHERE batch_c = %d AND batch_o = %d AND location IN (%s)",
-    control, object, loc_in
-  ))$n
+  n_obj <- DBI::dbGetQuery(
+    con,
+    sprintf(
+      "SELECT COUNT(*) AS n FROM data_object WHERE batch_c = %d AND batch_o = %d AND location IN (%s)",
+      control,
+      object,
+      loc_in
+    )
+  )$n
 
   if (n_obj == 0) {
     message(sprintf(
       "No object data found | control: %s | object: %s.",
-      control, object
+      control,
+      object
     ))
     return(invisible(0L))
   }
@@ -207,20 +214,30 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
        WHERE c.batch = %d AND c.location IN (%s)
        GROUP BY c.location, c.date
      ) mass ON mass.location = o.location AND mass.date = o.date",
-    control, object, # INSERT batch_c, batch_o literals
-    control, object, loc_in, # outer object filter
-    control, loc_in, # exclude control keywords
-    control, object, loc_in, # benchmark o2 filter
-    control, loc_in, # benchmark c2 filter
-    control, loc_in, # benchmark overlap-keyword subquery
-    control, loc_in # control_mass c filter
+    control,
+    object, # INSERT batch_c, batch_o literals
+    control,
+    object,
+    loc_in, # outer object filter
+    control,
+    loc_in, # exclude control keywords
+    control,
+    object,
+    loc_in, # benchmark o2 filter
+    control,
+    loc_in, # benchmark c2 filter
+    control,
+    loc_in, # benchmark overlap-keyword subquery
+    control,
+    loc_in # control_mass c filter
   )
 
   n_out <- dbExecute(gt.env$globaltrends_db, insert_sql)
 
   message(sprintf(
     "Successfully computed search scores | control: %s | object: %s.",
-    control, object
+    control,
+    object
   ))
 
   invisible(as.integer(n_out))
@@ -232,7 +249,9 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
 
 compute_score.list <- function(object, control = 1, locations = NULL) {
   args <- .resolve_score_args(control, locations)
-  for (o in object) compute_score(o, control = args$control, locations = args$locations)
+  for (o in object) {
+    compute_score(o, control = args$control, locations = args$locations)
+  }
   invisible(TRUE)
 }
 
@@ -272,7 +291,11 @@ compute_voi <- function(object, control = 1) {
   .check_length(control, 1)
   .check_batch(control)
   if (is.null(locations)) {
-    locations <- if (!is.null(gt.env$countries)) gt.env$countries else globaltrends::countries
+    locations <- if (!is.null(gt.env$countries)) {
+      gt.env$countries
+    } else {
+      globaltrends::countries
+    }
   }
   .check_input(locations, "character")
   list(control = control, locations = locations)

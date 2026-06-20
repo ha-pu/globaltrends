@@ -7,6 +7,7 @@
 \alias{download_object_global}
 \title{Download data for object keyword batches}
 \usage{
+
 download_object(object, control = 1, locations = NULL)
 
 \method{download_object}{numeric}(object, control = 1, locations = NULL)
