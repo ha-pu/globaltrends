@@ -7,7 +7,7 @@
 
 ## Change in database handling
 
-* Switch from sqlite to duckdb
+* Switch from sqlite to parquet
   * Database tables are stored as individual parquet files
   * `start_db()` loads the parquet files to memory
   * All database actions are conducted in memory and later written to parquet
