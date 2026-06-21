@@ -177,7 +177,6 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     return(invisible(TRUE))
   }
 
-  con <- gt.env$globaltrends_db
   n_locs <- length(loc_remaining)
 
   for (i in seq_along(loc_remaining)) {
@@ -186,11 +185,11 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     # We require `data_control` for the same control batch and location to
     # pick an appropriate control keyword for mapping.
     qry_control <- DBI::dbGetQuery(
-      con,
+      gt.env$globaltrends_db,
       sprintf(
         "SELECT keyword, hits FROM data_control WHERE batch = %d AND location = %s",
         control,
-        DBI::dbQuoteString(con, loc)
+        DBI::dbQuoteString(gt.env$globaltrends_db, loc)
       )
     )
 
