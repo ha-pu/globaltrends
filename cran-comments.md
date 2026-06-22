@@ -1,4 +1,4 @@
-# Resubmission 0.2.0
+# Update 0.2.0
 
 ## Test environments
 * local Windows 11 x64 (build 26200), R 4.6.0

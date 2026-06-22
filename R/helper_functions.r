@@ -319,8 +319,7 @@
 
   con <- gt.env$globaltrends_db
 
-  switch(
-    table,
+  switch(table,
     data_control = {
       if (is.null(in_batch_c)) {
         stop(
