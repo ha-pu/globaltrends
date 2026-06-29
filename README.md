@@ -9,15 +9,9 @@
   <img src="vignettes/hex-globaltrends.png" width="250" height="250">
 </p>
 
-**globaltrends is no longer available through CRAN!**
-**Install directly from GitHub.**
-
 ```
 # install ----------------------------------------------------------------------
-devtools::install_github(
-  repo = "ha-pu/globaltrends",
-  build_vignettes = TRUE
-)
+install.packages("globaltrends")
 ```
 
 ## Introduction
@@ -47,15 +41,14 @@ internationalization, such as **data on global interest in products, persons,**
 **events, fads or scandals, even academic authors and papers**. 
 
 `globaltrends` provides user-friendly access to Google Trends. The
-[package vignette](https://github.com/ha-pu/globaltrends/blob/master/globaltrends_Vignette.pdf)
-offers additional technical details and a basic tutorial. Please, refer to the
-[package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md) for
-a change log.
+package vignette offers additional technical details and a basic tutorial.
+Please, refer to the [package NEWS](https://github.com/ha-pu/globaltrends/blob/master/NEWS.md)
+for a change log.
 
 ## Usage
 
 **This version of the** `globaltrends` **package can use the Google Trends**
-**Research API provided by Google.** To use this API acces, you must:
+**Research API provided by Google.** To use this API access, you must:
 
 1. Apply for API access [online](https://support.google.com/trends/contact/trends_api).
    and generate an API key in your Google developer console.
@@ -65,19 +58,13 @@ a change log.
 To interact with the API (i.e., to download data from Google Trends), you must
 first initialize your Python session and run `initialize_python()` before the
 downloads (see below). If `initialize_python()` is not called, the downloads
-will be made throught the `gtrendsR` package. **We suggest using the official**
+will be made through the `gtrendsR` package. **We suggest using the official**
 **Google Trends Research API as the preferred option to access data from**
 **Google Trends!**
 
 ````
 # install ----------------------------------------------------------------------
-# The API-based version of `globaltrends` is not available on CRAN!
-# Install the current dev version directly from GitHub:
-devtools::install_github(
-  repo = "ha-pu/globaltrends",
-  head = "parquet",
-  build_vignettes = TRUE
-)
+install.packages("globaltrends")
 
 # packages ---------------------------------------------------------------------
 library(dplyr)
@@ -124,7 +111,7 @@ out_doi <- export_doi(locations = "countries")
 disconnect_db()
 ````
 
-If you run `globaltrends` on a headless machiine (e.g., a virtual machine),
+If you run `globaltrends` on a headless machine (e.g., a virtual machine),
 you can adapt the daily downloads to Google's API quota. The `get_api_usage`
 function provides tracks the amount of downloads and provides information on how
 many downloads are left until the daily limit of 10,000 downloads is met. You

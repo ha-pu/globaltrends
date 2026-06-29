@@ -13,23 +13,16 @@ vignette: >
 ![](hex-globaltrends.png){#id .class width="25%" height="25%"}
 </center>
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE,
+  purl = FALSE
 )
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
-library(dplyr)
-library(ggplot2)
-library(lubridate)
-```
-
 ```{r setup, eval = FALSE}
-# install package --------------------------------------------------------------
-devtools::install_github("ha-pu/globaltrends", build_vignettes = TRUE)
-
 # load package -----------------------------------------------------------------
 library(globaltrends)
 ```
@@ -124,7 +117,7 @@ initialize_python(
 )
 ```
 
-If you run `globaltrends` on a headless machiine (e.g., a virtual machine), you can adapt the daily downloads to Google's API quota. The `get_api_usage` function provides tracks the amount of downloads and provides information on how many downloads are left until the daily limit of 10,000 downloads is met. You can use this function to create a while loop that stops, when the download limit is met:
+If you run `globaltrends` on a headless machine (e.g., a virtual machine), you can adapt the daily downloads to Google's API quota. The `get_api_usage` function provides tracks the amount of downloads and provides information on how many downloads are left until the daily limit of 10,000 downloads is met. You can use this function to create a while loop that stops, when the download limit is met:
 
 ```{r, eval = FALSE}
 batch_object <- read_rds("data/batch_object.rds")
@@ -452,88 +445,15 @@ The enormous detail of the data opens additional research applications that are 
 
 Google Trends does not query the total population of search queries on Google—an impossible task given the massive volume of data involved. Users specify which keyword $ko$ they want to query for location $l$ within timeframe $T$. We follow Costola, Iacopini, and Santagiustina (2021) to illustrate the data preparation steps applied by Google below.  
 
-```{r, include = FALSE}
-Sys.setlocale("LC_ALL", "English")
+<center>
+![](plot_appendix_a1.png){height=45%, width=45%}
+![](plot_appendix_a2.png){height=45%, width=45%}
+</center>
 
-set.seed(123)
-
-population <- tibble(
-  x = runif(10000),
-  y = runif(10000),
-  q = sample(letters[1:2], 10000, replace = TRUE, prob = c(0.25, 0.85)),
-  day = sample(1:10, 10000, replace = TRUE)
-) %>%
-  mutate(day = ymd(paste0("2022-01-", day)))
-
-sample <- slice_sample(population, n = 1000)
-
-max_queries <- sample %>%
-  count(day) %>%
-  filter(n == max(n)) %>%
-  slice(1) %>%
-  pull(n)
-```
-
-```{r, echo = FALSE}
-par(mfrow = c(2, 2))
-
-population %>%
-  ggplot() +
-  geom_point(aes(x, y, colour = q)) +
-  labs(tag = "A") +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank()
-  )
-
-sample %>%
-  ggplot() +
-  geom_point(aes(x, y, colour = q)) +
-  labs(tag = "B") +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank()
-  )
-
-sample %>%
-  ggplot() +
-  geom_bar(aes(day, fill = q)) +
-  labs(
-    x = NULL,
-    y = "Number of queries",
-    tag = "C"
-  ) +
-  ylim(c(0, max_queries)) +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  )
-
-sample %>%
-  mutate(q = q == "a") %>%
-  summarise(share = sum(q) / n(), .by = day) %>%
-  mutate(share = round(100 * share / max(share))) %>%
-  ggplot() +
-  geom_line(aes(x = day, y = share)) +
-  labs(
-    x = NULL,
-    y = "Google Trends search volume",
-    tag = "D"
-  ) +
-  ylim(0, 100) +
-  theme_bw()
-```
+<center>
+![](plot_appendix_a3.png){height=45%, width=45%}
+![](plot_appendix_a4.png){height=45%, width=45%}
+</center>
 
 Google filters the total population of search queries on its platform to those queries that fit with the user-specified location $l$ and time period $T$. This sample (Panel A) includes all relevant search queries, those that relate to keyword $ko$ (in red) and those do not (in green). To limit computational requirements, Google takes a random sample of the relevant search queries (Panel B) to compute the Google Trends search volume $SV_{ko,l,t}$. Although a substantially lower number of queries is included in the sub-sample, the relation between queries that relate to $ko$ and those that do no, remains the same. Next, Google compares the number of queries that relate to $ko$ for each day $t \in T$ to compute a relative search score (Panel C). To compute the Google Trends search volume $SV_{ko,l,t}$, Google normalizes the relative search score to a value between 0 and 100, where 100 is the maximum search score in the analyzed combination of $ko$, $l$, and $T$.  
 

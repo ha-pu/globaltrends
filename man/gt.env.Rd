@@ -3,6 +3,9 @@
 \name{gt.env}
 \alias{gt.env}
 \title{Package environment for internal state}
+\format{
+An environment with \code{parent = emptyenv()}.
+}
 \usage{
 gt.env
 }

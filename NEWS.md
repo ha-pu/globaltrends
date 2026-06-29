@@ -1,4 +1,4 @@
-# globaltrends 0.2.0.9000
+# globaltrends 0.2.0
 
 * General revision and improvement of code base
 * General revision and improvement of tests
@@ -17,8 +17,8 @@
 
 * Updated dependency to testthat 3.0.0
 * Improved error handling for Google Trends API calls:
-.get_trend() now catches three classes of errors from the Research API backend (HTTP via reticulate) instead of crashing with a Python traceback
-  * Quota exceeded (HTTP 429): writes in-membory data to parquet and then aborts with a clear message asking the user to wait for the quota to reset.
+  `.get_trend()` now catches three classes of errors from the Research API backend (HTTP via reticulate) instead of crashing with a Python traceback
+  * Quota exceeded (HTTP 429): writes in-memory data to parquet and then aborts with a clear message asking the user to wait for the quota to reset.
   * Invalid argument (HTTP 400): skips the offending term/location/date combination silently and continues.
   * Timeout (WinError 10060): skips the affected location and continues; the missing data can be filled by re-running download_object().
 

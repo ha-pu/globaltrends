@@ -118,7 +118,7 @@ test_locations <- function(fun, incl = FALSE, ...) {
     )
   }
 
-  purrr::map2(list(1, TRUE, sum), c("double", "logical", "builtin"), fun_tmp)
+  Map(fun_tmp, list(1, TRUE, sum), c("double", "logical", "builtin"))
 
   if (incl) {
     expect_error(

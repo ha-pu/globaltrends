@@ -32,6 +32,8 @@
 #'   \item `api_calls_date`: Date scalar. The date for which `api_calls` is counted; used to detect day boundaries.
 #' }
 #'
+#' @format An environment with `parent = emptyenv()`.
+#'
 #' @section Implementation notes:
 #' The environment is created with `parent = emptyenv()` to avoid accidental
 #' variable capture. Bindings are initialized on package attach so downstream
