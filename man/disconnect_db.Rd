@@ -8,20 +8,19 @@ disconnect_db()
 }
 \value{
 Invisibly returns \code{TRUE}. Called for its side effects (writing
-files under \verb{db/} and closing the connection).
+files under \verb{db/} and clearing handles).
 }
 \description{
-Exports the current in-memory SQLite state to the Parquet store under
-\verb{db/} and closes the DBI connection.
+Exports the current in-memory state to the RDS store under \verb{db/} and
+clears table handles from \code{gt.env}.
 }
 \details{
 Call this function after all downloads and computations are complete. It
-overwrites the Parquet files under \verb{db/} with the current in-memory state
-and then closes the SQLite connection. \code{gt.env$globaltrends_db} is set
-to \code{NULL} afterwards; all lazy \verb{tbl_*} handles become invalid.
+overwrites \code{db/globaltrends.rds} with the current in-memory state.
+All \verb{dt_*} handles in \code{gt.env} are set to \code{NULL} afterwards.
 
-Data written to the in-memory database during the session will be \strong{lost}
-if this function is not called before the R session ends.
+Data modified during the session will be \strong{lost} if this function is not
+called before the R session ends.
 }
 \examples{
 \dontrun{

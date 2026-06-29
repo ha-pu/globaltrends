@@ -1,7 +1,4 @@
 # setup ------------------------------------------------------------------------
-suppressWarnings(library(DBI))
-suppressWarnings(library(dplyr))
-
 source("../test_functions.r")
 
 Sys.setenv("LANGUAGE" = "EN")
@@ -11,26 +8,41 @@ start_db()
 location_set <- c("US", "CN", "JP")
 
 # enter data -------------------------------------------------------------------
-data <- filter(
-  example_control,
-  batch == 1 & location %in% c(location_set[1:2], "world")
+data <- example_control[
+  example_control$batch == 1 &
+  example_control$location %in% c(location_set[1:2], "world"),
+]
+gt.env$dt_control <- data.table::rbindlist(
+  list(gt.env$dt_control, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_control", data)
-data <- filter(
-  example_object,
-  batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world")
+data <- example_object[
+  example_object$batch_c == 1 &
+  example_object$batch_o %in% 1:3 &
+  example_object$location %in% c(location_set[1:2], "world"),
+]
+gt.env$dt_object <- data.table::rbindlist(
+  list(gt.env$dt_object, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_object", data)
-data <- filter(
-  example_score,
-  batch_c == 1 & batch_o %in% 1:3 & location %in% c(location_set[1:2], "world")
+data <- example_score[
+  example_score$batch_c == 1 &
+  example_score$batch_o %in% 1:3 &
+  example_score$location %in% c(location_set[1:2], "world"),
+]
+gt.env$dt_score <- data.table::rbindlist(
+  list(gt.env$dt_score, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_score", data)
-data <- filter(
-  example_doi,
-  batch_c == 1 & batch_o %in% 1:3 & locations == "countries"
+data <- example_doi[
+  example_doi$batch_c == 1 &
+  example_doi$batch_o %in% 1:3 &
+  example_doi$locations == "countries",
+]
+gt.env$dt_doi <- data.table::rbindlist(
+  list(gt.env$dt_doi, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_doi", data)
 
 # export_control ---------------------------------------------------------------
 test_that("export_control1", {

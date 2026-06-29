@@ -26,8 +26,8 @@ test_that("start1", {
     "Successfully loaded database and exported table handles to gt\\.env\\.",
     all = FALSE
   )
-  expect_false(is.null(gt.env$globaltrends_db))
-  expect_false(is.null(gt.env$tbl_control))
+  expect_false(is.null(gt.env$dt_control))
+  expect_false(is.null(gt.env$dt_keywords))
   expect_false(is.null(gt.env$keywords_control))
 })
 
@@ -53,26 +53,25 @@ test_that("re_create", {
   )
 })
 
-# parquet round-trip -----------------------------------------------------------
-test_that("parquet_roundtrip", {
+# rds round-trip ---------------------------------------------------------------
+test_that("rds_roundtrip", {
   dir <- withr::local_tempdir()
   withr::local_dir(dir)
   suppressMessages(initialize_db())
   suppressMessages(start_db())
 
-  DBI::dbExecute(
-    gt.env$globaltrends_db,
-    "INSERT INTO batch_keywords VALUES ('control', 1, 'roundtrip_keyword')"
+  new_row <- data.table::data.table(
+    type = "control", batch = 1L, keyword = "roundtrip_keyword"
+  )
+  gt.env$dt_keywords <- data.table::rbindlist(
+    list(gt.env$dt_keywords, new_row), use.names = TRUE
   )
 
   suppressMessages(disconnect_db())
   suppressMessages(start_db())
   withr::defer(suppressMessages(disconnect_db()))
 
-  result <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    "SELECT * FROM batch_keywords WHERE keyword = 'roundtrip_keyword'"
-  )
+  result <- gt.env$dt_keywords[gt.env$dt_keywords$keyword == "roundtrip_keyword", ]
 
   expect_equal(nrow(result), 1L)
   expect_equal(result$keyword, "roundtrip_keyword")

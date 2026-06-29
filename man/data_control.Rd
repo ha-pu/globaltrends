@@ -32,7 +32,7 @@ Each row contains Google Trends \code{hits} for a control \code{keyword} in a gi
 \code{location} on a given \code{date}, along with the control \code{batch} identifier.
 
 In a live database, data are downloaded via \code{\link[=download_control]{download_control()}} and are
-queryable through \code{gt.env$globaltrends_db} after \code{\link[=start_db]{start_db()}}. Global
+accessible via \verb{gt.env$dt_*} tables after \code{\link[=start_db]{start_db()}}. Global
 aggregates use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble real Google Trends output.

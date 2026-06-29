@@ -93,7 +93,6 @@
 #'
 #' @export
 #' @rdname download_object
-#' @importFrom DBI dbAppendTable
 
 download_object <- function(object, control = 1, locations = NULL) {
   UseMethod("download_object", object)
@@ -184,13 +183,9 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
 
     # We require `data_control` for the same control batch and location to
     # pick an appropriate control keyword for mapping.
-    qry_control <- DBI::dbGetQuery(
-      gt.env$globaltrends_db,
-      sprintf(
-        "SELECT keyword, hits FROM data_control WHERE batch = %d AND location = %s",
-        control,
-        DBI::dbQuoteString(gt.env$globaltrends_db, loc)
-      )
+    dt_c <- gt.env$dt_control
+    qry_control <- as.data.frame(
+      dt_c[dt_c$batch == control & dt_c$location == loc, c("keyword", "hits")]
     )
 
     if (nrow(qry_control) == 0) {
@@ -290,10 +285,9 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     # Persist data
     out$batch_c <- control
     out$batch_o <- object
-    dbAppendTable(
-      conn = gt.env$globaltrends_db,
-      name = "data_object",
-      value = out
+    gt.env$dt_object <- data.table::rbindlist(
+      list(gt.env$dt_object, data.table::setDT(out)),
+      use.names = TRUE
     )
 
     message(paste0(

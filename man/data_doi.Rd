@@ -57,6 +57,6 @@ internationalization using Google Trends. Available at SSRN:
 \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
 }
 \seealso{
-\code{\link[=compute_doi]{compute_doi()}}, \code{\link[=start_db]{start_db()}}, \code{\link[dplyr:tbl]{dplyr::tbl()}}
+\code{\link[=compute_doi]{compute_doi()}}, \code{\link[=start_db]{start_db()}}
 }
 \keyword{datasets}

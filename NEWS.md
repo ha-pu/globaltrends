@@ -1,3 +1,10 @@
+# globaltrends 0.2.0.9000
+
+* Change from sqlite/parquet files to `data.table` for performance reasons
+  * All `globaltrends` data is stored in a single, non-compresse RDS file
+  * All `globaltrends` data is loaded into memory as `data.table` objects
+* Drop `vacuum_data()` function, since the data architecture is not built on a database file any more
+
 # globaltrends 0.2.0
 
 * General revision and improvement of code base

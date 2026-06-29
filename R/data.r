@@ -67,7 +67,7 @@
 #' `location` on a given `date`, along with the control `batch` identifier.
 #'
 #' In a live database, data are downloaded via [download_control()] and are
-#' queryable through `gt.env$globaltrends_db` after [start_db()]. Global
+#' accessible via `gt.env$dt_*` tables after [start_db()]. Global
 #' aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
@@ -107,7 +107,7 @@
 #' mapped onto a common scale during score computation.
 #'
 #' In a live database, data are downloaded via [download_object()] and are
-#' queryable through `gt.env$globaltrends_db` after [start_db()]. Global
+#' accessible via `gt.env$dt_*` tables after [start_db()]. Global
 #' aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble real Google Trends output.
@@ -231,7 +231,7 @@
 #' \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
 #'
 #' @seealso
-#' [compute_doi()], [start_db()], [dplyr::tbl()]
+#' [compute_doi()], [start_db()]
 #'
 #' @name data_doi
 "example_doi"

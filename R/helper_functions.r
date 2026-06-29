@@ -9,7 +9,7 @@
   }
   gt.env$api_calls <- gt.env$api_calls + 1L
 
-  if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$globaltrends_db)) {
+  if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$dt_control)) {
     message(
       "Persisting in-memory data to parquet after ",
       gt.env$api_calls,
@@ -251,17 +251,12 @@
     .check_locations(locations)
   }
 
-  out <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    sprintf(
-      "SELECT 1 FROM data_doi WHERE batch_c = %d AND batch_o = %d AND locations = %s LIMIT 1",
-      batch_c,
-      batch_o,
-      DBI::dbQuoteString(gt.env$globaltrends_db, locations)
-    )
-  )
+  dt <- gt.env$dt_doi
+  n <- nrow(dt[
+    dt$batch_c == batch_c & dt$batch_o == batch_o & dt$locations == locations,
+  ])
 
-  nrow(out) == 0
+  n == 0L
 }
 
 #' @title List locations already present for a batch combination
@@ -317,8 +312,6 @@
     .check_input(in_rising, "logical")
   }
 
-  con <- gt.env$globaltrends_db
-
   switch(table,
     data_control = {
       if (is.null(in_batch_c)) {
@@ -327,13 +320,8 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_control WHERE batch = %d",
-          in_batch_c
-        )
-      )$location
+      dt <- gt.env$dt_control
+      unique(dt[dt$batch == in_batch_c, ]$location)
     },
     data_object = {
       if (is.null(in_batch_o)) {
@@ -342,14 +330,8 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_object WHERE batch_c = %d AND batch_o = %d",
-          in_batch_c,
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_object
+      unique(dt[dt$batch_c == in_batch_c & dt$batch_o == in_batch_o, ]$location)
     },
     data_score = {
       if (is.null(in_batch_o)) {
@@ -358,14 +340,8 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_score WHERE batch_c = %d AND batch_o = %d",
-          in_batch_c,
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_score
+      unique(dt[dt$batch_c == in_batch_c & dt$batch_o == in_batch_o, ]$location)
     },
     data_region = {
       if (is.null(in_batch_o)) {
@@ -374,13 +350,8 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_region WHERE batch_o = %d",
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_region
+      unique(dt[dt$batch_o == in_batch_o, ]$location)
     },
     data_related = {
       if (is.null(in_batch_o)) {
@@ -401,15 +372,12 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
-          in_batch_o,
-          as.integer(in_topic),
-          as.integer(in_rising)
-        )
-      )$location
+      dt <- gt.env$dt_related
+      unique(dt[
+        dt$batch_o == in_batch_o &
+        dt$topic == as.integer(in_topic) &
+        dt$rising == as.integer(in_rising),
+      ]$location)
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",

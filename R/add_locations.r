@@ -65,7 +65,6 @@
 #' * [gtrendsR::countries] — source of all valid location codes
 #'
 #' @export
-#' @importFrom DBI dbAppendTable
 #' @importFrom stats na.omit
 
 add_locations <- function(locations, type, export = TRUE) {
@@ -125,21 +124,11 @@ add_locations <- function(locations, type, export = TRUE) {
   }
 
   # --- avoid duplicates in the database --------------------------------------
-  # Only append (type, location) pairs that do not already exist.
-  if (is.null(gt.env$globaltrends_db)) {
+  if (is.null(gt.env$dt_locations)) {
     already_present <- NULL
   } else {
-    con <- gt.env$globaltrends_db
-    loc_in <- paste(
-      vapply(locations, function(l) DBI::dbQuoteString(con, l), character(1)),
-      collapse = ", "
-    )
-    existing <- DBI::dbGetQuery(con, paste0(
-      "SELECT location FROM data_locations WHERE type = ",
-      DBI::dbQuoteString(con, type),
-      " AND location IN (", loc_in, ")"
-    ))
-    already_present <- existing$location
+    dt <- gt.env$dt_locations
+    already_present <- dt[dt$type == type & dt$location %in% locations, ]$location
   }
   to_add <- setdiff(locations, already_present)
 
@@ -160,11 +149,10 @@ add_locations <- function(locations, type, export = TRUE) {
     return(invisible(data.frame(location = character(), type = character(), stringsAsFactors = FALSE)))
   }
 
-  data_to_add <- data.frame(location = to_add, type = type, stringsAsFactors = FALSE)
-  dbAppendTable(
-    conn = gt.env$globaltrends_db,
-    name = "data_locations",
-    value = data_to_add
+  data_to_add <- data.table::data.table(location = to_add, type = type)
+  gt.env$dt_locations <- data.table::rbindlist(
+    list(gt.env$dt_locations, data_to_add),
+    use.names = TRUE
   )
 
   if (export) {
@@ -223,11 +211,11 @@ add_locations <- function(locations, type, export = TRUE) {
 #' @noRd
 
 .export_locations <- function() {
-  df <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    "SELECT DISTINCT type, location FROM data_locations ORDER BY type, location"
-  )
-
-  lst_locations <- split(df$location, df$type)
+  dt <- gt.env$dt_locations
+  if (is.null(dt) || nrow(dt) == 0L) {
+    return(invisible(NULL))
+  }
+  dt <- unique(dt[order(dt$type, dt$location), ])
+  lst_locations <- split(dt$location, dt$type)
   invisible(list2env(lst_locations, envir = gt.env))
 }

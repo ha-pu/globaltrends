@@ -11,15 +11,13 @@ test_that("keywords_control1", {
     "Successfully created new control batch 1 \\(gmail, maps, translate, wikipedia, youtube, 2010-01-2019-12\\)\\."
   )
 
-  out <- dplyr::filter(gt.env$tbl_keywords, batch == 1L & type == "control")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(out$n, 5)
+  dt <- gt.env$dt_keywords
+  out <- nrow(dt[dt$batch == 1L & dt$type == "control", ])
+  expect_equal(out, 5L)
 
-  out <- dplyr::filter(gt.env$tbl_time, batch == 1L & type == "control")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(out$n, 1)
+  dt <- gt.env$dt_time
+  out <- nrow(dt[dt$batch == 1L & dt$type == "control", ])
+  expect_equal(out, 1L)
 })
 
 # add control keywords - long vector -------------------------------------------
@@ -52,19 +50,19 @@ test_that("keywords_control2", {
     all = FALSE
   )
 
-  out <- dplyr::filter(gt.env$tbl_keywords, type == "control")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 5)
-  expect_equal(out$n[[2]], 2)
+  dt <- gt.env$dt_keywords
+  ctrl <- dt[dt$type == "control", ]
+  counts <- as.data.frame(table(ctrl$batch))
+  expect_equal(nrow(counts), 2L)
+  expect_equal(counts$Freq[[1]], 5L)
+  expect_equal(counts$Freq[[2]], 2L)
 
-  out <- dplyr::filter(gt.env$tbl_time, type == "control")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 1)
-  expect_equal(out$n[[2]], 1)
+  dt <- gt.env$dt_time
+  ctrl <- dt[dt$type == "control", ]
+  counts <- as.data.frame(table(ctrl$batch))
+  expect_equal(nrow(counts), 2L)
+  expect_equal(counts$Freq[[1]], 1L)
+  expect_equal(counts$Freq[[2]], 1L)
 })
 
 # add object keywords - vector -------------------------------------------------
@@ -80,15 +78,13 @@ test_that("keywords_object1", {
     "Successfully created new object batch 1 \\(apple, facebook, google, microsoft, 2010-01-2019-12\\)\\."
   )
 
-  out <- dplyr::filter(gt.env$tbl_keywords, batch == 1L & type == "object")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(out$n, 4)
+  dt <- gt.env$dt_keywords
+  out <- nrow(dt[dt$batch == 1L & dt$type == "object", ])
+  expect_equal(out, 4L)
 
-  out <- dplyr::filter(gt.env$tbl_time, batch == 1L & type == "object")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(out$n, 1)
+  dt <- gt.env$dt_time
+  out <- nrow(dt[dt$batch == 1L & dt$type == "object", ])
+  expect_equal(out, 1L)
 })
 
 # add object keywords - long vector --------------------------------------------
@@ -121,19 +117,19 @@ test_that("keywords_object2", {
     all = FALSE
   )
 
-  out <- dplyr::filter(gt.env$tbl_keywords, type == "object")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 4)
-  expect_equal(out$n[[2]], 3)
+  dt <- gt.env$dt_keywords
+  obj <- dt[dt$type == "object", ]
+  counts <- as.data.frame(table(obj$batch))
+  expect_equal(nrow(counts), 2L)
+  expect_equal(counts$Freq[[1]], 4L)
+  expect_equal(counts$Freq[[2]], 3L)
 
-  out <- dplyr::filter(gt.env$tbl_time, type == "object")
-  out <- dplyr::count(out, batch)
-  out <- dplyr::collect(out)
-  expect_equal(length(out$n), 2)
-  expect_equal(out$n[[1]], 1)
-  expect_equal(out$n[[2]], 1)
+  dt <- gt.env$dt_time
+  obj <- dt[dt$type == "object", ]
+  counts <- as.data.frame(table(obj$batch))
+  expect_equal(nrow(counts), 2L)
+  expect_equal(counts$Freq[[1]], 1L)
+  expect_equal(counts$Freq[[2]], 1L)
 })
 
 # add_control / add_keyword signals --------------------------------------------

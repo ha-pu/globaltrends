@@ -64,9 +64,9 @@ We demonstrate the functionality of the `globaltrends` package based on a sample
 
 ## Set up and start the database
 
-Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a Parquet-backed database to store and handle all data. Database tables are stored as individual [Parquet](https://parquet.apache.org/) files under a *db/* folder. When a session is started, the package loads these files into an in-memory [SQLite](https://www.sqlite.org/index.html) database. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.
+Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses `data.table` objects persisted as a single RDS file under a *db/* folder. When a session is started, the package loads these tables into memory as `data.table` objects. This ensures efficiency and portability.
 
-Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates the Parquet files within this folder. For more information on database tables, please refer to their built-in documentation, e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
+Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates the RDS file within this folder. For more information on database tables, please refer to their built-in documentation, e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
 ```{r, eval = FALSE}
 # initialize_db ----------------------------------------------------------------
@@ -267,21 +267,17 @@ A message indicates each successful computation. The data is written directly to
 
 ## Exports and plots
 
-Functions in `globaltrends` write all data directly to tables in the database. With the help of functions from the `dplyr` package and connections exported from `start_db`, users can access database tables and prepare their own analysis.
+Functions in `globaltrends` write all data directly to `data.table` objects in `gt.env`. Users can access these tables directly and prepare their own analysis.
 
 ```{r, eval = FALSE}
 # manual exports ---------------------------------------------------------------
-library(dplyr)
-gt.env$tbl_score %>%
-  filter(keyword == "coca cola") %>%
-  collect()
-#> # A tibble: 8,040 x 6
-#>    location keyword    date   score     batch_c  batch_o
-#>    <chr>    <chr>     <int>     <dbl>   <int>    <int>
-#>  1 US       coca cola 14610   0.00362   1        1
+gt.env$dt_score[keyword == "coca cola"]
+#>       location   keyword  date     score batch_c batch_o
+#>    1:       US coca cola 14610   0.00362       1       1
 #>  ...
-#> 10 US       coca cola 14883   0.00347   1        1
-#> # ... with 8,030 more rows
+#>   10:       US coca cola 14883   0.00347       1       1
+#> ---
+#> 8030 more rows
 ```
 
 To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as a `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data, is `NULL`. In this case, all values from the database are exported. Alternatively, users can specify filters (e.g., keywords, batches, locations) individually, as a vector or as a list.

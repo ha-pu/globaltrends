@@ -4,19 +4,16 @@
 \alias{aggregate_synonyms}
 \title{Aggregate search scores across synonym terms}
 \usage{
-aggregate_synonyms(control, vacuum = TRUE)
+aggregate_synonyms(control)
 }
 \arguments{
 \item{control}{Numeric/integer scalar. The control batch id (\code{batch_c}),
 identifying the reference search used for score normalisation. In most
 single-control setups this is \code{1}.}
-
-\item{vacuum}{Logical scalar. If \code{TRUE} (default), calls \code{\link[=vacuum_data]{vacuum_data()}}
-after aggregation to reclaim space freed by the row deletions.}
 }
 \value{
 Invisibly returns a data frame of the rows written to \code{data_score}. Called
-primarily for its side effects (database modifications).
+primarily for its side effects (data modifications).
 }
 \description{
 Merges synonym keyword scores into their canonical keyword scores in
@@ -27,26 +24,21 @@ defined with \code{\link[=add_synonym]{add_synonym()}}.
 For a given \code{control} batch (\code{batch_c}), this function:
 \enumerate{
 \item Retrieves all canonical-synonym pairs and their associated object
-batches (\code{batch_o}) in a single database query.
+batches (\code{batch_o}).
 \item Pulls the relevant \code{data_score} rows, remaps synonym rows onto their
 canonical keyword, and sums scores across duplicates.
 \item Deletes the affected \code{data_score} rows for those object batches.
 \item Writes the aggregated rows back to \code{data_score}.
-\item Optionally calls \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space.
 }
-
-The delete-and-reinsert pattern can be slow for large datasets. Vacuuming
-adds the most overhead and can be deferred by setting \code{vacuum = FALSE}.
 }
 \examples{
 \dontrun{
 compute_score(object = 1:2, control = 1)
-aggregate_synonyms(control = 1, vacuum = FALSE)
+aggregate_synonyms(control = 1)
 }
 
 }
 \seealso{
 \code{\link[=compute_score]{compute_score()}} to populate \code{data_score} before aggregating,
 \code{\link[=add_synonym]{add_synonym()}} to define synonym relationships,
-\code{\link[=vacuum_data]{vacuum_data()}} for manual space reclamation.
 }

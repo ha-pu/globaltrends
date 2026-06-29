@@ -77,10 +77,10 @@ test_that("download_control skips location already present in data_control", {
   local_db()
   setup_keywords()
   suppressMessages(
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_control",
-      dplyr::filter(example_control, batch == 1 & location == "US")
-    )
+    gt.env$dt_control <- data.table::rbindlist(list(
+      gt.env$dt_control,
+      data.table::as.data.table(example_control[example_control$batch == 1 & example_control$location == "US", ])
+    ), use.names = TRUE)
   )
 
   out <- capture_messages(
@@ -122,9 +122,7 @@ test_that("download_control writes correct rows and emits per-location messages 
   )
 
   # 5 keywords × 120 months × 3 locations = 1 800 rows
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L, ])
   expect_equal(n, 1800)
 })
 
@@ -155,9 +153,7 @@ test_that("download_control_global writes 600 rows for the world aggregate [mock
     all = FALSE
   )
   # 5 keywords × 120 months = 600 rows
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L & gt.env$dt_control$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -166,10 +162,10 @@ test_that("download_object writes correct rows and selects control keyword [mock
   setup_keywords()
   # Pre-insert control baseline so download_object can rank control keywords.
   suppressMessages(
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_control",
-      dplyr::filter(example_control, batch == 1 & location %in% location_set)
-    )
+    gt.env$dt_control <- data.table::rbindlist(list(
+      gt.env$dt_control,
+      data.table::as.data.table(example_control[example_control$batch == 1 & example_control$location %in% location_set, ])
+    ), use.names = TRUE)
   )
   local_mocked_bindings(.get_trend = make_trend_data, .package = "globaltrends")
 
@@ -194,9 +190,7 @@ test_that("download_object writes correct rows and selects control keyword [mock
   )
 
   # (1 control + 4 object) terms × 120 months × 3 locations = 1 800 rows
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L, ])
   expect_equal(n, 1800)
 })
 
@@ -204,10 +198,10 @@ test_that("download_object skips (batch_c, batch_o, location) already present [m
   local_db()
   setup_keywords()
   suppressMessages(
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_control",
-      dplyr::filter(example_control, batch == 1 & location %in% location_set)
-    )
+    gt.env$dt_control <- data.table::rbindlist(list(
+      gt.env$dt_control,
+      data.table::as.data.table(example_control[example_control$batch == 1 & example_control$location %in% location_set, ])
+    ), use.names = TRUE)
   )
   local_mocked_bindings(.get_trend = make_trend_data, .package = "globaltrends")
 
@@ -228,10 +222,10 @@ test_that("download_object_global writes 600 rows for the world aggregate [mocke
   local_db()
   setup_keywords()
   suppressMessages(
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_control",
-      dplyr::filter(example_control, batch == 1 & location == "world")
-    )
+    gt.env$dt_control <- data.table::rbindlist(list(
+      gt.env$dt_control,
+      data.table::as.data.table(example_control[example_control$batch == 1 & example_control$location == "world", ])
+    ), use.names = TRUE)
   )
   local_mocked_bindings(.get_trend = make_trend_data, .package = "globaltrends")
 
@@ -243,9 +237,7 @@ test_that("download_object_global writes 600 rows for the world aggregate [mocke
     all = FALSE
   )
   # (1 control + 4 object) terms × 120 months = 600 rows
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L & gt.env$dt_object$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -303,9 +295,7 @@ test_that("download_control happy path (live API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1 & location != "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L & gt.env$dt_control$location != "world", ])
   expect_equal(n, 1800)
 })
 
@@ -335,9 +325,7 @@ test_that("download_control_global writes world aggregate (live API)", {
     "Downloaded control data \\| control: 1 \\| location: world \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L & gt.env$dt_control$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -359,9 +347,7 @@ test_that("download_object happy path (live API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1 & location != "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L & gt.env$dt_object$location != "world", ])
   expect_equal(n, 1800)
 })
 
@@ -400,9 +386,7 @@ test_that("download_object_global writes world aggregate (live API)", {
     "Downloaded object data \\| object: 1 \\| control: 1 \\| location: world \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L & gt.env$dt_object$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -464,9 +448,7 @@ test_that("download_control happy path (Python Research API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1 & location != "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L & gt.env$dt_control$location != "world", ])
   expect_equal(n, 1800)
 })
 
@@ -494,9 +476,7 @@ test_that("download_control_global writes world aggregate (Python Research API)"
     "Downloaded control data \\| control: 1 \\| location: world \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_control, batch == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_control[gt.env$dt_control$batch == 1L & gt.env$dt_control$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -517,9 +497,7 @@ test_that("download_object happy path (Python Research API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1 & location != "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L & gt.env$dt_object$location != "world", ])
   expect_equal(n, 1800)
 })
 
@@ -556,9 +534,7 @@ test_that("download_object_global writes world aggregate (Python Research API)",
     "Downloaded object data \\| object: 1 \\| control: 1 \\| location: world \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_object, batch_o == 1 & location == "world") |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_object[gt.env$dt_object$batch_o == 1L & gt.env$dt_object$location == "world", ])
   expect_equal(n, 600)
 })
 
@@ -577,9 +553,7 @@ test_that("download_region happy path (Python Research API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_region, batch_o == 1) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_region[gt.env$dt_region$batch_o == 1L, ])
   expect_gt(n, 0)
 })
 
@@ -607,9 +581,7 @@ test_that("download_region_global writes world aggregate (Python Research API)",
     "Downloaded region data \\| object: 1 \\| location: world \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_region, batch_o == 1) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_region[gt.env$dt_region$batch_o == 1L, ])
   expect_gt(n, 0)
 })
 
@@ -628,9 +600,7 @@ test_that("download_topics happy path (Python Research API)", {
     all = FALSE
   )
 
-  n <- dplyr::filter(gt.env$tbl_related, batch_o == 1 & topic & !rising) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_related[gt.env$dt_related$batch_o == 1L & gt.env$dt_related$topic == 1L & gt.env$dt_related$rising == 0L, ])
   expect_gt(n, 0)
 })
 
@@ -662,8 +632,6 @@ test_that("download_topics_global writes world aggregate (Python Research API)",
     "Downloaded related data \\| object: 1 \\| location: world \\| topic: TRUE \\| rising: FALSE \\[1/1\\]"
   )
 
-  n <- dplyr::filter(gt.env$tbl_related, batch_o == 1 & topic & !rising) |>
-    dplyr::collect() |>
-    nrow()
+  n <- nrow(gt.env$dt_related[gt.env$dt_related$batch_o == 1L & gt.env$dt_related$topic == 1L & gt.env$dt_related$rising == 0L, ])
   expect_gt(n, 0)
 })

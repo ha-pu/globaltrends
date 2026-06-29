@@ -10,23 +10,15 @@ start_db()
 Invisibly returns \code{TRUE}. Called primarily for its side effects.
 }
 \description{
-Loads the Parquet-backed store under \verb{db/} into an in-memory SQLite
-connection and registers lazy \code{dplyr} table handles and cached tibbles in
+Loads the RDS-backed store under \verb{db/} into \code{data.table} objects in
 \code{gt.env}.
 }
 \details{
 Requires \code{\link[=initialize_db]{initialize_db()}} to have been run in the current working
-directory. All Parquet files are read into an in-memory SQLite instance;
-the following bindings are written to \code{gt.env}:
-\describe{
-\item{\code{globaltrends_db}}{Active \code{DBI} connection to the in-memory SQLite
-instance.}
-\item{\code{keywords_control}, \code{keywords_object}}{Data frames of control and
-object keywords by batch (without the \code{type} column).}
-\item{\code{time_control}, \code{time_object}}{Data frames of batch time windows for
-control and object runs (without the \code{type} column).}
-\item{\code{keyword_synonyms}}{Data frame of all keyword/synonym pairs.}
-}
+directory. All tables are read from \code{db/globaltrends.rds} and assigned
+into \code{gt.env} as \verb{dt_*} bindings. Keys are set on the large tables for
+fast lookups. Cached data frames for frequently-used metadata
+(\code{keywords_control}, \code{keywords_object}, etc.) are also populated.
 Location sets are exported as named character vectors via
 \code{.export_locations()}.
 }

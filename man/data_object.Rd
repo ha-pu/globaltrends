@@ -35,7 +35,7 @@ included in every object query so that object and control hits can be
 mapped onto a common scale during score computation.
 
 In a live database, data are downloaded via \code{\link[=download_object]{download_object()}} and are
-queryable through \code{gt.env$globaltrends_db} after \code{\link[=start_db]{start_db()}}. Global
+accessible via \verb{gt.env$dt_*} tables after \code{\link[=start_db]{start_db()}}. Global
 aggregates use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble real Google Trends output.

@@ -1,7 +1,4 @@
 # setup ------------------------------------------------------------------------
-suppressWarnings(library(DBI))
-suppressWarnings(library(dplyr))
-
 source("../test_functions.r")
 
 Sys.setenv("LANGUAGE" = "EN")
@@ -23,16 +20,23 @@ add_object_keyword(
   end_date = "2019-12"
 )
 
-data <- filter(
-  example_control,
-  batch == 1 & location %in% c(location_set[1:3], "world")
+data <- example_control[
+  example_control$batch == 1 &
+  example_control$location %in% c(location_set[1:3], "world"),
+]
+gt.env$dt_control <- data.table::rbindlist(
+  list(gt.env$dt_control, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_control", data)
-data <- filter(
-  example_object,
-  batch_c == 1 & batch_o == 1 & location %in% c(location_set[1:3], "world")
+data <- example_object[
+  example_object$batch_c == 1 &
+  example_object$batch_o == 1 &
+  example_object$location %in% c(location_set[1:3], "world"),
+]
+gt.env$dt_object <- data.table::rbindlist(
+  list(gt.env$dt_object, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
 # compute score ----------------------------------------------------------------
 test_that("compute_score1", {
@@ -44,66 +48,63 @@ test_that("compute_score1", {
 
   expect_match(
     out,
-    "Successfully computed search score | control: 1 | object: 1 | location: US [1/3]",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Successfully computed search score | control: 1 | object: 1 | location: CN [2/3]",
-    all = FALSE
-  )
-  expect_match(
-    out,
-    "Successfully computed search score | control: 1 | object: 1 | location: JP [3/3]",
-    all = FALSE
+    "Successfully computed search scores | control: 1 | object: 1",
+    all = FALSE,
+    fixed = TRUE
   )
 
-  out <- filter(
-    gt.env$tbl_score,
-    batch_c == 1 & batch_o == 1 & location != "world"
-  )
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 1440)
+  dt <- gt.env$dt_score
+  n <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 1L & dt$location != "world", ])
+  expect_equal(n, 1440L)
 })
 
 # compute score formula --------------------------------------------------------
 test_that("compute_score_formula", {
-  target <- gt.env$tbl_score |>
-    filter(batch_c == 1L, batch_o == 1L, location == "US", keyword == "fc barcelona") |>
-    collect() |>
-    arrange(date) |>
-    slice(1)
+  dt <- gt.env$dt_score
+  target <- as.data.frame(
+    dt[dt$batch_c == 1L & dt$batch_o == 1L & dt$location == "US" & dt$keyword == "fc barcelona", ]
+  )
+  target <- target[order(target$date), ]
+  target <- target[1, ]
 
-  dt_int <- as.integer(target$date)
+  dt_int <- target$date
 
-  obj_us <- filter(example_object, batch_c == 1, batch_o == 1, location == "US")
-  ctrl_us <- filter(example_control, batch == 1, location == "US")
-  ctrl_kws <- distinct(ctrl_us, keyword)
+  obj_us <- example_object[example_object$batch_c == 1 & example_object$batch_o == 1 & example_object$location == "US", ]
+  ctrl_us <- example_control[example_control$batch == 1 & example_control$location == "US", ]
+  ctrl_kws <- unique(ctrl_us$keyword)
 
-  bench <- obj_us |>
-    inner_join(ctrl_kws, by = "keyword") |>
-    inner_join(ctrl_us, by = c("location", "keyword", "date"), suffix = c("_o", "_c")) |>
-    mutate(
-      hits_o = if_else(coalesce(as.double(hits_o), 0) == 0, 1, as.double(hits_o)),
-      hits_c = if_else(coalesce(as.double(hits_c), 0) == 0, 1, as.double(hits_c)),
-      ratio  = hits_o / hits_c
-    ) |>
-    summarise(benchmark = mean(ratio, na.rm = TRUE), .by = c(location, date))
+  overlap <- obj_us[obj_us$keyword %in% ctrl_kws, ]
+  bm <- merge(
+    overlap[, c("location", "keyword", "date", "hits")],
+    ctrl_us[, c("location", "keyword", "date", "hits")],
+    by = c("location", "keyword", "date"),
+    suffixes = c("_o", "_c")
+  )
+  bm$hits_o <- ifelse(is.na(bm$hits_o) | bm$hits_o == 0, 1, as.double(bm$hits_o))
+  bm$hits_c <- ifelse(is.na(bm$hits_c) | bm$hits_c == 0, 1, as.double(bm$hits_c))
+  bm$ratio <- bm$hits_o / bm$hits_c
 
-  ctrl_mass <- ctrl_us |>
-    inner_join(bench, by = c("location", "date")) |>
-    mutate(hits_mapped = as.double(hits) * coalesce(benchmark, 0)) |>
-    summarise(hits_c = sum(hits_mapped, na.rm = TRUE), .by = c(location, date))
+  bench <- stats::aggregate(ratio ~ location + date, data = bm, FUN = mean)
+  names(bench)[3] <- "benchmark"
 
-  obj_row <- obj_us |>
-    filter(keyword == "fc barcelona", date == dt_int) |>
-    left_join(ctrl_mass, by = c("location", "date"))
+  ctrl_mapped <- merge(
+    ctrl_us[, c("location", "keyword", "date", "hits")],
+    bench, by = c("location", "date")
+  )
+  ctrl_mapped$hits_mapped <- as.double(ctrl_mapped$hits) * ctrl_mapped$benchmark
+
+  ctrl_mass <- stats::aggregate(
+    hits_mapped ~ location + date, data = ctrl_mapped, FUN = sum
+  )
+  names(ctrl_mass)[3] <- "hits_c"
+
+  obj_row <- obj_us[obj_us$keyword == "fc barcelona" & obj_us$date == dt_int, ]
+  obj_row <- merge(obj_row, ctrl_mass, by = c("location", "date"))
 
   expected_score <- if (is.na(obj_row$hits_c) || obj_row$hits_c <= 0) {
     0
   } else {
-    coalesce(as.double(obj_row$hits), 0) / obj_row$hits_c
+    ifelse(is.na(obj_row$hits), 0, as.double(obj_row$hits)) / obj_row$hits_c
   }
 
   expect_equal(target$score, expected_score, tolerance = 1e-6)
@@ -134,27 +135,23 @@ test_that("compute_score6", {
 test_that("compute_voi1", {
   expect_message(
     compute_voi(control = 1, object = 1),
-    "Successfully computed search score | control: 1 | object: 1 | location: world [1/1]",
+    "Successfully computed search scores | control: 1 | object: 1",
+    fixed = TRUE
   )
-  out <- filter(
-    gt.env$tbl_score,
-    batch_c == 1 & batch_o == 1 & location == "world"
-  )
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 480)
+  dt <- gt.env$dt_score
+  n <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 1L & dt$location == "world", ])
+  expect_equal(n, 480L)
 })
 
 # compute doi ------------------------------------------------------------------
 test_that("compute_doi1", {
   expect_message(
     compute_doi(control = 1, object = 1, locations = "countries"),
-    "Successfully computed DOI | control: 1 | object: 1 [1/1]"
+    "Successfully computed DOI | control: 1 | object: 1"
   )
-  out <- filter(gt.env$tbl_doi, batch_c == 1 & batch_o == 1)
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 480)
+  dt <- gt.env$dt_doi
+  n <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 1L, ])
+  expect_equal(n, 480L)
 })
 
 # compute doi signals ----------------------------------------------------------
@@ -178,63 +175,60 @@ test_that("compute_doi5", {
 })
 
 # list dispatch setup ----------------------------------------------------------
-kws2 <- filter(example_keywords, type == "object", batch == 2)$keyword
+kws2 <- example_keywords[example_keywords$type == "object" & example_keywords$batch == 2, ]$keyword
 add_object_keyword(keyword = kws2, start_date = "2010-01", end_date = "2019-12")
-data <- filter(
-  example_object,
-  batch_c == 1 & batch_o == 2 & location %in% c(location_set[1:3], "world")
+data <- example_object[
+  example_object$batch_c == 1 &
+  example_object$batch_o == 2 &
+  example_object$location %in% c(location_set[1:3], "world"),
+]
+gt.env$dt_object <- data.table::rbindlist(
+  list(gt.env$dt_object, data.table::as.data.table(data)),
+  use.names = TRUE
 )
-dbAppendTable(gt.env$globaltrends_db, "data_object", data)
 
 # list dispatch ----------------------------------------------------------------
 test_that("compute_score_list", {
   compute_score(object = list(1, 2), control = 1, locations = location_set[1:3])
 
-  out <- filter(gt.env$tbl_score, batch_c == 1L, batch_o == 2L, location != "world")
-  out <- count(out)
-  out <- collect(out)
-  expect_gt(out$n, 0)
+  dt <- gt.env$dt_score
+  n <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 2L & dt$location != "world", ])
+  expect_gt(n, 0L)
 
-  out1 <- filter(gt.env$tbl_score, batch_c == 1L, batch_o == 1L, location != "world")
-  out1 <- count(out1)
-  out1 <- collect(out1)
-  expect_equal(out1$n, 1440)
+  n1 <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 1L & dt$location != "world", ])
+  expect_equal(n1, 1440L)
 })
 
 test_that("compute_doi_list", {
   compute_doi(object = list(1, 2), control = 1, locations = "countries")
 
-  out <- filter(gt.env$tbl_doi, batch_c == 1L, batch_o == 2L)
-  out <- count(out)
-  out <- collect(out)
-  expect_gt(out$n, 0)
+  dt <- gt.env$dt_doi
+  n <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 2L, ])
+  expect_gt(n, 0L)
 
-  out1 <- filter(gt.env$tbl_doi, batch_c == 1L, batch_o == 1L)
-  out1 <- count(out1)
-  out1 <- collect(out1)
-  expect_equal(out1$n, 480)
+  n1 <- nrow(dt[dt$batch_c == 1L & dt$batch_o == 1L, ])
+  expect_equal(n1, 480L)
 })
 
 # remove data cascade into data_related / data_region -------------------------
-dbAppendTable(
-  gt.env$globaltrends_db,
-  "data_related",
-  data.frame(
-    term = "fc barcelona", topic = FALSE, rising = FALSE,
+gt.env$dt_related <- data.table::rbindlist(list(
+  gt.env$dt_related,
+  data.table::data.table(
+    term = "fc barcelona", topic = 0L, rising = 0L,
     location = "world", start_date = as.Date("2019-01-01"),
     end_date = as.Date("2019-12-31"),
     related_term = "barcelona", hits = 100.0, batch_o = 2L
   )
-)
-dbAppendTable(
-  gt.env$globaltrends_db,
-  "data_region",
-  data.frame(
+), use.names = TRUE)
+
+gt.env$dt_region <- data.table::rbindlist(list(
+  gt.env$dt_region,
+  data.table::data.table(
     term = "fc barcelona", location = "world",
     start_date = as.Date("2019-01-01"), end_date = as.Date("2019-12-31"),
     region_code = "ES-CT", region_name = "Catalonia", hits = 100.0, batch_o = 2L
   )
-)
+), use.names = TRUE)
 
 test_that("remove_data7", {
   out <- capture_messages(remove_data(table = "data_object", object = 2))
@@ -245,14 +239,10 @@ test_that("remove_data7", {
   expect_match(out, "Successfully deleted object batch 2 from 'data_related'\\.", all = FALSE)
   expect_match(out, "Successfully deleted object batch 2 from 'data_region'\\.", all = FALSE)
 
-  rel <- filter(gt.env$tbl_related, batch_o == 2L) |>
-    count() |>
-    collect()
-  reg <- filter(gt.env$tbl_region, batch_o == 2L) |>
-    count() |>
-    collect()
-  expect_equal(rel$n, 0L)
-  expect_equal(reg$n, 0L)
+  rel <- nrow(gt.env$dt_related[gt.env$dt_related$batch_o == 2L, ])
+  reg <- nrow(gt.env$dt_region[gt.env$dt_region$batch_o == 2L, ])
+  expect_equal(rel, 0L)
+  expect_equal(reg, 0L)
 })
 
 # remove data ------------------------------------------------------------------
@@ -290,14 +280,12 @@ test_that("remove_data1", {
     all = FALSE
   )
 
-  out <- filter(gt.env$tbl_keywords, batch == 1 & type == "control")
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 0)
-  out <- filter(gt.env$tbl_time, batch == 1 & type == "control")
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 0)
+  dt <- gt.env$dt_keywords
+  n <- nrow(dt[dt$batch == 1L & dt$type == "control", ])
+  expect_equal(n, 0L)
+  dt <- gt.env$dt_time
+  n <- nrow(dt[dt$batch == 1L & dt$type == "control", ])
+  expect_equal(n, 0L)
 })
 
 test_that("remove_data2", {
@@ -329,14 +317,12 @@ test_that("remove_data2", {
     all = FALSE
   )
 
-  out <- filter(gt.env$tbl_keywords, batch == 1 & type == "object")
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 0)
-  out <- filter(gt.env$tbl_time, batch == 1 & type == "object")
-  out <- count(out)
-  out <- collect(out)
-  expect_equal(out$n, 0)
+  dt <- gt.env$dt_keywords
+  n <- nrow(dt[dt$batch == 1L & dt$type == "object", ])
+  expect_equal(n, 0L)
+  dt <- gt.env$dt_time
+  n <- nrow(dt[dt$batch == 1L & dt$type == "object", ])
+  expect_equal(n, 0L)
 })
 
 # remove data signals ----------------------------------------------------------
@@ -369,11 +355,6 @@ test_that("remove_data4", {
 
 test_that("remove_data5", {
   test_object(fun = remove_data, incl = 1:5, table = "data_object", control = 1)
-})
-
-# remove data vacuum -----------------------------------------------------------
-test_that("remove_data6", {
-  expect_message(vacuum_data(), "Vacuum completed successfully\\.")
 })
 
 # disconnect -------------------------------------------------------------------

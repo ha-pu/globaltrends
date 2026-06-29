@@ -12,11 +12,7 @@ local_db <- function(env = parent.frame()) {
 }
 
 # Extends local_db() with the keyword batches, raw download data, and computed
-# scores needed by the synonym tests. Two object batches are created so that
-# synonym aggregation has something to roll up:
-#   batch 1 — fc barcelona / fc bayern / manchester united / real madrid (US + CN)
-#   batch 2 — bayern munich / bayern munchen (CN + JP)
-# After compute_score(), batch 1 has US+CN scores and batch 2 has CN+JP scores.
+# scores needed by the synonym tests.
 
 local_synonyms_db <- function(env = parent.frame()) {
   local_db(env = env)
@@ -34,24 +30,27 @@ local_synonyms_db <- function(env = parent.frame()) {
       start_date = "2010-01",
       end_date = "2019-12"
     )
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_control",
-      dplyr::filter(example_control, batch == 1 & location %in% c("US", "CN", "JP"))
+
+    ctrl_data <- example_control[example_control$batch == 1 & example_control$location %in% c("US", "CN", "JP"), ]
+    gt.env$dt_control <- data.table::rbindlist(
+      list(gt.env$dt_control, data.table::as.data.table(ctrl_data)),
+      use.names = TRUE
     )
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_object",
-      dplyr::mutate(
-        dplyr::filter(example_object, batch_c == 1 & batch_o == 1 & location %in% c("US", "CN")),
-        batch_o = 1
-      )
+
+    obj1 <- example_object[example_object$batch_c == 1 & example_object$batch_o == 1 & example_object$location %in% c("US", "CN"), ]
+    obj1$batch_o <- 1L
+    gt.env$dt_object <- data.table::rbindlist(
+      list(gt.env$dt_object, data.table::as.data.table(obj1)),
+      use.names = TRUE
     )
-    DBI::dbAppendTable(
-      gt.env$globaltrends_db, "data_object",
-      dplyr::mutate(
-        dplyr::filter(example_object, batch_c == 1 & batch_o == 2 & location %in% c("CN", "JP")),
-        batch_o = 2
-      )
+
+    obj2 <- example_object[example_object$batch_c == 1 & example_object$batch_o == 2 & example_object$location %in% c("CN", "JP"), ]
+    obj2$batch_o <- 2L
+    gt.env$dt_object <- data.table::rbindlist(
+      list(gt.env$dt_object, data.table::as.data.table(obj2)),
+      use.names = TRUE
     )
+
     compute_score(object = 1:2, locations = c("US", "CN", "JP"))
   })
   invisible(NULL)

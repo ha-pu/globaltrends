@@ -33,8 +33,8 @@ test_that("aggregate_synonyms1", {
     add_synonym(keyword = "fc bayern", synonym = c("bayern munich", "bayern munchen"))
   )
 
-  out <- capture_messages(aggregate_synonyms(control = 1, vacuum = FALSE))
-  expect_false(any(grepl("vacuum", out, ignore.case = TRUE)))
+  out <- capture_messages(aggregate_synonyms(control = 1))
+  expect_match(out, "Successfully aggregated synonyms", all = FALSE)
 })
 
 test_that("aggregate_synonyms2", {
@@ -44,7 +44,6 @@ test_that("aggregate_synonyms2", {
   )
 
   out <- capture_messages(aggregate_synonyms(control = 1))
-  expect_match(out, "Running vacuum_data", all = FALSE)
   expect_match(out, "Successfully aggregated synonyms", all = FALSE)
 })
 
@@ -57,10 +56,10 @@ test_that("aggregate_synonyms_no_data", {
   })
 
   # synonym mapping exists but data_score is empty → "No score data found" early exit
-  out <- capture_messages(aggregate_synonyms(control = 1, vacuum = FALSE))
+  out <- capture_messages(aggregate_synonyms(control = 1))
 
   expect_match(out, "No score data found", all = FALSE)
-  expect_equal(nrow(dplyr::collect(gt.env$tbl_score)), 0L)
+  expect_equal(nrow(gt.env$dt_score), 0L)
 })
 
 # score comparison -------------------------------------------------------------
@@ -76,14 +75,14 @@ test_that("keyword_score", {
 
   # CN appears in both batch 1 (canonical) and batch 2 (synonyms), so the
   # mean score must increase after aggregation.
-  before_cn <- dplyr::filter(score_before, location == "CN")
-  after_cn <- dplyr::filter(score_after, location == "CN")
+  before_cn <- score_before[score_before$location == "CN", ]
+  after_cn <- score_after[score_after$location == "CN", ]
   expect_gt(mean(after_cn$score, na.rm = TRUE), mean(before_cn$score, na.rm = TRUE))
 
   # JP had no canonical (batch 1) data before aggregation; synonym batch 2
   # covers JP, so aggregation must introduce rows there.
-  expect_equal(nrow(dplyr::filter(score_before, location == "JP")), 0L)
-  expect_gt(nrow(dplyr::filter(score_after, location == "JP")), 0L)
+  expect_equal(nrow(score_before[score_before$location == "JP", ]), 0L)
+  expect_gt(nrow(score_after[score_after$location == "JP", ]), 0L)
 })
 
 test_that("aggregate_synonyms_exact_score", {
@@ -95,29 +94,30 @@ test_that("aggregate_synonyms_exact_score", {
 
   # Insert synthetic scores with known values: canonical = 10, synonym = 5.
   # After aggregation the merged canonical row must equal 10 + 5 = 15.
-  DBI::dbAppendTable(
-    gt.env$globaltrends_db, "data_score",
-    tibble::tibble(
+  gt.env$dt_score <- data.table::rbindlist(list(
+    gt.env$dt_score,
+    data.table::data.table(
       location = "US", keyword = "kw_a",
       date = as.Date("2020-01-01"), score = 10,
       batch_c = 1L, batch_o = 1L
     )
-  )
-  DBI::dbAppendTable(
-    gt.env$globaltrends_db, "data_score",
-    tibble::tibble(
+  ), use.names = TRUE)
+  gt.env$dt_score <- data.table::rbindlist(list(
+    gt.env$dt_score,
+    data.table::data.table(
       location = "US", keyword = "kw_b",
       date = as.Date("2020-01-01"), score = 5,
       batch_c = 1L, batch_o = 2L
     )
-  )
+  ), use.names = TRUE)
 
   suppressMessages({
     add_synonym(keyword = "kw_a", synonym = "kw_b")
-    aggregate_synonyms(control = 1, vacuum = FALSE)
+    aggregate_synonyms(control = 1)
   })
 
-  result <- dplyr::filter(export_score(keyword = "kw_a"), location == "US")
+  tmp <- export_score(keyword = "kw_a")
+  result <- tmp[tmp$location == "US", ]
   expect_equal(nrow(result), 1L)
   expect_equal(result$score, 15)
 })
@@ -156,9 +156,3 @@ test_that("aggregate_synonyms3", {
   expect_error(aggregate_synonyms(control = sum), "Batch id must be an integer")
 })
 
-test_that("aggregate_synonyms4", {
-  withr::local_envvar(LANGUAGE = "EN")
-  expect_error(aggregate_synonyms(control = 1, vacuum = 1), "must be of type logical")
-  expect_error(aggregate_synonyms(control = 1, vacuum = "A"), "must be of type logical")
-  expect_error(aggregate_synonyms(control = 1, vacuum = sum), "must be of type logical")
-})
