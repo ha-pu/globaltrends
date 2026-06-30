@@ -28,6 +28,8 @@
 #'   \item `py_setup`: Logical scalar. `TRUE` if [initialize_python()] has been called successfully.
 #'   \item `api_calls`: Integer scalar. Number of Research API calls made today.
 #'   \item `api_calls_date`: Date scalar. The date for which `api_calls` is counted.
+#'   \item `score_calls`: Integer scalar. Number of locations processed by
+#'     [compute_score()] since the database was last persisted.
 #' }
 #'
 #' @format An environment with `parent = emptyenv()`.
@@ -61,7 +63,8 @@ gt.env <- new.env(parent = emptyenv())
     query_wait   = 0.1,
     py_setup     = FALSE,
     api_calls    = 0L,
-    api_calls_date = Sys.Date()
+    api_calls_date = Sys.Date(),
+    score_calls  = 0L
   )
 
   invisible(list2env(defaults, envir = gt.env))

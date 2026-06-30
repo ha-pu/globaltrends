@@ -4,6 +4,7 @@
   * All `globaltrends` data is stored in a single, non-compresse RDS file
   * All `globaltrends` data is loaded into memory as `data.table` objects
 * Drop `vacuum_data()` function, since the data architecture is not built on a database file any more
+* `compute_score()` now persists in-memory data to disk after every 1,000 computed locations, matching the periodic persistence already used by the `download_xxx()` functions
 
 # globaltrends 0.2.0
 

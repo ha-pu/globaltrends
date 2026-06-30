@@ -20,6 +20,26 @@
   }
 }
 
+#' @keywords internal
+#' @noRd
+
+.increment_score_counter <- function() {
+  if (is.null(gt.env$score_calls)) {
+    gt.env$score_calls <- 0L
+  }
+  gt.env$score_calls <- gt.env$score_calls + 1L
+
+  if (gt.env$score_calls %% 1000L == 0L && !is.null(gt.env$dt_control)) {
+    message(
+      "Persisting in-memory data to parquet after ",
+      gt.env$score_calls,
+      " computed locations."
+    )
+    disconnect_db()
+    start_db()
+  }
+}
+
 #' @title Download Google Trends time series for one request
 #'
 #' @description

@@ -215,6 +215,10 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
 
   n_out <- nrow(scores)
 
+  for (i in seq_along(loc_remaining)) {
+    .increment_score_counter()
+  }
+
   message(sprintf(
     "Successfully computed search scores | control: %s | object: %s.",
     control,
