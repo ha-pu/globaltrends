@@ -122,6 +122,34 @@ test_that("aggregate_synonyms_exact_score", {
   expect_equal(result$score, 15)
 })
 
+test_that("aggregate_synonyms is a no-op when no synonyms are registered", {
+  local_db()
+
+  expect_message(
+    out <- aggregate_synonyms(control = 1),
+    "No synonym mappings found in the database. Nothing to aggregate.",
+    fixed = TRUE
+  )
+  expect_equal(out, data.frame())
+})
+
+test_that("aggregate_synonyms is a no-op when the synonym is not an object keyword", {
+  local_db()
+  suppressMessages({
+    add_object_keyword(keyword = "kw_a", start_date = "2020-01", end_date = "2020-01")
+    # "kw_x" is registered as a synonym but never added as an object keyword,
+    # so it cannot be mapped to an object batch.
+    add_synonym(keyword = "kw_a", synonym = "kw_x")
+  })
+
+  expect_message(
+    out <- aggregate_synonyms(control = 1),
+    "No synonym mappings found in the database. Nothing to aggregate.",
+    fixed = TRUE
+  )
+  expect_equal(out, data.frame())
+})
+
 # add_synonym() input validation -----------------------------------------------
 test_that("add_synonyms2", {
   withr::local_envvar(LANGUAGE = "EN")
@@ -140,11 +168,23 @@ test_that("add_synonyms4", {
 
 test_that("add_synonyms5", {
   withr::local_envvar(LANGUAGE = "EN")
-  expect_error(add_synonym(keyword = "A", synonym = 1), "must be of type character")
-  expect_error(add_synonym(keyword = "A", synonym = TRUE), "must be of type character")
-  # unlist() on a builtin may produce "no applicable method" before the type
-  # check is reached; accept either message.
-  expect_error(add_synonym(keyword = "A", synonym = sum), "must be of type character|no applicable method")
+  # unlist() passes non-list input through unchanged, so .check_input() on the
+  # internal `synonyms` variable is always the validation path that fires.
+  expect_error(
+    add_synonym(keyword = "A", synonym = 1),
+    "Error: `synonyms` must be of type character.\nYou provided an object of type double.",
+    fixed = TRUE
+  )
+  expect_error(
+    add_synonym(keyword = "A", synonym = TRUE),
+    "Error: `synonyms` must be of type character.\nYou provided an object of type logical.",
+    fixed = TRUE
+  )
+  expect_error(
+    add_synonym(keyword = "A", synonym = sum),
+    "Error: `synonyms` must be of type character.\nYou provided an object of type builtin.",
+    fixed = TRUE
+  )
 })
 
 # aggregate_synonyms() input validation ----------------------------------------

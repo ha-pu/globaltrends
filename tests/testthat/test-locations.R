@@ -1,15 +1,13 @@
 # Tests for add_locations()
 # local_db() is provided by helper-db.R and auto-loaded by testthat.
 
-location_set <- c("AT", "DE", "CH", "CN", "JP", "US")
-
 # creating sets and respecting export flag -------------------------------------
 test_that("add_loc1", {
   local_db()
 
   expect_message(
     add_locations(
-      locations = location_set[1:3],
+      locations = c("AT", "DE", "CH"),
       type = "dach",
       export = FALSE
     ),
@@ -21,7 +19,7 @@ test_that("add_loc1", {
 
   expect_message(
     add_locations(
-      locations = location_set[4:5],
+      locations = c("CN", "JP"),
       type = "asia",
       export = TRUE
     ),
@@ -29,7 +27,7 @@ test_that("add_loc1", {
     fixed = TRUE
   )
   # export = TRUE: gt.env$asia is available immediately
-  expect_identical(gt.env$asia, location_set[4:5])
+  expect_identical(gt.env$asia, c("CN", "JP"))
 })
 
 # persistence across disconnect / reconnect ------------------------------------
@@ -39,27 +37,27 @@ test_that("add_loc2", {
   suppressMessages({
     initialize_db()
     start_db()
-    add_locations(locations = location_set[1:3], type = "dach", export = FALSE)
-    add_locations(locations = location_set[4:5], type = "asia", export = FALSE)
+    add_locations(locations = c("AT", "DE", "CH"), type = "dach", export = FALSE)
+    add_locations(locations = c("CN", "JP"), type = "asia", export = FALSE)
     disconnect_db()
     start_db() # start_db() calls .export_locations() on reconnect
   })
   withr::defer(suppressMessages(disconnect_db()))
 
-  expect_setequal(gt.env$dach, location_set[1:3])
-  expect_setequal(gt.env$asia, location_set[4:5])
+  expect_setequal(gt.env$dach, c("AT", "DE", "CH"))
+  expect_setequal(gt.env$asia, c("CN", "JP"))
 })
 
 # duplicate prevention ---------------------------------------------------------
 test_that("duplicate prevention: full overlap returns empty tibble", {
   local_db()
   suppressMessages(
-    add_locations(locations = location_set[1:3], type = "dach", export = FALSE)
+    add_locations(locations = c("AT", "DE", "CH"), type = "dach", export = FALSE)
   )
 
   expect_message(
     result <- add_locations(
-      locations = location_set[1:3],
+      locations = c("AT", "DE", "CH"),
       type = "dach",
       export = FALSE
     ),
@@ -72,12 +70,12 @@ test_that("duplicate prevention: full overlap returns empty tibble", {
 test_that("duplicate prevention: partial overlap adds only new codes", {
   local_db()
   suppressMessages(
-    add_locations(locations = location_set[1:2], type = "dach", export = FALSE)
+    add_locations(locations = c("AT", "DE"), type = "dach", export = FALSE)
   )
 
   expect_message(
     add_locations(
-      locations = location_set[1:3],
+      locations = c("AT", "DE", "CH"),
       type = "dach",
       export = FALSE
     ),

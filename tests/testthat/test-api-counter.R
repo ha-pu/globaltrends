@@ -5,54 +5,6 @@
 # Python-facing functions via withr::defer / local_mocked_bindings() so that no
 # network calls or Python environment are required.
 
-Sys.setenv("LANGUAGE" = "EN")
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-# Resets api_calls to 0 and api_calls_date to today, restoring originals on
-# test exit.
-local_counter_state <- function(env = parent.frame()) {
-  saved_calls <- gt.env$api_calls
-  saved_date <- gt.env$api_calls_date
-  gt.env$api_calls <- 0L
-  gt.env$api_calls_date <- Sys.Date()
-  withr::defer(
-    {
-      gt.env$api_calls <- saved_calls
-      gt.env$api_calls_date <- saved_date
-    },
-    envir = env
-  )
-}
-
-# Activates the Python Research API backend without a real Python environment by
-# injecting a fake query_trend function. Restores all touched gt.env fields on
-# test exit.
-local_py_state <- function(env = parent.frame()) {
-  saved_py_setup <- gt.env$py_setup
-  saved_query_trend <- gt.env$query_trend
-  saved_query_wait <- gt.env$query_wait
-  saved_api_key <- gt.env$api_key
-  withr::defer(
-    {
-      gt.env$py_setup <- saved_py_setup
-      gt.env$query_trend <- saved_query_trend
-      gt.env$query_wait <- saved_query_wait
-      gt.env$api_key <- saved_api_key
-    },
-    envir = env
-  )
-
-  gt.env$py_setup <- TRUE
-  gt.env$query_wait <- 0
-  gt.env$api_key <- "dummy"
-  gt.env$query_trend <- function(terms, start_date, end_date, geo, api_key) {
-    list(lines = lapply(terms, function(t) {
-      list(term = t, points = list(list(date = "2020-01-01", value = 50L)))
-    }))
-  }
-}
-
 # ── get_api_usage() ───────────────────────────────────────────────────────────
 
 test_that("get_api_usage() returns a named integer vector with the expected elements", {

@@ -1,5 +1,17 @@
 #' @keywords internal
 #' @noRd
+#'
+#' Single seam for all rate-limit/backoff pauses. Base functions cannot be
+#' mocked with testthat::local_mocked_bindings(), so tests stub this wrapper
+#' instead of Sys.sleep() to run retry logic without real waits.
+
+.wait <- function(seconds) {
+  Sys.sleep(seconds)
+  invisible(NULL)
+}
+
+#' @keywords internal
+#' @noRd
 
 .increment_api_counter <- function() {
   today <- Sys.Date()
@@ -168,7 +180,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(ts)
   }
 
@@ -195,7 +207,7 @@
   names(ts)[1] <- "location"
 
   # Add some jitter to reduce rate-limit risk.
-  Sys.sleep(stats::runif(1, min = 5, max = 10))
+  .wait(stats::runif(1, min = 5, max = 10))
   ts
 }
 
@@ -226,10 +238,10 @@
 
     if (is_500) {
       message("globaltrends retrying download in 1s (HTTP 500).")
-      Sys.sleep(1)
+      .wait(1)
     } else {
       message("globaltrends retrying download in 60s.")
-      Sys.sleep(60)
+      .wait(60)
     }
 
     i <- i + 1L
@@ -303,7 +315,7 @@
       "s.\n",
       msg
     )
-    Sys.sleep(wait)
+    .wait(wait)
     attempt <- attempt + 1L
     wait <- wait * 2
   }
@@ -676,7 +688,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(region)
   }
 }
@@ -821,7 +833,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(item)
   }
 }

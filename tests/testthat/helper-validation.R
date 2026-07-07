@@ -1,3 +1,15 @@
+# Reusable argument-validation batteries. Each helper calls `fun` with a set
+# of invalid values for one argument and asserts the exact validation error.
+# `incl` selects which cases run (see the numbered branches below); `...` is
+# passed through to `fun` as fixed arguments.
+
+# Short aliases for the internal validators under test in
+# test-check-functions.R.
+check_input <- globaltrends:::.check_input
+check_length <- globaltrends:::.check_length
+check_locations <- globaltrends:::.check_locations
+check_batch <- globaltrends:::.check_batch
+
 # test control -----------------------------------------------------------------
 test_control <- function(fun, incl = 1:4, ...) {
   args <- list(...)
