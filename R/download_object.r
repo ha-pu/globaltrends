@@ -305,6 +305,11 @@ download_object.numeric <- function(object, control = 1, locations = NULL) {
     ))
   }
 
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key once per
+  # batch (not per location) so the next `.get_full()` call can binary
+  # search instead of scanning the full table.
+  data.table::setkey(gt.env$dt_object, batch_c, batch_o, location)
+
   invisible(TRUE)
 }
 

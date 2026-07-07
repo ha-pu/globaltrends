@@ -212,6 +212,10 @@ compute_score.numeric <- function(object, control = 1, locations = NULL) {
     list(gt.env$dt_score, scores),
     use.names = TRUE
   )
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key so the
+  # next `.get_full()` call can binary search instead of scanning the full
+  # table.
+  data.table::setkey(gt.env$dt_score, batch_c, batch_o, location)
 
   n_out <- nrow(scores)
 

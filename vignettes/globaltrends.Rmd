@@ -1,5 +1,5 @@
 ---
-title: "globaltrends"
+title: "Introduction to globaltrends"
 subtitle: "Download and measure global trends through Google search volumes"
 author: "Harald Puhr"
 output: rmarkdown::html_vignette
@@ -75,7 +75,7 @@ initialize_db()
 #> Database files created successfully under 'db/'.
 ```
 
-After initialization or when resuming work on an existing database, it is sufficient to call `start_db` from the respective working directory. This command loads the Parquet files from the folder *db* into an in-memory SQLite database and exports table handles and cached keyword tables to the package environment `gt.env`.
+After initialization or when resuming work on an existing database, it is sufficient to call `start_db` from the respective working directory. This command loads the RDS file from the folder *db* into an in-memory list of data tables and exports table handles and cached keyword tables to the package environment `gt.env`.
 
 ```{r, eval = FALSE}
 # start_db ---------------------------------------------------------------------
@@ -84,7 +84,7 @@ start_db()
 #> Successfully loaded database and exported table handles to gt.env.
 ```
 
-After work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`. This persists the in-memory state back to the Parquet files.
+After work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`. This persists the in-memory state back to the RDS file.
 
 ```{r, eval = FALSE}
 # disconnect_db ----------------------------------------------------------------
@@ -181,7 +181,7 @@ download_control_global(control = new_control)
 
 ### Download object data
 
-For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five, for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
+For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five, for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](https://trends.google.com/trends/) beforehand.
 
 ```{r, eval = FALSE}
 # add_object_keyword -----------------------------------------------------------
@@ -405,7 +405,7 @@ Users can identify the codes of search topics on the Google Trends portal by sel
 
 ![](screenshot001.png){width=100%}
 
-After selecting the relevant search topics, users can identify the topic codes in the query’s URL. For example, based on the URL [https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT]( https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT), the topic *The Coca-Cola Company* is *%2Fm%2F03phgz*. If downloads are made through the [research API](#downloads-using-the-google-trends-research-api), special characters must be added as “literals.” This is to say, *%2Fm%2F03phgz* must be changed to /m/03phgz when using the research API and remains *%2Fm%2F03phgz* when working with `gtrendsR::gtrends`. Users can use these topic codes as keywords instead of single search terms. We point users to Kupfer and Zorn (2020, pp. 1169-1170) for a detailed comparison of search topics and search terms.  
+After selecting the relevant search topics, users can identify the topic codes in the query’s URL. For example, based on the URL `https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT`, the topic *The Coca-Cola Company* is *%2Fm%2F03phgz*. If downloads are made through the [research API](#downloads-using-the-google-trends-research-api), special characters must be added as “literals.” This is to say, *%2Fm%2F03phgz* must be changed to /m/03phgz when using the research API and remains *%2Fm%2F03phgz* when working with `gtrendsR::gtrends`. Users can use these topic codes as keywords instead of single search terms. We point users to Kupfer and Zorn (2020, pp. 1169-1170) for a detailed comparison of search topics and search terms.  
 
 **Important:** We recommend that search topics for control keywords are used in combination with search topics for object keywords and vice versa.
 
@@ -434,7 +434,7 @@ The enormous detail of the data opens additional research applications that are 
 * Kupfer, A. & Zorn, J. 2020. A language-independent measurement of economic policy uncertainty in Eastern European countries. *Emerging Markets Finance and Trade*, 56(5): 1166-1180.
 * MacKinlay, A. C. 1997. Event studies in economics and finance. *Journal of Economic Literature*, 35(1): 13-39.
 * McWilliams, A. & Siegel, D. 1997. Event studies in management research: Theoretical and empirical issues. *Academy of Management Journal*, 40(3): 626-657.
-* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at [https://ssrn.com/abstract=3969013/](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013).
+* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at <doi:10.2139/ssrn.3969013>.
 * Puhr, H., & Müllner, J. (2022). Foreign to all but fluent in many: The effect of multinationality on shock resilience. *Journal of World Business*, 57(6): 101370.
 
 # Appendix A

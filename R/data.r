@@ -87,7 +87,7 @@
 #'   \item{batch}{Integer. Control batch id.}
 #' }
 #'
-#' @source Google Trends (\url{https://trends.google.com}). Simulated to match
+#' @source Google Trends (\url{https://trends.google.com/trends/}). Simulated to match
 #'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
@@ -127,7 +127,7 @@
 #'   \item{batch_o}{Integer. Object batch id.}
 #' }
 #'
-#' @source Google Trends (\url{https://trends.google.com}). Simulated to match
+#' @source Google Trends (\url{https://trends.google.com/trends/}). Simulated to match
 #'   empirical distributional statistics from real downloads.
 #'
 #' @seealso
@@ -151,7 +151,7 @@
 #' benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
 #' greater than 1 are possible when object interest exceeds control interest.
 #'
-#' In a live database, scores are queryable through `gt.env$globaltrends_db`
+#' In a live database, scores are queryable through `gt.env$dt_scores`
 #' after [start_db()]. Global aggregates use `"world"` as `location`.
 #'
 #' The example dataset is simulated to resemble outputs derived from real
@@ -196,7 +196,7 @@
 #' their exact formulae.
 #'
 #' DOI is computed via [compute_doi()] and is queryable through
-#' `gt.env$globaltrends_db` after [start_db()]. The `batch_c` column indicates
+#' `gt.env$dt_doi` after [start_db()]. The `batch_c` column indicates
 #' the control batch used as baseline, and `batch_o` indicates the object batch.
 #'
 #' The example dataset is simulated to resemble outputs derived from real
@@ -228,7 +228,7 @@
 #'
 #' Puhr, H. & Müllner, J. (2022). Let me Google that for you: Capturing
 #' internationalization using Google Trends. Available at SSRN:
-#' \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
+#' \doi{10.2139/ssrn.3969013}
 #'
 #' @seealso
 #' [compute_doi()], [start_db()]

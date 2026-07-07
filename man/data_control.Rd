@@ -20,7 +20,7 @@ equals 100.}
 }
 }
 \source{
-Google Trends (\url{https://trends.google.com}). Simulated to match
+Google Trends (\url{https://trends.google.com/trends/}). Simulated to match
 empirical distributional statistics from real downloads.
 }
 \usage{

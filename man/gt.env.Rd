@@ -37,6 +37,8 @@ after calling initialization functions such as \code{start_db()}:
 \item \code{py_setup}: Logical scalar. \code{TRUE} if \code{\link[=initialize_python]{initialize_python()}} has been called successfully.
 \item \code{api_calls}: Integer scalar. Number of Research API calls made today.
 \item \code{api_calls_date}: Date scalar. The date for which \code{api_calls} is counted.
+\item \code{score_calls}: Integer scalar. Number of locations processed by
+\code{\link[=compute_score]{compute_score()}} since the database was last persisted.
 }
 }
 \seealso{

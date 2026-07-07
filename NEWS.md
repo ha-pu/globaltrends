@@ -1,8 +1,9 @@
-# globaltrends 0.2.0.9000
+# globaltrends 0.2.1
 
 * Change from sqlite/parquet files to `data.table` for performance reasons
-  * All `globaltrends` data is stored in a single, non-compresse RDS file
+  * All `globaltrends` data is stored in a single, non-compressed RDS file
   * All `globaltrends` data is loaded into memory as `data.table` objects
+  * **This makes the storage structure incompatiable with the structure used up to `0.2.0`** - it is possible to integrate the data manually
 * Drop `vacuum_data()` function, since the data architecture is not built on a database file any more
 * `compute_score()` now persists in-memory data to disk after every 1,000 computed locations, matching the periodic persistence already used by the `download_xxx()` functions
 

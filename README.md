@@ -134,13 +134,13 @@ while (get_api_usage()[2] >= 100 & i <= max(batch_object)) {
 If you use the `globaltrends` package, please cite it as:
 Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing
 globalization using Google Trends (SSRN Working Paper 3969013). Available at
-[https://www.ssrn.com/abstract=3969013](https://www.ssrn.com/abstract=3969013).
+<doi:10.2139/ssrn.3969013>.
 
 ## Publications that use `globaltrends`
 
 + Kupfer, A., & Puhr, H. (2022). The Russian view on the war in Ukraine:
   insights from Google Trends. Available at
-  [https://ssrn.com/abstract=4063194](https://ssrn.com/abstract=4063194).
+  <doi:10.2139/ssrn.4063194>.
 + Puhr, H. (2024). Österreichs Lage im Herzen Europas zwischen Ost und West:
   Konnektivität als Standortfaktor für Unternehmenszentralen. In Österreich und
   seine Headquarters Economy: Ist Österreich ein attraktiver Standort für

@@ -41,6 +41,31 @@
 #' @export
 gt.env <- new.env(parent = emptyenv())
 
+# Declares this namespace as "data.table aware" to data.table's cedta()
+# check. All data.table calls here are fully qualified (`data.table::`)
+# rather than imported via NAMESPACE, so without this flag `[.data.table`
+# silently downgrades to plain `[.data.frame` semantics whenever it's
+# invoked from inside this package - both disabling binary-search joins
+# (see `.get_full()`) and, more importantly, changing how bare symbols in
+# `i`/`j` resolve. Every `dt[dt$col == localvar, ]`-style expression in this
+# package has been audited so that no `localvar` shares a name with a
+# column of `dt` (see `target_*` locals in remove_data.r, add_locations.r,
+# and `.test_empty()`), since data.table's NSE would otherwise resolve such
+# a bare symbol to the COLUMN rather than the local variable.
+#' @keywords internal
+#' @noRd
+.datatable.aware <- TRUE
+
+# These are referenced as bare data.table column names (NSE) in `[.data.table`
+# calls (e.g. `.get_full()`'s `j` argument, and batch/type filters in
+# aggregate_synonyms(), compute_score.numeric(), download_*.numeric(), and
+# start_db()), which static analysis (R CMD check) cannot distinguish from
+# undefined global variables. This is the standard data.table idiom for
+# silencing that NOTE.
+utils::globalVariables(c(
+  "location", "batch", "batch_c", "batch_o", "locations", "rising", "topic", "type"
+))
+
 #' @keywords internal
 #' @noRd
 .onAttach <- function(libname, pkgname) {

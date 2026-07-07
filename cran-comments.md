@@ -1,4 +1,4 @@
-# Update 0.2.0
+# Update 0.2.1
 
 ## Test environments
 * local Windows 11 x64 (build 26200), R 4.6.0
@@ -22,7 +22,7 @@ check environment.
 This is a major update of the globaltrends package. Key changes include:
 
 * General revision and improvement of code base, tests, and documentation
-* Switch from SQLite to parquet for database storage
+* Switch from SQLite to RDS for database storage
 * Inclusion of API-usage counter for downloads through Google Trends API
 * Improved error handling for Google Trends API calls
 * Updated dependency to testthat 3.0.0

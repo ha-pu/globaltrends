@@ -20,7 +20,7 @@ was co-downloaded for scale mapping in \code{\link[=compute_score]{compute_score
 }
 }
 \source{
-Google Trends (\url{https://trends.google.com}). Simulated to match
+Google Trends (\url{https://trends.google.com/trends/}). Simulated to match
 empirical distributional statistics from real downloads.
 }
 \usage{

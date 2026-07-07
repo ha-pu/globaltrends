@@ -240,21 +240,18 @@ start_db <- function() {
   gt.env$dt_related   <- data.table::setDT(db$data_related)
   gt.env$dt_synonyms  <- data.table::setDT(db$keyword_synonyms)
 
-  if (nrow(gt.env$dt_control) > 0L) {
-    data.table::setkey(gt.env$dt_control, batch, location)
-  }
-  if (nrow(gt.env$dt_object) > 0L) {
-    data.table::setkey(gt.env$dt_object, batch_c, batch_o, location)
-  }
-  if (nrow(gt.env$dt_score) > 0L) {
-    data.table::setkey(gt.env$dt_score, batch_c, batch_o, location)
-  }
-  if (nrow(gt.env$dt_doi) > 0L) {
-    data.table::setkey(gt.env$dt_doi, batch_c, batch_o, locations)
-  }
-  if (nrow(gt.env$dt_locations) > 0L) {
-    data.table::setkey(gt.env$dt_locations, type, location)
-  }
+  # Keys enable binary-search subsetting in `.get_full()` instead of a full
+  # vector scan. `setkey()` is safe on 0-row tables, so no nrow() guard is
+  # needed. download/compute functions re-key their table after appending
+  # new rows (`rbindlist()` drops keys), so this stays valid across a
+  # session, not just right after `start_db()`.
+  data.table::setkey(gt.env$dt_control, batch, location)
+  data.table::setkey(gt.env$dt_object, batch_c, batch_o, location)
+  data.table::setkey(gt.env$dt_score, batch_c, batch_o, location)
+  data.table::setkey(gt.env$dt_doi, batch_c, batch_o, locations)
+  data.table::setkey(gt.env$dt_locations, type, location)
+  data.table::setkey(gt.env$dt_region, batch_o, location)
+  data.table::setkey(gt.env$dt_related, batch_o, topic, rising, location)
 
   gt.env$keywords_control <- as.data.frame(
     gt.env$dt_keywords[gt.env$dt_keywords$type == "control", c("batch", "keyword")]

@@ -334,6 +334,11 @@ download_related.numeric <- function(
     }
   }
 
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key once per
+  # batch (not per location) so the next `.get_full()` call can binary
+  # search instead of scanning the full table.
+  data.table::setkey(gt.env$dt_related, batch_o, topic, rising, location)
+
   invisible(TRUE)
 }
 

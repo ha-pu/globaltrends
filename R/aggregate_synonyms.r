@@ -131,6 +131,10 @@ aggregate_synonyms <- function(control) {
     list(gt.env$dt_score, score_new),
     use.names = TRUE
   )
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key so the
+  # next `.get_full()` call can binary search instead of scanning the full
+  # table.
+  data.table::setkey(gt.env$dt_score, batch_c, batch_o, location)
 
   message(
     "Successfully aggregated synonyms into canonical keywords for data_score."

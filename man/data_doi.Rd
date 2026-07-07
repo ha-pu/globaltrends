@@ -41,7 +41,7 @@ complementary dispersion measures are provided — see \code{\link[=compute_doi]
 their exact formulae.
 
 DOI is computed via \code{\link[=compute_doi]{compute_doi()}} and is queryable through
-\code{gt.env$globaltrends_db} after \code{\link[=start_db]{start_db()}}. The \code{batch_c} column indicates
+\code{gt.env$dt_doi} after \code{\link[=start_db]{start_db()}}. The \code{batch_c} column indicates
 the control batch used as baseline, and \code{batch_o} indicates the object batch.
 
 The example dataset is simulated to resemble outputs derived from real
@@ -54,7 +54,7 @@ Uncertainty index for the United States and Australia. \emph{Economics Letters},
 
 Puhr, H. & Müllner, J. (2022). Let me Google that for you: Capturing
 internationalization using Google Trends. Available at SSRN:
-\url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013}
+\doi{10.2139/ssrn.3969013}
 }
 \seealso{
 \code{\link[=compute_doi]{compute_doi()}}, \code{\link[=start_db]{start_db()}}

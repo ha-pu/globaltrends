@@ -211,9 +211,17 @@ remove_data <- function(table, control = NULL, object = NULL) {
   slot <- .table_slot(table)
   dt <- gt.env[[slot]]
 
+  # `target_*` avoid colliding with `dt`'s `batch_c`/`batch_o` columns: under
+  # data.table's NSE (see `.datatable.aware` in zzz.r), a bare symbol that
+  # matches a column name resolves to the COLUMN, not this argument, which
+  # would make the filter always-true and delete every row instead of one
+  # batch.
+  target_batch_c <- batch_c
+  target_batch_o <- batch_o
+
   if (!is.null(batch_c) && is.null(batch_o)) {
     col <- if ("batch_c" %in% names(dt)) "batch_c" else "batch"
-    gt.env[[slot]] <- dt[dt[[col]] != batch_c, ]
+    gt.env[[slot]] <- dt[dt[[col]] != target_batch_c, ]
     message(
       "Successfully deleted control batch ",
       batch_c,
@@ -222,7 +230,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
       "'."
     )
   } else if (is.null(batch_c)) {
-    gt.env[[slot]] <- dt[dt$batch_o != batch_o, ]
+    gt.env[[slot]] <- dt[dt$batch_o != target_batch_o, ]
     message(
       "Successfully deleted object batch ",
       batch_o,
@@ -232,7 +240,9 @@ remove_data <- function(table, control = NULL, object = NULL) {
     )
   } else {
     col <- if ("batch_c" %in% names(dt)) "batch_c" else "batch"
-    gt.env[[slot]] <- dt[!(dt[[col]] == batch_c & dt$batch_o == batch_o), ]
+    gt.env[[slot]] <- dt[
+      !(dt[[col]] == target_batch_c & dt$batch_o == target_batch_o),
+    ]
     message(
       "Successfully deleted control batch ",
       batch_c,
@@ -253,7 +263,10 @@ remove_data <- function(table, control = NULL, object = NULL) {
   .check_batch_optional(batch_o)
   slot <- .table_slot(table)
   dt <- gt.env[[slot]]
-  gt.env[[slot]] <- dt[dt$batch_o != batch_o, ]
+  # `target_batch_o` avoids colliding with `dt`'s `batch_o` column; see note
+  # in `.dt_delete_by_batch()`.
+  target_batch_o <- batch_o
+  gt.env[[slot]] <- dt[dt$batch_o != target_batch_o, ]
   message("Successfully deleted object batch ", batch_o, " from '", table, "'.")
 }
 
@@ -261,9 +274,12 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_batch_keywords <- function(type, batch_c = NULL, batch_o = NULL) {
   .check_batches(batch_c, batch_o)
 
-  batch <- if (type == "control") batch_c else batch_o
+  # `target_type`/`target_batch` avoid colliding with `dt`'s `type`/`batch`
+  # columns; see note in `.dt_delete_by_batch()`.
+  target_type <- type
+  target_batch <- if (type == "control") batch_c else batch_o
   dt <- gt.env$dt_keywords
-  gt.env$dt_keywords <- dt[!(dt$type == type & dt$batch == batch), ]
+  gt.env$dt_keywords <- dt[!(dt$type == target_type & dt$batch == target_batch), ]
 
   .refresh_keywords(type)
 
@@ -271,7 +287,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     "Successfully deleted ",
     type,
     " batch ",
-    batch,
+    target_batch,
     " from 'batch_keywords'."
   )
 
@@ -288,9 +304,12 @@ remove_data <- function(table, control = NULL, object = NULL) {
 .remove_batch_time <- function(type, batch_c = NULL, batch_o = NULL) {
   .check_batches(batch_c, batch_o)
 
-  batch <- if (type == "control") batch_c else batch_o
+  # `target_type`/`target_batch` avoid colliding with `dt`'s `type`/`batch`
+  # columns; see note in `.dt_delete_by_batch()`.
+  target_type <- type
+  target_batch <- if (type == "control") batch_c else batch_o
   dt <- gt.env$dt_time
-  gt.env$dt_time <- dt[!(dt$type == type & dt$batch == batch), ]
+  gt.env$dt_time <- dt[!(dt$type == target_type & dt$batch == target_batch), ]
 
   .refresh_time(type)
 
@@ -298,7 +317,7 @@ remove_data <- function(table, control = NULL, object = NULL) {
     "Successfully deleted ",
     type,
     " batch ",
-    batch,
+    target_batch,
     " from 'batch_time'."
   )
 }

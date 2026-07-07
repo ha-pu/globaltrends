@@ -128,7 +128,12 @@ add_locations <- function(locations, type, export = TRUE) {
     already_present <- NULL
   } else {
     dt <- gt.env$dt_locations
-    already_present <- dt[dt$type == type & dt$location %in% locations, ]$location
+    # `target_type` avoids colliding with the `type` column of `dt`: under
+    # data.table's NSE (see `.datatable.aware` in zzz.r), a bare symbol that
+    # matches a column name resolves to the COLUMN, not this argument, which
+    # would make the filter always-true (`dt$type == dt$type`).
+    target_type <- type
+    already_present <- dt[dt$type == target_type & dt$location %in% locations, ]$location
   }
   to_add <- setdiff(locations, already_present)
 
