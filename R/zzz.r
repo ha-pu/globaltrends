@@ -62,6 +62,10 @@ gt.env <- new.env(parent = emptyenv())
 # start_db()), which static analysis (R CMD check) cannot distinguish from
 # undefined global variables. This is the standard data.table idiom for
 # silencing that NOTE.
+#'
+#' @importFrom utils globalVariables
+NULL
+
 utils::globalVariables(c(
   "location", "batch", "batch_c", "batch_o", "locations", "rising", "topic", "type"
 ))

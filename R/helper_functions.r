@@ -1,9 +1,9 @@
-#' @keywords internal
-#' @noRd
-#'
 #' Single seam for all rate-limit/backoff pauses. Base functions cannot be
 #' mocked with testthat::local_mocked_bindings(), so tests stub this wrapper
 #' instead of Sys.sleep() to run retry logic without real waits.
+#'
+#' @keywords internal
+#' @noRd
 
 .wait <- function(seconds) {
   Sys.sleep(seconds)
