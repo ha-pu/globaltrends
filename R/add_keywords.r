@@ -133,9 +133,6 @@ add_object_keyword <- function(
 #'
 #' @keywords internal
 #' @noRd
-#'
-#' @importFrom DBI dbAppendTable
-#' @importFrom DBI dbWithTransaction
 
 .add_batch <- function(type, keyword, start_date, end_date, max) {
   type <- match.arg(type, c("control", "object"))
@@ -167,30 +164,26 @@ add_object_keyword <- function(
     .check_length(kw_batch, max)
     batch_id <- batch_ids[[i]]
 
-    dbWithTransaction(gt.env$globaltrends_db, {
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "batch_keywords",
-        value = data.frame(
-          batch = batch_id,
-          keyword = kw_batch,
-          type = type,
-          stringsAsFactors = FALSE
-        )
-      )
+    new_kw <- data.table::data.table(
+      type = type,
+      batch = batch_id,
+      keyword = kw_batch
+    )
+    gt.env$dt_keywords <- data.table::rbindlist(
+      list(gt.env$dt_keywords, new_kw),
+      use.names = TRUE
+    )
 
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "batch_time",
-        value = data.frame(
-          batch = batch_id,
-          start_date = start_date,
-          end_date = end_date,
-          type = type,
-          stringsAsFactors = FALSE
-        )
-      )
-    })
+    new_time <- data.table::data.table(
+      type = type,
+      batch = batch_id,
+      start_date = start_date,
+      end_date = end_date
+    )
+    gt.env$dt_time <- data.table::rbindlist(
+      list(gt.env$dt_time, new_time),
+      use.names = TRUE
+    )
 
     message(sprintf(
       "Successfully created new %s batch %d (%s, %s-%s).",
@@ -273,7 +266,6 @@ add_object_keyword <- function(
 #'
 #' @export
 #' @rdname add_synonym
-#' @importFrom DBI dbAppendTable
 
 add_synonym <- function(keyword, synonym) {
   .check_length(keyword, 1)
@@ -283,11 +275,15 @@ add_synonym <- function(keyword, synonym) {
   keyword <- trimws(keyword)
   synonyms <- trimws(synonyms)
 
-  dbAppendTable(
-    conn = gt.env$globaltrends_db,
-    name = "keyword_synonyms",
-    value = data.frame(keyword = keyword, synonym = synonyms, stringsAsFactors = FALSE)
+  new_rows <- data.table::data.table(
+    keyword = rep(keyword, length(synonyms)),
+    synonym = synonyms
   )
+  gt.env$dt_synonyms <- data.table::rbindlist(
+    list(gt.env$dt_synonyms, new_rows),
+    use.names = TRUE
+  )
+
   for (s in synonyms) {
     message(sprintf(
       "Successfully added synonym | keyword: %s | synonym: %s.",
@@ -295,8 +291,5 @@ add_synonym <- function(keyword, synonym) {
     ))
   }
 
-  gt.env$keyword_synonyms <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    "SELECT * FROM keyword_synonyms"
-  )
+  gt.env$keyword_synonyms <- as.data.frame(gt.env$dt_synonyms)
 }

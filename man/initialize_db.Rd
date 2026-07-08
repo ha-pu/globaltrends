@@ -12,19 +12,15 @@ files under \verb{db/}).
 }
 \description{
 Creates the local database store used by \code{globaltrends} in the current
-working directory and initializes all required tables and indexes.
+working directory and initializes all required tables.
 }
 \details{
-The package uses SQLite with a Parquet-backed persistence layout under the
-\verb{db/} folder. \code{initialize_db()} creates a transient in-memory SQLite
-database, builds the schema, populates default location sets, and exports
-the result as Parquet files (via \code{arrow}) to \verb{db/}. The in-memory connection
-is closed before the function returns; call \code{\link[=start_db]{start_db()}} to open a working
-session.
+The package uses \code{data.table} objects persisted as a single RDS file under
+the \verb{db/} folder. \code{initialize_db()} creates 10 empty tables, populates
+default location sets, and saves the result to \code{db/globaltrends.rds}.
 
-If all required Parquet files already exist the function returns early
-without overwriting anything. If only some files are present (indicating a
-partial or corrupted store) the function stops with an error.
+If the RDS file already exists the function returns early without
+overwriting anything.
 
 Default location sets written to \code{data_locations}:
 \describe{
@@ -34,13 +30,6 @@ share threshold (see \link{countries}).}
 (see \link{us_states}).}
 }
 }
-\section{Concurrency}{
-
-SQLite allows concurrent readers but only one writer at a time. If you run
-parallel download workers, use one database directory per worker and merge
-results afterwards.
-}
-
 \examples{
 \dontrun{
 initialize_db()

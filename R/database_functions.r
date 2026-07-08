@@ -1,19 +1,15 @@
 #' Initialize the local database store
 #'
 #' Creates the local database store used by `globaltrends` in the current
-#' working directory and initializes all required tables and indexes.
+#' working directory and initializes all required tables.
 #'
 #' @details
-#' The package uses SQLite with a Parquet-backed persistence layout under the
-#' `db/` folder. `initialize_db()` creates a transient in-memory SQLite
-#' database, builds the schema, populates default location sets, and exports
-#' the result as Parquet files (via `arrow`) to `db/`. The in-memory connection
-#' is closed before the function returns; call [start_db()] to open a working
-#' session.
+#' The package uses `data.table` objects persisted as a single RDS file under
+#' the `db/` folder. `initialize_db()` creates 10 empty tables, populates
+#' default location sets, and saves the result to `db/globaltrends.rds`.
 #'
-#' If all required Parquet files already exist the function returns early
-#' without overwriting anything. If only some files are present (indicating a
-#' partial or corrupted store) the function stops with an error.
+#' If the RDS file already exists the function returns early without
+#' overwriting anything.
 #'
 #' Default location sets written to `data_locations`:
 #' \describe{
@@ -22,11 +18,6 @@
 #'   \item{`us_states`}{ISO 3166-2 codes for US states and Washington DC
 #'     (see [us_states]).}
 #' }
-#'
-#' @section Concurrency:
-#' SQLite allows concurrent readers but only one writer at a time. If you run
-#' parallel download workers, use one database directory per worker and merge
-#' results afterwards.
 #'
 #' @return Invisibly returns `TRUE`. Called for its side effects (creating
 #'   files under `db/`).
@@ -41,52 +32,73 @@
 #' }
 #'
 #' @export
-#' @importFrom DBI dbConnect dbDisconnect dbExecute
-#' @importFrom RSQLite SQLite
 
 initialize_db <- function() {
   .ensure_db_dir()
 
-  check <- .check_files()
-  if (isTRUE(all(check))) {
+  rds_path <- file.path("db", "globaltrends.rds")
+  if (file.exists(rds_path)) {
     message("Database files already exist under 'db/'.")
     return(invisible(TRUE))
   }
 
-  # Schema definition (DuckDB SQL)
-  schema_sql <- c(
-    "CREATE TABLE batch_keywords(type TEXT, batch INTEGER, keyword TEXT);",
-    "CREATE TABLE batch_time(type TEXT, batch INTEGER, start_date TEXT, end_date TEXT);",
-    "CREATE TABLE data_control(location TEXT, keyword TEXT, date DATE, hits REAL, batch INTEGER);",
-    "CREATE TABLE data_object(location TEXT, keyword TEXT, date DATE, hits REAL, batch_c INTEGER, batch_o INTEGER);",
-    "CREATE TABLE data_score(location TEXT, keyword TEXT, date DATE, score REAL, batch_c INTEGER, batch_o INTEGER);",
-    "CREATE TABLE data_doi(keyword TEXT, date DATE, gini REAL, hhi REAL, entropy REAL, batch_c INTEGER, batch_o INTEGER, locations TEXT);",
-    "CREATE TABLE data_locations(location TEXT, type TEXT);",
-    "CREATE TABLE data_region(term TEXT, location TEXT, start_date DATE, end_date DATE, region_code TEXT, region_name TEXT, hits REAL, batch_o INTEGER);",
-    "CREATE TABLE data_related(term TEXT, topic INTEGER, rising INTEGER, location TEXT, start_date DATE, end_date DATE, related_term TEXT, hits REAL, batch_o INTEGER);",
-    "CREATE TABLE keyword_synonyms(keyword TEXT, synonym TEXT);",
-    "CREATE INDEX idx_doi_batch ON data_doi(batch_o);",
-    "CREATE INDEX idx_control_batch ON data_control(batch);",
-    "CREATE INDEX idx_locations_loc ON data_locations(location);",
-    "CREATE INDEX idx_regions_term ON data_region(term);",
-    "CREATE INDEX idx_regions_loc ON data_region(location);",
-    "CREATE INDEX idx_related_term ON data_related(term);",
-    "CREATE INDEX idx_object_batch ON data_object(batch_o);",
-    "CREATE INDEX idx_score_batch ON data_score(batch_o);",
-    "CREATE INDEX idx_terms_batch ON batch_keywords(batch);",
-    "CREATE INDEX idx_time_batch ON batch_time(batch);"
+  db <- list(
+    batch_keywords = data.table::data.table(
+      type = character(), batch = integer(), keyword = character()
+    ),
+    batch_time = data.table::data.table(
+      type = character(), batch = integer(),
+      start_date = character(), end_date = character()
+    ),
+    data_control = data.table::data.table(
+      location = character(), keyword = character(),
+      date = numeric(), hits = numeric(), batch = integer()
+    ),
+    data_object = data.table::data.table(
+      location = character(), keyword = character(),
+      date = numeric(), hits = numeric(),
+      batch_c = integer(), batch_o = integer()
+    ),
+    data_score = data.table::data.table(
+      location = character(), keyword = character(),
+      date = numeric(), score = numeric(),
+      batch_c = integer(), batch_o = integer()
+    ),
+    data_doi = data.table::data.table(
+      keyword = character(), date = numeric(),
+      gini = numeric(), hhi = numeric(), entropy = numeric(),
+      batch_c = integer(), batch_o = integer(), locations = character()
+    ),
+    data_locations = data.table::data.table(
+      location = character(), type = character()
+    ),
+    data_region = data.table::data.table(
+      term = character(), location = character(),
+      start_date = numeric(), end_date = numeric(),
+      region_code = character(), region_name = character(),
+      hits = numeric(), batch_o = integer()
+    ),
+    data_related = data.table::data.table(
+      term = character(), topic = integer(), rising = integer(),
+      location = character(),
+      start_date = numeric(), end_date = numeric(),
+      related_term = character(), hits = numeric(), batch_o = integer()
+    ),
+    keyword_synonyms = data.table::data.table(
+      keyword = character(), synonym = character()
+    )
   )
 
-  con <- dbConnect(RSQLite::SQLite(), ":memory:")
-  on.exit(dbDisconnect(con), add = TRUE)
+  data_to_add <- data.table::data.table(
+    location = c(globaltrends::countries, globaltrends::us_states),
+    type = c(
+      rep("countries", length(globaltrends::countries)),
+      rep("us_states", length(globaltrends::us_states))
+    )
+  )
+  db$data_locations <- data_to_add
 
-  for (sql in schema_sql) dbExecute(con, sql)
-
-  # Populate default location sets (writes into data_locations)
-  .enter_location_defaults(con)
-
-  # Persist database as Parquet under db/
-  .export_db_to_parquet(con)
+  .save_db(db, file.path("db", "globaltrends.rds"))
 
   message("Database files created successfully under 'db/'.")
   invisible(TRUE)
@@ -96,7 +108,6 @@ initialize_db <- function() {
 # Internal helpers for DB filesystem layout
 # -------------------------------------------------------------------------
 
-#' @description Create `db/` directory if it does not yet exist.
 #' @keywords internal
 #' @noRd
 
@@ -107,7 +118,6 @@ initialize_db <- function() {
   invisible(TRUE)
 }
 
-#' @description Return the canonical list of table/Parquet-file names.
 #' @keywords internal
 #' @noRd
 
@@ -126,63 +136,54 @@ initialize_db <- function() {
   )
 }
 
-#' @description
-#' Check whether the required Parquet files exist under `path`. Returns a
-#' logical vector (one element per file). Stops with an informative error if
-#' only a subset of files is present, which indicates a partial or corrupted
-#' store.
 #' @keywords internal
 #' @noRd
 
-.check_files <- function(path = "db") {
-  required <- paste0(.list_files(), ".parquet")
-  present <- file.exists(file.path(path, required))
+.table_slot <- function(table) {
+  map <- c(
+    batch_keywords   = "dt_keywords",
+    batch_time       = "dt_time",
+    data_control     = "dt_control",
+    data_object      = "dt_object",
+    data_score       = "dt_score",
+    data_doi         = "dt_doi",
+    data_locations   = "dt_locations",
+    data_region      = "dt_region",
+    data_related     = "dt_related",
+    keyword_synonyms = "dt_synonyms"
+  )
+  map[[table]]
+}
 
-  if (any(present) && !all(present)) {
-    stop(
-      paste0(
-        "Database files appear incomplete under '",
-        path,
-        "'. Missing file(s): ",
-        paste(required[!present], collapse = ", "),
-        "."
-      ),
-      call. = FALSE
+#' @keywords internal
+#' @noRd
+
+.save_db <- function(db = NULL, path = "db/globaltrends.rds") {
+  if (is.null(db)) {
+    db <- list(
+      batch_keywords   = gt.env$dt_keywords,
+      batch_time       = gt.env$dt_time,
+      data_control     = gt.env$dt_control,
+      data_object      = gt.env$dt_object,
+      data_score       = gt.env$dt_score,
+      data_doi         = gt.env$dt_doi,
+      data_locations   = gt.env$dt_locations,
+      data_region      = gt.env$dt_region,
+      data_related     = gt.env$dt_related,
+      keyword_synonyms = gt.env$dt_synonyms
     )
   }
-
-  present
-}
-
-#' @description
-#' Insert the package's built-in location sets (`countries`, `us_states`) into
-#' the `data_locations` table of `con`. Called once by [initialize_db()].
-#' @keywords internal
-#' @noRd
-#' @importFrom DBI dbAppendTable
-
-.enter_location_defaults <- function(con) {
-  data_to_add <- rbind(
-    data.frame(location = globaltrends::countries, type = "countries", stringsAsFactors = FALSE),
-    data.frame(location = globaltrends::us_states, type = "us_states", stringsAsFactors = FALSE)
-  )
-  dbAppendTable(conn = con, name = "data_locations", value = data_to_add)
+  tmp <- paste0(path, ".tmp")
+  saveRDS(db, tmp, compress = FALSE)
+  file.rename(tmp, path)
   invisible(TRUE)
 }
 
-#' @description
-#' Export all tables in `con` as Parquet files to `path` using
-#' `arrow::write_parquet()`.
 #' @keywords internal
 #' @noRd
 
-.export_db_to_parquet <- function(con, path = "db") {
-  tables <- .list_files()
-  for (tbl_name in tables) {
-    df <- DBI::dbReadTable(con, tbl_name)
-    arrow::write_parquet(df, file.path(path, paste0(tbl_name, ".parquet")))
-  }
-  invisible(TRUE)
+.load_db <- function(path = "db/globaltrends.rds") {
+  readRDS(path)
 }
 
 # -------------------------------------------------------------------------
@@ -191,23 +192,15 @@ initialize_db <- function() {
 
 #' Start a database session
 #'
-#' Loads the Parquet-backed store under `db/` into an in-memory SQLite
-#' connection and registers lazy `dplyr` table handles and cached tibbles in
+#' Loads the RDS-backed store under `db/` into `data.table` objects in
 #' `gt.env`.
 #'
 #' @details
 #' Requires [initialize_db()] to have been run in the current working
-#' directory. All Parquet files are read into an in-memory SQLite instance;
-#' the following bindings are written to `gt.env`:
-#' \describe{
-#'   \item{`globaltrends_db`}{Active `DBI` connection to the in-memory SQLite
-#'     instance.}
-#'   \item{`keywords_control`, `keywords_object`}{Data frames of control and
-#'     object keywords by batch (without the `type` column).}
-#'   \item{`time_control`, `time_object`}{Data frames of batch time windows for
-#'     control and object runs (without the `type` column).}
-#'   \item{`keyword_synonyms`}{Data frame of all keyword/synonym pairs.}
-#' }
+#' directory. All tables are read from `db/globaltrends.rds` and assigned
+#' into `gt.env` as `dt_*` bindings. Keys are set on the large tables for
+#' fast lookups. Cached data frames for frequently-used metadata
+#' (`keywords_control`, `keywords_object`, etc.) are also populated.
 #' Location sets are exported as named character vectors via
 #' `.export_locations()`.
 #'
@@ -224,61 +217,55 @@ initialize_db <- function() {
 #' }
 #'
 #' @export
-#' @importFrom DBI dbConnect dbExecute
-#' @importFrom dbplyr sql
-#' @importFrom RSQLite SQLite
-#' @importFrom dplyr tbl
 
 start_db <- function() {
-  check <- .check_files()
-  if (!isTRUE(all(check))) {
+  rds_path <- file.path("db", "globaltrends.rds")
+  if (!file.exists(rds_path)) {
     stop(
       "Database files do not exist under 'db/'. Run `initialize_db()` first.",
       call. = FALSE
     )
   }
 
-  con <- dbConnect(RSQLite::SQLite(), ":memory:")
-  assign("globaltrends_db", con, envir = gt.env)
+  db <- .load_db(rds_path)
 
-  # Import Parquet tables into the in-memory DB (ReadableFile avoids
-  # memory-mapping so the files can be overwritten later on Windows)
-  tables <- .list_files()
-  for (tbl_name in tables) {
-    pq_path <- file.path("db", paste0(tbl_name, ".parquet"))
-    raw_file <- arrow::ReadableFile$create(pq_path)
-    df <- as.data.frame(arrow::read_parquet(raw_file))
-    raw_file$close()
-    DBI::dbWriteTable(con, tbl_name, df)
-  }
+  gt.env$dt_keywords  <- data.table::setDT(db$batch_keywords)
+  gt.env$dt_time      <- data.table::setDT(db$batch_time)
+  gt.env$dt_control   <- data.table::setDT(db$data_control)
+  gt.env$dt_object    <- data.table::setDT(db$data_object)
+  gt.env$dt_score     <- data.table::setDT(db$data_score)
+  gt.env$dt_doi       <- data.table::setDT(db$data_doi)
+  gt.env$dt_locations <- data.table::setDT(db$data_locations)
+  gt.env$dt_region    <- data.table::setDT(db$data_region)
+  gt.env$dt_related   <- data.table::setDT(db$data_related)
+  gt.env$dt_synonyms  <- data.table::setDT(db$keyword_synonyms)
 
-  # Cache small, frequently-used tables as in-memory data frames
-  keywords_control <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'control'")
-  keywords_object <- DBI::dbGetQuery(con, "SELECT batch, keyword FROM batch_keywords WHERE type = 'object'")
-  time_control <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'control'")
-  time_object <- DBI::dbGetQuery(con, "SELECT batch, start_date, end_date FROM batch_time WHERE type = 'object'")
-  keyword_synonyms <- DBI::dbGetQuery(con, "SELECT * FROM keyword_synonyms")
+  # Keys enable binary-search subsetting in `.get_full()` instead of a full
+  # vector scan. `setkey()` is safe on 0-row tables, so no nrow() guard is
+  # needed. download/compute functions re-key their table after appending
+  # new rows (`rbindlist()` drops keys), so this stays valid across a
+  # session, not just right after `start_db()`.
+  data.table::setkey(gt.env$dt_control, batch, location)
+  data.table::setkey(gt.env$dt_object, batch_c, batch_o, location)
+  data.table::setkey(gt.env$dt_score, batch_c, batch_o, location)
+  data.table::setkey(gt.env$dt_doi, batch_c, batch_o, locations)
+  data.table::setkey(gt.env$dt_locations, type, location)
+  data.table::setkey(gt.env$dt_region, batch_o, location)
+  data.table::setkey(gt.env$dt_related, batch_o, topic, rising, location)
 
-  # Assign into gt.env
-  lst_object <- list(
-    globaltrends_db  = con,
-    keywords_control = keywords_control,
-    keywords_object  = keywords_object,
-    time_control     = time_control,
-    time_object      = time_object,
-    keyword_synonyms = keyword_synonyms,
-    tbl_locations    = dplyr::tbl(con, "data_locations"),
-    tbl_keywords     = dplyr::tbl(con, "batch_keywords"),
-    tbl_time         = dplyr::tbl(con, "batch_time"),
-    tbl_synonyms     = dplyr::tbl(con, "keyword_synonyms"),
-    tbl_control      = dplyr::tbl(con, "data_control"),
-    tbl_object       = dplyr::tbl(con, "data_object"),
-    tbl_score        = dplyr::tbl(con, "data_score"),
-    tbl_doi          = dplyr::tbl(con, "data_doi"),
-    tbl_related      = dplyr::tbl(con, "data_related"),
-    tbl_region       = dplyr::tbl(con, "data_region")
+  gt.env$keywords_control <- as.data.frame(
+    gt.env$dt_keywords[gt.env$dt_keywords$type == "control", c("batch", "keyword")]
   )
-  invisible(list2env(lst_object, envir = gt.env))
+  gt.env$keywords_object <- as.data.frame(
+    gt.env$dt_keywords[gt.env$dt_keywords$type == "object", c("batch", "keyword")]
+  )
+  gt.env$time_control <- as.data.frame(
+    gt.env$dt_time[gt.env$dt_time$type == "control", c("batch", "start_date", "end_date")]
+  )
+  gt.env$time_object <- as.data.frame(
+    gt.env$dt_time[gt.env$dt_time$type == "object", c("batch", "start_date", "end_date")]
+  )
+  gt.env$keyword_synonyms <- as.data.frame(gt.env$dt_synonyms)
 
   .export_locations()
 
@@ -288,20 +275,19 @@ start_db <- function() {
 
 #' Disconnect from the database and persist changes
 #'
-#' Exports the current in-memory SQLite state to the Parquet store under
-#' `db/` and closes the DBI connection.
+#' Exports the current in-memory state to the RDS store under `db/` and
+#' clears table handles from `gt.env`.
 #'
 #' @details
 #' Call this function after all downloads and computations are complete. It
-#' overwrites the Parquet files under `db/` with the current in-memory state
-#' and then closes the SQLite connection. `gt.env$globaltrends_db` is set
-#' to `NULL` afterwards; all lazy `tbl_*` handles become invalid.
+#' overwrites `db/globaltrends.rds` with the current in-memory state.
+#' All `dt_*` handles in `gt.env` are set to `NULL` afterwards.
 #'
-#' Data written to the in-memory database during the session will be **lost**
-#' if this function is not called before the R session ends.
+#' Data modified during the session will be **lost** if this function is not
+#' called before the R session ends.
 #'
 #' @return Invisibly returns `TRUE`. Called for its side effects (writing
-#'   files under `db/` and closing the connection).
+#'   files under `db/` and clearing handles).
 #'
 #' @seealso [initialize_db()] to create the store; [start_db()] to open a
 #'   new session.
@@ -314,32 +300,28 @@ start_db <- function() {
 #' }
 #'
 #' @export
-#' @importFrom DBI dbDisconnect
 
 disconnect_db <- function() {
-  if (is.null(gt.env$globaltrends_db)) {
+  if (is.null(gt.env$dt_control)) {
     stop(
-      "No active database connection found in `gt.env$globaltrends_db`.",
+      "No active database session found in `gt.env`.",
       call. = FALSE
     )
   }
 
-  .export_db_to_parquet(gt.env$globaltrends_db)
-
-  dbDisconnect(conn = gt.env$globaltrends_db)
+  .save_db()
 
   nulls <- list(
-    globaltrends_db = NULL,
-    tbl_locations   = NULL,
-    tbl_keywords    = NULL,
-    tbl_time        = NULL,
-    tbl_synonyms    = NULL,
-    tbl_control     = NULL,
-    tbl_object      = NULL,
-    tbl_score       = NULL,
-    tbl_doi         = NULL,
-    tbl_related     = NULL,
-    tbl_region      = NULL
+    dt_keywords  = NULL,
+    dt_time      = NULL,
+    dt_control   = NULL,
+    dt_object    = NULL,
+    dt_score     = NULL,
+    dt_doi       = NULL,
+    dt_locations = NULL,
+    dt_region    = NULL,
+    dt_related   = NULL,
+    dt_synonyms  = NULL
   )
   invisible(list2env(nulls, envir = gt.env))
 

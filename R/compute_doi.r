@@ -77,7 +77,6 @@
 #'
 #' @export
 #' @rdname compute_doi
-#' @importFrom DBI dbAppendTable
 
 compute_doi <- function(object, control = 1, locations = "countries") {
   UseMethod("compute_doi", object)
@@ -113,18 +112,11 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
     return(invisible(data.frame()))
   }
 
-  score_df <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    sprintf(
-      "SELECT s.date, s.keyword, s.location, s.score, s.batch_c
-       FROM data_score s
-       INNER JOIN (SELECT DISTINCT location FROM data_locations WHERE type = %s) l
-         ON l.location = s.location
-       WHERE s.batch_c = %d AND s.batch_o = %d",
-      DBI::dbQuoteString(gt.env$globaltrends_db, locations),
-      control,
-      object
-    )
+  loc_codes <- gt.env$dt_locations[gt.env$dt_locations$type == locations, ]$location
+  dt_s <- gt.env$dt_score
+  score_df <- as.data.frame(
+    dt_s[dt_s$batch_c == control & dt_s$batch_o == object & dt_s$location %in% loc_codes,
+         c("date", "keyword", "location", "score", "batch_c")]
   )
   score_df$date <- as.Date(score_df$date)
 
@@ -157,10 +149,9 @@ compute_doi.numeric <- function(object, control = 1, locations = "countries") {
   out$batch_o <- object
   out$locations <- locations
 
-  dbAppendTable(
-    conn = gt.env$globaltrends_db,
-    name = "data_doi",
-    value = out
+  gt.env$dt_doi <- data.table::rbindlist(
+    list(gt.env$dt_doi, data.table::setDT(out)),
+    use.names = TRUE
   )
 
   max_o <- tryCatch(

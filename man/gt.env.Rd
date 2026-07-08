@@ -11,51 +11,39 @@ gt.env
 }
 \description{
 \code{gt.env} is the internal package environment used to store runtime state and
-database handles. It centralizes objects that should be shared across
-functions (e.g., the DBI connection, lazy table references, cached keyword
-batches).
+data tables. It centralizes objects that should be shared across
+functions (e.g., data.table stores, cached keyword batches).
 }
 \details{
 The following bindings may be present in \code{gt.env} after package attach and/or
 after calling initialization functions such as \code{start_db()}:
 \itemize{
-\item \code{globaltrends_db}: DBI connection/handle to the SQLite database.
-\item \code{tbl_locations}: Lazy table reference for location sets stored in the DB.
-\item \code{tbl_keywords}: Lazy table reference for keyword batches stored in the DB.
-\item \code{tbl_time}: Lazy table reference for time windows stored in the DB.
-\item \code{tbl_synonyms}: Lazy table reference for keyword synonyms stored in the DB.
-\item \code{tbl_doi}: Lazy table reference for DOI data stored in the DB.
-\item \code{tbl_control}: Lazy table reference for control search-volume data.
-\item \code{tbl_object}: Lazy table reference for object search-volume data.
-\item \code{tbl_score}: Lazy table reference for computed scores.
-\item \code{tbl_related}: Lazy table reference for related search terms.
-\item \code{tbl_region}: Lazy table reference for regional search-volume data.
-\item \code{keywords_control}: Cached tibble of control keywords by batch (populated by \code{start_db()} / exports).
-\item \code{time_control}: Cached tibble of control batch time windows.
-\item \code{keywords_object}: Cached tibble of object keywords by batch.
-\item \code{time_object}: Cached tibble of object batch time windows.
-\item \code{keyword_synonyms}: Cached tibble of keyword/synonym mappings.
+\item \code{dt_keywords}: data.table of keyword batches (type, batch, keyword).
+\item \code{dt_time}: data.table of batch time windows (type, batch, start_date, end_date).
+\item \code{dt_control}: data.table of control search-volume data.
+\item \code{dt_object}: data.table of object search-volume data.
+\item \code{dt_score}: data.table of computed scores.
+\item \code{dt_doi}: data.table of DOI data.
+\item \code{dt_locations}: data.table of location set definitions.
+\item \code{dt_region}: data.table of regional search-volume data.
+\item \code{dt_related}: data.table of related search terms.
+\item \code{dt_synonyms}: data.table of keyword/synonym mappings.
+\item \code{keywords_control}: Cached data frame of control keywords by batch.
+\item \code{time_control}: Cached data frame of control batch time windows.
+\item \code{keywords_object}: Cached data frame of object keywords by batch.
+\item \code{time_object}: Cached data frame of object batch time windows.
+\item \code{keyword_synonyms}: Cached data frame of keyword/synonym mappings.
 \item \code{query_wait}: Numeric scalar. Seconds to wait between API calls (default: \code{0.1}).
 \item \code{py_setup}: Logical scalar. \code{TRUE} if \code{\link[=initialize_python]{initialize_python()}} has been called successfully.
-\item \code{api_calls}: Integer scalar. Number of Research API calls made today (reset automatically at midnight).
-\item \code{api_calls_date}: Date scalar. The date for which \code{api_calls} is counted; used to detect day boundaries.
+\item \code{api_calls}: Integer scalar. Number of Research API calls made today.
+\item \code{api_calls_date}: Date scalar. The date for which \code{api_calls} is counted.
+\item \code{score_calls}: Integer scalar. Number of locations processed by
+\code{\link[=compute_score]{compute_score()}} since the database was last persisted.
 }
 }
-\section{Implementation notes}{
-
-The environment is created with \code{parent = emptyenv()} to avoid accidental
-variable capture. Bindings are initialized on package attach so downstream
-functions can rely on their existence; however, most bindings remain \code{NULL}
-until \code{start_db()} (or related setup routines) populates them.
-}
-
 \seealso{
 \itemize{
 \item \code{\link[=start_db]{start_db()}}
 \item \code{\link[=initialize_python]{initialize_python()}}
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=example_doi]{example_doi()}}
 }
 }

@@ -2,54 +2,27 @@
 % Please edit documentation in R/remove_data.r
 \name{remove_data}
 \alias{remove_data}
-\alias{vacuum_data}
 \title{Remove data from database tables}
 \usage{
 remove_data(table, control = NULL, object = NULL)
-
-vacuum_data()
 }
 \arguments{
 \item{table}{Character scalar. The table to delete from. One of
 \code{"batch_keywords"}, \code{"batch_time"}, \code{"data_control"}, \code{"data_object"},
-\code{"data_score"}, \code{"data_doi"}, \code{"data_related"}, \code{"data_region"}.
-See the argument requirements table in Details for which of \code{control}
-and \code{object} are required, optional, or ignored for each table.}
+\code{"data_score"}, \code{"data_doi"}, \code{"data_related"}, \code{"data_region"}.}
 
-\item{control}{Optional integer-like scalar. Control batch id.
-\itemize{
-\item \strong{Required} for \code{table = "data_control"}.
-\item \strong{Exactly one} of \code{control} or \code{object} for \code{"batch_keywords"} and
-\code{"batch_time"}.
-\item \strong{At least one} of \code{control} or \code{object} for \code{"data_object"},
-\code{"data_score"}, and \code{"data_doi"}.
-\item \strong{Ignored} (with a warning) for \code{"data_related"} and \code{"data_region"}.
-}}
+\item{control}{Optional integer-like scalar. Control batch id.}
 
-\item{object}{Optional integer-like scalar. Object batch id.
-\itemize{
-\item \strong{Required} for \code{table = "data_related"} and \code{"data_region"}.
-\item \strong{Exactly one} of \code{control} or \code{object} for \code{"batch_keywords"} and
-\code{"batch_time"}.
-\item \strong{At least one} of \code{control} or \code{object} for \code{"data_object"},
-\code{"data_score"}, and \code{"data_doi"}.
-\item \strong{Ignored} (with a warning) for \code{"data_control"}.
-}}
+\item{object}{Optional integer-like scalar. Object batch id.}
 }
 \value{
 Invisibly returns \code{TRUE} on success. The function is called for its side
 effects (deleting rows).
-
-Invisibly returns \code{TRUE} on success.
 }
 \description{
 Removes batches and derived data from the database. Deletions are \emph{greedy}:
 all downstream tables that depend on the deleted entry are automatically
 cleaned up to keep the database consistent.
-
-Reclaims unused disk space by running \code{VACUUM} on the underlying database.
-Call this after bulk deletions via \code{\link[=remove_data]{remove_data()}} to compact the file and
-free storage.
 }
 \details{
 \subsection{Dependency chain}{
@@ -90,48 +63,16 @@ everything downstream.
    \code{"data_related"}, \code{"data_region"} \tab ignored \tab required \cr
 }
 
-
-After deletions, consider running \code{\link[=vacuum_data]{vacuum_data()}} to reclaim disk space.
-Vacuuming can take several minutes for large database files.
 }
-
-For SQLite-based backends, \code{VACUUM} rewrites the entire database file in
-place and may take several minutes for large databases. No data is modified;
-only free pages are reclaimed.
 }
 \examples{
 \dontrun{
-# Remove a control keyword batch and all data derived from it
 remove_data(table = "batch_keywords", control = 1)
-
-# Remove an object keyword batch and all data derived from it
 remove_data(table = "batch_keywords", object = 1)
-
-# Remove all object data linked to a control batch
 remove_data(table = "data_object", control = 1)
-
-# Remove scores for one specific control-object combination
 remove_data(table = "data_score", control = 1, object = 1)
-
-# Remove related-query data for an object batch
 remove_data(table = "data_related", object = 1)
-
-# Remove regional breakdown data for an object batch
 remove_data(table = "data_region", object = 1)
-
-# Reclaim disk space after bulk deletions
-vacuum_data()
 }
 
-}
-\seealso{
-\itemize{
-\item \code{\link[=vacuum_data]{vacuum_data()}}
-\item \code{\link[=example_keywords]{example_keywords()}}
-\item \code{\link[=example_time]{example_time()}}
-\item \code{\link[=example_control]{example_control()}}
-\item \code{\link[=example_object]{example_object()}}
-\item \code{\link[=example_score]{example_score()}}
-\item \code{\link[=example_doi]{example_doi()}}
-}
 }

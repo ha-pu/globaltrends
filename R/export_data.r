@@ -218,28 +218,6 @@ export_doi <- function(
   out
 }
 
-#' @description
-#' Internal helper: build a SQL query from optional filters, execute it, and
-#' convert the `date` column to class `Date`.
-#'
-#' All `in_*` arguments are coerced via `unlist()` before validation, so both
-#' atomic vectors and lists are accepted from callers. Filters are applied only
-#' when the corresponding argument is non-`NULL`. If `in_keyword` is supplied,
-#' `in_object` is skipped entirely (keyword has precedence).
-#'
-#' @param table Character scalar. Name of the database table to query.
-#' @param in_keyword Character vector of keywords; takes precedence over
-#'   `in_object`.
-#' @param in_object Integer scalar object batch id (`batch_o`). Ignored when
-#'   `in_keyword` is supplied.
-#' @param in_control Integer scalar control batch id (`batch_c`).
-#' @param in_batch Integer scalar control batch id for control tables (`batch`
-#'   column, not `batch_c`).
-#' @param in_location Character vector of location codes.
-#' @param in_locations Character scalar location-set name (DOI table only).
-#'
-#' @return A data frame with `date` converted to `Date`.
-#'
 #' @keywords internal
 #' @noRd
 
@@ -259,7 +237,6 @@ export_doi <- function(
   in_location <- unlist(in_location)
   in_locations <- unlist(in_locations)
 
-  # --- validate inputs --------------------------------------------------------
   if (!is.null(in_keyword)) {
     .check_input(in_keyword, "character", name = "keyword")
   }
@@ -279,64 +256,33 @@ export_doi <- function(
     .check_batch(in_object)
   }
 
-  con <- gt.env$globaltrends_db
-  where_parts <- character(0)
+  slot <- .table_slot(table)
+  dt <- gt.env[[slot]]
+  idx <- rep(TRUE, nrow(dt))
 
   if (!is.null(in_keyword)) {
-    kw_in <- paste(
-      vapply(in_keyword, function(k) DBI::dbQuoteString(con, k), character(1)),
-      collapse = ", "
-    )
-    where_parts <- c(where_parts, paste0("keyword IN (", kw_in, ")"))
+    idx <- idx & dt$keyword %in% in_keyword
   } else if (!is.null(in_object)) {
-    where_parts <- c(
-      where_parts,
-      paste0("batch_o IN (", paste(in_object, collapse = ", "), ")")
-    )
+    idx <- idx & dt$batch_o %in% in_object
   }
 
   if (!is.null(in_control)) {
-    where_parts <- c(
-      where_parts,
-      paste0("batch_c IN (", paste(in_control, collapse = ", "), ")")
-    )
+    col <- if ("batch_c" %in% names(dt)) "batch_c" else "batch"
+    idx <- idx & dt[[col]] %in% in_control
   }
   if (!is.null(in_batch)) {
-    where_parts <- c(
-      where_parts,
-      paste0("batch IN (", paste(in_batch, collapse = ", "), ")")
-    )
+    idx <- idx & dt$batch %in% in_batch
   }
   if (!is.null(in_location)) {
-    loc_in <- paste(
-      vapply(in_location, function(l) DBI::dbQuoteString(con, l), character(1)),
-      collapse = ", "
-    )
-    where_parts <- c(where_parts, paste0("location IN (", loc_in, ")"))
+    idx <- idx & dt$location %in% in_location
   }
   if (!is.null(in_locations)) {
-    locs_in <- paste(
-      vapply(
-        in_locations,
-        function(l) DBI::dbQuoteString(con, l),
-        character(1)
-      ),
-      collapse = ", "
-    )
-    where_parts <- c(where_parts, paste0("locations IN (", locs_in, ")"))
+    idx <- idx & dt$locations %in% in_locations
   }
 
-  sql <- paste0(
-    "SELECT * FROM ",
-    table,
-    if (length(where_parts) > 0) {
-      paste0(" WHERE ", paste(where_parts, collapse = " AND "))
-    } else {
-      ""
-    }
-  )
-
-  out <- DBI::dbGetQuery(con, sql)
-  out$date <- as.Date(out$date)
+  out <- as.data.frame(dt[idx, ])
+  if ("date" %in% names(out)) {
+    out$date <- as.Date(out$date)
+  }
   out
 }

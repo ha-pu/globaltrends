@@ -1,3 +1,36 @@
+# globaltrends 0.2.1
+
+## Data Structure
+
+* Change from sqlite/parquet files to `data.table` for performance reasons
+  * All `globaltrends` data is stored in a single, non-compressed RDS file
+  * The data is stored in a list objectiv with the following `data.table` objects:
+    * `batch_keywords`
+    * `batch_time`
+    * `data_control`
+    * `data_object`
+    * `data_score`
+    * `data_doi`
+    * `data_locations`
+    * `data_region`
+    * `data_related`
+    * `keyword_synonyms`
+  * All `globaltrends` data is loaded into memory as a list of `data.table` objects
+  * **This makes the storage structure incompatiable with the structure used up to `0.2.0`**
+    * It is possible to integrate the data manually. To this end, extract the data from the parquet files, transform it to `data.table` objects and enter it into the respective elements in the `gt.env` environment.
+* Drop `vacuum_data()` function, since the data architecture is not built on a database file any more
+
+## Efficiency
+
+* `compute_score()` now persists in-memory data to disk after every 1,000 computed locations, matching the periodic persistence already used by the `download_xxx()` functions
+
+## Testing
+
+* All tests now run fully isolated, in their own temporary directory, with automatic cleanup (`withr`) - no shared state or leftover files between tests
+* Live Google Trends API calls in the test suite are now opt-in (set `GLOBALTRENDS_LIVE_TESTS=1`), so automated test runs are offline and deterministic by default
+* Added test coverage for previously untested internals: API retry/backoff logic, quota handling, input validators, database persistence, and `initialize_python()`
+* Enabled parallel test execution (`Config/testthat/parallel: true`)
+
 # globaltrends 0.2.0
 
 * General revision and improvement of code base

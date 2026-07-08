@@ -91,7 +91,6 @@
 #'
 #' @export
 #' @rdname download_related
-#' @importFrom DBI dbAppendTable
 
 download_related <- function(
   object,
@@ -313,10 +312,9 @@ download_related.numeric <- function(
 
     if (!is.null(out) && nrow(out) > 0) {
       out$batch_o <- object
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_related",
-        value = out
+      gt.env$dt_related <- data.table::rbindlist(
+        list(gt.env$dt_related, data.table::setDT(out)),
+        use.names = TRUE
       )
       message(paste0(
         "Downloaded related data | object: ", object,
@@ -335,6 +333,11 @@ download_related.numeric <- function(
       ))
     }
   }
+
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key once per
+  # batch (not per location) so the next `.get_full()` call can binary
+  # search instead of scanning the full table.
+  data.table::setkey(gt.env$dt_related, batch_o, topic, rising, location)
 
   invisible(TRUE)
 }

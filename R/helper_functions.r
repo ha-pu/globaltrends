@@ -1,3 +1,15 @@
+#' Single seam for all rate-limit/backoff pauses. Base functions cannot be
+#' mocked with testthat::local_mocked_bindings(), so tests stub this wrapper
+#' instead of Sys.sleep() to run retry logic without real waits.
+#'
+#' @keywords internal
+#' @noRd
+
+.wait <- function(seconds) {
+  Sys.sleep(seconds)
+  invisible(NULL)
+}
+
 #' @keywords internal
 #' @noRd
 
@@ -9,11 +21,31 @@
   }
   gt.env$api_calls <- gt.env$api_calls + 1L
 
-  if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$globaltrends_db)) {
+  if (gt.env$api_calls %% 1000L == 0L && !is.null(gt.env$dt_control)) {
     message(
-      "Persisting in-memory data to parquet after ",
+      "Persisting in-memory data to local file after ",
       gt.env$api_calls,
       " API calls."
+    )
+    disconnect_db()
+    start_db()
+  }
+}
+
+#' @keywords internal
+#' @noRd
+
+.increment_score_counter <- function() {
+  if (is.null(gt.env$score_calls)) {
+    gt.env$score_calls <- 0L
+  }
+  gt.env$score_calls <- gt.env$score_calls + 1L
+
+  if (gt.env$score_calls %% 1000L == 0L && !is.null(gt.env$dt_control)) {
+    message(
+      "Persisting in-memory data to local file after ",
+      gt.env$score_calls,
+      " computed locations."
     )
     disconnect_db()
     start_db()
@@ -65,13 +97,15 @@
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
     out <- tryCatch(
-      gt.env$query_trend(
-        terms = term,
-        start_date = start_date,
-        end_date = end_date,
-        geo = geo,
-        api_key = gt.env$api_key
-      ),
+      .retry_py_call(function() {
+        gt.env$query_trend(
+          terms = term,
+          start_date = start_date,
+          end_date = end_date,
+          geo = geo,
+          api_key = gt.env$api_key
+        )
+      }),
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
@@ -146,7 +180,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(ts)
   }
 
@@ -173,7 +207,7 @@
   names(ts)[1] <- "location"
 
   # Add some jitter to reduce rate-limit risk.
-  Sys.sleep(stats::runif(1, min = 5, max = 10))
+  .wait(stats::runif(1, min = 5, max = 10))
   ts
 }
 
@@ -204,10 +238,10 @@
 
     if (is_500) {
       message("globaltrends retrying download in 1s (HTTP 500).")
-      Sys.sleep(1)
+      .wait(1)
     } else {
       message("globaltrends retrying download in 60s.")
-      Sys.sleep(60)
+      .wait(60)
     }
 
     i <- i + 1L
@@ -226,6 +260,65 @@
   }
 
   out
+}
+
+#' @title Retry wrapper for Research API (Python) calls
+#'
+#' @description
+#' Internal wrapper around calls to `gt.env$query_trend()`,
+#' `gt.env$query_region()`, and `gt.env$query_terms()` that retries transient
+#' server-side failures (e.g. HTTP 502/503/504) with exponential backoff.
+#' Non-transient errors (e.g. 429 quota, 400 bad request, timeouts) are
+#' rethrown immediately so the caller's own `tryCatch()` handler can deal with
+#' them.
+#'
+#' @param call A zero-argument function performing the API call.
+#' @param max_tries Integer scalar. Maximum number of attempts. Defaults to `5`.
+#' @param wait Numeric scalar. Seconds to wait before the first retry; doubles
+#'   after each subsequent transient failure. Defaults to `5`.
+#'
+#' @return The value returned by `call()`.
+#'
+#' @keywords internal
+#' @noRd
+
+.retry_py_call <- function(call, max_tries = 5, wait = 5) {
+  attempt <- 1L
+  repeat {
+    result <- tryCatch(
+      list(value = call()),
+      error = function(e) e
+    )
+
+    if (!inherits(result, "error")) {
+      return(result$value)
+    }
+
+    msg <- conditionMessage(result)
+    is_transient <- grepl(
+      "502|503|504|Bad Gateway|Service Unavailable|Gateway Timeout|backendError|internalError",
+      msg,
+      ignore.case = TRUE
+    )
+
+    if (!is_transient || attempt >= max_tries) {
+      stop(result)
+    }
+
+    message(
+      "Transient Google Trends API error (attempt ",
+      attempt,
+      "/",
+      max_tries,
+      "). Retrying in ",
+      wait,
+      "s.\n",
+      msg
+    )
+    .wait(wait)
+    attempt <- attempt + 1L
+    wait <- wait * 2
+  }
 }
 
 #' @title Test whether DOI data exists for given identifiers
@@ -251,17 +344,22 @@
     .check_locations(locations)
   }
 
-  out <- DBI::dbGetQuery(
-    gt.env$globaltrends_db,
-    sprintf(
-      "SELECT 1 FROM data_doi WHERE batch_c = %d AND batch_o = %d AND locations = %s LIMIT 1",
-      batch_c,
-      batch_o,
-      DBI::dbQuoteString(gt.env$globaltrends_db, locations)
-    )
-  )
+  # `target_*` avoid colliding with `dt_doi`'s `batch_c`/`batch_o`/`locations`
+  # columns: under data.table's NSE (see `.datatable.aware` in zzz.r), a bare
+  # symbol that matches a column name resolves to the COLUMN, not this
+  # argument, which would make the filter always-true.
+  target_batch_c <- batch_c
+  target_batch_o <- batch_o
+  target_locations <- locations
 
-  nrow(out) == 0
+  dt <- gt.env$dt_doi
+  n <- nrow(dt[
+    dt$batch_c == target_batch_c &
+      dt$batch_o == target_batch_o &
+      dt$locations == target_locations,
+  ])
+
+  n == 0L
 }
 
 #' @title List locations already present for a batch combination
@@ -317,9 +415,18 @@
     .check_input(in_rising, "logical")
   }
 
-  con <- gt.env$globaltrends_db
-
-  switch(table,
+  # Each branch below uses `dt[.(values), location, on = "cols", nomatch =
+  # NULL]` rather than `dt[dt$col == value, ]$location`. With this namespace
+  # declared data.table-aware (see `.datatable.aware` in zzz.r), `on =`
+  # drives a binary-search join instead of a full vector scan over every
+  # row, and - unlike relying on `dt` carrying a persistent `key()` - works
+  # regardless of key state. This matters because `rbindlist()` (used by
+  # every download/compute function to append new rows) drops keys, so `dt`
+  # would otherwise be unkeyed again well before the next `.get_full()`
+  # call; download/compute functions re-key their table after each batch's
+  # appends (see e.g. `download_control.r`) so the join here stays fast.
+  switch(
+    table,
     data_control = {
       if (is.null(in_batch_c)) {
         stop(
@@ -327,13 +434,17 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_control WHERE batch = %d",
-          in_batch_c
-        )
-      )$location
+      dt <- gt.env$dt_control
+      if (nrow(dt) == 0L) {
+        character(0)
+      } else {
+        unique(dt[
+          list(as.integer(in_batch_c)),
+          location,
+          on = "batch",
+          nomatch = NULL
+        ])
+      }
     },
     data_object = {
       if (is.null(in_batch_o)) {
@@ -342,14 +453,17 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_object WHERE batch_c = %d AND batch_o = %d",
-          in_batch_c,
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_object
+      if (nrow(dt) == 0L) {
+        character(0)
+      } else {
+        unique(dt[
+          list(as.integer(in_batch_c), as.integer(in_batch_o)),
+          location,
+          on = c("batch_c", "batch_o"),
+          nomatch = NULL
+        ])
+      }
     },
     data_score = {
       if (is.null(in_batch_o)) {
@@ -358,14 +472,17 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_score WHERE batch_c = %d AND batch_o = %d",
-          in_batch_c,
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_score
+      if (nrow(dt) == 0L) {
+        character(0)
+      } else {
+        unique(dt[
+          list(as.integer(in_batch_c), as.integer(in_batch_o)),
+          location,
+          on = c("batch_c", "batch_o"),
+          nomatch = NULL
+        ])
+      }
     },
     data_region = {
       if (is.null(in_batch_o)) {
@@ -374,13 +491,17 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_region WHERE batch_o = %d",
-          in_batch_o
-        )
-      )$location
+      dt <- gt.env$dt_region
+      if (nrow(dt) == 0L) {
+        character(0)
+      } else {
+        unique(dt[
+          list(as.integer(in_batch_o)),
+          location,
+          on = "batch_o",
+          nomatch = NULL
+        ])
+      }
     },
     data_related = {
       if (is.null(in_batch_o)) {
@@ -401,15 +522,21 @@
           call. = FALSE
         )
       }
-      DBI::dbGetQuery(
-        con,
-        sprintf(
-          "SELECT DISTINCT location FROM data_related WHERE batch_o = %d AND topic = %s AND rising = %s",
-          in_batch_o,
-          as.integer(in_topic),
-          as.integer(in_rising)
-        )
-      )$location
+      dt <- gt.env$dt_related
+      if (nrow(dt) == 0L) {
+        character(0)
+      } else {
+        unique(dt[
+          list(
+            as.integer(in_batch_o),
+            as.integer(in_topic),
+            as.integer(in_rising)
+          ),
+          location,
+          on = c("batch_o", "topic", "rising"),
+          nomatch = NULL
+        ])
+      }
     },
     stop(
       "Error: `table` must be one of 'data_control', 'data_object', 'data_score', 'data_region', or 'data_related'.",
@@ -463,13 +590,15 @@
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
     out <- tryCatch(
-      gt.env$query_region(
-        terms = term,
-        start_date = start_date,
-        end_date = end_date,
-        geo = geo,
-        api_key = gt.env$api_key
-      ),
+      .retry_py_call(function() {
+        gt.env$query_region(
+          terms = term,
+          start_date = start_date,
+          end_date = end_date,
+          geo = geo,
+          api_key = gt.env$api_key
+        )
+      }),
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
@@ -559,7 +688,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(region)
   }
 }
@@ -616,15 +745,17 @@
     # Research API backend (Python via reticulate)
     # ---------------------------------------------------------------------
     out <- tryCatch(
-      gt.env$query_terms(
-        terms = term,
-        start_date = start_date,
-        end_date = end_date,
-        geo = geo,
-        api_key = gt.env$api_key,
-        topic = topic,
-        rising = rising
-      ),
+      .retry_py_call(function() {
+        gt.env$query_terms(
+          terms = term,
+          start_date = start_date,
+          end_date = end_date,
+          geo = geo,
+          api_key = gt.env$api_key,
+          topic = topic,
+          rising = rising
+        )
+      }),
       error = function(e) {
         msg <- conditionMessage(e)
         if (grepl("429|rateLimitExceeded|Quota exceeded", msg)) {
@@ -702,7 +833,7 @@
 
     .increment_api_counter()
     # Respect configured wait between API calls
-    Sys.sleep(gt.env$query_wait)
+    .wait(gt.env$query_wait)
     return(item)
   }
 }

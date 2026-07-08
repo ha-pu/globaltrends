@@ -1,5 +1,5 @@
 ---
-title: "globaltrends"
+title: "Introduction to globaltrends"
 subtitle: "Download and measure global trends through Google search volumes"
 author: "Harald Puhr"
 output: rmarkdown::html_vignette
@@ -64,9 +64,9 @@ We demonstrate the functionality of the `globaltrends` package based on a sample
 
 ## Set up and start the database
 
-Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses a Parquet-backed database to store and handle all data. Database tables are stored as individual [Parquet](https://parquet.apache.org/) files under a *db/* folder. When a session is started, the package loads these files into an in-memory [SQLite](https://www.sqlite.org/index.html) database. This ensures efficiency and portability on the one hand and seamless integration with functions implemented in the `DBI` and `dplyr` packages on the other hand.
+Research projects that use Google Trends generate a substantial amount of data. To optimally handle this data, the `globaltrends` package uses `data.table` objects persisted as a single RDS file under a *db/* folder. When a session is started, the package loads these tables into memory as `data.table` objects. This ensures efficiency and portability.
 
-Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates the Parquet files within this folder. For more information on database tables, please refer to their built-in documentation, e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
+Users create the underlying database through the `initialize_db` command. The command creates a folder named *db* within the current working directory and creates the RDS file within this folder. For more information on database tables, please refer to their built-in documentation, e.g., `?globaltrends::data_score`. The database initialization is necessary only for the first usage of the `globaltrends` package.
 
 ```{r, eval = FALSE}
 # initialize_db ----------------------------------------------------------------
@@ -75,7 +75,7 @@ initialize_db()
 #> Database files created successfully under 'db/'.
 ```
 
-After initialization or when resuming work on an existing database, it is sufficient to call `start_db` from the respective working directory. This command loads the Parquet files from the folder *db* into an in-memory SQLite database and exports table handles and cached keyword tables to the package environment `gt.env`.
+After initialization or when resuming work on an existing database, it is sufficient to call `start_db` from the respective working directory. This command loads the RDS file from the folder *db* into an in-memory list of data tables and exports table handles and cached keyword tables to the package environment `gt.env`.
 
 ```{r, eval = FALSE}
 # start_db ---------------------------------------------------------------------
@@ -84,7 +84,7 @@ start_db()
 #> Successfully loaded database and exported table handles to gt.env.
 ```
 
-After work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`. This persists the in-memory state back to the Parquet files.
+After work with the `globaltrends` package is complete, the user disconnects from the database with the command `disconnect_db`. This persists the in-memory state back to the RDS file.
 
 ```{r, eval = FALSE}
 # disconnect_db ----------------------------------------------------------------
@@ -181,7 +181,7 @@ download_control_global(control = new_control)
 
 ### Download object data
 
-For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five, for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](http://www.google.com/trends) beforehand.
+For object data, as for control data, the first step is to add keywords that correspond to the objects of interest. While we use a single control batch for the entire analysis, there are more than one object batch. To each object batch, a control keyword is added to allow mapping between control and object search volumes (further details [below](#compute-country-search-scores-and-volume-of-internationalization)). Therefore, the number of keywords is limited to four, rather than five, for control batches. Before we add the object keywords, we clean them, deleting punctuation and form of incorporation: *alaska air group*, *coca cola*, *facebook*, *illinois tool works*, *jm smucker*, and *microsoft*. Since this affects search results, the transformation requires substantial consideration and depends on the respective research setting. The `globaltrends` package also allows the usage of [search topics](#search_topics_vs_search_terms) instead of individual search terms as keywords. To ensure the expected results, we propose testing keyword transformations on the [Google Trends portal](https://trends.google.com/trends/) beforehand.
 
 ```{r, eval = FALSE}
 # add_object_keyword -----------------------------------------------------------
@@ -267,21 +267,17 @@ A message indicates each successful computation. The data is written directly to
 
 ## Exports and plots
 
-Functions in `globaltrends` write all data directly to tables in the database. With the help of functions from the `dplyr` package and connections exported from `start_db`, users can access database tables and prepare their own analysis.
+Functions in `globaltrends` write all data directly to `data.table` objects in `gt.env`. Users can access these tables directly and prepare their own analysis.
 
 ```{r, eval = FALSE}
 # manual exports ---------------------------------------------------------------
-library(dplyr)
-gt.env$tbl_score %>%
-  filter(keyword == "coca cola") %>%
-  collect()
-#> # A tibble: 8,040 x 6
-#>    location keyword    date   score     batch_c  batch_o
-#>    <chr>    <chr>     <int>     <dbl>   <int>    <int>
-#>  1 US       coca cola 14610   0.00362   1        1
+gt.env$dt_score[keyword == "coca cola"]
+#>       location   keyword  date     score batch_c batch_o
+#>    1:       US coca cola 14610   0.00362       1       1
 #>  ...
-#> 10 US       coca cola 14883   0.00347   1        1
-#> # ... with 8,030 more rows
+#>   10:       US coca cola 14883   0.00347       1       1
+#> ---
+#> 8030 more rows
 ```
 
 To enhance usability, the `globaltrends` package includes a set of export functions that offer filters and return data as a `tibble`. The default value for the batch/keyword, for which `export_xxx` exports data, is `NULL`. In this case, all values from the database are exported. Alternatively, users can specify filters (e.g., keywords, batches, locations) individually, as a vector or as a list.
@@ -409,7 +405,7 @@ Users can identify the codes of search topics on the Google Trends portal by sel
 
 ![](screenshot001.png){width=100%}
 
-After selecting the relevant search topics, users can identify the topic codes in the query’s URL. For example, based on the URL [https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT]( https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT), the topic *The Coca-Cola Company* is *%2Fm%2F03phgz*. If downloads are made through the [research API](#downloads-using-the-google-trends-research-api), special characters must be added as “literals.” This is to say, *%2Fm%2F03phgz* must be changed to /m/03phgz when using the research API and remains *%2Fm%2F03phgz* when working with `gtrendsR::gtrends`. Users can use these topic codes as keywords instead of single search terms. We point users to Kupfer and Zorn (2020, pp. 1169-1170) for a detailed comparison of search topics and search terms.  
+After selecting the relevant search topics, users can identify the topic codes in the query’s URL. For example, based on the URL `https://trends.google.com/trends/explore?q=%2Fm%2F03phgz&geo=AT`, the topic *The Coca-Cola Company* is *%2Fm%2F03phgz*. If downloads are made through the [research API](#downloads-using-the-google-trends-research-api), special characters must be added as “literals.” This is to say, *%2Fm%2F03phgz* must be changed to /m/03phgz when using the research API and remains *%2Fm%2F03phgz* when working with `gtrendsR::gtrends`. Users can use these topic codes as keywords instead of single search terms. We point users to Kupfer and Zorn (2020, pp. 1169-1170) for a detailed comparison of search topics and search terms.  
 
 **Important:** We recommend that search topics for control keywords are used in combination with search topics for object keywords and vice versa.
 
@@ -438,7 +434,7 @@ The enormous detail of the data opens additional research applications that are 
 * Kupfer, A. & Zorn, J. 2020. A language-independent measurement of economic policy uncertainty in Eastern European countries. *Emerging Markets Finance and Trade*, 56(5): 1166-1180.
 * MacKinlay, A. C. 1997. Event studies in economics and finance. *Journal of Economic Literature*, 35(1): 13-39.
 * McWilliams, A. & Siegel, D. 1997. Event studies in management research: Theoretical and empirical issues. *Academy of Management Journal*, 40(3): 626-657.
-* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at [https://ssrn.com/abstract=3969013/](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3969013).
+* Puhr, H., & Müllner, J. (2021). Let me Google that for you: Capturing globalization using Google Trends (*SSRN Working Paper 3969013*). Available at <doi:10.2139/ssrn.3969013>.
 * Puhr, H., & Müllner, J. (2022). Foreign to all but fluent in many: The effect of multinationality on shock resilience. *Journal of World Business*, 57(6): 101370.
 
 # Appendix A

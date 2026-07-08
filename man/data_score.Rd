@@ -35,7 +35,7 @@ control keyword hits mapped to the object scale via an overlap-based
 benchmark (see Castelnuovo & Tran, 2017). Scores are non-negative; values
 greater than 1 are possible when object interest exceeds control interest.
 
-In a live database, scores are queryable through \code{gt.env$globaltrends_db}
+In a live database, scores are queryable through \code{gt.env$dt_scores}
 after \code{\link[=start_db]{start_db()}}. Global aggregates use \code{"world"} as \code{location}.
 
 The example dataset is simulated to resemble outputs derived from real

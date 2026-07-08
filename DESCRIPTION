@@ -1,7 +1,7 @@
 Type: Package
 Package: globaltrends
 Title: Download and Measure Global Trends Through 'Google' Search Volumes
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person("Harald", "Puhr", email = "harald.puhr@gmail.com", role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-3308-9553")),
     person("Jakob", "Muellner", role = "ccp", comment = c(ORCID = "0000-0002-3443-0469"))
@@ -17,21 +17,18 @@ Description: 'Google' offers public access to global search volumes from its
     political, social, or technological trends across the globe or within
     single countries.  An outline of the package's methodological
     foundations and potential applications is available as a working
-    paper: <https://www.ssrn.com/abstract=3969013>.
+    paper: <doi:10.2139/ssrn.3969013>.
 License: MIT + file LICENSE
 URL: https://github.com/ha-pu/globaltrends/
 BugReports: https://github.com/ha-pu/globaltrends/issues/
 Depends: 
     R (>= 4.1.0)
 Imports:
-    arrow (>= 14.0.0),
-    DBI (>= 1.1.0),
-    dbplyr (>= 2.1.0),
-    dplyr (>= 1.0.0),
+    data.table (>= 1.14.0),
     gtrendsR (>= 1.5.1),
     reticulate (>= 1.38),
-    RSQLite (>= 2.3.0),
-    stats (>= 3.5.0)
+    stats (>= 3.5.0),
+    utils
 Suggests:
     hms (>= 1.1.0),
     knitr (>= 1.29),
@@ -40,6 +37,8 @@ Suggests:
     tibble (>= 3.0.0),
     withr (>= 2.5.0)
 Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: computations, export, downloads
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

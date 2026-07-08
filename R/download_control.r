@@ -79,7 +79,6 @@
 #'
 #' @export
 #' @rdname download_control
-#' @importFrom DBI dbAppendTable
 
 download_control <- function(control, locations = NULL) {
   UseMethod("download_control", control)
@@ -173,10 +172,9 @@ download_control.numeric <- function(control, locations = NULL) {
 
     if (!is.null(out)) {
       out$batch <- control
-      dbAppendTable(
-        conn = gt.env$globaltrends_db,
-        name = "data_control",
-        value = out
+      gt.env$dt_control <- data.table::rbindlist(
+        list(gt.env$dt_control, data.table::setDT(out)),
+        use.names = TRUE
       )
       message(paste0(
         "Downloaded control data | control: ",
@@ -203,6 +201,11 @@ download_control.numeric <- function(control, locations = NULL) {
       ))
     }
   }
+
+  # `rbindlist()` above drops the key set in `start_db()`. Re-key once per
+  # batch (not per location) so the next `.get_full()` call can binary
+  # search instead of scanning the full table.
+  data.table::setkey(gt.env$dt_control, batch, location)
 
   invisible(TRUE)
 }
