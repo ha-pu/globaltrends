@@ -2,7 +2,8 @@
 
 ## Test environments
 * local Windows 11 x64 (build 26200), R 4.6.0
-* R-hub: Linux (R-devel), Windows (R-devel), macOS arm64 (R-devel)
+* R-hub: Linux (R-devel), Windows (R-devel), macOS (R-devel),  macOS arm64 (R-devel)
+* Winbuilder: Windows (R-devel), Windows (Release)
 
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTEs.
